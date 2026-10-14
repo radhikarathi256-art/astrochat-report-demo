@@ -269,6 +269,31 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 15px/22px var(--sans);color:var(--g900)}
 .tile small{font:400 13px/18px var(--sans);color:var(--g500)}
 .tile .arr{flex:none}
+/* The report row is the only guidance item that asks for money, so it gets a
+   taller card: cover + copy + chevron on row 1, the green finding spanning row 2. */
+.gcard{text-align:left;width:100%;background:#fff;border:1px solid var(--g200);border-radius:16px;
+  padding:12px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  column-gap:12px;row-gap:10px}
+.gcard:active{background:var(--g50)}
+.gcard>img{grid-row:1;width:58px;height:78px;object-fit:cover;border-radius:4px;
+  box-shadow:0 3px 10px rgba(16,24,40,.22)}
+.gc-t{grid-row:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.gc-t>b{font:600 15px/22px var(--sans);color:var(--g900)}
+.gc-meta{display:flex;align-items:center;gap:5px;
+  font:500 12px/16px var(--sans);color:var(--g600)}
+.gc-meta svg{flex:none}
+.gc-meta .pill{font-style:normal;padding:1px 7px;border-radius:999px;
+  background:var(--g100);font-weight:600;color:var(--g700)}
+.gc-sub{font:400 13px/18px var(--sans);color:var(--g500)}
+.gc-pr{display:flex;align-items:baseline;gap:6px;margin-top:2px}
+.gc-pr b{font:700 16px/22px var(--sans);color:var(--g900)}
+.gc-pr s{font:400 13px/18px var(--sans);color:var(--g400)}
+.gc-pr .off{font-style:normal;font:600 11px/16px var(--sans);padding:1px 6px;
+  border-radius:6px;background:var(--brand50);color:var(--brand-dk)}
+.gcard .arr{grid-row:1;flex:none}
+.gc-why{grid-column:1/-1;display:flex;align-items:center;gap:7px;padding:6px 10px;
+  border-radius:9px;background:#ECFDF3;font:600 13px/18px var(--sans);color:#067647}
+.gc-why svg{flex:none}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}

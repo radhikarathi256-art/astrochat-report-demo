@@ -325,11 +325,18 @@
         <div class="guide">
           <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
           <div class="tiles">
-            <!-- Entry C: the report is one of two guidance tiles -->
-            <button class="tile" type="button" data-go="report">
+            <!-- Entry C: the report gets a richer card than the plain guidance rows,
+                 because it is the only one that asks for money. -->
+            <button class="gcard" type="button" data-go="report">
               <img src="assets/book-cover.png" alt="">
-              <span class="tt"><b>Marriage Yog report <i class="tag purple">₹49</i></b><small>Made by Hemali for you</small></span>
+              <span class="gc-t">
+                <b>Marriage Yog report</b>
+                <span class="gc-meta"><i class="pill">One-time</i><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 .8l1.57 3.3 3.55.5-2.56 2.55.6 3.6L6 9.05 2.84 10.75l.6-3.6L.88 4.6l3.55-.5L6 .8Z" fill="#FEC84B"/></svg>4.7 • 1.2K orders</span>
+                <span class="gc-sub">Made by Hemali from your chat</span>
+                <span class="gc-pr"><b>₹49</b><s>₹199</s><i class="off">75% off</i></span>
+              </span>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="gc-why"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.6" y="1.6" width="12.8" height="12.8" rx="2" stroke="#067647" stroke-width="1.3"/><path d="M1.6 1.6 14.4 14.4M14.4 1.6 1.6 14.4" stroke="#067647" stroke-width="1.3"/></svg>Rahu is delaying your marriage</span>
             </button>
             <button class="tile" type="button" data-toast="Tarot is not part of this demo">
               <img src="assets/tarot.png" alt="">
