@@ -296,6 +296,33 @@ var MATCH = [
   { l: 'Communication', v: 6 },
   { l: 'Patience', v: 5 }
 ];
+/* MyNaksh gives a year-by-year likelihood; ours says it in plain percentages
+   so the reader does not have to decode a chart. */
+var BANDS = [
+  { l: 'Rest of 2026', v: 18 },
+  { l: '2027', v: 74 },
+  { l: '2028', v: 52 },
+  { l: '2029', v: 30 },
+  { l: '2030 onwards', v: 16 }
+];
+var PORTRAIT = [
+  ['Nature', 'Calm on the outside, stubborn underneath. Says less than he feels, so you will have to ask twice.'],
+  ['Work', 'Something steady with numbers or systems — finance, engineering, or a small setup of his own.'],
+  ['Family', 'A smaller family with one sibling. Parents who ask a lot of questions before they say yes.'],
+  ['How you meet', 'Through someone you already know. Your chart does not show a stranger from an app.'],
+  ['Direction', 'North or north-west of where you live now, within a day of travel.']
+];
+var GREENS = [
+  'Venus sits well in your 7th house.',
+  'Jupiter looks at your marriage house all through 2027.',
+  'No Manglik dosh, so nothing has to be matched around it.',
+  'Your 2nd house supports a joint home and joint money.'
+];
+var AMBERS = [
+  'Saturn slows family conversations until February.',
+  'Mercury turns back in May 2027 — do not fix a date that month.',
+  'Anger between you two needs a rule, not a winner.'
+];
 var ALSO = [
   { t: 'Kundli Milan report', s: 'Match with Rahul, point by point', p: '₹49' },
   { t: 'Partner sketch', s: 'See who you will marry', p: '₹49' },
@@ -335,6 +362,13 @@ function renderRead() {
         '<h4 class="sm">February 2028</h4>' +
         '<p>Family talks move from “let us think” to “let us meet”.</p>' +
       '</div>' +
+      '<div class="bars bands"><p class="blbl">HOW LIKELY, YEAR BY YEAR</p>' +
+        BANDS.map(function (b) {
+          return '<div class="bar-row"><span>' + b.l + '</span>' +
+                 '<span class="track"><i data-w="' + b.v + '"></i></span>' +
+                 '<em>' + b.v + '%</em></div>';
+        }).join('') +
+      '</div>' +
     '</div>' +
 
     '<div class="upsell">' +
@@ -353,6 +387,38 @@ function renderRead() {
                  '<span class="track"><i data-w="' + (m.v * 10) + '"></i></span>' +
                  '<em>' + m.v + '</em></div>';
         }).join('') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="r-sec">' +
+      '<div class="top-bar"></div>' +
+      '<div class="shead"><h3>Who you will marry</h3><p>The person your chart describes</p></div>' +
+      '<div class="facts">' +
+        PORTRAIT.map(function (p) {
+          return '<div><span>' + p[0] + '</span><p>' + p[1] + '</p></div>';
+        }).join('') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="r-sec">' +
+      '<div class="top-bar"></div>' +
+      '<div class="shead"><h3>Love or arranged</h3><p>Which way your chart leans</p></div>' +
+      '<div class="tilt">' +
+        '<div class="tilt-top"><span>Love match</span><span>Arranged</span></div>' +
+        '<span class="track"><i data-w="66"></i></span>' +
+        '<div class="tilt-top n"><span>34%</span><span>66%</span></div>' +
+      '</div>' +
+      accent('WHAT THIS MEANS FOR YOU', 'It starts as an introduction and turns into your own choice. Not a cold setup, and not a runaway love story either.') +
+    '</div>' +
+
+    '<div class="verdicts">' +
+      '<div class="vlist go">' +
+        '<p class="vh">GOING FOR YOU</p>' +
+        '<ul>' + GREENS.map(function (g) { return '<li>' + g + '</li>'; }).join('') + '</ul>' +
+      '</div>' +
+      '<div class="vlist hold">' +
+        '<p class="vh">HOLD CAREFULLY</p>' +
+        '<ul>' + AMBERS.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul>' +
       '</div>' +
     '</div>' +
 

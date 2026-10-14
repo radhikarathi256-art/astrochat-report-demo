@@ -457,6 +457,43 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .bar-row .track i{display:block;height:6px;border-radius:3px;background:var(--w500);width:0;
   transition:width .6s cubic-bezier(.32,.72,0,1)}
 .bar-row em{font-style:normal;width:12px;text-align:right;font:600 14px/20px var(--sans);color:var(--g700)}
+/* The year labels and the percentages both need more room than the trait bars. */
+.bands .bar-row span{width:98px}
+.bands .bar-row em{width:34px}
+
+/* Partner portrait: a label and a sentence, not a chart the reader must decode. */
+.facts{padding:0 16px;margin-top:14px;display:flex;flex-direction:column}
+.facts>div{padding:12px 0;border-top:1px solid var(--g200)}
+.facts>div:first-child{border-top:0;padding-top:2px}
+.facts span{display:block;font:600 12px/18px var(--sans);letter-spacing:.04em;
+  text-transform:uppercase;color:var(--g500)}
+.facts p{margin:4px 0 0;font:400 16px/24px var(--sans);color:var(--g700)}
+
+.tilt{padding:0 16px;margin-top:16px}
+/* Filled from the right, because the figure under the fill is the arranged side. */
+.tilt .track{display:flex;justify-content:flex-end;height:8px;border-radius:4px;
+  background:var(--g200);overflow:hidden}
+.tilt .track i{flex:none;height:8px;border-radius:4px;background:var(--w500);width:0;
+  transition:width .6s cubic-bezier(.22,1,.36,1)}
+.tilt-top{display:flex;justify-content:space-between;margin-bottom:8px;
+  font:400 14px/20px var(--sans);color:var(--g600)}
+.tilt-top.n{margin:8px 0 0;font-weight:600;color:var(--w700)}
+
+/* Two verdict lists, the way MyNaksh splits its greens from its cautions. */
+.verdicts{display:flex;flex-direction:column;gap:10px}
+.vlist{border-radius:12px;padding:16px}
+.vlist.go{background:var(--s50)}
+.vlist.hold{background:var(--w25)}
+.vlist .vh{margin:0 0 10px;font:600 12px/18px var(--sans);letter-spacing:.04em}
+.vlist.go .vh{color:var(--s700)}
+.vlist.hold .vh{color:var(--w700)}
+.vlist ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.vlist li{position:relative;padding-left:22px;font:400 15px/22px var(--sans);color:var(--g700)}
+.vlist li::before{content:"";position:absolute;left:4px;top:8px;width:7px;height:7px;
+  border-radius:50%}
+.vlist.go li::before{background:var(--s700)}
+.vlist.hold li::before{background:var(--w500)}
+
 .tagged{background:#fff;border-radius:12px;padding:17px}
 .tagged .th{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .tagged h4{margin:0;font:700 18px/24px var(--sans);color:var(--g900)}
