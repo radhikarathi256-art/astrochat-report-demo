@@ -346,9 +346,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* A white card lifted over the bottom of the hero, centred. It gives the title
    and the three stats one container to sit in and hides the seam where the
    artwork stops. */
-.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-32px auto 0;
-  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center;
-  box-shadow:0 10px 28px -16px rgba(122,46,14,.34)}
+/* It rides 12px further under the book than it used to, and the matching bottom
+   margin hands those 12px back so nothing below it shifts. No shadow: it drew a
+   line exactly where the book is meant to be resting on the card. */
+.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-44px auto 12px;
+  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center}
 .r2-card h1{margin:0 auto;max-width:290px;font:700 21px/29px var(--sans);color:var(--g900)}
 .r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
 .r2-stats div{width:84px}
