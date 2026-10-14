@@ -109,19 +109,24 @@
             <div class="bubble">
               <b>Today's answer by Astro Hemali</b>
               <p>Aaj Rahul ke saath baat aasaani se hogi. Shaam ko ek chhota sa plan banaiye, rishta aur mazboot hoga.</p>
-            </div>
-          </div>
 
-          <!-- Entry A — the sell: a report that reads like a file Hemali shared in chat -->
-          <div class="attach">
-            <img src="assets/book.svg" alt="">
-            <div class="attach-t">
-              <b>Marriage Yog report</b>
-              <small>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 .8l1.57 3.3 3.55.5-2.56 2.55.6 3.6L6 9.05 2.84 10.75l.6-3.6L.88 4.6l3.55-.5L6 .8Z" fill="#FEC84B"/></svg>
-                4.7 <i></i> 1.2K orders</small>
-              <em>Made for Mansi, from this chat</em>
-              <button class="cta" type="button" data-go="report">Start Reading</button>
+              <!-- Entry A — the sell lives inside Hemali's own bubble, under a
+                   divider, so it reads as something she made in the chat. -->
+              <div class="offer">
+                <span class="of-eyebrow">✦ Made for you in today's chat</span>
+                <b class="of-hook">Why Rahu is delaying your marriage</b>
+                <div class="of-row">
+                  <span class="bk3" aria-hidden="true"><span class="bk3-cover"><span class="bk3-ring"></span><span class="bk3-ring"></span><span class="bk3-bar"></span><span class="bk3-bar"></span></span></span>
+                  <span class="of-copy">Maine aapki kundli padhi. Isme likha hai kya ruk raha hai — aur usse kaise hataana hai.</span>
+                </div>
+                <div class="of-price"><b>₹49</b><s>₹199</s><i>75% OFF</i></div>
+                <span class="of-save">You save ₹150 today</span>
+                <button class="btn primary" type="button" data-go="report">Unlock my report</button>
+                <span class="of-foot">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 .8l1.57 3.3 3.55.5-2.56 2.55.6 3.6L6 9.05 2.84 10.75l.6-3.6L.88 4.6l3.55-.5L6 .8Z" fill="#FEC84B"/></svg>
+                  4.7 · Read by 1.2K women
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -201,10 +206,14 @@
             <hr class="thin">
             <!-- Entry B: the report sits inside the expert's own card -->
             <div class="expert-report">
-              <img src="assets/book.svg" alt="">
-              <span class="er-t"><b>Hemali made a report for you</b><small>Marriage Yog report</small></span>
-              <button class="btn outline sm" type="button" data-go="report">View</button>
+              <span class="bk3" aria-hidden="true"><span class="bk3-cover"><span class="bk3-ring"></span><span class="bk3-ring"></span><span class="bk3-bar"></span><span class="bk3-bar"></span></span></span>
+              <span class="er-t">
+                <small>Hemali made this for you</small>
+                <b>Why Rahu is delaying your marriage</b>
+                <span class="er-pr"><b>₹49</b><s>₹199</s><i>75% OFF</i></span>
+              </span>
             </div>
+            <button class="btn outline" type="button" data-go="report">Get my report</button>
           </div>
         </div>
 
@@ -330,15 +339,14 @@
             <!-- Entry C: the report gets a richer card than the plain guidance rows,
                  because it is the only one that asks for money. -->
             <button class="gcard" type="button" data-go="report">
-              <img src="assets/book.svg" alt="">
+              <span class="bk3" aria-hidden="true"><span class="bk3-cover"><span class="bk3-ring"></span><span class="bk3-ring"></span><span class="bk3-bar"></span><span class="bk3-bar"></span></span></span>
               <span class="gc-t">
-                <b>Marriage Yog report</b>
-                <span class="gc-meta"><i class="pill">One-time</i><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 .8l1.57 3.3 3.55.5-2.56 2.55.6 3.6L6 9.05 2.84 10.75l.6-3.6L.88 4.6l3.55-.5L6 .8Z" fill="#FEC84B"/></svg>4.7 • 1.2K orders</span>
-                <span class="gc-sub">Made by Hemali from your chat</span>
-                <span class="gc-pr"><b>₹49</b><s>₹199</s><i class="off">75% off</i></span>
+                <span class="gc-eyebrow">From your chat with Hemali</span>
+                <b>Why Rahu is delaying your marriage</b>
+                <span class="gc-sub">Aapki kundli, saral shabdon mein</span>
+                <span class="gc-pr"><b>₹49</b><s>₹199</s><i class="off">75% OFF</i></span>
               </span>
-              <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="gc-why"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.6" y="1.6" width="12.8" height="12.8" rx="2" stroke="#067647" stroke-width="1.3"/><path d="M1.6 1.6 14.4 14.4M14.4 1.6 1.6 14.4" stroke="#067647" stroke-width="1.3"/></svg>Rahu is delaying your marriage</span>
+              <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#F06A3A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <button class="tile" type="button" data-toast="Tarot is not part of this demo">
               <img src="assets/tarot.png" alt="">
@@ -395,8 +403,13 @@
         <!-- The chip row used to repeat the contents list word for word; the
              contents list does it better, so only the prose stays. -->
         <div class="r2-about">
-          <p class="r2-lead">A detailed look at the person you may marry — their nature, background and the circumstances that bring you together.</p>
-          <p class="r2-desc">Made from your chat with Hemali, checked by our senior astrologers, and ready in <b>English, Hindi, Hinglish +6</b>.</p>
+          <p class="r2-lead">Know <b>when</b> you will marry, <b>who</b> it will be, and <b>what is holding it up</b>.</p>
+          <ul class="r2-get">
+            <li>Your 3 marriage windows, year by year</li>
+            <li>Who you marry — nature, work, family</li>
+            <li>What Rahu is blocking, and how to fix it</li>
+          </ul>
+          <p class="r2-desc">Written by Hemali from your chat. In <b>English, Hindi, Hinglish +6</b>.</p>
           <button class="btn outline r2-sample" type="button" data-go="sample">
             Read a free sample first
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H12M8.5 4.2 12.3 8l-3.8 3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -404,11 +417,14 @@
         </div>
 
         <div class="r2-block">
-          <h2 class="r2-h">What this answers</h2>
-          <div class="qrow"><span>When will my marriage happen?</span></div>
-          <div class="qrow"><span>Is the person I am seeing the right match?</span></div>
-          <div class="qrow"><span>What is delaying it, and what can I do?</span></div>
-          <div class="qrow"><span>How will my married life be?</span></div>
+          <h2 class="r2-h">Find answers to</h2>
+          <div class="qrow"><span>Will I get married — and when is the best window?</span></div>
+          <div class="qrow"><span>What kind of partner is in my chart — nature, work, family?</span></div>
+          <div class="qrow"><span>Love marriage or arranged?</span></div>
+          <div class="qrow"><span>Am I Manglik, and how serious is it?</span></div>
+          <div class="qrow"><span>Will my in-laws be warm or difficult?</span></div>
+          <div class="qrow"><span>How will my money change after marriage?</span></div>
+          <div class="qrow"><span>How good will my married life be, decade by decade?</span></div>
         </div>
 
         <!-- The sell page never said what you actually get. Chapters with page

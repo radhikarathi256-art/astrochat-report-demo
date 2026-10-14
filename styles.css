@@ -187,34 +187,79 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .mood-row{display:flex;justify-content:flex-end;margin-bottom:10px}
 .mood-chip{background:#FCE4D8;border-radius:12px 12px 2px 12px;padding:8px 14px;
   font:500 14px/20px var(--sans);color:var(--w900)}
-.reply-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:12px}
+/* The bubble is tall once it carries the offer, so the avatar anchors its top
+   and the tail moves to the top-left corner to meet it. */
+.reply-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
 .reply-row .av{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 22%;flex:none}
-.bubble{flex:1;background:#fff;border:1px solid var(--g200);border-radius:12px 12px 12px 2px;padding:12px 14px}
+.bubble{flex:1;min-width:0;background:#fff;border:1px solid var(--g200);
+  border-radius:2px 12px 12px 12px;padding:12px 14px}
 .bubble b{display:block;font:600 13px/18px var(--sans);color:#B42318;margin-bottom:4px}
 .bubble p{margin:0;font:400 14px/22px var(--sans);color:var(--g700)}
 
-/* The report attachment — reads like a file shared in chat, not an ad. */
-/* The book stands proud of the card's top edge, so the card carries a top margin
-   of its own to make room for the overhang (Figma 3356:16428). */
-.attach{position:relative;display:block;width:100%;text-align:left;margin:24px 0 0;
-  background:#fff;border-radius:20px;padding:8px 10px 10px 112px;
-  box-shadow:0 0 0 1px rgba(16,24,40,.05),0 6px 18px -6px rgba(16,24,40,.16)}
-/* The book is a vector that carries its own depth and contact shadow, so it
-   needs no box-shadow and must not be cropped. */
-.attach img{position:absolute;left:4px;top:-20px;width:100px;height:134px;object-fit:contain}
-/* The title has to hold one line beside the cover — two lines read as a mistake. */
-.attach-t{display:flex;flex-direction:column;gap:3px}
-.attach-t b{font:600 16px/24px var(--sans);color:#000;white-space:nowrap}
-.attach-t em{font-style:normal;font:400 12px/18px var(--sans);color:var(--g500)}
-.attach-t small{display:flex;align-items:center;gap:6px;
-  font:500 13px/18px var(--sans);color:var(--g600)}
-.attach-t small i{width:1px;height:6px;background:var(--g300);font-style:normal}
-.attach-t small svg{flex:none}
-.attach .cta{display:flex;align-items:center;justify-content:center;width:146px;margin-top:8px;
-  padding:8px 16px;background:#fff;border:1px solid var(--brand);border-radius:12px;
-  font:600 16px/24px var(--sans);color:var(--brand);
-  box-shadow:0 1px 3px rgba(16,24,40,.1),0 1px 2px rgba(16,24,40,.06)}
-.attach .cta:active{background:var(--brand50)}
+/* ---------- The book, drawn in CSS ----------
+   A flat vector shrunk to a thumbnail reads as a pink rectangle on a white
+   square. Built from boxes it keeps a spine, a page block and a contact shadow
+   at every size, and scales off two custom properties. */
+.bk3{position:relative;flex:none;display:block;width:var(--bw,54px);height:var(--bh,74px);
+  filter:drop-shadow(0 5px 9px rgba(122,46,14,.26))}
+/* The leaves peeking past the cover are the thing that says "book". */
+.bk3::after{content:'';position:absolute;right:0;top:3%;bottom:3%;width:12%;
+  border-radius:0 2px 2px 0;
+  background:repeating-linear-gradient(90deg,#FFFDF7 0 1.5px,#E3D4BF 1.5px 3px)}
+/* A soft pink cover, not orange — orange collided with the brand button right
+   under it and made the whole card read as one block. */
+.bk3-cover{position:absolute;inset:0 9% 0 0;border-radius:1px 4px 4px 1px;
+  background:linear-gradient(145deg,#FFF1F4 0,#FBD3DE 52%,#F2A7BC 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+/* Spine, then the hinge crease just inside it. */
+.bk3-cover::before{content:'';position:absolute;left:0;top:0;bottom:0;width:14%;
+  border-radius:1px 0 0 1px;background:linear-gradient(180deg,#E78FA8,#C9647F)}
+.bk3-cover::after{content:'';position:absolute;left:19%;top:4%;bottom:4%;width:1px;
+  background:rgba(168,74,100,.26)}
+/* Two overlapping hearts, each built from a square plus two round lobes. */
+.bk3-ring{position:absolute;top:30%;width:26%;aspect-ratio:1;background:#E4718F;
+  transform:rotate(-45deg);border-radius:0 0 3% 0}
+.bk3-ring::before,.bk3-ring::after{content:'';position:absolute;width:100%;height:100%;
+  background:inherit;border-radius:50%}
+.bk3-ring::before{top:-50%;left:0}
+.bk3-ring::after{top:0;left:50%}
+.bk3-ring:nth-of-type(1){left:24%}
+.bk3-ring:nth-of-type(2){left:43%;background:#F4A7BC}
+/* Two foil rules standing in for the title, so it reads as a cover at 40px. */
+.bk3-bar{position:absolute;left:26%;right:15%;height:6%;min-height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#FFF0F4,#E4718F 55%,#C9647F)}
+.bk3-bar:nth-of-type(3){bottom:26%}
+.bk3-bar:nth-of-type(4){bottom:15%;right:34%;opacity:.7}
+
+/* ---------- Entry A · the report, offered inside Hemali's bubble ----------
+   She made it during the chat, so it belongs to her message: a divider inside
+   the bubble, not a card of its own floating underneath. */
+.offer{margin:12px -14px -12px;padding:13px 14px 14px;
+  border-top:1px dashed #F0CFBD;border-radius:0 0 12px 12px;
+  background:linear-gradient(180deg,#FFF7F2 0,#FFFFFF 72%)}
+.of-eyebrow{display:block;margin-bottom:7px;
+  font:700 11px/16px var(--sans);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--brand-dk)}
+/* The hook gets the bubble's full width — beside a cover it broke onto three
+   lines, which kills it. The cover supports the line underneath instead. */
+/* Scoped to .bubble so it beats `.bubble b`, which is the red speaker label. */
+.bubble .of-hook{display:block;margin-bottom:9px;font:700 16px/21px var(--sans);color:var(--g900)}
+.of-row{display:flex;gap:11px;align-items:center}
+.of-row .bk3{--bw:48px;--bh:65px}
+.of-copy{min-width:0;font:400 13px/18px var(--sans);color:var(--g600)}
+/* Swiggy's price block: the live price is the biggest thing, the MRP sits
+   struck through right beside it, and the saving is restated in words. */
+.of-price{display:flex;align-items:baseline;gap:8px;margin:14px 0 4px}
+.of-price b{font:700 22px/26px var(--sans);color:var(--g900)}
+.of-price s{font:400 14px/20px var(--sans);color:var(--g400)}
+.of-price i{margin-left:auto;align-self:center;font-style:normal;
+  font:700 11px/16px var(--sans);padding:3px 8px;border-radius:6px;
+  background:#ECFDF3;color:#067647}
+.of-save{display:block;margin-bottom:12px;font:600 12px/16px var(--sans);color:#067647}
+.offer .btn{height:46px}
+.of-foot{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:9px;
+  font:500 12px/16px var(--sans);color:var(--g500)}
+.of-foot svg{flex:none}
 
 /* ---------- R.1b hero + expert card ---------- */
 .hero{position:relative;padding:calc(var(--sbh) + 58px) 16px 10px;text-align:center;
@@ -253,12 +298,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .expert-meta s{color:var(--g400);font-weight:500;font-size:12px}
 .expert-meta strong{font-weight:600;color:var(--s700)}
 .expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
-.expert-report{display:flex;align-items:center;gap:10px}
-.expert-report img{width:30px;height:38px;border-radius:3px;object-fit:cover;flex:none;
-  box-shadow:0 1px 3px rgba(16,24,40,.18)}
-.er-t{flex:1;min-width:0}
-.er-t b{display:block;font:600 14px/20px var(--sans);color:var(--g900)}
-.er-t small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
+/* Entry B — the report inside the expert's own card. The row above it is
+   avatar / text / button, so repeating that rhythm would read as a second,
+   smaller chat row. Here the copy is two lines and the CTA goes full width. */
+.expert-report{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.expert-report .bk3{--bw:42px;--bh:56px}
+.er-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.er-t small{font:600 11px/16px var(--sans);letter-spacing:.05em;text-transform:uppercase;
+  color:var(--brand-dk)}
+.er-t b{font:700 14px/19px var(--sans);color:var(--g900)}
+.er-pr{display:flex;align-items:baseline;gap:6px;margin-top:3px}
+.er-pr b{font:700 16px/20px var(--sans);color:var(--g900)}
+.er-pr s{font:400 12px/16px var(--sans);color:var(--g400)}
+.er-pr i{font-style:normal;font:700 10px/14px var(--sans);padding:2px 6px;border-radius:5px;
+  background:#ECFDF3;color:#067647;align-self:center}
+.expert-body .btn.outline{height:42px;font-size:15px;margin-bottom:4px}
 
 /* ---------- Personalised guidance ----------
    Full-width rows, same as the daily-reward Today page (.g2wrap / .g2). */
@@ -275,30 +329,26 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 15px/22px var(--sans);color:var(--g900)}
 .tile small{font:400 13px/18px var(--sans);color:var(--g500)}
 .tile .arr{flex:none}
-/* The report row is the only guidance item that asks for money, so it gets a
-   taller card: cover + copy + chevron on row 1, the green finding spanning row 2. */
-.gcard{text-align:left;width:100%;background:#fff;border:1px solid var(--g200);border-radius:16px;
-  padding:12px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
-  column-gap:12px;row-gap:10px}
-.gcard:active{background:var(--g50)}
-.gcard>img{grid-row:1;width:62px;height:84px;object-fit:contain}
-.gc-t{grid-row:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.gc-t>b{font:600 15px/22px var(--sans);color:var(--g900)}
-.gc-meta{display:flex;align-items:center;gap:5px;
-  font:500 12px/16px var(--sans);color:var(--g600)}
-.gc-meta svg{flex:none}
-.gc-meta .pill{font-style:normal;padding:1px 7px;border-radius:999px;
-  background:var(--g100);font-weight:600;color:var(--g700)}
-.gc-sub{font:400 13px/18px var(--sans);color:var(--g500)}
-.gc-pr{display:flex;align-items:baseline;gap:6px;margin-top:2px}
-.gc-pr b{font:700 16px/22px var(--sans);color:var(--g900)}
-.gc-pr s{font:400 13px/18px var(--sans);color:var(--g400)}
-.gc-pr .off{font-style:normal;font:600 11px/16px var(--sans);padding:1px 6px;
-  border-radius:6px;background:var(--brand50);color:var(--brand-dk)}
-.gcard .arr{grid-row:1;flex:none}
-.gc-why{grid-column:1/-1;display:flex;align-items:center;gap:7px;padding:6px 10px;
-  border-radius:9px;background:#ECFDF3;font:600 13px/18px var(--sans);color:#067647}
-.gc-why svg{flex:none}
+/* Entry C — the only guidance row that asks for money, so it gets the brand
+   tint and a real price, and the free tiles keep the plain white treatment.
+   Four stacked lines beside the cover is the ceiling: the old version also had
+   a rating, a "One-time" pill and a green banner, and the pill wrapped. */
+.gcard{text-align:left;width:100%;background:linear-gradient(180deg,#FFF7F2 0,#FFFFFF 70%);
+  border:1px solid #F3D3C2;border-radius:16px;padding:13px 12px;
+  display:flex;align-items:center;gap:12px}
+.gcard:active{background:var(--brand50)}
+.gcard .bk3{--bw:50px;--bh:68px}
+.gc-t{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.gc-eyebrow{font:700 10px/14px var(--sans);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--brand-dk)}
+.gc-t>b{font:700 15px/20px var(--sans);color:var(--g900)}
+.gc-sub{font:400 12px/17px var(--sans);color:var(--g500)}
+.gc-pr{display:flex;align-items:baseline;gap:6px;margin-top:3px}
+.gc-pr b{font:700 17px/22px var(--sans);color:var(--g900)}
+.gc-pr s{font:400 12px/18px var(--sans);color:var(--g400)}
+.gc-pr .off{font-style:normal;font:700 10px/14px var(--sans);padding:2px 6px;
+  border-radius:5px;background:#ECFDF3;color:#067647;align-self:center}
+.gcard .arr{flex:none}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
@@ -307,17 +357,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The hero photo fades into white, so the card below it has no visible seam. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
   padding:0 12px 16px;border-radius:0 0 24px 24px;overflow:hidden;background:#FCEFE9}
-/* The couple drifts very slowly, so the hero reads as alive rather than as a
-   still. Bled past the edges so the pan never exposes a corner. */
-.r2-hero::after{content:"";position:absolute;inset:-7%;z-index:0;pointer-events:none;
-  background:url(assets/r2-hero.png) center 62%/cover no-repeat;
-  animation:heroDrift 20s ease-in-out infinite alternate}
+/* The couple is an animated loop of the same artwork as r2-hero.png, framed so
+   the two heads land under the book. The GIF carries its own motion, so the
+   old CSS drift is gone — two pans at once just read as drift. */
+.r2-hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:#FCEFE9 url(assets/r2-hero.gif) center 32%/cover no-repeat}
 .r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(177.7deg,rgba(255,255,255,0) 30%,#fff 98%)}
-@keyframes heroDrift{
-  from{transform:scale(1.05) translate3d(0,0,0)}
-  to{transform:scale(1.13) translate3d(-12px,-9px,0)}
-}
 .r2-nav{position:relative;z-index:3;align-self:stretch;display:flex;align-items:center;
   padding:calc(var(--sbh) + 12px) 16px 12px}
 .r2-nav-r{margin-left:auto;display:flex;align-items:center;gap:9px}
@@ -343,7 +389,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   100%{opacity:1;transform:scale(1)}
 }
 @media (prefers-reduced-motion:reduce){
-  .r2-hero::after{animation:none}
   #report.on .r2-bookwrap{animation:none}
   #report.on .r2-book{animation:none;opacity:1}
   #report.on .r2-cover{animation:none;opacity:0}
@@ -359,8 +404,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-div{width:1px;height:20.5px;background:var(--g200)}
 .r2-about{padding:20px 16px 24px;display:flex;flex-direction:column;gap:10px}
 /* The opening line is the pitch, so it carries weight the supporting line does not. */
-.r2-lead{margin:0;font:400 17px/26px var(--sans);color:var(--g800)}
-.r2-desc{margin:0;font:400 15px/22px var(--sans);color:var(--g600)}
+.r2-lead{margin:0;font:400 18px/26px var(--sans);color:var(--g800)}
+.r2-lead b{font-weight:700;color:var(--g900)}
+/* What you get has to land before the provenance line — the reasons to buy
+   come first, the credentials after. */
+.r2-get{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.r2-get li{position:relative;padding-left:26px;font:500 15px/21px var(--sans);color:var(--g700)}
+.r2-get li::before{content:"";position:absolute;left:0;top:3px;width:16px;height:16px;
+  border-radius:50%;background:var(--s50)}
+.r2-get li::after{content:"";position:absolute;left:5px;top:7px;width:6px;height:3px;
+  border:1.6px solid var(--s700);border-top:0;border-right:0;transform:rotate(-45deg)}
+.r2-desc{margin:4px 0 0;font:400 14px/21px var(--sans);color:var(--g500)}
+.r2-desc b{font-weight:600;color:var(--g600)}
 /* A full-width secondary button. As a small pill it read as an afterthought,
    when it is the cheapest way for a doubter to keep going. */
 .r2-sample{display:flex;align-items:center;justify-content:center;gap:8px;

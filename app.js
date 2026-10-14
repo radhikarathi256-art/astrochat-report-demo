@@ -323,11 +323,13 @@ var AMBERS = [
   'Mercury turns back in May 2027 — do not fix a date that month.',
   'Anger between you two needs a rule, not a winner.'
 ];
+/* Upsells stay inside marriage, love and partner — someone who just bought a
+   marriage reading is not shopping for a career report. */
 var ALSO = [
-  { t: 'Kundli Milan report', s: 'Two charts, point by point', p: '₹49' },
-  { t: 'Partner sketch', s: 'See who you will marry', p: '₹49' },
-  { t: 'Career report', s: 'Your next 2 years at work', p: '₹49' },
-  { t: 'Love report', s: 'What your heart needs', p: '₹49' }
+  { t: 'Kundli Milan report', s: 'Your two charts, point by point', p: '₹49' },
+  { t: 'Partner sketch', s: 'See the face you will marry', p: '₹49' },
+  { t: 'Love report', s: 'What your heart needs', p: '₹49' },
+  { t: 'Rishta timing report', s: 'The best months to say yes', p: '₹49' }
 ];
 
 /* Melooha's ring dials, in our light palette. A bare "72" told the reader
