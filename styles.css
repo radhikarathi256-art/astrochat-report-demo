@@ -351,9 +351,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    artwork stops. */
 /* The book is in front now, so the overlap is only as deep as the card's top
    padding — any more and the book's bottom edge would land on the title. The
-   bottom margin hands back whatever the top one takes, so nothing below shifts.
+   negative bottom margin pulls everything after the card up with it; the card
+   itself is held in place by the top one.
    No shadow: it drew a line exactly where the book is meant to be resting. */
-.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto 4px;
+.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
   background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center}
 .r2-card h1{margin:0 auto;max-width:290px;font:700 21px/29px var(--sans);color:var(--g900)}
 .r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
