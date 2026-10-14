@@ -357,35 +357,45 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 16px/24px var(--sans);color:var(--g800);white-space:nowrap}
 .r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
 .r2-div{width:1px;height:20.5px;background:var(--g200)}
-.r2-about{padding:16px 16px 24px;display:flex;flex-direction:column;gap:10px}
-.r2-tags{display:flex;flex-wrap:wrap;gap:6px}
-.r2-tags span{height:22px;padding:0 6px;border-radius:10px;background:var(--g100);
-  display:inline-flex;align-items:center;font:400 12px/18px var(--sans);color:var(--g600)}
-.r2-desc{margin:0;font:400 14px/20px var(--sans);color:var(--g500)}
-.r2-sample{width:auto;align-self:flex-start;height:36px;padding:0 18px;border-radius:999px;font-size:14px}
-.r2-block{padding:0 16px 20px}
-.lbl{margin:0 0 12px;font:600 13px/20px var(--sans);letter-spacing:.03em;color:var(--g500)}
-.qrow{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.qrow i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--w50);
-  display:grid;place-items:center;font:600 12px/18px var(--sans);font-style:normal;color:var(--w700)}
-.qrow span{font:500 14px/20px var(--sans);color:var(--g700)}
-/* The page count rides on the section label so it reads as one line. */
-.lbl .pgs{float:right;font-style:normal;font-weight:500;color:var(--g400)}
+.r2-about{padding:20px 16px 24px;display:flex;flex-direction:column;gap:10px}
+/* The opening line is the pitch, so it carries weight the supporting line does not. */
+.r2-lead{margin:0;font:400 17px/26px var(--sans);color:var(--g800)}
+.r2-desc{margin:0;font:400 15px/22px var(--sans);color:var(--g600)}
+/* A full-width secondary button. As a small pill it read as an afterthought,
+   when it is the cheapest way for a doubter to keep going. */
+.r2-sample{display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;height:48px;margin-top:6px;border-radius:12px;font-size:16px}
 
-/* Contents list. The numeral is the only decoration it needs. */
+/* Still used by the "people also bought" rail inside the report. */
+.lbl{margin:0 0 12px;font:600 13px/20px var(--sans);letter-spacing:.03em;color:var(--g500)}
+
+/* Every block below the fold is a titled section with a full-bleed rule above
+   it. Tiny grey micro-labels made the whole page read as one undivided wash. */
+.r2-block{padding:24px 16px;border-top:1px solid var(--g200)}
+.r2-h{display:flex;align-items:baseline;margin:0 0 4px;
+  font:600 20px/28px var(--sans);color:var(--g900)}
+.r2-h .pgs{margin-left:auto;font-style:normal;font:400 14px/20px var(--sans);color:var(--g500)}
+
+/* Questions as a plain divided list. The "?" bubbles were decoration, not signal. */
+.qrow{padding:12px 0;border-bottom:1px solid var(--g200)}
+.qrow:last-child{border-bottom:0;padding-bottom:0}
+.qrow span{font:400 16px/24px var(--sans);color:var(--g700)}
+
+/* Contents list. The numeral hangs in its own narrow column so the titles stay
+   on the same left edge as every other section. */
 .toc{margin:0;padding:0;list-style:none;counter-reset:toc}
 .toc li{counter-increment:toc;display:flex;flex-direction:column;
-  padding:11px 0 11px 30px;position:relative;border-top:1px solid var(--g200)}
-.toc li:first-child{border-top:0;padding-top:0}
-.toc li::before{content:counter(toc);position:absolute;left:0;top:11px;
-  font:600 13px/20px var(--sans);color:var(--g300)}
-.toc li:first-child::before{top:0}
-.toc b{font:600 15px/22px var(--sans);color:var(--g800)}
-.toc span{display:flex;align-items:baseline;gap:8px;font:400 13px/20px var(--sans);color:var(--g500)}
-.toc em{margin-left:auto;flex:none;font-style:normal;font:500 12px/20px var(--sans);color:var(--g400)}
+  padding:12px 0;border-bottom:1px solid var(--g200)}
+.toc li:last-child{border-bottom:0;padding-bottom:0}
+.toc b{display:flex;align-items:baseline;gap:8px;font:600 16px/24px var(--sans);color:var(--g900)}
+.toc b::before{content:counter(toc);flex:none;width:18px;
+  font:400 14px/24px var(--sans);color:var(--g400)}
+.toc span{display:flex;align-items:baseline;gap:8px;padding-left:26px;
+  font:400 14px/20px var(--sans);color:var(--g500)}
+.toc em{margin-left:auto;flex:none;font-style:normal;font:400 13px/20px var(--sans);color:var(--g400)}
 
 /* Rating summary above the quotes, so the average is stated once and loudly. */
-.rsum{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.rsum{display:flex;align-items:center;gap:12px;margin:12px 0}
 .rsum>b{font:700 34px/38px var(--sans);color:var(--g900)}
 .rsum>span{display:flex;flex-direction:column;gap:1px}
 .rsum .stars{font-style:normal;font:400 15px/20px var(--sans);color:#F79009;letter-spacing:2px}
