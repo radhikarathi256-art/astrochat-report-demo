@@ -326,10 +326,10 @@ var AMBERS = [
 /* Upsells stay inside marriage, love and partner — someone who just bought a
    marriage reading is not shopping for a career report. */
 var ALSO = [
-  { t: 'Kundli Milan report', s: 'Your two charts, point by point', p: '₹49' },
-  { t: 'Partner sketch', s: 'See the face you will marry', p: '₹49' },
-  { t: 'Love report', s: 'What your heart needs', p: '₹49' },
-  { t: 'Rishta timing report', s: 'The best months to say yes', p: '₹49' }
+  { t: 'Kundli Milan report', s: 'Your two charts, point by point', p: '₹49', was: '₹199' },
+  { t: 'Partner sketch', s: 'See the face you will marry', p: '₹49', was: '₹199' },
+  { t: 'Love report', s: 'What your heart needs', p: '₹49', was: '₹199' },
+  { t: 'Rishta timing report', s: 'The best months to say yes', p: '₹49', was: '₹199' }
 ];
 
 /* Melooha's ring dials, in our light palette. A bare "72" told the reader
@@ -465,7 +465,10 @@ function renderRead() {
       '<div class="carousel">' +
         ALSO.map(function (a) {
           return '<button class="pcard" type="button" data-toast="' + a.t + ' is not part of this demo">' +
-                 '<b>' + a.t + '</b><small>' + a.s + '</small><i>' + a.p + '</i></button>';
+                 '<span class="bk3" aria-hidden="true"></span>' +
+                 '<b>' + a.t + '</b><small>' + a.s + '</small>' +
+                 '<span class="pc-pr"><em>' + a.p + '</em><s>' + a.was + '</s></span>' +
+                 '<span class="pc-btn">View report</span></button>';
         }).join('') +
       '</div>' +
     '</div>';

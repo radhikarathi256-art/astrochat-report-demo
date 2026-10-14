@@ -343,26 +343,25 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   #report.on .r2-book{animation:none;opacity:1}
   #report.on .r2-cover{animation:none;opacity:0}
 }
-/* On the white page now, left-aligned: the title is the page's one H1 and the
-   stats support it, instead of both floating in a card over the artwork. */
-.r2-card{padding:20px 16px 0}
-.r2-card h1{margin:0;font:700 24px/32px var(--sans);color:var(--g900)}
-.r2-stats{margin-top:14px;display:flex;align-items:center;gap:14px}
-.r2-stats div{min-width:0}
-.r2-stats b{justify-content:flex-start}
+/* A white card lifted over the bottom of the hero, centred. It gives the title
+   and the three stats one container to sit in and hides the seam where the
+   artwork stops. */
+.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto 0;
+  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center;
+  box-shadow:0 10px 28px -16px rgba(122,46,14,.34)}
+.r2-card h1{margin:0 auto;max-width:290px;font:700 21px/29px var(--sans);color:var(--g900)}
+.r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
+.r2-stats div{width:84px}
 .r2-stats b{display:flex;align-items:center;justify-content:center;gap:2px;
   font:600 16px/24px var(--sans);color:var(--g800);white-space:nowrap}
 .r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
 .r2-div{width:1px;height:20.5px;background:var(--g200)}
 .r2-about{padding:20px 16px 24px;display:flex;flex-direction:column;gap:10px}
-/* The opening line is the pitch, so it carries weight the supporting line does not.
-   It used to be followed by a three-item checklist, which said the same thing as
-   "Find answers to" one screen below — two pointer lists in a row, so neither
-   read as the answer to "what do I get". The questions list won; this is prose now. */
-.r2-lead{margin:0;font:400 16px/24px var(--sans);color:var(--g800)}
-.r2-lead b{font-weight:700;color:var(--g900)}
-.r2-desc{margin:2px 0 0;font:400 13px/20px var(--sans);color:var(--g500)}
-.r2-desc b{font-weight:600;color:var(--g600)}
+/* One small paragraph. It used to be a large headline, a three-item checklist and
+   a provenance line — the checklist repeated "Find answers to" one screen below,
+   and the three blocks took half a screen to say one small thing. */
+.r2-lead{margin:0;font:400 14px/21px var(--sans);color:var(--g600)}
+.r2-lead b{font-weight:600;color:var(--g900)}
 /* A full-width secondary button. As a small pill it read as an afterthought,
    when it is the cheapest way for a doubter to keep going. */
 .r2-sample{display:flex;align-items:center;justify-content:center;gap:8px;
@@ -381,13 +380,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Questions as a plain divided list. The "?" bubbles were decoration, not signal. */
 /* A question mark disc in front of every row — seven unmarked text lines with
    hairlines between them read as a table, not as questions. */
-.qrow{display:flex;align-items:flex-start;gap:12px;padding:12px 0;
+.qrow{display:flex;align-items:flex-start;gap:10px;padding:10px 0;
   border-bottom:1px solid var(--g200)}
 .qrow:last-child{border-bottom:0;padding-bottom:0}
-.qrow::before{content:"?";flex:none;width:24px;height:24px;margin-top:1px;border-radius:50%;
+.qrow::before{content:"?";flex:none;width:21px;height:21px;margin-top:1px;border-radius:50%;
   background:var(--brand50);color:var(--brand-dk);
-  font:700 14px/24px var(--sans);text-align:center}
-.qrow span{font:400 16px/24px var(--sans);color:var(--g700)}
+  font:700 12px/21px var(--sans);text-align:center}
+/* Seven of these in a row, so they are a list to scan, not seven headlines. */
+.qrow span{font:400 14px/21px var(--sans);color:var(--g700)}
 
 /* Contents list. The numeral hangs in its own narrow column so the titles stay
    on the same left edge as every other section. */
@@ -570,11 +570,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
 .carousel::-webkit-scrollbar{display:none}
-.carousel .pcard{flex:none;width:150px;scroll-snap-align:start;background:#fff;border:1px solid var(--g200);
-  border-radius:12px;padding:13px;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
-.carousel .pcard b{font:600 16px/20px var(--sans);color:var(--g900)}
-.carousel .pcard small{flex:1;margin-top:4px;font:400 12px/18px var(--sans);color:var(--g500)}
-.carousel .pcard i{font-style:normal;margin-top:8px;font:600 12px/18px var(--sans);color:var(--w700)}
+/* Each upsell gets the same cover, price pattern and button as the report being
+   sold above it — a title and a bare ₹49 gave the reader nothing to recognise. */
+.carousel .pcard{flex:none;width:158px;scroll-snap-align:start;background:#fff;border:1px solid var(--g200);
+  border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.carousel .pcard .bk3{--bw:38px;--bh:51px;margin-bottom:10px}
+.carousel .pcard b{font:600 14px/19px var(--sans);color:var(--g900)}
+.carousel .pcard small{flex:1;margin-top:3px;font:400 12px/17px var(--sans);color:var(--g500)}
+.pc-pr{display:flex;align-items:baseline;gap:5px;margin-top:8px}
+.pc-pr em{font-style:normal;font:700 15px/20px var(--sans);color:var(--g900)}
+.pc-pr s{font:400 11px/16px var(--sans);color:var(--g400)}
+/* A quiet outlined button, not a second brand-orange CTA — the page already has
+   one of those stuck to the bottom. */
+.pc-btn{align-self:stretch;margin-top:8px;padding:7px 0;border-radius:9px;text-align:center;
+  border:1px solid var(--brand);font:600 13px/18px var(--sans);color:var(--brand)}
+.pcard:active .pc-btn{background:var(--brand50)}
 
 /* ---------- R.5 / R.6 Timeline ---------- */
 .tl-head{padding:18px 16px 0}
