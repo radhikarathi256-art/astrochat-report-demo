@@ -301,15 +301,49 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- R.2 Report page ---------- */
 /* The hero photo fades into white, so the card below it has no visible seam. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
-  padding:0 12px 16px;border-radius:0 0 24px 24px;overflow:hidden;
-  background:#FCEFE9 url(assets/r2-hero.png) center 62%/cover no-repeat}
-.r2-hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  padding:0 12px 16px;border-radius:0 0 24px 24px;overflow:hidden;background:#FCEFE9}
+/* The couple drifts very slowly, so the hero reads as alive rather than as a
+   still. Bled past the edges so the pan never exposes a corner. */
+.r2-hero::after{content:"";position:absolute;inset:-7%;z-index:0;pointer-events:none;
+  background:url(assets/r2-hero.png) center 62%/cover no-repeat;
+  animation:heroDrift 20s ease-in-out infinite alternate}
+.r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(177.7deg,rgba(255,255,255,0) 30%,#fff 98%)}
+@keyframes heroDrift{
+  from{transform:scale(1.05) translate3d(0,0,0)}
+  to{transform:scale(1.13) translate3d(-12px,-9px,0)}
+}
 .r2-nav{position:relative;z-index:3;align-self:stretch;display:flex;align-items:center;
   padding:calc(var(--sbh) + 12px) 16px 12px}
 .r2-nav-r{margin-left:auto;display:flex;align-items:center;gap:9px}
-.r2-book{position:relative;z-index:2;width:242px;height:161px;object-fit:contain;
-  margin:40px 0 -36px}
+.r2-bookwrap{position:relative;z-index:2;width:242px;height:161px;margin:40px 0 -36px;
+  perspective:900px}
+.r2-book{display:block;width:242px;height:161px;object-fit:contain;opacity:0}
+/* The spine sits at the wrapper's centre line; the cover hinges off it. */
+.r2-cover{position:absolute;left:121px;top:3px;width:118px;height:155px;object-fit:cover;
+  transform-origin:left center;backface-visibility:hidden;
+  box-shadow:-2px 6px 16px rgba(0,0,0,.3)}
+/* The spine stays put while the cover swings, so the frame slides left by half a
+   page — otherwise the closed book would sit off-centre. */
+#report.on .r2-bookwrap{animation:bookShift .9s cubic-bezier(.45,.05,.3,1) .22s both}
+@keyframes bookShift{0%{transform:translateX(-59px)}100%{transform:translateX(0)}}
+#report.on .r2-book{animation:bookPages .9s ease .22s both}
+#report.on .r2-cover{animation:bookOpen .9s cubic-bezier(.45,.05,.3,1) .22s both}
+@keyframes bookOpen{
+  0%{transform:rotateY(0deg)}
+  100%{transform:rotateY(-172deg)}
+}
+@keyframes bookPages{
+  0%,42%{opacity:0;transform:scale(.97)}
+  70%{opacity:1}
+  100%{opacity:1;transform:scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .r2-hero::after{animation:none}
+  #report.on .r2-bookwrap{animation:none}
+  #report.on .r2-book{animation:none;opacity:1}
+  #report.on .r2-cover{animation:none;opacity:0}
+}
 .r2-card{position:relative;z-index:1;width:100%;max-width:335px;background:#fff;
   border-radius:20px;padding:28px 16px 14px;text-align:center}
 .r2-card h1{margin:0 auto;max-width:290px;font:600 20px/30px var(--sans);color:var(--g800)}
