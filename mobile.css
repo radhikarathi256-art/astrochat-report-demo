@@ -1,0 +1,58 @@
+/* ===========================================================================
+   Mobile web-app layer. Same shape as the daily-reward prototype: on a phone
+   the frame disappears and the demo chrome moves into a hamburger drawer.
+   =========================================================================== */
+
+@media (max-width:600px){
+  /* The strip iOS leaves us under a black-translucent status bar shows whatever
+     the page paints there, and Safari samples the body background for its own
+     chrome. Both start peach and are flipped to white by mobile.js on scroll. */
+  html,body{background:#FBE4D7;overscroll-behavior:none}
+  .switcher{display:none!important}
+  .sbar{display:none!important}
+  .stage{height:100dvh;padding:0;display:block}
+  .phone{
+    width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none;
+    /* .phone is the whole viewport here, so plain white would cover html/body —
+       including the safe-area strip. Paint white only below the inset. */
+    background:transparent;
+    background-image:linear-gradient(to bottom,transparent var(--sbh),#fff var(--sbh));
+    /* The real notch inset replaces the fake status bar's height. */
+    --sbh:env(safe-area-inset-top,0px);
+  }
+}
+
+/* Desktop keeps the phone frame and the docked switcher; the hamburger still
+   opens the drawer so the menu can be checked without resizing. */
+@media (max-width:900px) and (min-width:601px){
+  .switcher{position:static;width:auto;margin:0 auto 16px;max-width:360px}
+}
+
+/* ---------- Drawer ---------- */
+.dscrim{position:absolute;inset:0;background:rgba(16,24,40,.45);z-index:70;opacity:0;transition:opacity .2s}
+.dscrim.on{opacity:1}
+.drawer{position:absolute;top:0;bottom:0;left:0;width:min(312px,86%);z-index:71;background:#fff;
+  transform:translateX(-102%);transition:transform .24s ease;display:flex;flex-direction:column;
+  box-shadow:8px 0 24px -12px rgba(16,24,40,.3)}
+.drawer.on{transform:none}
+.dr-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(16px + var(--sbh)) 16px 14px;border-bottom:1px solid var(--g200);background:#FFF6EE}
+.dr-head b{display:block;font:600 16px/24px var(--sans);color:var(--g900)}
+.dr-head span{font:400 12px/18px var(--sans);color:var(--g500)}
+.dr-x{border:0;background:none;font-size:18px;color:var(--g600);width:36px;height:36px;border-radius:10px}
+.dr-body{flex:1;overflow-y:auto;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.dr-lbl{margin:16px 0 8px;font:600 12px/18px var(--sans);letter-spacing:.04em;
+  text-transform:uppercase;color:var(--g400)}
+.dr-flows{display:flex;flex-direction:column;gap:6px}
+.dr-flows button{text-align:left;border:1px solid var(--g200);background:#fff;border-radius:12px;
+  padding:10px 12px;display:flex;gap:10px;align-items:flex-start;font-family:inherit;width:100%}
+.dr-flows button .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--g100);
+  color:var(--g600);font:600 12px/22px var(--sans);text-align:center;margin-top:1px}
+.dr-flows button b{display:block;font:600 14px/20px var(--sans);color:var(--g700)}
+.dr-flows button small{display:block;font:400 12px/18px var(--sans);color:var(--g500);margin-top:2px}
+.dr-flows button.on{border-color:var(--brand);background:var(--brand50)}
+.dr-flows button.on .n{background:var(--brand);color:#fff}
+.dr-ctl{display:flex;flex-direction:column;gap:8px}
+.dr-ctl>button{height:44px;border-radius:12px;border:1px solid var(--brand);background:#fff;
+  font:600 14px/20px var(--sans);color:var(--brand)}
+@media (prefers-reduced-motion:reduce){.drawer,.dscrim{transition:none}}

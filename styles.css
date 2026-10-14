@@ -84,19 +84,19 @@ img{display:block}
 .head.compact{border-bottom:1px solid var(--g200)}
 .head.hero-head{background:transparent;border:0;position:absolute;top:0;left:0;right:0;transition:background .2s,box-shadow .2s}
 .head.hero-head.scrolled{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--g200)}
-.head-name{flex:1;line-height:1}
-.head-name small{display:block;font-size:11px;line-height:14px;color:var(--g600)}
-.head-name b{font-family:var(--serif);font-size:26px;line-height:30px;font-weight:700;color:var(--g900)}
-.head-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+/* The greeting only appears once the hero's own "Namaste Mansi" has scrolled away. */
+.head-name{flex:1;line-height:1;opacity:0;transition:opacity .2s}
+.head.scrolled .head-name{opacity:1}
+.head-name small{display:block;font:500 10px/14px var(--sans);color:var(--g600)}
+.head-name b{font-family:var(--serif);font-size:22px;line-height:26px;font-weight:700;color:var(--g800)}
+.head-r{margin-left:auto;display:flex;align-items:center;gap:12px}
 .ic-btn{border:0;background:none;padding:4px;display:flex;align-items:center;border-radius:10px}
 .ic-btn:active{background:rgba(16,24,40,.06)}
-.wallet{display:flex;align-items:center;gap:6px;height:36px;padding:0 6px 0 10px;border-radius:999px;
-  border:1px solid var(--g200);background:#fff;font:600 14px/20px var(--sans);color:var(--g700)}
-.wallet.sm{height:32px;font-size:13px}
-.gift{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFD9A8,#F4873C);
-  display:block;position:relative}
-.gift::after{content:"";position:absolute;inset:7px 11px;background:#fff;opacity:.85}
-.gift::before{content:"";position:absolute;left:7px;right:7px;top:11px;height:3px;background:#fff;opacity:.85}
+.wallet{display:flex;align-items:center;gap:6px;height:32px;padding:0 3px 0 9px;border-radius:16px;
+  border:1px solid var(--g300);background:#fff;font:700 12px/16px var(--sans);color:var(--g800);
+  font-variant-numeric:tabular-nums}
+.gift{width:26px;height:26px;border-radius:50%;background:var(--s50);border:1px solid #ABEFC6;
+  display:grid;place-items:center;font-size:14px;font-style:normal}
 
 /* ---------- Report top nav ---------- */
 .topnav{position:relative;z-index:12;flex:none;display:flex;align-items:center;gap:12px;
@@ -128,9 +128,9 @@ img{display:block}
 
 /* ---------- Shared bits ---------- */
 .sec-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 10px}
-.sec-head span{font:600 12px/18px var(--sans);letter-spacing:.04em;color:var(--g500)}
+.sec-head span{font:500 14px/20px var(--sans);text-transform:uppercase;color:var(--g600)}
 .sec-head em{font-style:normal;font:500 12px/18px var(--sans);color:var(--s700)}
-.sec-head .lnk{font:600 13px/18px var(--sans);color:var(--brand);cursor:pointer}
+.sec-head .lnk{font:400 12px/18px var(--sans);color:var(--g500);cursor:pointer;text-decoration:none}
 .eyebrow{margin:0;font:600 12px/18px var(--sans);color:var(--w700)}
 .card{background:#fff;border:1px solid var(--g200);border-radius:14px}
 .lnk-btn{border:0;background:none;padding:0;font:600 14px/20px var(--sans);color:var(--brand)}
@@ -189,31 +189,40 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- R.1b hero + expert card ---------- */
 .hero{position:relative;padding:calc(var(--sbh) + 58px) 16px 10px;text-align:center;
   background:#FCE9DE url('assets/hero.png') top center/100% auto no-repeat}
-.hero h1{margin:0;font-family:var(--serif);font-size:32px;line-height:38px;font-weight:700;color:var(--g900)}
-.hero-date{margin:4px 0 14px;font:600 14px/20px var(--sans);color:var(--w700)}
+.hero h1{margin:0;font-family:var(--serif);font-size:26px;line-height:31px;font-weight:700;color:var(--g800)}
+.hero-date{margin:6px 0 14px;font:600 14px/20px var(--sans);color:var(--w700);opacity:.9}
 .ins-list{text-align:left}
-.ins{display:flex;gap:10px;align-items:center;min-height:56px;padding:8px 2px;
+.ins{display:flex;gap:8px;align-items:center;min-height:56px;padding:8px 10px;border-radius:10px;
   border-bottom:.8px solid #FDECD3}
 .ins svg{width:24px;height:24px;flex:none}
 .ins p{margin:0;font:400 14px/20px var(--sans);color:var(--g700)}
 .ai-foot{text-align:right;padding:8px 2px 0}
 .ai-foot .ai{font:300 italic 10px/14px var(--sans);color:#FDB022}
 
-.expert-card{margin:0 12px;border-radius:16px;overflow:hidden;background:var(--purple)}
-.expert-top{display:flex;align-items:center;justify-content:center;gap:6px;height:36px;
-  font:600 12px/18px var(--sans);color:#fff;letter-spacing:.02em}
-.expert-top b{font-weight:700}
-.expert-body{background:#fff;border-radius:14px;margin:0 6px 6px;padding:14px}
-.expert-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.av-ring{position:relative;flex:none;width:56px;height:56px;border-radius:50%;padding:2px;
-  background:linear-gradient(135deg,#3BA55D,#8BD6A3);display:block}
-.av-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 20%;border:2px solid #fff}
-.av-ring .dot{position:absolute;right:2px;top:4px;width:11px;height:11px;border-radius:50%;
-  background:#12B76A;border:2px solid #fff}
-.av-ring.sm{width:44px;height:44px}
-.expert-meta b{display:block;font:700 18px/26px var(--sans);color:var(--g900)}
-.expert-meta p{margin:0;font:700 16px/24px var(--sans);color:var(--brand)}
-.expert-meta s{color:var(--g400);font-weight:600;font-size:14px}
+/* Matches the Today page in the daily-reward prototype: a purple gradient shell
+   with the white card inset, and Continue Chat stacked beside the avatar. */
+.expert-card{margin:0 12px;border-radius:16px;padding:0 4px 4px;
+  background:linear-gradient(180deg,#7D58A1,#4A3460)}
+.expert-top{display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:6px 10px 8px;font:700 12px/18px var(--sans);color:#fff;letter-spacing:.01em;
+  text-transform:uppercase}
+.expert-top b{font-weight:700;text-transform:none;font-variant-numeric:tabular-nums}
+.expert-body{background:#fff;border-radius:12px;padding:8px 12px;
+  box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
+.expert-row{display:flex;align-items:center;gap:10px}
+.expert-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.av-ring{position:relative;flex:none;width:68px;height:68px;border-radius:50%;
+  border:2.4px solid var(--s700);display:block}
+.av-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center}
+.av-ring .dot{position:absolute;right:-1px;top:1px;width:15px;height:15px;border-radius:50%;
+  background:var(--s700);border:2px solid #fff}
+.av-ring.sm{width:44px;height:44px;border-width:2px}
+.expert-meta b{display:block;font:600 16px/22px var(--sans);color:var(--g800)}
+.expert-meta p{margin:0;display:flex;gap:6px;align-items:baseline;
+  font:600 14px/20px var(--sans);color:var(--s700)}
+.expert-meta s{color:var(--g400);font-weight:500;font-size:12px}
+.expert-meta strong{font-weight:600;color:var(--s700)}
+.expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
 .expert-report{display:flex;align-items:center;gap:10px}
 .expert-report img{width:30px;height:38px;border-radius:3px;object-fit:cover;flex:none;
   box-shadow:0 1px 3px rgba(16,24,40,.18)}
@@ -221,19 +230,22 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .er-t b{display:block;font:600 14px/20px var(--sans);color:var(--g900)}
 .er-t small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
 
-/* ---------- R.1c guidance tiles ---------- */
-.guide{margin:0 12px;background:var(--w50);border:1px solid var(--w100);border-radius:16px;padding:12px}
-.guide-lead{margin:0 0 10px;text-align:center;font:500 13px/18px var(--sans);color:var(--w900)}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{text-align:left;background:#fff;border:1px solid var(--g200);border-radius:12px;padding:12px;
-  display:flex;flex-direction:column;gap:4px}
+/* ---------- Personalised guidance ----------
+   Full-width rows, same as the daily-reward Today page (.g2wrap / .g2). */
+.guide{margin:0 12px;background:#FFF8F0;border-radius:16px;
+  padding:10px 10px 12px;display:flex;flex-direction:column;gap:10px}
+.guide-lead{margin:0;text-align:center;font:400 13px/18px var(--sans);color:var(--g600)}
+.tiles{display:flex;flex-direction:column;gap:10px}
+.tile{text-align:left;width:100%;background:#fff;border:1px solid var(--g200);border-radius:14px;
+  padding:12px;display:flex;align-items:center;gap:12px}
 .tile:active{background:var(--g50)}
-.tile img{width:46px;height:52px;object-fit:contain;margin-bottom:6px}
-.tile .ti{width:46px;height:52px;margin-bottom:6px}
-.tile b{font:600 15px/20px var(--sans);color:var(--g900)}
-.tile small{font:400 13px/18px var(--sans);color:var(--g500);flex:1}
-.tile-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
-.tag{font-style:normal;font:600 12px/18px var(--sans);padding:2px 9px;border-radius:999px}
+.tile img,.tile .ti{flex:none;width:48px;height:48px;object-fit:contain;margin:0}
+.tile .tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tile b{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  font:600 15px/22px var(--sans);color:var(--g900)}
+.tile small{font:400 13px/18px var(--sans);color:var(--g500)}
+.tile .arr{flex:none}
+.tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
 
