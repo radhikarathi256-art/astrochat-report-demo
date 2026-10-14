@@ -191,14 +191,24 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .bubble p{margin:0;font:400 14px/22px var(--sans);color:var(--g700)}
 
 /* The report attachment — reads like a file shared in chat, not an ad. */
-.attach{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
-  background:#fff;border:1px solid var(--g200);border-radius:12px;padding:10px 12px;margin-bottom:12px}
-.attach:active{background:var(--g50)}
-.attach img{width:36px;height:46px;border-radius:4px;object-fit:cover;flex:none;
-  box-shadow:0 1px 3px rgba(16,24,40,.18)}
-.attach-t{flex:1;min-width:0}
-.attach-t b{display:block;font:600 15px/22px var(--sans);color:var(--g900)}
-.attach-t small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
+/* The book stands proud of the card's top edge, so the card carries a top margin
+   of its own to make room for the overhang (Figma 3356:16428). */
+.attach{position:relative;display:block;width:100%;text-align:left;margin:24px 0 0;
+  background:#fff;border-radius:20px;padding:8px 8px 8px 138px;
+  box-shadow:0 0 0 1px rgba(16,24,40,.05),0 6px 18px -6px rgba(16,24,40,.16)}
+.attach img{position:absolute;left:6px;top:-23px;width:106px;height:143px;object-fit:cover;
+  box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.attach-t{display:flex;flex-direction:column;gap:4px}
+.attach-t b{font:600 16px/24px var(--sans);color:#000}
+.attach-t small{display:flex;align-items:center;gap:8px;
+  font:500 14px/20px var(--sans);color:var(--g600)}
+.attach-t small i{width:1px;height:6px;background:var(--g300);font-style:normal}
+.attach-t small svg{flex:none}
+.attach .cta{display:flex;align-items:center;justify-content:center;width:146px;margin-top:10px;
+  padding:8px 16px;background:#fff;border:1px solid var(--brand);border-radius:12px;
+  font:600 16px/24px var(--sans);color:var(--brand);
+  box-shadow:0 1px 3px rgba(16,24,40,.1),0 1px 2px rgba(16,24,40,.06)}
+.attach .cta:active{background:var(--brand50)}
 
 /* ---------- R.1b hero + expert card ---------- */
 .hero{position:relative;padding:calc(var(--sbh) + 58px) 16px 10px;text-align:center;
@@ -278,12 +288,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-card{position:relative;z-index:1;width:100%;max-width:335px;background:#fff;
   border-radius:20px;padding:28px 16px 14px;text-align:center}
 .r2-card h1{margin:0 auto;max-width:290px;font:600 20px/30px var(--sans);color:var(--g800)}
-.r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
-.r2-stats div{width:80px}
-.r2-stats b{display:flex;align-items:center;justify-content:center;gap:2px;
-  font:600 16px/24px var(--sans);color:var(--g800)}
-.r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
-.r2-div{width:1px;height:20.5px;background:var(--g200)}
+/* One line instead of three labelled columns — the labels said nothing the
+   values did not already say. */
+.r2-stats{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;
+  font:500 14px/20px var(--sans);color:var(--g600)}
+.r2-stats .pill{padding:2px 10px;border-radius:999px;background:var(--g100);
+  font:600 13px/18px var(--sans);color:var(--g700)}
+.r2-stats .st{display:inline-flex;align-items:center;gap:4px}
+.r2-stats b{font-weight:600;color:var(--g800)}
+.r2-stats .dot{color:var(--g300)}
+.r2-div{width:1px;height:16px;background:var(--g200)}
 .r2-about{padding:30px 16px 24px;display:flex;flex-direction:column;gap:10px}
 .r2-tags{display:flex;flex-wrap:wrap;gap:6px}
 .r2-tags span{height:22px;padding:0 6px;border-radius:10px;background:var(--g100);
@@ -301,9 +315,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .review p{margin:0;font:400 14px/18px var(--sans);color:var(--g600)}
 
 /* ---------- Sticky buy bar ---------- */
-.buybar{flex:none;position:relative;z-index:12;display:flex;align-items:center;gap:16px;
-  padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;
+.buybar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:10px;
+  padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;
   border-top:1px solid var(--g200);box-shadow:0 -4px 16px -8px rgba(16,24,40,.18)}
+.buy-why{margin:0;display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;
+  background:#ECFDF3;font:600 14px/20px var(--sans);color:#067647}
+.buy-why svg{flex:none}
+.buy-row{display:flex;align-items:center;gap:16px}
 .price b{display:block;font:700 22px/30px var(--sans);color:var(--g900)}
 .price small{display:block;font:400 12px/18px var(--sans);color:var(--g600)}
 

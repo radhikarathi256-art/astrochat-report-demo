@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Report attachment — 20 variations, in context</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#E7E9ED;font-family:-apple-system,'Inter',sans-serif;color:#101828;padding:24px}
+h1{font:600 18px/24px inherit;margin:0 0 4px}
+.sub{font:400 13px/18px inherit;color:#667085;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(3,375px);gap:20px}
+.cell{background:#fff;border-radius:14px;padding:12px;box-shadow:0 1px 3px rgba(16,24,40,.12)}
+.cell h2{font:600 12px/16px inherit;color:#344054;margin:0 0 2px;letter-spacing:.03em}
+.cell p{font:400 11px/15px inherit;color:#98A2B3;margin:0 0 10px;height:30px}
+.vp{width:351px;height:360px;overflow:hidden;border-radius:10px;border:1px solid #EAECF0;background:#fff}
+.vp iframe{width:375px;height:812px;border:0;display:block;transform:scale(.936);transform-origin:0 0}
+</style>
+</head>
+<body>
+<h1>Report attachment — 20 variations</h1>
+<p class="sub">Each one rendered inside the live Today screen (entry A), scrolled to Hemali's reply.</p>
+<div class="grid" id="grid"></div>
+
+<script>
+/* The variation CSS is injected into each iframe, so every card is measured and
+   painted by the real stylesheet, inside the real .merged card. */
+var CSS = `
+.attach{all:unset;display:block}
+.vx{font-family:var(--sans)}
+.vx .cov{object-fit:cover;display:block}
+.vx .rule{width:1px;height:6px;background:var(--g300);display:inline-block}
+.vx .ocf{background:#fff;border:1px solid var(--brand);color:var(--brand);border-radius:12px;
+  font:600 16px/24px var(--sans);padding:8px 16px;box-shadow:0 1px 3px rgba(16,24,40,.1),0 1px 2px rgba(16,24,40,.06)}
+.vx .ocs{background:#fff;border:1px solid var(--brand);color:var(--brand);border-radius:10px;
+  font:600 14px/20px var(--sans);padding:6px 14px}
+.vx .fill{background:var(--brand);border:0;color:#fff;border-radius:12px;font:600 15px/22px var(--sans);padding:10px 16px}
+
+.v1{position:relative;margin-top:24px;background:#fff;border-radius:20px;padding:8px 8px 8px 138px;
+  box-shadow:0 0 0 1px rgba(16,24,40,.05),0 6px 18px -6px rgba(16,24,40,.16)}
+.v1 img{position:absolute;left:6px;top:-23px;width:106px;height:143px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.v1 b{display:block;font:600 16px/24px var(--sans);color:#000}
+.v1 .m{display:flex;align-items:center;gap:8px;font:500 14px/20px var(--sans);color:var(--g600);margin-top:4px}
+.v1 .ocf{margin-top:10px;width:146px;display:flex;justify-content:center}
+
+.v2{position:relative;margin-top:20px;background:#fff;border-radius:20px;padding:10px 10px 10px 116px;
+  box-shadow:0 0 0 1px rgba(16,24,40,.05),0 6px 18px -6px rgba(16,24,40,.16)}
+.v2 img{position:absolute;left:8px;top:-20px;width:92px;height:124px;border-radius:2px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.v2 b{display:block;font:600 16px/22px var(--sans);color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2 .m{display:flex;align-items:center;gap:8px;font:500 13px/18px var(--sans);color:var(--g600);margin:3px 0 10px}
+.v2 .ocs{width:100%;display:block}
+
+.v3{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:14px;padding:10px 12px;width:100%}
+.v3 img{width:40px;height:54px;border-radius:4px;box-shadow:0 1px 4px rgba(16,24,40,.2)}
+.v3 .t{flex:1;min-width:0;text-align:left}
+.v3 b{display:block;font:600 15px/22px var(--sans);color:var(--g900)}
+.v3 small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
+
+.v4{background:var(--g50);border:1px solid var(--g200);border-radius:12px;padding:8px;display:flex;align-items:center;gap:10px}
+.v4 img{width:38px;height:50px;border-radius:3px}
+.v4 .t{flex:1;min-width:0}
+.v4 b{display:block;font:600 14px/20px var(--sans);color:var(--g900)}
+.v4 small{display:block;font:400 12px/16px var(--sans);color:var(--g500)}
+.v4 .go{width:28px;height:28px;border-radius:50%;background:var(--brand);display:grid;place-items:center;border:0;flex:none}
+
+.v5{background:#fff;border:1px solid var(--g200);border-radius:16px;padding:12px}
+.v5 .r{display:flex;gap:12px;align-items:center}
+.v5 img{width:56px;height:76px;border-radius:5px;box-shadow:0 2px 6px rgba(16,24,40,.18)}
+.v5 b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
+.v5 .m{display:flex;align-items:center;gap:8px;font:500 13px/18px var(--sans);color:var(--g600);margin-top:4px}
+.v5 .fill{width:100%;margin-top:12px}
+
+.v6{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FFF1E8,#FFE7DC);
+  border:1px solid #FBD8C5;border-radius:16px;padding:10px 12px}
+.v6 img{width:48px;height:64px;border-radius:4px;box-shadow:0 2px 8px rgba(188,54,6,.25)}
+.v6 .t{flex:1;min-width:0}
+.v6 b{display:block;font:600 15px/20px var(--sans);color:#7A2E0E}
+.v6 small{display:block;font:500 12px/16px var(--sans);color:#A1522C;margin-top:2px}
+.v6 .p{background:#fff;border:0;border-radius:999px;padding:8px 16px;font:600 14px/18px var(--sans);color:var(--brand-ink);flex:none;box-shadow:0 1px 3px rgba(122,46,14,.2)}
+
+.v7{background:#fff;border:1px solid var(--g200);border-radius:16px;overflow:hidden}
+.v7 .b{height:92px;background:url('assets/book-cover.png') center/cover;position:relative}
+.v7 .b::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,0) 40%,#fff 100%)}
+.v7 .t{padding:12px}
+.v7 b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
+.v7 .m{display:flex;align-items:center;gap:8px;font:500 13px/18px var(--sans);color:var(--g600);margin:4px 0 10px}
+.v7 .ocs{display:block;width:100%}
+
+.v8{position:relative;background:#fff;border-radius:16px;padding:14px 112px 14px 14px;margin-top:14px;
+  box-shadow:0 2px 10px rgba(16,24,40,.1)}
+.v8 img{position:absolute;right:10px;top:-14px;width:88px;height:118px;box-shadow:0 4px 14px rgba(0,0,0,.22)}
+.v8 b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
+.v8 .m{display:flex;align-items:center;gap:8px;font:500 13px/18px var(--sans);color:var(--g600);margin:4px 0 10px}
+
+.v9{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#2B1B3D,#4A3460);border-radius:16px;padding:12px}
+.v9 img{width:52px;height:70px;border-radius:4px;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.v9 .t{flex:1;min-width:0}
+.v9 b{display:block;font:700 15px/20px var(--serif);color:#FBE9C8}
+.v9 small{display:block;font:500 12px/16px var(--sans);color:#C9B8DD;margin-top:3px}
+.v9 .g{background:linear-gradient(180deg,#FEF0C7,#FEC84B);border:0;border-radius:999px;padding:8px 16px;font:700 14px/18px var(--sans);color:#6B3B00;flex:none}
+
+.v10{display:flex;align-items:center;gap:10px;background:none;border:0;padding:4px 0;width:100%}
+.v10 img{width:30px;height:40px;border-radius:3px;box-shadow:0 1px 3px rgba(16,24,40,.25)}
+.v10 .t{text-align:left}
+.v10 b{font:600 15px/22px var(--sans);color:var(--brand-ink);text-decoration:underline;text-underline-offset:3px}
+.v10 small{display:block;font:400 12px/16px var(--sans);color:var(--g500)}
+
+.v11{position:relative;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:16px;padding:12px;overflow:hidden}
+.v11 img{width:52px;height:70px;border-radius:4px;box-shadow:0 2px 6px rgba(16,24,40,.2)}
+.v11 .rb{position:absolute;right:-30px;top:10px;transform:rotate(38deg);background:var(--brand);color:#fff;font:700 11px/16px var(--sans);padding:3px 34px;letter-spacing:.04em}
+.v11 .t{flex:1;min-width:0;padding-right:28px}
+.v11 b{display:block;font:600 15px/20px var(--sans);color:var(--g900)}
+.v11 .m{display:flex;align-items:center;gap:8px;font:500 12px/16px var(--sans);color:var(--g600);margin:3px 0 8px}
+
+.v12{position:relative;height:150px;border-radius:16px;overflow:hidden;background:url('assets/book-cover.png') center 28%/cover}
+.v12::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,24,40,0) 30%,rgba(16,24,40,.78) 100%)}
+.v12 .t{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;display:flex;align-items:flex-end;gap:10px}
+.v12 b{display:block;font:700 16px/22px var(--sans);color:#fff}
+.v12 .t > span{flex:1}
+.v12 small{display:block;font:500 12px/16px var(--sans);color:rgba(255,255,255,.75);margin-top:2px}
+.v12 .p{background:#fff;border:0;border-radius:10px;padding:8px 14px;font:600 14px/18px var(--sans);color:var(--brand-ink);flex:none}
+
+.v13{display:flex;align-items:stretch;background:#fff;border:1px solid var(--g200);border-radius:16px;overflow:hidden}
+.v13 .l{padding:12px;display:flex;gap:10px;align-items:center;flex:1;min-width:0}
+.v13 img{width:44px;height:58px;border-radius:4px;box-shadow:0 1px 4px rgba(16,24,40,.2)}
+.v13 b{display:block;font:600 15px/20px var(--sans);color:var(--g900)}
+.v13 small{display:block;font:400 12px/16px var(--sans);color:var(--g500);margin-top:2px}
+.v13 .r{border:0;border-left:1px solid var(--g200);background:var(--brand50);display:grid;place-items:center;padding:0 16px;font:600 14px/20px var(--sans);color:var(--brand-ink)}
+
+.v14{background:#fff;border:1px solid var(--g200);border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center}
+.v14 img{width:54px;height:72px;border-radius:5px;box-shadow:0 2px 6px rgba(16,24,40,.18)}
+.v14 .t{flex:1;min-width:0}
+.v14 b{display:block;font:600 15px/20px var(--sans);color:var(--g900)}
+.v14 .chips{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.v14 .chip{font:600 11px/16px var(--sans);padding:2px 8px;border-radius:999px;background:var(--g100);color:var(--g600);font-style:normal}
+.v14 .chip.g{background:var(--s50);color:var(--s700)}
+.v14 .ocs{margin-top:8px;display:inline-block}
+
+.v15{display:flex;gap:8px;align-items:flex-end}
+.v15 .av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none}
+.v15 .bub{position:relative;background:#fff;border:1px solid var(--g200);border-radius:14px 14px 14px 4px;padding:10px}
+.v15 .lead{font:400 13px/18px var(--sans);color:var(--g700);margin:0 0 8px}
+.v15 .att2{display:flex;gap:10px;align-items:center;background:var(--g50);border-radius:10px;padding:8px}
+.v15 .att2 img{width:36px;height:48px;border-radius:3px}
+.v15 b{display:block;font:600 14px/20px var(--sans);color:var(--g900)}
+.v15 small{display:block;font:400 12px/16px var(--sans);color:var(--g500)}
+
+.v16{display:flex;gap:12px;align-items:center;background:#fff;border-radius:16px;padding:12px;box-shadow:0 4px 16px -4px rgba(16,24,40,.18)}
+.v16 img{width:56px;height:76px;border-radius:5px;box-shadow:0 2px 6px rgba(16,24,40,.2)}
+.v16 .t{flex:1;min-width:0}
+.v16 b{display:block;font:600 15px/20px var(--sans);color:var(--g900)}
+.v16 .pr{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+.v16 .pr s{font:500 13px/18px var(--sans);color:var(--g400)}
+.v16 .pr strong{font:700 16px/22px var(--sans);color:var(--s700)}
+.v16 .fill{flex:none;border-radius:10px;padding:8px 14px;font-size:14px}
+
+.v17{display:flex;align-items:center;gap:10px;background:#fff;border:1px dashed #F3C9B4;border-radius:999px;padding:6px 6px 6px 8px}
+.v17 .av{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none}
+.v17 .t{flex:1;min-width:0;font:500 13px/18px var(--sans);color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v17 .t b{font-weight:700;color:var(--g900)}
+.v17 .p{background:var(--brand);border:0;border-radius:999px;padding:6px 14px;font:600 13px/18px var(--sans);color:#fff;flex:none}
+
+.v18{background:#fff;border:1px solid var(--g200);border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center}
+.v18 .fr{width:64px;height:86px;border-radius:6px;padding:4px;background:linear-gradient(145deg,#FEF0C7,#FEC84B);flex:none}
+.v18 .fr img{width:100%;height:100%;border-radius:3px}
+.v18 .t{flex:1;min-width:0}
+.v18 .eb{font:700 10px/14px var(--sans);letter-spacing:.07em;color:var(--w700);text-transform:uppercase}
+.v18 b{display:block;font:600 16px/22px var(--sans);color:var(--g900);margin-top:2px}
+.v18 .m{display:flex;align-items:center;gap:8px;font:500 12px/16px var(--sans);color:var(--g600);margin:3px 0 9px}
+
+.v19{display:flex;align-items:center;background:#fff;border:1px solid var(--g200);border-radius:999px;padding:5px;gap:10px}
+.v19 > img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 30%;flex:none}
+.v19 .t{flex:1;min-width:0}
+.v19 b{display:block;font:600 14px/18px var(--sans);color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v19 small{display:block;font:400 12px/16px var(--sans);color:var(--g500)}
+.v19 .p{background:var(--brand50);border:1px solid #F8C6AD;border-radius:999px;padding:7px 16px;font:600 13px/18px var(--sans);color:var(--brand-ink);flex:none}
+
+.v20{background:#fff;border:1px solid var(--g200);border-radius:16px;padding:14px}
+.v20 .eb{display:block;font:700 10px/14px var(--sans);letter-spacing:.07em;color:var(--w700);text-transform:uppercase}
+.v20 .r{display:flex;gap:12px;align-items:flex-start;margin-top:10px}
+.v20 img{width:60px;height:80px;border-radius:5px;box-shadow:0 2px 8px rgba(16,24,40,.2)}
+.v20 b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
+.v20 .d{display:block;margin-top:4px;font:400 13px/18px var(--sans);color:var(--g500)}
+.v20 .m{display:flex;align-items:center;gap:8px;font:500 12px/16px var(--sans);color:var(--g600);margin-top:6px}
+.v20 .fill{width:100%;margin-top:12px;border-radius:10px}
+`;
+
+var STAR = '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 .8l1.57 3.3 3.55.5-2.56 2.55.6 3.6L6 9.05 2.84 10.75l.6-3.6L.88 4.6l3.55-.5L6 .8Z" fill="#FEC84B"/></svg>';
+var ARR  = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="#101828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var BK = 'assets/book-cover.png', AV = 'assets/hemali.png';
+var RATE = '4.7 ' + STAR + '<i class="rule"></i> 1.2K orders';
+
+var V = [
+['Figma 3356','Overhanging book, 2-line title, rating, outline CTA.',
+ '<div class="vx v1"><img class="cov" src="'+BK+'"><b>Mansi\'s Marriage Yog detailed report</b><span class="m">'+RATE+'</span><button class="ocf">Start Reading</button></div>'],
+['Same frame, one line','Shorter title so it never wraps; CTA spans the column.',
+ '<div class="vx v2"><img class="cov" src="'+BK+'"><b>Marriage Yog report</b><span class="m">'+RATE+'</span><button class="ocs">Start Reading</button></div>'],
+['Compact file row','Smallest footprint. The whole row is the tap target.',
+ '<button class="vx v3"><img class="cov" src="'+BK+'"><span class="t"><b>Marriage Yog report</b><small>By Hemali · 4.7 ★ · ₹49</small></span>'+ARR+'</button>'],
+['Chat attachment','Reads as a file dropped in the thread, round go button.',
+ '<div class="vx v4"><img class="cov" src="'+BK+'"><span class="t"><b>Marriage Yog report</b><small>32 pages · ₹49</small></span><button class="go"><svg width="14" height="12" viewBox="0 0 18 14" fill="none"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'],
+['Cover + CTA under','Classic store card; the CTA gets full width.',
+ '<div class="vx v5"><div class="r"><img class="cov" src="'+BK+'"><div><b>Marriage Yog report</b><span class="m">'+RATE+'</span></div></div><button class="fill">Start Reading · ₹49</button></div>'],
+['Peach, pill CTA right','Warm tint ties it to the Today hero.',
+ '<div class="vx v6"><img class="cov" src="'+BK+'"><span class="t"><b>Marriage Yog report</b><small>By Hemali for you · ₹49</small></span><button class="p">Read</button></div>'],
+['Banner on top','Cover crops into a wide strip, text beneath.',
+ '<div class="vx v7"><div class="b"></div><div class="t"><b>Marriage Yog report</b><span class="m">'+RATE+'</span><button class="ocs">Start Reading</button></div></div>'],
+['Mirrored','Text leads, book overhangs on the right.',
+ '<div class="vx v8"><img class="cov" src="'+BK+'"><b>Marriage Yog report</b><span class="m">'+RATE+'</span><button class="ocs">Start Reading</button></div>'],
+['Night &amp; gold','Premium treatment, echoes the expert card\'s purple.',
+ '<div class="vx v9"><img class="cov" src="'+BK+'"><span class="t"><b>Marriage Yog report</b><small>Written for Mansi · 32 pages</small></span><button class="g">₹49</button></div>'],
+['Quiet link','Least salesy — feels like Hemali linked a file.',
+ '<button class="vx v10"><img class="cov" src="'+BK+'"><span class="t"><b>Marriage Yog report</b><small>Opens in your library · ₹49</small></span></button>'],
+['Price ribbon','Corner ribbon carries the price so the body stays clean.',
+ '<div class="vx v11"><span class="rb">₹49</span><img class="cov" src="'+BK+'"><div class="t"><b>Marriage Yog report</b><span class="m">'+RATE+'</span><button class="ocs">Start Reading</button></div></div>'],
+['Cover takeover','Most visual; the cover is the card.',
+ '<div class="vx v12"><div class="t"><span><b>Marriage Yog report</b><small>4.7 ★ · 1.2K orders</small></span><button class="p">Read ₹49</button></div></div>'],
+['Split action','The "View" tap target is visually separated.',
+ '<div class="vx v13"><div class="l"><img class="cov" src="'+BK+'"><span><b>Marriage Yog report</b><small>By Hemali · ₹49</small></span></div><button class="r">View</button></div>'],
+['Chips','Scannable attributes instead of a rating line.',
+ '<div class="vx v14"><img class="cov" src="'+BK+'"><div class="t"><b>Marriage Yog report</b><span class="chips"><i class="chip">32 pages</i><i class="chip">4.7 ★</i><i class="chip g">₹49</i></span><button class="ocs">Start Reading</button></div></div>'],
+['Inside Hemali\'s bubble','"Part of the message" — the card nests in the reply.',
+ '<div class="vx v15"><img class="av" src="'+AV+'"><div class="bub"><p class="lead">Maine aapke liye ek detailed report bhi banayi hai.</p><div class="att2"><img class="cov" src="'+BK+'"><span><b>Marriage Yog report</b><small>32 pages · ₹49</small></span><svg width="16" height="13" viewBox="0 0 18 14" fill="none"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="#EF6939" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>'],
+['Wallet price','Shows the ₹20 wallet discount right on the card.',
+ '<div class="vx v16"><img class="cov" src="'+BK+'"><div class="t"><b>Marriage Yog report</b><div class="pr"><s>₹49</s><strong>₹29</strong></div></div><button class="fill">Read</button></div>'],
+['One-liner','Tiny dashed pill; never wraps, never dominates.',
+ '<div class="vx v17"><img class="av" src="'+AV+'"><span class="t"><b>Hemali</b> made your Marriage Yog report</span><button class="p">Read</button></div>'],
+['Gold frame','Cover sits in a gold mount — reward-flow language.',
+ '<div class="vx v18"><span class="fr"><img class="cov" src="'+BK+'"></span><div class="t"><span class="eb">Made for you</span><b>Marriage Yog report</b><span class="m">'+RATE+'</span><button class="ocs">Start Reading</button></div></div>'],
+['Avatar pill','Leads with Hemali, not the book.',
+ '<div class="vx v19"><img src="'+AV+'"><span class="t"><b>Hemali made a report for you</b><small>Marriage Yog · ₹49</small></span><button class="p">View</button></div>'],
+['Stacked','Most room to explain; full-width CTA closes it.',
+ '<div class="vx v20"><span class="eb">✦ Made for you by Hemali</span><div class="r"><img class="cov" src="'+BK+'"><div><b>Marriage Yog report</b><span class="d">Aapke aur Rahul ke chart par likha gaya.</span><span class="m">'+RATE+'</span></div></div><button class="fill">Start Reading · ₹49</button></div>']
+];
+
+var grid = document.getElementById('grid');
+V.forEach(function (v, i) {
+  var cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.innerHTML = '<h2>' + String(i + 1).padStart(2, '0') + ' · ' + v[0] + '</h2><p>' + v[1] +
+    '</p><div class="vp"><iframe src="index.html#a" loading="eager"></iframe></div>';
+  grid.appendChild(cell);
+  var fr = cell.querySelector('iframe');
+  fr.addEventListener('load', function () {
+    var d = fr.contentDocument;
+    var st = d.createElement('style'); st.textContent = CSS; d.head.appendChild(st);
+    var a = d.querySelector('#today-a .attach');
+    if (a) a.innerHTML = v[2];
+    var sc = d.querySelector('#today-a [data-scroll]');
+    sc.style.setProperty('scroll-behavior', 'auto', 'important');
+    setTimeout(function () {
+      var card = d.querySelector('#today-a .attach');
+      sc.scrollTop = card.getBoundingClientRect().top + sc.scrollTop - 150;
+      sc.dispatchEvent(new Event('scroll'));
+    }, 120);
+  });
+});
+</script>
+</body>
+</html>
