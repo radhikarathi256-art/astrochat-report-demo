@@ -154,7 +154,7 @@ var DAYS = [
   { d: 'Day 6', v: 19 },
   { d: 'Day 7', v: 51 }
 ];
-var TODAY_IX = 1;                  // Day 2 is "today" in the demo
+var TODAY_IX = 0;                  // Day 1 is "today" in the demo
 var COIN_SIZE = [22, 26, 29, 32, 35, 38, 44];
 
 function renderLadder() {
@@ -568,6 +568,16 @@ document.addEventListener('click', function (e) {
 
   if (t.hasAttribute('data-toast')) { toast(t.getAttribute('data-toast')); return; }
 }, false);
+
+/* The Today header sits transparently over the hero. Once the page scrolls the
+   hero away, give it a solid backdrop so content doesn't run under the icons. */
+$$('.screen').forEach(function (s) {
+  var head = $('.head.hero-head', s), sc = $('[data-scroll]', s);
+  if (!head || !sc) return;
+  sc.addEventListener('scroll', function () {
+    head.classList.toggle('scrolled', sc.scrollTop > 40);
+  }, { passive: true });
+});
 
 /* ---------------------------------------------------------------- boot */
 renderLadder();
