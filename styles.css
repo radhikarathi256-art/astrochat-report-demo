@@ -194,17 +194,19 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The book stands proud of the card's top edge, so the card carries a top margin
    of its own to make room for the overhang (Figma 3356:16428). */
 .attach{position:relative;display:block;width:100%;text-align:left;margin:24px 0 0;
-  background:#fff;border-radius:20px;padding:8px 8px 8px 138px;
+  background:#fff;border-radius:20px;padding:8px 10px 10px 112px;
   box-shadow:0 0 0 1px rgba(16,24,40,.05),0 6px 18px -6px rgba(16,24,40,.16)}
-.attach img{position:absolute;left:6px;top:-23px;width:106px;height:143px;object-fit:cover;
+.attach img{position:absolute;left:6px;top:-20px;width:92px;height:124px;object-fit:cover;
   box-shadow:0 4px 14px rgba(0,0,0,.25)}
-.attach-t{display:flex;flex-direction:column;gap:4px}
-.attach-t b{font:600 16px/24px var(--sans);color:#000}
-.attach-t small{display:flex;align-items:center;gap:8px;
-  font:500 14px/20px var(--sans);color:var(--g600)}
+/* The title has to hold one line beside the cover — two lines read as a mistake. */
+.attach-t{display:flex;flex-direction:column;gap:3px}
+.attach-t b{font:600 16px/24px var(--sans);color:#000;white-space:nowrap}
+.attach-t em{font-style:normal;font:400 12px/18px var(--sans);color:var(--g500)}
+.attach-t small{display:flex;align-items:center;gap:6px;
+  font:500 13px/18px var(--sans);color:var(--g600)}
 .attach-t small i{width:1px;height:6px;background:var(--g300);font-style:normal}
 .attach-t small svg{flex:none}
-.attach .cta{display:flex;align-items:center;justify-content:center;width:146px;margin-top:10px;
+.attach .cta{display:flex;align-items:center;justify-content:center;width:146px;margin-top:8px;
   padding:8px 16px;background:#fff;border:1px solid var(--brand);border-radius:12px;
   font:600 16px/24px var(--sans);color:var(--brand);
   box-shadow:0 1px 3px rgba(16,24,40,.1),0 1px 2px rgba(16,24,40,.06)}
