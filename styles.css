@@ -199,8 +199,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .attach{position:relative;display:block;width:100%;text-align:left;margin:24px 0 0;
   background:#fff;border-radius:20px;padding:8px 10px 10px 112px;
   box-shadow:0 0 0 1px rgba(16,24,40,.05),0 6px 18px -6px rgba(16,24,40,.16)}
-.attach img{position:absolute;left:6px;top:-20px;width:92px;height:124px;object-fit:cover;
-  box-shadow:0 4px 14px rgba(0,0,0,.25)}
+/* The book is a vector that carries its own depth and contact shadow, so it
+   needs no box-shadow and must not be cropped. */
+.attach img{position:absolute;left:4px;top:-20px;width:100px;height:134px;object-fit:contain}
 /* The title has to hold one line beside the cover — two lines read as a mistake. */
 .attach-t{display:flex;flex-direction:column;gap:3px}
 .attach-t b{font:600 16px/24px var(--sans);color:#000;white-space:nowrap}
@@ -280,8 +281,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:12px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
   column-gap:12px;row-gap:10px}
 .gcard:active{background:var(--g50)}
-.gcard>img{grid-row:1;width:58px;height:78px;object-fit:cover;border-radius:4px;
-  box-shadow:0 3px 10px rgba(16,24,40,.22)}
+.gcard>img{grid-row:1;width:62px;height:84px;object-fit:contain}
 .gc-t{grid-row:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .gc-t>b{font:600 15px/22px var(--sans);color:var(--g900)}
 .gc-meta{display:flex;align-items:center;gap:5px;
@@ -325,9 +325,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   perspective:900px}
 .r2-book{display:block;width:242px;height:161px;object-fit:contain;opacity:0}
 /* The spine sits at the wrapper's centre line; the cover hinges off it. */
-.r2-cover{position:absolute;left:121px;top:3px;width:118px;height:155px;object-fit:cover;
-  transform-origin:left center;backface-visibility:hidden;
-  box-shadow:-2px 6px 16px rgba(0,0,0,.3)}
+.r2-cover{position:absolute;left:119px;top:0;width:122px;height:161px;object-fit:contain;
+  transform-origin:left center;backface-visibility:hidden}
 /* The spine stays put while the cover swings, so the frame slides left by half a
    page — otherwise the closed book would sit off-centre. */
 #report.on .r2-bookwrap{animation:bookShift .9s cubic-bezier(.45,.05,.3,1) .22s both}
@@ -352,17 +351,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-card{position:relative;z-index:1;width:100%;max-width:335px;background:#fff;
   border-radius:20px;padding:28px 16px 14px;text-align:center}
 .r2-card h1{margin:0 auto;max-width:290px;font:600 20px/30px var(--sans);color:var(--g800)}
-/* One line instead of three labelled columns — the labels said nothing the
-   values did not already say. */
-.r2-stats{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;
-  font:500 14px/20px var(--sans);color:var(--g600)}
-.r2-stats .pill{padding:2px 10px;border-radius:999px;background:var(--g100);
-  font:600 13px/18px var(--sans);color:var(--g700)}
-.r2-stats .st{display:inline-flex;align-items:center;gap:4px}
-.r2-stats b{font-weight:600;color:var(--g800)}
-.r2-stats .dot{color:var(--g300)}
-.r2-div{width:1px;height:16px;background:var(--g200)}
-.r2-about{padding:30px 16px 24px;display:flex;flex-direction:column;gap:10px}
+.r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
+.r2-stats div{width:80px}
+.r2-stats b{display:flex;align-items:center;justify-content:center;gap:2px;
+  font:600 16px/24px var(--sans);color:var(--g800);white-space:nowrap}
+.r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
+.r2-div{width:1px;height:20.5px;background:var(--g200)}
+.r2-about{padding:16px 16px 24px;display:flex;flex-direction:column;gap:10px}
 .r2-tags{display:flex;flex-wrap:wrap;gap:6px}
 .r2-tags span{height:22px;padding:0 6px;border-radius:10px;background:var(--g100);
   display:inline-flex;align-items:center;font:400 12px/18px var(--sans);color:var(--g600)}
@@ -578,9 +573,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .book .page .psub{margin:4px 0 0;font:400 14px/20px var(--sans);color:var(--g600)}
 .book .page hr{width:100%;border:0;border-top:1px solid var(--g200);margin:16px 0 0}
 .book .cover{position:absolute;inset:0;transform-origin:left center;backface-visibility:hidden;
-  border-radius:10px;overflow:hidden;box-shadow:0 18px 40px -16px rgba(122,46,14,.45);
   transition:transform .9s ease-in-out}
-.book .cover img{width:100%;height:100%;object-fit:cover}
+.book .cover img{width:100%;height:100%;object-fit:contain}
 .book.open .cover{transform:rotateY(-160deg)}
 .book-cap{margin:0;font:600 15px/22px var(--sans);color:var(--brand);transition:opacity .3s ease}
 

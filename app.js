@@ -324,7 +324,7 @@ var AMBERS = [
   'Anger between you two needs a rule, not a winner.'
 ];
 var ALSO = [
-  { t: 'Kundli Milan report', s: 'Match with Rahul, point by point', p: '₹49' },
+  { t: 'Kundli Milan report', s: 'Two charts, point by point', p: '₹49' },
   { t: 'Partner sketch', s: 'See who you will marry', p: '₹49' },
   { t: 'Career report', s: 'Your next 2 years at work', p: '₹49' },
   { t: 'Love report', s: 'What your heart needs', p: '₹49' }
@@ -379,7 +379,7 @@ function renderRead() {
 
     '<div class="r-sec">' +
       '<div class="top-bar"></div>' +
-      '<div class="shead"><h3>Is Rahul right for you</h3><p>From what you shared with Hemali</p></div>' +
+      '<div class="shead"><h3>Will the match work</h3><p>From what you shared with Hemali</p></div>' +
       accent('WHAT THIS MEANS FOR YOU', 'Your charts match on 24 of 36 points. Trust and family values are strong. The one thing to work on is how you both handle anger.') +
       '<div class="bars"><p class="blbl">MATCH TILT</p>' +
         MATCH.map(function (m) {
@@ -432,7 +432,7 @@ function renderRead() {
       '<p>Your family says yes, but the saying takes time. Start the talk in small steps.</p>' +
     '</div>' +
 
-    accent('→ PRACTICAL TIP', 'Bring up Rahul with your family after Diwali. Thursdays and Fridays are good days for big talks in your chart.') +
+    accent('→ PRACTICAL TIP', 'Open the marriage talk with your family after Diwali. Thursdays and Fridays carry the best weight in your chart for a conversation that big.') +
 
     '<div class="carousel-wrap">' +
       '<p class="lbl">PEOPLE ALSO BOUGHT</p>' +
