@@ -251,7 +251,6 @@ function copyFor(id) {
     coversLabel: base.coversLabel,
     covers: base.covers,
     footnote: base.footnote,
-    oneTime: base.oneTime,
     buy: 'Buy in ' + l.label
   };
 }
@@ -264,7 +263,6 @@ function renderSample() {
   $('#langChipLabel').textContent = c.chip;
   $('#sampleBandSub').textContent = c.bandSub;
   $('[data-i18n="sampleTitle"]', sec).textContent = c.navTitle;
-  $('[data-i18n="oneTime"]', sec).textContent = c.oneTime;
   $('#buyInLang').textContent = c.buy;
 
   $('#sampleBody').innerHTML =
