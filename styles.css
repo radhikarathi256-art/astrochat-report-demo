@@ -367,7 +367,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* One small paragraph. It used to be a large headline, a three-item checklist and
    a provenance line — the checklist repeated "Find answers to" one screen below,
    and the three blocks took half a screen to say one small thing. */
-.r2-lead{margin:0;font:400 14px/21px var(--sans);color:var(--g600)}
+/* Centred, to carry on the card's axis rather than restart a left edge the
+   section below it does not share. */
+.r2-lead{margin:0;text-align:center;font:400 14px/21px var(--sans);color:var(--g600)}
 .r2-lead b{font-weight:600;color:var(--g900)}
 /* Secondary, so it is narrower than the full column — at full width it carried
    the same weight as the Buy now button fixed to the bottom of the screen. */
