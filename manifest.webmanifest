@@ -1,0 +1,15 @@
+{
+  "name": "AstroChat · Sell report from Today",
+  "short_name": "Report demo",
+  "description": "Clickable demo of the AstroChat sell-a-report flow from the Today page.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

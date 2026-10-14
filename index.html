@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AstroChat · Sell report from Today</title>
+<meta name="description" content="AstroChat — sell a report from the Today page (Hackfest 2026 demo)">
+<meta name="theme-color" content="#FDBA96" id="themeColor">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Report demo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/book-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Entry switcher: lives outside the phone so it is clearly demo chrome, not app UI. -->
+<aside class="switcher" id="switcher">
+  <b>Entry point</b>
+  <button type="button" data-entry="a" class="on">A · Reply + report<small>R.1 — attachment under Hemali's answer</small></button>
+  <button type="button" data-entry="b">B · Expert card<small>R.1b — inside the astrologer card</small></button>
+  <button type="button" data-entry="c">C · Guidance tile<small>R.1c — personalised guidance</small></button>
+  <hr>
+  <button type="button" id="restart" class="ghost">Restart demo</button>
+</aside>
+
+<main class="stage">
+<div class="phone" id="phone">
+
+  <!-- iOS-style status bar. Desktop only; a real phone shows its own. -->
+  <div class="sbar" id="sbar">
+    <span class="sb-t">9:41</span>
+    <span class="sb-i">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 13.2a1 1 0 110 2 1 1 0 010-2zm0-3.1c.9 0 1.7.35 2.3.95l-1 1a1.9 1.9 0 00-2.6 0l-1-1c.6-.6 1.4-.95 2.3-.95zm0-3.1c1.75 0 3.35.7 4.5 1.85l-1 1a5 5 0 00-7 0l-1-1A6.35 6.35 0 018.5 7zm0-3.1c2.6 0 4.95 1.05 6.65 2.75l-1 1a7.9 7.9 0 00-11.3 0l-1-1A9.4 9.4 0 018.5 3.9z" fill="#101828"/></svg>
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="1" y="10" width="2.6" height="4" rx=".6" fill="#101828"/><rect x="5" y="7.5" width="2.6" height="6.5" rx=".6" fill="#101828"/><rect x="9" y="5" width="2.6" height="9" rx=".6" fill="#101828"/><rect x="13" y="2.5" width="2.6" height="11.5" rx=".6" fill="#101828"/></svg>
+      <svg width="25" height="15" viewBox="0 0 25 15" fill="none"><rect x=".5" y=".5" width="21" height="14" rx="4" stroke="#101828" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="11" rx="2.5" fill="#101828"/><path d="M23 5.2v4.6a2.6 2.6 0 000-4.6z" fill="#101828" fill-opacity=".5"/></svg>
+    </span>
+  </div>
+
+  <div class="screens" id="screens">
+
+    <!-- ===================== R.1 · Today · reply + report ===================== -->
+    <section class="screen on" id="today-a" data-screen="today-a">
+      <header class="head compact">
+        <button class="ic-btn" type="button" data-toast="Menu is not part of this demo" aria-label="Menu">
+          <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M1 1h20M1 8h20M1 15h20" stroke="#101828" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="head-name"><small>Namaste</small><b>Mansi</b></div>
+        <div class="head-r">
+          <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span data-wallet>₹20</span>
+            <i class="gift"></i>
+          </button>
+          <button class="ic-btn" type="button" data-toast="Chat list is not part of this demo" aria-label="Chats">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" stroke="#344054" stroke-width="1.4"/><circle cx="8.5" cy="13" r="1.3" fill="#344054"/><circle cx="13" cy="13" r="1.3" fill="#344054"/><circle cx="17.5" cy="13" r="1.3" fill="#344054"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="sec-head"><span>DAILY REWARD</span><em>✓ Reminder On</em></div>
+        <div class="ladder-wrap" data-ladder></div>
+
+        <div class="merged">
+          <h3 class="rh-t">Day 2 · <span class="amt">₹11</span> added to your wallet</h3>
+          <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
+          <div class="mood-row"><span class="mood-chip">Pareshan</span></div>
+
+          <div class="reply-row">
+            <img class="av" src="assets/hemali.png" alt="Astro Hemali">
+            <div class="bubble">
+              <b>Today's answer by Astro Hemali</b>
+              <p>Aaj Rahul ke saath baat aasaani se hogi. Shaam ko ek chhota sa plan banaiye, rishta aur mazboot hoga.</p>
+            </div>
+          </div>
+
+          <!-- The sell: a report that reads like a file Hemali shared in chat -->
+          <button class="attach" type="button" data-go="report">
+            <img src="assets/book-cover.png" alt="">
+            <span class="attach-t"><b>Marriage Yog report</b><small>By Hemali for you · ₹49</small></span>
+            <svg class="arr" width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="#101828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <button class="btn primary" type="button" data-toast="Chat is not part of this demo">Continue Chat</button>
+        </div>
+        <div class="pad-nav"></div>
+      </div>
+
+      <nav class="bnav" data-bnav="today"></nav>
+    </section>
+
+    <!-- ===================== R.1b · Today · expert card + report ===================== -->
+    <section class="screen" id="today-b" data-screen="today-b">
+      <header class="head hero-head">
+        <button class="ic-btn" type="button" data-toast="Menu is not part of this demo" aria-label="Menu">
+          <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M1 1h20M1 8h20M1 15h20" stroke="#101828" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="head-r">
+          <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span data-wallet>₹20</span>
+            <i class="gift"></i>
+          </button>
+          <button class="ic-btn" type="button" data-toast="Chat list is not part of this demo" aria-label="Chats">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" stroke="#344054" stroke-width="1.4"/><circle cx="8.5" cy="13" r="1.3" fill="#344054"/><circle cx="13" cy="13" r="1.3" fill="#344054"/><circle cx="17.5" cy="13" r="1.3" fill="#344054"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="hero">
+          <h1>Namaste Mansi</h1>
+          <p class="hero-date">Mon, 5 Oct · Margashirsha Krishna Chaturdashi</p>
+          <div class="ins-list">
+            <div class="ins"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.5" stroke="#F79009" stroke-width="1.5"/><path d="m5 19 14-14" stroke="#F79009" stroke-width="1.5" stroke-linecap="round"/></svg><p>Relationship aur trust aapke liye sabse important themes hain.</p></div>
+            <div class="ins"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11a7 7 0 0114 0 7 7 0 01-7 7H5l1.6-2.2A7 7 0 014 11z" stroke="#F79009" stroke-width="1.5" stroke-linejoin="round"/><circle cx="8.5" cy="11" r="1" fill="#F79009"/><circle cx="11.5" cy="11" r="1" fill="#F79009"/><circle cx="14.5" cy="11" r="1" fill="#F79009"/></svg><p>Rahul ke saath communication improve hona shuru hua hai.</p></div>
+            <div class="ins"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5v14h16" stroke="#F79009" stroke-width="1.5" stroke-linecap="round"/><path d="m7 15 3.5-4 3 2.5L18 8" stroke="#F79009" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><p>Kuch decisions ko lekar uncertainty abhi bhi baaki hai.</p></div>
+          </div>
+          <div class="ai-foot"><span class="ai">✦ AI powered</span></div>
+        </div>
+
+        <div class="sec-head"><span>YOUR EXPERTS</span><a class="lnk" data-toast="Expert list is not part of this demo">Consult Others →</a></div>
+
+        <div class="expert-card">
+          <div class="expert-top">✦ NEXT FREE 2 MINS CHAT IN <b>14h : 23m</b></div>
+          <div class="expert-body">
+            <div class="expert-row">
+              <span class="av-ring"><img src="assets/hemali.png" alt="Astro Hemali"><i class="dot"></i></span>
+              <div class="expert-meta">
+                <b>Astro Hemali</b>
+                <p><s>₹20/min</s> <strong>₹10/min</strong></p>
+              </div>
+            </div>
+            <button class="btn primary" type="button" data-toast="Chat is not part of this demo">Continue Chat</button>
+            <hr class="thin">
+            <!-- Entry B: the report sits inside the expert's own card -->
+            <div class="expert-report">
+              <img src="assets/book-cover.png" alt="">
+              <span class="er-t"><b>Hemali made a report for you</b><small>Marriage Yog report</small></span>
+              <button class="btn outline sm" type="button" data-go="report">View</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-head"><span>DAILY REWARD</span><em>✓ Reminder On</em></div>
+        <div class="ladder-wrap" data-ladder></div>
+        <div class="pad-nav"></div>
+      </div>
+
+      <nav class="bnav" data-bnav="today"></nav>
+    </section>
+
+    <!-- ===================== R.1c · Today · guidance + report ===================== -->
+    <section class="screen" id="today-c" data-screen="today-c">
+      <header class="head compact">
+        <button class="ic-btn" type="button" data-toast="Menu is not part of this demo" aria-label="Menu">
+          <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M1 1h20M1 8h20M1 15h20" stroke="#101828" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="head-name"><small>Namaste</small><b>Mansi</b></div>
+        <div class="head-r">
+          <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span data-wallet>₹20</span>
+            <i class="gift"></i>
+          </button>
+          <button class="ic-btn" type="button" data-toast="Chat list is not part of this demo" aria-label="Chats">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" stroke="#344054" stroke-width="1.4"/><circle cx="8.5" cy="13" r="1.3" fill="#344054"/><circle cx="13" cy="13" r="1.3" fill="#344054"/><circle cx="17.5" cy="13" r="1.3" fill="#344054"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="merged">
+          <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
+          <div class="mood-row"><span class="mood-chip">Pareshan</span></div>
+          <div class="reply-row">
+            <img class="av" src="assets/hemali.png" alt="Astro Hemali">
+            <div class="bubble">
+              <b>Today's answer by Astro Hemali</b>
+              <p>Aaj Rahul ke saath baat aasaani se hogi. Shaam ko ek chhota sa plan banaiye, rishta aur mazboot hoga.</p>
+            </div>
+          </div>
+          <button class="btn primary" type="button" data-toast="Chat is not part of this demo">Continue Chat</button>
+        </div>
+
+        <div class="sec-head"><span>PERSONALISED GUIDANCE</span></div>
+        <div class="guide">
+          <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
+          <div class="tiles">
+            <!-- Entry C: the report is one of two guidance tiles -->
+            <button class="tile" type="button" data-go="report">
+              <img src="assets/book-cover.png" alt="">
+              <b>Marriage Yog report</b>
+              <small>Made by Hemali for you</small>
+              <span class="tile-foot"><i class="tag purple">₹49</i>
+                <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="#101828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </button>
+            <button class="tile" type="button" data-toast="Tarot is not part of this demo">
+              <img src="assets/tarot.png" alt="">
+              <b>Ask the Tarot Cards</b>
+              <small>3 cards about you and Rahul</small>
+              <span class="tile-foot"><i class="tag green">Free</i>
+                <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="#101828" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="pad-nav"></div>
+      </div>
+
+      <nav class="bnav" data-bnav="today"></nav>
+    </section>
+
+    <!-- ===================== R.2 · Report page ===================== -->
+    <section class="screen" id="report" data-screen="report">
+      <header class="topnav">
+        <button class="ic-btn" type="button" data-back aria-label="Back">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2>Report</h2>
+        <button class="wallet sm" type="button" data-toast="Wallet is not part of this demo">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-wallet>₹20</span>
+        </button>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="r2-hero">
+          <img class="r2-cover" src="assets/book-cover.png" alt="Marriage Yog report cover">
+          <button class="btn outline" type="button" data-go="sample">View sample report</button>
+        </div>
+
+        <div class="r2-info">
+          <p class="eyebrow">Made by Astro Hemali for you</p>
+          <h1>Your Marriage Yog report</h1>
+          <p class="sub">Made from your chat with Hemali, and checked by our senior astrologers.</p>
+          <p class="avail">Available in: <b>English, Hindi, Hinglish +6</b></p>
+        </div>
+
+        <div class="r2-stats">
+          <div><b>4.7 ★</b><small>Rating</small></div>
+          <div><b>1.2K+</b><small>Bought</small></div>
+          <div><b>One-time</b><small>Payment</small></div>
+        </div>
+
+        <div class="r2-block">
+          <p class="lbl">THIS REPORT ANSWERS</p>
+          <div class="qrow"><i>?</i><span>When will my marriage happen?</span></div>
+          <div class="qrow"><i>?</i><span>Is Rahul the right person for me?</span></div>
+          <div class="qrow"><i>?</i><span>What is delaying it, and what can I do?</span></div>
+          <div class="qrow"><i>?</i><span>How will my married life be?</span></div>
+        </div>
+
+        <div class="r2-block">
+          <p class="lbl">WHAT USERS SAY</p>
+          <div class="review">
+            <b>★★★★★ Priya, Lucknow</b>
+            <p>“It told me exactly why things were stuck with my partner. Hemali's advice actually worked.”</p>
+          </div>
+        </div>
+        <div class="pad-buy"></div>
+      </div>
+
+      <div class="buybar">
+        <div class="price"><b>₹49</b><small>One-time</small></div>
+        <button class="btn primary grow" type="button" data-sheet="buy">Buy now</button>
+      </div>
+    </section>
+
+    <!-- ===================== R.3 / R.3c · Sample report ===================== -->
+    <section class="screen" id="sample" data-screen="sample">
+      <header class="topnav">
+        <button class="ic-btn" type="button" data-back aria-label="Back">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2 data-i18n="sampleTitle">Sample report</h2>
+        <button class="chip lang" type="button" data-sheet="lang"><span id="langChipLabel">English</span> ▾</button>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="band"><b>ASTROCHAT</b><span id="sampleBandSub"></span></div>
+        <div class="sample-body" id="sampleBody"></div>
+        <div class="pad-buy"></div>
+      </div>
+
+      <div class="buybar">
+        <div class="price"><b>₹49</b><small data-i18n="oneTime">One-time</small></div>
+        <button class="btn primary grow" type="button" id="buyInLang">Buy in English</button>
+      </div>
+    </section>
+
+    <!-- ===================== R.5 / R.6 · Timeline ===================== -->
+    <section class="screen" id="timeline" data-screen="timeline">
+      <header class="head compact">
+        <button class="ic-btn" type="button" data-toast="Menu is not part of this demo" aria-label="Menu">
+          <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M1 1h20M1 8h20M1 15h20" stroke="#101828" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="head-r">
+          <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span data-wallet>₹20</span>
+            <i class="gift"></i>
+          </button>
+          <button class="ic-btn" type="button" data-toast="Chat list is not part of this demo" aria-label="Chats">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" stroke="#344054" stroke-width="1.4"/><circle cx="8.5" cy="13" r="1.3" fill="#344054"/><circle cx="13" cy="13" r="1.3" fill="#344054"/><circle cx="17.5" cy="13" r="1.3" fill="#344054"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="tl-head">
+          <h1>Your Journey</h1>
+          <p>Everything you've explored with AstroChat.</p>
+        </div>
+        <div class="tl-today"><i></i>TODAY</div>
+
+        <div class="tl">
+          <!-- The report entry: swaps between "making" (R.5) and "ready" (R.6) -->
+          <div class="tl-item" id="tlReport">
+            <time id="tlReportTime">10:42 AM</time>
+            <div class="card tl-card">
+              <div class="rep-top">
+                <img src="assets/book-cover.png" alt="">
+                <div>
+                  <p class="eyebrow">Made by Astro Hemali for you</p>
+                  <b>Marriage Yog report</b>
+                  <p class="rep-status" id="repStatus">Your report is being made</p>
+                </div>
+              </div>
+
+              <div class="steps" id="repSteps">
+                <div class="step" data-step="0"><span class="sdot"></span><p>Taking information from Astro Hemali</p></div>
+                <div class="step" data-step="1"><span class="sdot"></span><p>Preparing your report…</p></div>
+                <div class="step" data-step="2"><span class="sdot"></span><p>Cross-checking with other astrologers</p></div>
+                <div class="step" data-step="3"><span class="sdot"></span><p>Ready to read</p></div>
+              </div>
+
+              <div class="notify" id="repNotify">🔔 We'll notify you when it's ready</div>
+
+              <div class="rep-acts" id="repActs" hidden>
+                <button class="btn outline" type="button" data-toast="Sharing is not part of this demo">Share</button>
+                <button class="btn primary grow" type="button" data-go="book">Read report</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <time>10:15 AM</time>
+            <div class="card tl-card">
+              <div class="rep-top">
+                <span class="av-ring sm"><img src="assets/hemali.png" alt=""><i class="dot"></i></span>
+                <div>
+                  <b>Astro Hemali</b>
+                  <p class="rep-status gray">Session Time: <strong>18 mins</strong></p>
+                </div>
+              </div>
+              <div class="rep-acts">
+                <button class="btn outline grow" type="button" data-toast="Chat is not part of this demo">View Chat</button>
+                <button class="btn primary grow" type="button" data-toast="Chat is not part of this demo">Continue Chat</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <time>08:30 AM</time>
+            <div class="card tl-card">
+              <div class="rep-top">
+                <img class="tarot-th" src="assets/tarot.png" alt="">
+                <div>
+                  <b>Ask the Tarot Cards</b>
+                  <p class="rep-status gray">Asked about &lt;Tarot Question&gt;</p>
+                  <button class="lnk-btn" type="button" data-toast="Tarot is not part of this demo">View Reading →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <time>08:30 AM</time>
+            <div class="card tl-card">
+              <div class="rep-top">
+                <span class="doc-th"></span>
+                <div>
+                  <b>Check your Mulank Report</b>
+                  <p class="rep-status gray">Viewed your Mulank insights</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pad-nav"></div>
+      </div>
+
+      <nav class="bnav" data-bnav="timeline"></nav>
+    </section>
+
+    <!-- ===================== R.6b / R.6c · Book opening ===================== -->
+    <section class="screen" id="book" data-screen="book">
+      <div class="book-stage">
+        <div class="book" id="bookEl">
+          <div class="page" id="bookPage">
+            <p class="eyebrow">MADE BY ASTRO HEMALI</p>
+            <h2>Marriage Yog report</h2>
+            <p class="psub">For Mansi · from your chat</p>
+            <hr>
+          </div>
+          <div class="cover" id="bookCover"><img src="assets/book-cover.png" alt=""></div>
+        </div>
+        <p class="book-cap" id="bookCap">Your report is ready</p>
+      </div>
+    </section>
+
+    <!-- ===================== R.7 · Report · read in app ===================== -->
+    <section class="screen" id="read" data-screen="read">
+      <header class="topnav">
+        <button class="ic-btn" type="button" data-back aria-label="Back">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2>Marriage Yog report</h2>
+        <button class="chip pdf" type="button" data-toast="PDF download is not part of this demo">PDF ↓</button>
+      </header>
+      <div class="scroll" data-scroll>
+        <div class="band"><b>ASTROCHAT</b><span>Made by Astro Hemali</span></div>
+        <div class="read-body" id="readBody"></div>
+      </div>
+    </section>
+
+  </div><!-- /.screens -->
+
+  <!-- ===================== Sheets ===================== -->
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- R.3b · Choose language -->
+  <div class="sheet" id="sheet-lang" aria-hidden="true">
+    <div class="grab"></div>
+    <h3>Read the report in</h3>
+    <p class="sheet-sub">See a sample first. Your report comes in the language you pick.</p>
+    <div class="radio-list" id="langList"></div>
+    <button class="btn primary" type="button" id="showSample">Show sample in English</button>
+  </div>
+
+  <!-- R.4 · Buy sheet -->
+  <div class="sheet" id="sheet-buy" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="buy-top">
+      <img src="assets/book-cover.png" alt="">
+      <span><b>Your Marriage Yog report</b><small>Made by Astro Hemali for you</small></span>
+    </div>
+    <div class="buy-lang">
+      <span>Report language: <b id="buyLang">English</b></span>
+      <button class="lnk-btn strong" type="button" data-sheet="lang">Change</button>
+    </div>
+    <div class="buy-price">
+      <div class="brow"><span>Report price</span><span>₹49</span></div>
+      <div class="brow green"><span>From your wallet</span><span id="buyWallet">−₹20</span></div>
+      <hr>
+      <div class="brow total"><span>You pay</span><span id="buyTotal">₹29</span></div>
+    </div>
+    <button class="btn primary" type="button" id="payBtn">Pay ₹29</button>
+    <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
+  </div>
+
+  <!-- Push notification (R.6) -->
+  <div class="push" id="push" hidden>
+    <span class="push-ic"></span>
+    <div class="push-t">
+      <small>AstroChat · now</small>
+      <b>Your Marriage Yog report is ready</b>
+      <p>Astro Hemali made it for you. Tap to read.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+</div><!-- /.phone -->
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
