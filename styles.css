@@ -346,7 +346,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* A white card lifted over the bottom of the hero, centred. It gives the title
    and the three stats one container to sit in and hides the seam where the
    artwork stops. */
-.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto 0;
+.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-32px auto 0;
   background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center;
   box-shadow:0 10px 28px -16px rgba(122,46,14,.34)}
 .r2-card h1{margin:0 auto;max-width:290px;font:700 21px/29px var(--sans);color:var(--g900)}
@@ -362,10 +362,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and the three blocks took half a screen to say one small thing. */
 .r2-lead{margin:0;font:400 14px/21px var(--sans);color:var(--g600)}
 .r2-lead b{font-weight:600;color:var(--g900)}
-/* A full-width secondary button. As a small pill it read as an afterthought,
-   when it is the cheapest way for a doubter to keep going. */
-.r2-sample{display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;height:48px;margin-top:6px;border-radius:12px;font-size:16px}
+/* Secondary, so it is narrower than the full column — at full width it carried
+   the same weight as the Buy now button fixed to the bottom of the screen. */
+.r2-sample{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  align-self:center;width:auto;padding:0 22px;height:44px;margin-top:8px;
+  border-radius:12px;font-size:15px}
 
 /* Still used by the "people also bought" rail inside the report. */
 .lbl{margin:0 0 12px;font:600 13px/20px var(--sans);letter-spacing:.03em;color:var(--g500)}
