@@ -307,7 +307,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the two heads land under the book. The GIF carries its own motion, so the
    old CSS drift is gone — two pans at once just read as drift. */
 .r2-hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:#FCEFE9 url(assets/r2-hero.gif) center 44%/cover no-repeat}
+  background:#FCEFE9 url(assets/r2-hero.gif) center 40%/cover no-repeat}
 /* The wash used to start at 30% and take most of the couple with it. It now
    only softens the last fifth, where the hero meets the white page. */
 .r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -315,9 +315,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-nav{position:relative;z-index:3;align-self:stretch;display:flex;align-items:center;
   padding:calc(var(--sbh) + 12px) 16px 12px}
 .r2-nav-r{margin-left:auto;display:flex;align-items:center;gap:9px}
-/* The top margin is what keeps both heads clear of the status bar — with the
-   hero at 44% the couple sits just above the book. */
-.r2-bookwrap{position:relative;z-index:2;width:242px;height:161px;margin:76px 0 0;
+/* The book sits low and the GIF is framed high, so the couple reads above it
+   rather than behind it. At 76px the heads landed inside the open pages. */
+.r2-bookwrap{position:relative;z-index:2;width:242px;height:161px;margin:104px 0 0;
   perspective:900px}
 .r2-book{display:block;width:242px;height:161px;object-fit:contain;opacity:0}
 /* The spine sits at the wrapper's centre line; the cover hinges off it. */
@@ -355,18 +355,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
 .r2-div{width:1px;height:20.5px;background:var(--g200)}
 .r2-about{padding:20px 16px 24px;display:flex;flex-direction:column;gap:10px}
-/* The opening line is the pitch, so it carries weight the supporting line does not. */
-.r2-lead{margin:0;font:400 18px/26px var(--sans);color:var(--g800)}
+/* The opening line is the pitch, so it carries weight the supporting line does not.
+   It used to be followed by a three-item checklist, which said the same thing as
+   "Find answers to" one screen below — two pointer lists in a row, so neither
+   read as the answer to "what do I get". The questions list won; this is prose now. */
+.r2-lead{margin:0;font:400 16px/24px var(--sans);color:var(--g800)}
 .r2-lead b{font-weight:700;color:var(--g900)}
-/* What you get has to land before the provenance line — the reasons to buy
-   come first, the credentials after. */
-.r2-get{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
-.r2-get li{position:relative;padding-left:26px;font:500 15px/21px var(--sans);color:var(--g700)}
-.r2-get li::before{content:"";position:absolute;left:0;top:3px;width:16px;height:16px;
-  border-radius:50%;background:var(--s50)}
-.r2-get li::after{content:"";position:absolute;left:5px;top:7px;width:6px;height:3px;
-  border:1.6px solid var(--s700);border-top:0;border-right:0;transform:rotate(-45deg)}
-.r2-desc{margin:4px 0 0;font:400 14px/21px var(--sans);color:var(--g500)}
+.r2-desc{margin:2px 0 0;font:400 13px/20px var(--sans);color:var(--g500)}
 .r2-desc b{font-weight:600;color:var(--g600)}
 /* A full-width secondary button. As a small pill it read as an afterthought,
    when it is the cheapest way for a doubter to keep going. */
@@ -429,13 +424,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border-top:1px solid var(--g200);box-shadow:0 -4px 16px -8px rgba(16,24,40,.18)}
 /* Not green: green is wallet money everywhere else in the app, and a finding is
    not money. The neutral surface also stops it competing with the CTA. */
-.buy-why{margin:0;display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;
-  background:var(--g50);font:600 14px/20px var(--sans);color:var(--g700)}
+.buy-why{margin:0;display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:10px;
+  background:var(--g50);font:600 13px/18px var(--sans);color:var(--g700)}
 .buy-why svg{flex:none}
 .buy-row{display:flex;align-items:center;gap:16px}
-.price b{display:block;font:700 22px/30px var(--sans);color:var(--g900)}
-.price small{display:block;white-space:nowrap;font:600 12px/18px var(--sans);color:var(--purple)}
-.price small s{font-weight:400;color:var(--g400)}
+.price b{display:block;font:700 22px/28px var(--sans);color:var(--g900)}
+/* The saving was one grey 12px line and read as a footnote. Same treatment as
+   the entry points now: struck MRP, then the cut in a filled chip. */
+.price small{display:flex;align-items:center;gap:6px;white-space:nowrap;
+  font:600 13px/18px var(--sans);color:var(--g400)}
+.price small s{font-weight:400}
+.price small i{font-style:normal;font:700 11px/15px var(--sans);padding:2px 6px;
+  border-radius:5px;background:#ECFDF3;color:#067647}
 
 /* ---------- Brand band (sample + read) ---------- */
 .band{background:#7A2E0E;display:flex;align-items:center;justify-content:space-between;
