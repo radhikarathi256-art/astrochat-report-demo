@@ -189,7 +189,7 @@ var NAV_ICONS = {
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
-  { id: 'timeline', label: 'History' },
+  { id: 'timeline', label: 'Timeline' },
   { id: 'explore', label: 'Explore' }
 ];
 

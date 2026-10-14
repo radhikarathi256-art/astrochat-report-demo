@@ -107,25 +107,21 @@
           <div class="reply-row">
             <img class="av" src="assets/hemali.png" alt="Astro Hemali">
             <div class="bubble">
-              <b>Today's answer by Astro Hemali</b>
               <p>Aaj Rahul ke saath baat aasaani se hogi. Shaam ko ek chhota sa plan banaiye, rishta aur mazboot hoga.</p>
 
               <!-- Entry A — the sell lives inside Hemali's own bubble, under a
-                   divider, so it reads as something she made in the chat. -->
+                   divider, so it reads as something she made in the chat.
+                   The bubble is already hers, so the offer carries no speaker
+                   label and no eyebrow: cover, hook, price, button. -->
               <div class="offer">
-                <span class="of-eyebrow">✦ Made for you in today's chat</span>
-                <b class="of-hook">Why Rahu is delaying your marriage</b>
                 <div class="of-row">
-                  <span class="bk3" aria-hidden="true"><span class="bk3-cover"><span class="bk3-ring"></span><span class="bk3-ring"></span><span class="bk3-bar"></span><span class="bk3-bar"></span></span></span>
-                  <span class="of-copy">Maine aapki kundli padhi. Isme likha hai kya ruk raha hai — aur usse kaise hataana hai.</span>
+                  <span class="bk3" aria-hidden="true"></span>
+                  <span class="of-t">
+                    <b class="of-hook">Marriage Yog report</b>
+                    <span class="of-sub">When marriage will happen, and what to do now</span>
+                  </span>
                 </div>
-                <div class="of-price"><b>₹49</b><s>₹199</s><i>75% OFF</i></div>
-                <span class="of-save">You save ₹150 today</span>
-                <button class="btn primary" type="button" data-go="report">Unlock my report</button>
-                <span class="of-foot">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 .8l1.57 3.3 3.55.5-2.56 2.55.6 3.6L6 9.05 2.84 10.75l.6-3.6L.88 4.6l3.55-.5L6 .8Z" fill="#FEC84B"/></svg>
-                  4.7 · Read by 1.2K women
-                </span>
+                <button class="btn sm primary" type="button" data-go="report">View report · ₹49</button>
               </div>
             </div>
           </div>
@@ -135,21 +131,21 @@
 
           <section class="sec">
           <div class="sec-head"><span>PERSONALISED GUIDANCE</span></div>
-        <div class="guide">
-          <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
+        <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
           <div class="tiles">
             <button class="tile" type="button" data-toast="Tarot is not part of this demo">
               <img src="assets/tarot.png" alt="">
-              <span class="tt"><b>Ask the Tarot Cards <i class="tag green">Free</i></b><small>3 cards about you and Rahul</small></span>
+              <span class="tt"><b>Ask the Tarot Cards</b><small>3 cards on you and Rahul</small></span>
+              <i class="tag green">Free</i>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <button class="tile" type="button" data-toast="Today's prediction is not part of this demo">
               <svg class="ti" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="9" stroke="#DC6803" stroke-width="2"/><path d="M24 7v5M24 36v5M3 24h5M40 24h5M9 9l3.5 3.5M35.5 35.5 39 39M39 9l-3.5 3.5M12.5 35.5 9 39" stroke="#DC6803" stroke-width="2" stroke-linecap="round"/></svg>
-              <span class="tt"><b>Today's prediction <i class="tag green">Free</i></b><small>Your day, hour by hour</small></span>
+              <span class="tt"><b>Today's prediction</b><small>Your day, hour by hour</small></span>
+              <i class="tag green">Free</i>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
-        </div>
           </section>
         </div>
         <div class="pad-nav"></div>
@@ -204,16 +200,18 @@
               </div>
             </div>
             <hr class="thin">
-            <!-- Entry B: the report sits inside the expert's own card -->
+            <!-- Entry B: one row, ~56px. Continue Chat stays the card's main
+                 action, so the report gets a small outlined button, no second
+                 full-width CTA, and no discount — the offer lives on the report
+                 page. Anything taller pushes Daily reward below the fold. -->
             <div class="expert-report">
-              <span class="bk3" aria-hidden="true"><span class="bk3-cover"><span class="bk3-ring"></span><span class="bk3-ring"></span><span class="bk3-bar"></span><span class="bk3-bar"></span></span></span>
+              <span class="bk3" aria-hidden="true"></span>
               <span class="er-t">
-                <small>Hemali made this for you</small>
-                <b>Why Rahu is delaying your marriage</b>
-                <span class="er-pr"><b>₹49</b><s>₹199</s><i>75% OFF</i></span>
+                <b>Marriage Yog report</b>
+                <small>From your chat with Hemali</small>
               </span>
+              <button class="btn sm outline" type="button" data-go="report">View ₹49</button>
             </div>
-            <button class="btn outline" type="button" data-go="report">Get my report</button>
           </div>
         </div>
 
@@ -240,21 +238,21 @@
 
           <section class="sec">
           <div class="sec-head"><span>PERSONALISED GUIDANCE</span></div>
-        <div class="guide">
-          <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
+        <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
           <div class="tiles">
             <button class="tile" type="button" data-toast="Tarot is not part of this demo">
               <img src="assets/tarot.png" alt="">
-              <span class="tt"><b>Ask the Tarot Cards <i class="tag green">Free</i></b><small>3 cards about you and Rahul</small></span>
+              <span class="tt"><b>Ask the Tarot Cards</b><small>3 cards on you and Rahul</small></span>
+              <i class="tag green">Free</i>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <button class="tile" type="button" data-toast="Today's prediction is not part of this demo">
               <svg class="ti" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="9" stroke="#DC6803" stroke-width="2"/><path d="M24 7v5M24 36v5M3 24h5M40 24h5M9 9l3.5 3.5M35.5 35.5 39 39M39 9l-3.5 3.5M12.5 35.5 9 39" stroke="#DC6803" stroke-width="2" stroke-linecap="round"/></svg>
-              <span class="tt"><b>Today's prediction <i class="tag green">Free</i></b><small>Your day, hour by hour</small></span>
+              <span class="tt"><b>Today's prediction</b><small>Your day, hour by hour</small></span>
+              <i class="tag green">Free</i>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
-        </div>
           </section>
         </div>
         <div class="pad-nav"></div>
@@ -333,27 +331,24 @@
 
           <section class="sec">
           <div class="sec-head"><span>PERSONALISED GUIDANCE</span></div>
-        <div class="guide">
-          <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
-          <div class="tiles">
-            <!-- Entry C: the report gets a richer card than the plain guidance rows,
-                 because it is the only one that asks for money. -->
-            <button class="gcard" type="button" data-go="report">
-              <span class="bk3" aria-hidden="true"><span class="bk3-cover"><span class="bk3-ring"></span><span class="bk3-ring"></span><span class="bk3-bar"></span><span class="bk3-bar"></span></span></span>
-              <span class="gc-t">
-                <span class="gc-eyebrow">From your chat with Hemali</span>
-                <b>Why Rahu is delaying your marriage</b>
-                <span class="gc-sub">Aapki kundli, saral shabdon mein</span>
-                <span class="gc-pr"><b>₹49</b><s>₹199</s><i class="off">75% OFF</i></span>
-              </span>
-              <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#F06A3A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <button class="tile" type="button" data-toast="Tarot is not part of this demo">
-              <img src="assets/tarot.png" alt="">
-              <span class="tt"><b>Ask the Tarot Cards <i class="tag green">Free</i></b><small>3 cards about you and Rahul</small></span>
-              <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </div>
+        <!-- No peach panel: a box inside a box inside a section reads heavy, and
+             the peach fill blended into the peach panel. The lead is now plain
+             grey text under the title, and the report is just another tile —
+             it stands out through its cover, not through a coloured card. -->
+        <p class="guide-lead">Jo aapne bataya, usi ke hisaab se aaj ke liye ✨</p>
+        <div class="tiles">
+          <button class="tile" type="button" data-go="report">
+            <span class="bk3" aria-hidden="true"></span>
+            <span class="tt"><b>Marriage Yog report</b><small>From your chat with Hemali</small></span>
+            <i class="tag purple">₹49</i>
+            <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="tile" type="button" data-toast="Tarot is not part of this demo">
+            <img src="assets/tarot.png" alt="">
+            <span class="tt"><b>Ask the Tarot Cards</b><small>3 cards on you and Rahul</small></span>
+            <i class="tag green">Free</i>
+            <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
           </section>
         </div>
@@ -388,15 +383,19 @@
             <img class="r2-book" src="assets/open-book.png" alt="Open report">
             <img class="r2-cover" src="assets/book.svg" alt="" aria-hidden="true">
           </div>
-          <div class="r2-card">
-            <h1>Your Marriage Yog report</h1>
-            <div class="r2-stats">
-              <div><b>4.7 <svg width="12" height="12" viewBox="0 0 12 12" fill="#FEC84B"><path d="m6 .8 1.6 3.3 3.6.5-2.6 2.5.6 3.6L6 9l-3.2 1.7.6-3.6L.8 4.6l3.6-.5z"/></svg></b><small>Rating</small></div>
-              <i class="r2-div"></i>
-              <div><b>1,28,880</b><small>Reads</small></div>
-              <i class="r2-div"></i>
-              <div><b>One-time</b><small>Type</small></div>
-            </div>
+        </div>
+
+        <!-- Title and stats sit below the hero, not in a white card on top of
+             it. Overlapping them hid most of the couple and left the page with
+             two competing focal points. -->
+        <div class="r2-card">
+          <h1>Your Marriage Yog report</h1>
+          <div class="r2-stats">
+            <div><b>4.7 <svg width="12" height="12" viewBox="0 0 12 12" fill="#FEC84B"><path d="m6 .8 1.6 3.3 3.6.5-2.6 2.5.6 3.6L6 9l-3.2 1.7.6-3.6L.8 4.6l3.6-.5z"/></svg></b><small>Rating</small></div>
+            <i class="r2-div"></i>
+            <div><b>1,28,880</b><small>Reads</small></div>
+            <i class="r2-div"></i>
+            <div><b>One-time</b><small>Type</small></div>
           </div>
         </div>
 
@@ -492,11 +491,13 @@
       <div class="buybar">
         <!-- The one finding that justifies the price, pulled above the CTA. -->
         <p class="buy-why">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.6" y="1.6" width="12.8" height="12.8" rx="2" stroke="#067647" stroke-width="1.3"/><path d="M1.6 1.6 14.4 14.4M14.4 1.6 1.6 14.4" stroke="#067647" stroke-width="1.3"/></svg>
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.6" y="1.6" width="12.8" height="12.8" rx="2" stroke="#B54708" stroke-width="1.3"/><path d="M1.6 1.6 14.4 14.4M14.4 1.6 1.6 14.4" stroke="#B54708" stroke-width="1.3"/></svg>
           Rahu is delaying your marriage
         </p>
         <div class="buy-row">
-          <div class="price"><b>₹49</b><small>One-time</small></div>
+          <!-- The discount lives here, not on Today: she has chosen to read more,
+               so the saving is an answer to "why now", not a shout. -->
+          <div class="price"><b>₹49</b><small><s>₹199</s> 75% off</small></div>
           <button class="btn primary grow" type="button" data-sheet="buy">Buy now</button>
         </div>
       </div>
