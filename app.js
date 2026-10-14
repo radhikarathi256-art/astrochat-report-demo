@@ -154,30 +154,28 @@ var DAYS = [
   { d: 'Day 6', v: 19 },
   { d: 'Day 7', v: 51 }
 ];
-var TODAY_IX = 0;                  // Day 1 is "today" in the demo
-var COIN_SIZE = [22, 26, 29, 32, 35, 38, 44];
+/* Day 1 is both today and already answered, so its coin reads as collected and the
+   rail has nothing to fill yet. Sizes and lifts match the daily-reward prototype. */
+var CLAIMED = 1;
+var COIN_SIZE = [26, 28, 30, 30, 33, 38, 46];
+var COIN_LIFT = [0, 1, 3, 5, 8, 11, 15];
+var CHECK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none">' +
+  '<path d="M3.5 8.4l3 3 6-6.3" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 function renderLadder() {
-  // Rail fill reaches the centre of today's column. Columns are 1/7 wide and the
-  // rail is inset 8% each side, so convert the column centre into rail space.
-  var centre = (TODAY_IX + 0.5) / DAYS.length;
-  var fill = Math.max(0, (centre - 0.08) / 0.84) * 100;
-
   var cols = DAYS.map(function (day, i) {
-    var cls = i < TODAY_IX ? 'col done' : i === TODAY_IX ? 'col today' : 'col';
-    if (i === DAYS.length - 1) cls += ' goal';
-    var s = COIN_SIZE[i];
+    var done = i < CLAIMED;
+    var cls = 'col' + (done ? ' done' : '') + (i === DAYS.length - 1 ? ' goal' : '');
     return '<div class="' + cls + '">' +
-             '<span class="ic"><span class="coin' + (i < TODAY_IX ? ' got' : '') + '"' +
-               ' style="width:' + s + 'px;height:' + s + 'px"></span></span>' +
-             '<span class="dot"></span>' +
-             '<b>₹' + day.v + '</b>' +
-             '<small>' + day.d + '</small>' +
+             '<span class="ic"><span class="coin' + (done ? ' got' : '') + '" style="width:' +
+               COIN_SIZE[i] + 'px;height:' + COIN_SIZE[i] + 'px;margin-bottom:' + COIN_LIFT[i] + 'px">' +
+               '<span class="cv"><small>₹</small><b>' + day.v + '</b></span></span></span>' +
+             '<span class="tr"><i class="dot">' + (done ? CHECK : '') + '</i></span>' +
+             '<span class="lb">Day<b>' + (i + 1) + '</b></span>' +
            '</div>';
   }).join('');
 
-  var html = '<div class="ladder"><div class="rail"><i style="width:' + fill.toFixed(1) + '%"></i></div>' +
-             cols + '</div>';
+  var html = '<div class="ladder" style="--f:' + ((CLAIMED - 1) / 6) + '">' + cols + '</div>';
   $$('[data-ladder]').forEach(function (el) { el.innerHTML = html; });
 }
 
@@ -191,7 +189,7 @@ var NAV_ICONS = {
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
-  { id: 'timeline', label: 'Timeline' },
+  { id: 'timeline', label: 'History' },
   { id: 'explore', label: 'Explore' }
 ];
 
