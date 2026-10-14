@@ -318,9 +318,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The book sits low and the GIF is framed high, so the couple reads above it
    rather than behind it. At 76px the heads landed inside the open pages. */
 /* Sits above the card, so the book rests on it rather than slipping behind it.
-   The 6px it gains at the top it gives back at the bottom, so it drops without
-   making the hero taller and shoving the card down with it. */
-.r2-bookwrap{position:relative;z-index:5;width:242px;height:161px;margin:110px 0 -6px;
+   Whatever it gains at the top it gives back at the bottom, so it drops without
+   making the hero taller and shoving the card down with it. Not a transform:
+   bookShift already owns that property while the cover swings open. */
+.r2-bookwrap{position:relative;z-index:5;width:242px;height:161px;margin:118px 0 -14px;
   perspective:900px}
 .r2-book{display:block;width:242px;height:161px;object-fit:contain;opacity:0}
 /* The spine sits at the wrapper's centre line; the cover hinges off it. */
