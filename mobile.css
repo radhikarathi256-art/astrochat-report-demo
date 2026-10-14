@@ -55,4 +55,6 @@
 .dr-ctl{display:flex;flex-direction:column;gap:8px}
 .dr-ctl>button{height:44px;border-radius:12px;border:1px solid var(--brand);background:#fff;
   font:600 14px/20px var(--sans);color:var(--brand)}
+.dr-ctl>a{display:flex;align-items:center;justify-content:center;height:44px;border-radius:12px;
+  border:1px solid var(--g200);font:600 14px/20px var(--sans);color:var(--g600);text-decoration:none}
 @media (prefers-reduced-motion:reduce){.drawer,.dscrim{transition:none}}

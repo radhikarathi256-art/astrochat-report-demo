@@ -53,6 +53,9 @@ img{display:block}
 .switcher button.on{border-color:var(--brand);background:var(--brand50);color:var(--w900)}
 .switcher hr{border:0;border-top:1px solid var(--g200);margin:10px 0}
 .switcher .ghost{text-align:center;color:var(--brand);border-color:#F6C3AE}
+.switcher .sw-link{display:block;margin-top:8px;text-align:center;
+  font:500 12px/18px var(--sans);color:var(--g500);text-decoration:none}
+.switcher .sw-link:hover{color:var(--brand)}
 @media (max-width:900px){ .switcher{position:static;width:auto;margin:0 auto 16px;max-width:360px} .stage{height:auto} }
 
 /* ---------- Status bar ---------- */
