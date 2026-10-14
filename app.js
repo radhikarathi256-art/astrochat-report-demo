@@ -330,6 +330,33 @@ var ALSO = [
   { t: 'Love report', s: 'What your heart needs', p: '₹49' }
 ];
 
+/* Melooha's ring dials, in our light palette. A bare "72" told the reader
+   nothing, so the word under the label carries the meaning and the ring
+   carries the degree. */
+var DIALS = [
+  ['Marriage timing', 'Strong',       72, '#DC6803'],
+  ['Joint finance',   'Steady',       64, '#027A48'],
+  ['In-law warmth',   'Warms slowly', 60, '#7D58A1'],
+  ['Manglik dosh',    'Not present', 100, '#0E9384']
+];
+
+function dial(label, sub, pct, col) {
+  var r = 42, c = 2 * Math.PI * r;
+  var a0 = -Math.PI / 2, a1 = a0 + 2 * Math.PI * pct / 100;
+  var pt = function (a) { return [(50 + r * Math.cos(a)).toFixed(1), (50 + r * Math.sin(a)).toFixed(1)]; };
+  var s = pt(a0), e = pt(a1);
+  return '<div class="dial" style="--c:' + col + '">' +
+    '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      '<circle class="tk" cx="50" cy="50" r="' + r + '"/>' +
+      '<circle class="ar" cx="50" cy="50" r="' + r + '" transform="rotate(-90 50 50)" ' +
+        'data-dash="' + (c * pct / 100).toFixed(1) + ' ' + c.toFixed(1) + '" ' +
+        'stroke-dasharray="0 ' + c.toFixed(1) + '"/>' +
+      '<circle class="cap" cx="' + s[0] + '" cy="' + s[1] + '" r="4.4"/>' +
+      '<circle class="cap" cx="' + e[0] + '" cy="' + e[1] + '" r="4.4"/>' +
+    '</svg>' +
+    '<span><b>' + label + '</b><small>' + sub + '</small></span></div>';
+}
+
 function renderRead() {
   $('#readBody').innerHTML =
     '<div class="r-cover">' +
@@ -341,11 +368,8 @@ function renderRead() {
 
     accent('THE BIG PICTURE', 'Your marriage house is strong and Venus sits well. The clearest window opens in March 2027. The wait so far has a reason, and it ends soon.') +
 
-    '<div class="r-scores">' +
-      '<div><b>72</b><small>MARRIAGE SCORE</small></div>' +
-      '<div><b>64</b><small>JOINT FINANCE</small></div>' +
-      '<div><b>60</b><small>IN-LAW WARMTH</small></div>' +
-      '<div><b class="green">NO</b><small>MANGLIK</small></div>' +
+    '<div class="r-scores"><p class="dlbl">YOUR CHART AT A GLANCE</p>' +
+      DIALS.map(function (d) { return dial(d[0], d[1], d[2], d[3]); }).join('') +
     '</div>' +
 
     '<div class="r-sec">' +
@@ -449,8 +473,11 @@ function animateBars() {
   // Reset to 0 first so the fill animates every time the screen is opened.
   var bars = $$('#readBody .track i');
   bars.forEach(function (i) { i.style.width = '0'; });
+  var arcs = $$('#readBody .dial .ar');
+  arcs.forEach(function (a) { a.setAttribute('stroke-dasharray', '0 265'); });
   later(function () {
     bars.forEach(function (i) { i.style.width = i.getAttribute('data-w') + '%'; });
+    arcs.forEach(function (a) { a.setAttribute('stroke-dasharray', a.getAttribute('data-dash')); });
   }, 220);
 }
 

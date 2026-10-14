@@ -369,9 +369,36 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .qrow i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--w50);
   display:grid;place-items:center;font:600 12px/18px var(--sans);font-style:normal;color:var(--w700)}
 .qrow span{font:500 14px/20px var(--sans);color:var(--g700)}
-.review{background:var(--g50);border-radius:12px;padding:13px 15px}
+/* The page count rides on the section label so it reads as one line. */
+.lbl .pgs{float:right;font-style:normal;font-weight:500;color:var(--g400)}
+
+/* Contents list. The numeral is the only decoration it needs. */
+.toc{margin:0;padding:0;list-style:none;counter-reset:toc}
+.toc li{counter-increment:toc;display:flex;flex-direction:column;
+  padding:11px 0 11px 30px;position:relative;border-top:1px solid var(--g200)}
+.toc li:first-child{border-top:0;padding-top:0}
+.toc li::before{content:counter(toc);position:absolute;left:0;top:11px;
+  font:600 13px/20px var(--sans);color:var(--g300)}
+.toc li:first-child::before{top:0}
+.toc b{font:600 15px/22px var(--sans);color:var(--g800)}
+.toc span{display:flex;align-items:baseline;gap:8px;font:400 13px/20px var(--sans);color:var(--g500)}
+.toc em{margin-left:auto;flex:none;font-style:normal;font:500 12px/20px var(--sans);color:var(--g400)}
+
+/* Rating summary above the quotes, so the average is stated once and loudly. */
+.rsum{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.rsum>b{font:700 34px/38px var(--sans);color:var(--g900)}
+.rsum>span{display:flex;flex-direction:column;gap:1px}
+.rsum .stars{font-style:normal;font:400 15px/20px var(--sans);color:#F79009;letter-spacing:2px}
+.rsum em{font-style:normal;font:400 13px/18px var(--sans);color:var(--g500)}
+
+/* Quotes scroll sideways; stacking three of them would bury the CTA. */
+.revs{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+  margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+.revs::-webkit-scrollbar{display:none}
+.review{flex:none;width:258px;scroll-snap-align:start;background:var(--g50);
+  border-radius:12px;padding:13px 15px}
 .review b{display:block;font:600 12px/18px var(--sans);color:var(--w700);margin-bottom:6px}
-.review p{margin:0;font:400 14px/18px var(--sans);color:var(--g600)}
+.review p{margin:0;font:400 14px/20px var(--sans);color:var(--g600)}
 
 /* ---------- Sticky buy bar ---------- */
 .buybar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:10px;
@@ -426,11 +453,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r-cover .rfor{margin:8px 0 0;font:600 16px/20px var(--sans);color:var(--brand)}
 .r-cover .rmeta{margin:8px 0 0;font:400 12px/18px var(--sans);color:var(--g500)}
 .r-card{background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:16px}
-.r-scores{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.r-scores div{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:17px 0;text-align:center}
-.r-scores b{display:block;font:700 24px/30px var(--sans);color:var(--w700)}
-.r-scores b.green{color:var(--s700)}
-.r-scores small{display:block;font:600 12px/18px var(--sans);letter-spacing:.03em;color:var(--g600);margin-top:3px}
+/* Ring dials, after Melooha: the arc carries the degree and the word under the
+   label carries the meaning, so no raw number is ever shown. */
+.r-scores{display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  background:#fff;border-radius:12px;padding:16px 4px 12px}
+.r-scores .dlbl{grid-column:1/-1;margin:0 0 4px;padding:0 12px;
+  font:600 12px/18px var(--sans);letter-spacing:.04em;color:var(--g500)}
+.dial{position:relative;aspect-ratio:1;display:grid;place-items:center}
+.dial svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dial .tk{fill:none;stroke:var(--c);stroke-width:2.6;opacity:.15}
+.dial .ar{fill:none;stroke:var(--c);stroke-width:2.6;stroke-linecap:round;
+  transition:stroke-dasharray .9s cubic-bezier(.22,1,.36,1)}
+.dial .cap{fill:var(--c)}
+.dial span{position:relative;text-align:center;padding:0 22px}
+.dial b{display:block;font:600 14px/18px var(--sans);color:var(--g800)}
+.dial small{display:block;margin-top:3px;font:600 12px/16px var(--sans);color:var(--c)}
 .r-sec{background:#fff;border-radius:12px;overflow:hidden;padding:0 0 16px}
 .r-sec .top-bar{height:4px;background:var(--w700);margin:0 16px 14px;border-radius:0 0 2px 2px}
 .r-sec .shead{padding:0 16px}
