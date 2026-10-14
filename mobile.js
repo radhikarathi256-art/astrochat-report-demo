@@ -24,8 +24,11 @@
     }).join('');
   }
 
+  // A forced reflow, not rAF: browsers throttle rAF when the tab is not
+  // painting, and the open class would then never land.
   function open()  { render(); scrim.hidden = false;
-    requestAnimationFrame(function () { scrim.classList.add('on'); drawer.classList.add('on'); });
+    void scrim.offsetHeight;
+    scrim.classList.add('on'); drawer.classList.add('on');
     drawer.setAttribute('aria-hidden', 'false'); }
   function close() { scrim.classList.remove('on'); drawer.classList.remove('on');
     drawer.setAttribute('aria-hidden', 'true');
