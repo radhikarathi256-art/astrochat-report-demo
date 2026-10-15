@@ -227,6 +227,101 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .bubble .of-hook{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
 .of-sub{font:400 12px/17px var(--sans);color:var(--g500)}
 .offer .btn{margin-top:10px}
+.of-eyebrow{display:block;margin-bottom:8px;font:700 11px/16px var(--sans);
+  letter-spacing:.05em;text-transform:uppercase;color:var(--brand-dk)}
+/* Seven pips, filled as the chapters arrive. This is the whole idea in 90px:
+   she can see what she has and what is still shut, every day. */
+.of-dots{display:flex;gap:4px;margin-top:7px}
+.of-dots i{width:100%;height:4px;border-radius:2px;background:#F2D7C8}
+.of-dots i.got{background:var(--brand)}
+.of-note{margin:10px 0 0;font:500 12px/17px var(--sans);color:var(--g600)}
+
+/* ---------- Chat · free minutes over ----------
+   The screen the journey turns on. Today it ends on a billing notice; the
+   chapter has to arrive before that line, inside the conversation. */
+.chat-nav{gap:10px}
+.cn-av{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:50% 22%;flex:none}
+.cn-t{display:flex;flex-direction:column;min-width:0}
+.cn-t b{font:700 16px/21px var(--sans);color:var(--g900)}
+.cn-t small{display:flex;align-items:center;gap:5px;font:500 12px/16px var(--sans);color:#067647}
+.cn-t small::before{content:"";width:6px;height:6px;border-radius:50%;background:#12B76A}
+.chat-scroll{background:#FDF0EB}
+.chat-thread{display:flex;flex-direction:column;gap:9px;padding:14px 16px 4px}
+
+.c-b{max-width:84%;padding:9px 12px;border-radius:12px;position:relative}
+.c-b p{margin:0;font:400 15px/21px var(--sans);color:var(--g800)}
+.c-b time{display:block;margin-top:2px;text-align:right;
+  font:400 11px/14px var(--sans);color:var(--g400)}
+.c-b.hemali{align-self:flex-start;background:#fff;border-radius:3px 12px 12px 12px}
+.c-b.user{align-self:flex-end;background:#FBDDD0;border-radius:12px 3px 12px 12px}
+/* The grey system voice, kept for the join notice and the end-of-chat notice,
+   so the chapter above it reads as Hemali and not as the app. */
+.c-sys,.c-end{margin:4px 0;padding:9px 14px;border-radius:10px;text-align:center;
+  background:#EEF1F6;font:400 13px/19px var(--sans);color:var(--g600)}
+.c-end{margin-top:8px}
+
+/* The chapter, handed over in the chat. Warm paper, not a product card. */
+.ch-card{align-self:stretch;position:relative;padding:13px 14px 12px;border-radius:14px;
+  background:linear-gradient(180deg,#FFF6EC 0,#FFFFFF 62%);
+  border:1px solid #F0D6BE;box-shadow:0 6px 16px rgba(122,46,14,.09)}
+/* Two leaves peeking out behind it — the stack reads as "there are more". */
+.ch-card::before{content:"";position:absolute;inset:-6px 10px 6px 14px;z-index:-1;
+  border-radius:12px;background:#FBE4D2}
+.ch-no{display:block;font:700 10px/15px var(--sans);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--brand-dk)}
+.ch-t{display:block;margin-top:4px;font:700 16px/21px var(--sans);color:var(--g900)}
+.ch-s{margin:3px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
+/* Scoped past `.btn.sm`, which sets width:auto. A chapter handed to her in the
+   chat is the main action on the screen, so it takes the card's full width. */
+.ch-card .btn.ch-go{margin-top:11px;width:100%;height:42px;font-size:15px}
+.ch-saved{display:flex;align-items:center;gap:5px;margin-top:9px;
+  font:500 11px/16px var(--sans);color:#067647}
+.ch-saved::before{content:"";width:13px;height:13px;border-radius:50%;background:#ECFDF3;
+  box-shadow:inset 0 0 0 1.4px #ABEFC6}
+/* Day 3. The sentence stops mid-air and fades out — the truncation is the sell,
+   not the discount underneath it. */
+.ch-cut{position:relative;margin:9px 0 0;font:400 14px/21px var(--sans);color:var(--g700)}
+.ch-fade{background:linear-gradient(90deg,var(--g700) 0,rgba(71,84,103,.08) 86%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* The paid route, unchanged, pinned under the free one. */
+.chat-cta{position:absolute;left:0;right:0;bottom:0;z-index:6;
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  background:#fff;border-top:1px solid var(--g200)}
+.cc-row{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;
+  background:#FDEDE4}
+.cc-row img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 22%;flex:none}
+.cc-row p{margin:0;font:500 13px/19px var(--sans);color:var(--g800)}
+.cc-row s{color:var(--g400)}
+.cc-row b{color:#067647}
+.chat-cta .btn{margin-top:10px}
+
+/* ---------- The 7 chapters, on the sell page ----------
+   What she already owns sits open at the top, so the paywall is asking her to
+   continue something rather than to start something. */
+.chlist{margin:0;padding:0;list-style:none}
+.chlist li{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid var(--g200)}
+.chlist li:last-child{border-bottom:0;padding-bottom:0}
+.ch-ic{flex:none;width:22px;height:22px;margin-top:1px;border-radius:50%;position:relative}
+/* Open: a green tick. Shut: a lock drawn from a box and an arc. */
+.chlist .open .ch-ic{background:var(--s50)}
+.chlist .open .ch-ic::after{content:"";position:absolute;left:7px;top:7px;width:7px;height:4px;
+  border:1.7px solid var(--s700);border-top:0;border-right:0;transform:rotate(-45deg)}
+.chlist .shut .ch-ic{background:var(--g100)}
+.chlist .shut .ch-ic::before{content:"";position:absolute;left:6px;top:10px;width:10px;height:7px;
+  border-radius:1.5px;background:var(--g400)}
+.chlist .shut .ch-ic::after{content:"";position:absolute;left:8px;top:6px;width:6px;height:5px;
+  border:1.5px solid var(--g400);border-bottom:0;border-radius:3px 3px 0 0}
+.ch-body{min-width:0;display:flex;flex-direction:column;gap:2px}
+.ch-body b{font:600 15px/21px var(--sans);color:var(--g900)}
+.chlist .shut .ch-body b{color:var(--g500)}
+.ch-body>span{font:400 13px/19px var(--sans);color:var(--g500)}
+/* The report makes the questions; the chat answers them. A free user stares at
+   an empty box, a reader has seven questions already written for her. */
+.ch-ask{align-self:flex-start;margin-top:7px;padding:5px 10px;border-radius:7px;
+  border:1px solid var(--brand);background:#fff;color:var(--brand);
+  font:600 12px/17px var(--sans)}
+.ch-ask:active{background:var(--brand50)}
 
 /* ---------- R.1b hero + expert card ---------- */
 .hero{position:relative;padding:calc(var(--sbh) + 58px) 16px 10px;text-align:center;

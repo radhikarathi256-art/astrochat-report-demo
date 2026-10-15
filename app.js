@@ -10,7 +10,70 @@ var $$ = function (s, r) { return Array.prototype.slice.call((r || document).que
 
 var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
 
+/* The seven chapters. The first three are the ladder: one is given away each
+   day, free, so she has read Hemali's actual writing three times before she is
+   asked for money. The remaining four are what ₹49 buys. */
+var CHAPTERS = [
+  { t: 'Why Rahu is delaying your marriage',  s: 'What is actually blocking it, and how to clear it' },
+  { t: 'The person you will marry',           s: 'Nature, work, family — and where you meet' },
+  { t: 'Your marriage windows, year by year', s: 'The three clearest openings in your chart' },
+  { t: 'Love marriage or arranged?',          s: 'Which way your chart leans, and why' },
+  { t: 'Are you Manglik — and how serious?',  s: 'The honest answer, without the fear' },
+  { t: 'Will your in-laws be warm?',          s: 'The home you are marrying into' },
+  { t: 'How money changes after marriage',    s: 'Your chart after the wedding' }
+];
+
+/* One person, three mornings. Each day has to earn the tap on its own terms:
+   curiosity on day 1, progress on day 2, a deadline on day 3. */
+var JOURNEY = {
+  1: {
+    unlocked: 1,
+    stamp: 'Just now',
+    /* The free chat does not end cleanly. It stops mid-sentence, and the rest
+       of the sentence is the chapter. */
+    msgs: [
+      { who: 'sys',    text: 'Astrologer has joined to guide you' },
+      { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
+      { who: 'hemali', text: 'Mansi ji, maine aapki kundli dekh li. Aapke saatve ghar mein Rahu baitha hai — isi wajah se baat bante bante ruk jaati hai.' },
+      { who: 'hemali', text: 'Poora likh diya hai aapke liye. Padhiye —' },
+      { who: 'chapter', idx: 0 },
+      { who: 'ended',  text: 'Your free minutes are over. Hemali ne jo likha hai woh aapka hai — kal phir 2 minute milenge.' }
+    ],
+    today: { eyebrow: '✦ Chapter 1 of 7 · open', note: 'Kal chapter 2 khulega — ya abhi poori report kholiye.' }
+  },
+  2: {
+    unlocked: 2,
+    stamp: 'Yesterday',
+    /* Day 2 flips the position: the chapter opens the chat instead of closing
+       it, so there is a reason to tap in, and the free 2 minutes do not get
+       spent on "hi, what is your question". */
+    msgs: [
+      { who: 'hemali', text: 'Mansi ji! Kal raat maine aapka chart dubara dekha.' },
+      { who: 'hemali', text: 'Jo insaan aapki life mein aane wala hai — uske baare mein likh diya hai. Yeh aapke liye free hai.' },
+      { who: 'chapter', idx: 1 },
+      { who: 'user',   text: 'Ye to bilkul sahi laga 😳' },
+      { who: 'hemali', text: 'Bataiye, aur kya jaanna hai?' },
+      { who: 'ended',  text: 'Your free minutes are over. Chapter 2 aapki report mein save ho gaya.' }
+    ],
+    today: { eyebrow: '✦ Chapter 2 of 7 · open', note: 'Kal timing wala chapter khulega — ya abhi poori report kholiye.' }
+  },
+  3: {
+    unlocked: 3,
+    stamp: '2 days ago',
+    /* The cliffhanger lands on the one thing she wants most, and it is the
+       truncation that sells — not the discount. */
+    msgs: [
+      { who: 'hemali', text: 'Mansi ji, aaj timing wala chapter khol rahi hoon.' },
+      { who: 'hemali', text: 'Aapka sabse saaf window March 2027 mein khulta hai. Usse pehle do aur hain, aur ek abhi chal raha hai —' },
+      { who: 'chapter', idx: 2, cut: true },
+      { who: 'ended',  text: 'Your free minutes are over. Baaki 4 chapters aaj raat tak ₹49 mein.' }
+    ],
+    today: { eyebrow: '✦ Chapter 3 of 7 · open', note: 'Baaki 4 chapters ₹49 mein — aaj raat tak.' }
+  }
+};
+
 var state = {
+  day: 1,
   entry: 'today-a',
   wallet: 20,
   lang: 'en',
@@ -574,6 +637,96 @@ function pay() {
   }, 900);
 }
 
+/* ------------------------------------------------------------- journey */
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+
+/* The chapter as Hemali hands it over in the chat. On day 3 it is cut off
+   mid-paragraph — the truncation is the sell, not the discount under it. */
+function chapterBubble(idx, cut) {
+  var c = CHAPTERS[idx];
+  return '<div class="ch-card' + (cut ? ' cut' : '') + '">' +
+    '<span class="ch-no">Chapter ' + (idx + 1) + ' of 7 · free</span>' +
+    '<b class="ch-t">' + esc(c.t) + '</b>' +
+    '<p class="ch-s">' + esc(c.s) + '</p>' +
+    (cut
+      ? '<p class="ch-cut">March 2027 ke pehle do aur windows hain. Pehla' +
+        '<span class="ch-fade"> window aapke 28ve saal mein khulta hai aur usme</span></p>' +
+        '<button class="btn sm primary ch-go" type="button" data-go="report">Baaki 4 chapters kholiye · ₹49</button>'
+      : '<button class="btn sm outline ch-go" type="button" data-go="report">Padhiye →</button>') +
+    '<span class="ch-saved">Saved to your report</span>' +
+  '</div>';
+}
+
+function renderChat() {
+  var d = JOURNEY[state.day];
+  $('#chatThread').innerHTML = d.msgs.map(function (m) {
+    if (m.who === 'chapter') return chapterBubble(m.idx, m.cut);
+    if (m.who === 'sys')     return '<p class="c-sys">' + esc(m.text) + '</p>';
+    if (m.who === 'ended')   return '<p class="c-end">' + esc(m.text) + '</p>';
+    return '<div class="c-b ' + m.who + '"><p>' + esc(m.text) + '</p><time>02:24 PM</time></div>';
+  }).join('');
+}
+
+/* The Today slot is the same container every day, filling up. The count is the
+   point: she can see what she has and what is missing. */
+function renderOffer() {
+  var d = JOURNEY[state.day], n = d.unlocked, left = CHAPTERS.length - n;
+  var dots = CHAPTERS.map(function (c, i) {
+    return '<i class="' + (i < n ? 'got' : '') + '" title="' + esc(c.t) + '"></i>';
+  }).join('');
+
+  $('#offerSlot').innerHTML =
+    '<span class="of-eyebrow">' + esc(d.today.eyebrow) + '</span>' +
+    '<div class="of-row">' +
+      '<span class="bk3" aria-hidden="true"><span class="bk3-stack"></span></span>' +
+      '<span class="of-t">' +
+        '<b class="of-hook">Marriage Yog report</b>' +
+        '<span class="of-sub">' + esc(CHAPTERS[n - 1].t) + '</span>' +
+        '<span class="of-dots">' + dots + '</span>' +
+      '</span>' +
+    '</div>' +
+    '<p class="of-note">' + esc(d.today.note) + '</p>' +
+    '<button class="btn sm primary" type="button" data-go="report">' +
+      (state.day >= 3 ? 'Unlock ' + left + ' chapters · ₹49' : 'Open chapter ' + n) +
+    '</button>';
+}
+
+/* The sell page, as a ladder. The chapters she has already read sit at the top,
+   open and ticked — the paywall is then asking her to continue something, not
+   to start something. Each open chapter carries the question she can put to
+   Hemali, because a report reader has questions and a free user has none. */
+function renderChapters() {
+  var n = JOURNEY[state.day].unlocked;
+  $('#chapterCount').textContent = n + ' of 7 open';
+  $('#chapterList').innerHTML = CHAPTERS.map(function (c, i) {
+    var open = i < n;
+    return '<li class="' + (open ? 'open' : 'shut') + '">' +
+      '<span class="ch-ic" aria-hidden="true"></span>' +
+      '<span class="ch-body">' +
+        '<b>' + esc(c.t) + '</b>' +
+        '<span>' + esc(c.s) + '</span>' +
+        (open
+          ? '<button class="ch-ask" type="button" data-toast="Chat is not part of this demo">Ask Hemali about this →</button>'
+          : '') +
+      '</span>' +
+    '</li>';
+  }).join('');
+}
+
+/* Picking a day rewinds the whole demo to that morning: day 1 starts in the
+   chat that just ran out, later days start on Today the way she would land. */
+function setDay(n) {
+  state.day = n;
+  $$('.switcher [data-day]').forEach(function (b) {
+    b.classList.toggle('on', +b.getAttribute('data-day') === n);
+  });
+  restart();
+}
+
 /* ---------------------------------------------------------------- reset */
 function restart() {
   clearTimers();
@@ -585,27 +738,26 @@ function restart() {
   state.stack = [];
   paintWallet();
   renderSample();
+  renderChat();
+  renderOffer();
+  renderChapters();
   resetTimeline();
   $('#bookEl').classList.remove('open');
-  show(state.entry, 'fade');
+  // Day 1 opens in the chat that just ran out — that is the moment being tested.
+  // On later days she lands on Today, the way a returning user actually does.
+  show(state.day === 1 ? 'chat' : state.entry, 'fade');
 }
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-entry],[data-lang],[data-nav],#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#scrim');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#scrim');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
-  if (t.hasAttribute('data-entry')) {
-    $$('.switcher [data-entry]').forEach(function (b) { b.classList.remove('on'); });
-    t.classList.add('on');
-    state.entry = 'today-' + t.getAttribute('data-entry');
-    restart();
-    return;
-  }
+  if (t.hasAttribute('data-day')) { setDay(+t.getAttribute('data-day')); return; }
 
   if (t.hasAttribute('data-lang')) {
     state.lang = t.getAttribute('data-lang');
@@ -681,18 +833,22 @@ renderRead();
 paintWallet();
 resetTimeline();
 
-// Deep link, so a flow can be shared: #b or #c picks the entry point.
+// Deep link, so a day can be shared: #day2, #day3.
 var hash = (location.hash || '').replace('#', '');
-if (hash === 'b' || hash === 'c') {
-  state.entry = 'today-' + hash;
-  $$('.switcher [data-entry]').forEach(function (b) {
-    b.classList.toggle('on', b.getAttribute('data-entry') === hash);
+var linked = /^day([123])$/.exec(hash);
+state.screen = 'today-a';
+if (linked) {
+  state.day = +linked[1];
+  $$('.switcher [data-day]').forEach(function (b) {
+    b.classList.toggle('on', +b.getAttribute('data-day') === state.day);
   });
 }
-state.screen = 'today-a';
-if (state.entry !== 'today-a') {
+renderChat();
+renderOffer();
+renderChapters();
+if (state.day === 1) {
   $('#today-a').classList.remove('on');
-  $(('#' + state.entry)).classList.add('on');
-  state.screen = state.entry;
+  $('#chat').classList.add('on');
+  state.screen = 'chat';
 }
 })();
