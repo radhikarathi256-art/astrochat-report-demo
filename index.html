@@ -121,6 +121,10 @@
                 <button class="btn primary" type="button" data-toast="Chat is not part of this demo">Continue Chat</button>
               </div>
             </div>
+            <!-- Day 1 only. The check-in has not been answered yet, so there is
+                 no Hemali bubble to sit under — and the expert card is the one
+                 surface that is already hers and already on screen. -->
+            <div class="ex-report" id="expertSlot" hidden></div>
           </div>
         </div>
 
@@ -130,7 +134,20 @@
           <div class="sec-head"><span>Daily reward</span><a class="lnk" data-toast="Reminders are not part of this demo"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 0 0-4 4v2.6L3 11h10l-1-2.4V6a4 4 0 0 0-4-4Z" stroke="#667085" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.6 13a1.5 1.5 0 0 0 2.8 0" stroke="#667085" stroke-width="1.3" stroke-linecap="round"/></svg> Remind Me →</a></div>
         <div class="ladder-wrap" data-ladder></div>
 
-        <div class="merged">
+        <!-- Day 1 arrives unanswered: the question, three moods, nothing else.
+             Hemali has not replied yet, so there is no bubble on this day. -->
+        <div class="merged unanswered" id="checkinCard" hidden>
+          <h3 class="rh-t">Day 1 · Answer to get <span class="amt">₹9</span> in your wallet</h3>
+          <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
+          <div class="mood-row pick">
+            <button class="mood-chip" type="button" data-mood>🙂 Achha</button>
+            <button class="mood-chip" type="button" data-mood>😐 Okay</button>
+            <button class="mood-chip" type="button" data-mood>🙁 Pareshan</button>
+          </div>
+          <p class="social"><span class="faces"><i></i><i></i><i></i></span><b>1 Lakh+</b> users earned rewards</p>
+        </div>
+
+        <div class="merged" id="answeredCard">
           <h3 class="rh-t">Day 1 · <span class="amt">₹9</span> added to your wallet</h3>
           <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
           <div class="mood-row"><span class="mood-chip">Pareshan</span></div>
@@ -484,6 +501,19 @@
 
   <!-- ===================== Sheets ===================== -->
   <div class="scrim" id="scrim" hidden></div>
+
+  <!-- Day 1 · Daily reward intro. Fires once she scrolls past the free-chat
+       section, per the daily reward board. It is the first thing competing with
+       the report for the same scroll, which is the point of showing it here. -->
+  <div class="sheet" id="sheet-intro" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="intro-coin" aria-hidden="true"><span>₹</span></div>
+    <h3 class="intro-h">Answer &amp; Earn every day!</h3>
+    <p class="sheet-sub intro-sub">Answer today's question to earn.</p>
+    <div class="ladder-wrap" data-ladder></div>
+    <button class="btn primary" type="button" id="answerNow">Answer now</button>
+    <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
+  </div>
 
   <!-- R.3b · Choose language -->
   <div class="sheet" id="sheet-lang" aria-hidden="true">

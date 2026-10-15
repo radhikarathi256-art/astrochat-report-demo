@@ -82,6 +82,7 @@ var state = {
   screen: 'today-a',
   stack: [],
   sheet: null,
+  introShown: false,
   timers: []
 };
 
@@ -695,6 +696,50 @@ function renderOffer() {
     '</button>';
 }
 
+/* Day 1 is structurally different, not just differently worded. The check-in
+   has not been answered, so Hemali has no bubble on the page — which is why the
+   report cannot live where it lives on day 2 and 3. It goes on the expert card,
+   the one surface that is already hers and already on screen. */
+function renderDayOne() {
+  var d1 = state.day === 1;
+  $('#checkinCard').hidden  = !d1;
+  $('#answeredCard').hidden = d1;
+  $('#expertSlot').hidden   = !d1;
+  if (!d1) return;
+
+  $('#expertSlot').innerHTML =
+    '<span class="ex-eyebrow">✦ From your chat just now</span>' +
+    '<div class="ex-row">' +
+      '<span class="bk3" aria-hidden="true"></span>' +
+      '<span class="ex-t">' +
+        '<b>' + esc(CHAPTERS[0].t) + '</b>' +
+        '<span>Chapter 1 is open and free. Six more inside.</span>' +
+      '</span>' +
+    '</div>' +
+    '<div class="ex-pr"><b>₹49</b><s>₹199</s><i>75% OFF</i></div>' +
+    '<button class="btn outline" type="button" data-go="report">Read chapter 1 →</button>';
+}
+
+/* The intro sheet fires once, on the scroll past the free-chat section, exactly
+   as the daily reward board specifies. Day 1 only — by day 2 she has seen it. */
+function armIntroSheet() {
+  var sc = $('#today-a [data-scroll]'), experts = $('#today-a .expert-card');
+  if (!sc || !experts) return;
+  sc.removeEventListener('scroll', onTodayScroll);
+  state.introShown = state.day !== 1;
+  if (state.day === 1) sc.addEventListener('scroll', onTodayScroll);
+}
+/* "Past the free chat section" in practice means the check-in has come into
+   view — waiting for the expert card to leave the screen entirely needs another
+   full screen of scrolling, by which point she is already somewhere else. */
+function onTodayScroll() {
+  if (state.introShown || state.screen !== 'today-a') return;
+  var card = $('#checkinCard'), sc = $('#today-a [data-scroll]');
+  if (card.getBoundingClientRect().top > sc.getBoundingClientRect().bottom - 80) return;
+  state.introShown = true;
+  openSheet('intro');
+}
+
 /* The sell page, as a ladder. The chapters she has already read sit at the top,
    open and ticked — the paywall is then asking her to continue something, not
    to start something. Each open chapter carries the question she can put to
@@ -741,6 +786,8 @@ function restart() {
   renderChat();
   renderOffer();
   renderChapters();
+  renderDayOne();
+  armIntroSheet();
   resetTimeline();
   $('#bookEl').classList.remove('open');
   // Day 1 opens in the chat that just ran out — that is the moment being tested.
@@ -750,7 +797,7 @@ function restart() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#scrim');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#scrim');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -758,6 +805,28 @@ document.addEventListener('click', function (e) {
   if (t.id === 'restart') { restart(); return; }
 
   if (t.hasAttribute('data-day')) { setDay(+t.getAttribute('data-day')); return; }
+
+  // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
+  // on the daily reward board. Your Experts stays on screen above it.
+  if (t.id === 'answerNow') {
+    closeSheet();
+    var card = $('#checkinCard');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.add('focus');
+    later(function () { card.classList.remove('focus'); }, 2600);
+    return;
+  }
+
+  // Answering flips the card to the replied state — which is also the moment
+  // Hemali gets a bubble, and the report could move into it.
+  if (t.hasAttribute('data-mood')) {
+    $('#checkinCard').hidden = true;
+    $('#answeredCard').hidden = false;
+    $('#expertSlot').hidden = true;
+    renderOffer();
+    toast('₹9 added to your wallet', 'success');
+    return;
+  }
 
   if (t.hasAttribute('data-lang')) {
     state.lang = t.getAttribute('data-lang');
@@ -846,6 +915,8 @@ if (linked) {
 renderChat();
 renderOffer();
 renderChapters();
+renderDayOne();
+armIntroSheet();
 if (state.day === 1) {
   $('#today-a').classList.remove('on');
   $('#chat').classList.add('on');

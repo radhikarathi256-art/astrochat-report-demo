@@ -236,6 +236,53 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of-dots i.got{background:var(--brand)}
 .of-note{margin:10px 0 0;font:500 12px/17px var(--sans);color:var(--g600)}
 
+/* ---------- Day 1 · the report on the expert card ----------
+   Day 1 has no Hemali bubble, because the check-in is still unanswered. The
+   expert card is the only surface already in her name, so the report sits
+   inside it under a divider, rather than floating as a card of its own. */
+.ex-report{margin-top:12px;padding-top:12px;border-top:1px dashed #E7DAF5}
+.ex-eyebrow{display:block;margin-bottom:8px;font:700 10px/15px var(--sans);
+  letter-spacing:.06em;text-transform:uppercase;color:var(--brand-dk)}
+.ex-row{display:flex;gap:11px;align-items:center}
+.ex-row .bk3{--bw:42px;--bh:56px}
+.ex-t{min-width:0;display:flex;flex-direction:column;gap:3px}
+.ex-t b{font:700 14px/19px var(--sans);color:var(--g900)}
+.ex-t>span{font:400 12px/17px var(--sans);color:var(--g500)}
+.ex-pr{display:flex;align-items:baseline;gap:7px;margin:10px 0}
+.ex-pr b{font:700 17px/22px var(--sans);color:var(--g900)}
+.ex-pr s{font:400 12px/16px var(--sans);color:var(--g400)}
+.ex-pr i{align-self:center;font-style:normal;font:700 10px/14px var(--sans);
+  padding:2px 6px;border-radius:5px;background:#ECFDF3;color:#067647}
+.ex-report .btn{height:42px;font-size:15px}
+
+/* ---------- Day 1 · check-in, not yet answered ----------
+   Three moods and no reply. This is why the report cannot sit in a bubble on
+   day 1: there is no bubble until she taps one of these. */
+.mood-row.pick{display:flex;gap:8px;flex-wrap:wrap}
+.mood-row.pick .mood-chip{border:1px solid var(--g300);background:#fff;
+  padding:7px 13px;border-radius:999px;font:500 14px/20px var(--sans);color:var(--g700)}
+.mood-row.pick .mood-chip:active{background:var(--brand50);border-color:var(--brand)}
+.social{display:flex;align-items:center;gap:8px;margin:13px 0 0;padding-top:12px;
+  border-top:1px solid var(--g200);font:400 13px/19px var(--sans);color:var(--g500)}
+.social b{font-weight:700;color:var(--g700)}
+.faces{display:flex;flex:none}
+.faces i{width:20px;height:20px;border-radius:50%;border:1.5px solid #fff;
+  background:#E9D7FE url('assets/hemali.png') center/cover}
+.faces i+i{margin-left:-7px}
+/* The focus ring from the daily reward board: 2.6s after "Answer now". */
+.merged.focus{box-shadow:0 0 0 3px var(--brand),0 8px 22px rgba(240,106,58,.22)}
+
+/* ---------- Day 1 · daily reward intro sheet ---------- */
+.intro-coin{width:76px;height:76px;margin:2px auto 14px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#FFE9A8,#F5B427 62%,#D98A09);
+  box-shadow:0 0 0 7px #FEF5DC,0 8px 20px rgba(217,138,9,.3)}
+.intro-coin span{font:700 30px/1 var(--sans);color:#8A5208}
+.intro-h{margin:0;text-align:center}
+.intro-sub{text-align:center}
+#sheet-intro .ladder-wrap{margin:16px 0 18px}
+#sheet-intro .btn.text{color:var(--g500)}
+
 /* ---------- Chat · free minutes over ----------
    The screen the journey turns on. Today it ends on a billing notice; the
    chapter has to arrive before that line, inside the conversation. */
