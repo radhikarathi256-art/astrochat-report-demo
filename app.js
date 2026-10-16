@@ -141,6 +141,10 @@ var state = {
      is still unanswered — the intro sheet is asking for that first answer. */
   claimed: 0,
   reminded: false,
+  /* Has she read chapter 1? Until then every surface pushes the read — chapter
+     1 is the hook, and an unread hook sells nothing. Once read, the same
+     surfaces flip to the buy. Days 2/3 assume day 1's read happened. */
+  read1: false,
   /* The morning's free chapter is waiting in History — the dot on the nav says
      so, and visiting History clears it. */
   histDot: true,
@@ -728,8 +732,13 @@ function chapterBubble(idx, cut) {
     (cut
       ? '<p class="ch-cut">' + CUT_TEXT[idx] + '</p>' +
         '<button class="btn sm primary ch-go" type="button" data-go="report">Baaki ' + left + ' chapters kholiye · ₹49</button>'
-      : '<button class="btn sm outline ch-go" type="button" data-read="' + idx + '">Padhiye →</button>') +
-    '<span class="ch-saved">' + (cut ? 'Waiting in your report' : 'Saved to your report') + '</span>' +
+      // Once chapter 1 is read, this bubble's job changes: read → buy the rest.
+      : (state.read1 && idx === 0
+        ? '<button class="btn sm primary ch-go" type="button" data-go="report">Baaki ' + left + ' chapters kholiye · ₹49</button>'
+        : '<button class="btn sm outline ch-go" type="button" data-read="' + idx + '">Padhiye →</button>')) +
+    '<span class="ch-saved">' + (cut
+      ? 'Waiting in your report'
+      : (state.read1 && idx === 0 ? 'Padh liya ✓ · saved to your report' : 'Saved to your report')) + '</span>' +
   '</div>';
 }
 
@@ -805,12 +814,18 @@ function renderOffer() {
     '</div>' +
     '<p class="of-note">' + esc(covered
       ? 'Aapke wallet mein ₹' + state.wallet + ' hai — baaki ' + left + ' chapters ₹0 extra mein.'
-      : d.today.note) + '</p>' +
-    '<button class="btn sm primary" type="button" data-go="report">' +
-      (state.day >= 3
-        ? 'Unlock ' + left + ' chapters · ' + (covered ? '₹0 from wallet' : '₹49')
-        : 'Open chapter ' + n) +
-    '</button>';
+      : (state.read1 && state.day === 1
+        ? 'Chapter 1 padh liya ✓ — wallet mein ₹' + state.wallet + ' hai, baaki ' + left +
+          ' chapters sirf ₹' + Math.max(0, 49 - state.wallet) + ' aur mein.'
+        : d.today.note)) + '</p>' +
+    (state.read1
+      ? '<button class="btn sm primary" type="button" data-go="report">' +
+          (state.day >= 3
+            ? 'Unlock ' + left + ' chapters · ' + (covered ? '₹0 from wallet' : '₹49')
+            : 'Unlock ' + left + ' chapters · pay ₹' + Math.max(0, 49 - state.wallet)) +
+        '</button>'
+      // The hook is unread, so the only ask is the read — the buy waits.
+      : '<button class="btn sm primary" type="button" data-read="0">Read chapter 1 free</button>');
 }
 
 /* Every day lands unanswered, per the daily reward board: the check-in is the
@@ -842,16 +857,28 @@ function renderDayToday() {
 
   // In flow A this card IS the day-1 delivery, so it cannot say "from your
   // chat" — the chat never mentioned it. It has to introduce itself.
-  var eyebrow = state.flow === 'a' ? '✦ Hemali ne aapke liye likha hai' : '✦ From your chat just now';
-  // One compact tappable row — reading happens on the report page, not here.
+  // Before the read, the whole row IS the read — it opens the chapter, not the
+  // sell page. After it, the same row asks for the other six.
+  var eyebrow, title, priceLine, act;
+  if (state.read1) {
+    eyebrow = '✦ Aapne chapter 1 padh liya';
+    title = 'Unlock the other 6 chapters';
+    priceLine = '<b>₹49</b> <s>₹199</s> <i>75% OFF</i>';
+    act = ' data-go="report"';
+  } else {
+    eyebrow = state.flow === 'a' ? '✦ Hemali ne aapke liye likha hai' : '✦ From your chat just now';
+    title = CHAPTERS[0].t;
+    priceLine = 'Chapter 1 free — padhiye · <b>₹49</b> <s>₹199</s> <i>75% OFF</i>';
+    act = ' data-read="0"';
+  }
   $('#expertSlot').innerHTML =
-    '<div class="ex-tap" data-go="report" role="button" tabindex="0">' +
+    '<div class="ex-tap"' + act + ' role="button" tabindex="0">' +
       '<span class="ex-eyebrow">' + eyebrow + '</span>' +
       '<div class="ex-row">' +
         '<span class="bk3" aria-hidden="true"></span>' +
         '<span class="ex-t">' +
-          '<b>' + esc(CHAPTERS[day - 1].t) + '</b>' +
-          '<span class="ex-pr2">Chapter ' + day + ' free · <b>₹49</b> <s>₹199</s> <i>75% OFF</i></span>' +
+          '<b>' + esc(title) + '</b>' +
+          '<span class="ex-pr2">' + priceLine + '</span>' +
         '</span>' +
         '<span class="ex-chev" aria-hidden="true">›</span>' +
       '</div>' +
@@ -982,6 +1009,7 @@ function restart() {
   state.langFrom = 'sample';
   state.paid = false;
   state.reminded = false;
+  state.read1 = state.day >= 2;
   state.histDot = true;
   state.stack = [];
   renderNav();
@@ -1038,7 +1066,16 @@ document.addEventListener('click', function (e) {
     toast('Reminder set — chapter 2 ready hote hi', 'success');
     return;
   }
-  if (t.hasAttribute('data-read')) { openChapterSheet(+t.getAttribute('data-read')); return; }
+  if (t.hasAttribute('data-read')) {
+    var ci = +t.getAttribute('data-read');
+    // Reading chapter 1 flips every day-1 surface from "read it" to "buy the rest".
+    if (ci === 0 && !state.read1) {
+      state.read1 = true;
+      renderDayToday(); renderOffer(); renderChat();
+    }
+    openChapterSheet(ci);
+    return;
+  }
   if (t.id === 'chrCta') { state.langFrom = 'buy'; openSheet('buy'); return; }
 
   if (t.id === 'scrim')   { closeSheet(); return; }
