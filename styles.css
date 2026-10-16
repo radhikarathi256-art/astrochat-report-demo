@@ -282,8 +282,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .intro-coin span{font:700 30px/1 var(--sans);color:#8A5208}
 .intro-h{margin:0;text-align:center}
 .intro-sub{text-align:center}
-#sheet-intro .ladder-wrap{margin:16px 0 18px}
-#sheet-intro .btn.text{color:var(--g500)}
+#sheet-intro .ladder-wrap,#sheet-reward .ladder-wrap{margin:16px 0 18px}
+#sheet-intro .btn.text,#sheet-reward .btn.text{color:var(--g500)}
+
+/* ---------- Notification permission dialog (Android-style) ----------
+   Sits above the reward sheet: the OS asking what "remind me" just promised. */
+.notif{position:absolute;left:28px;right:28px;top:38%;z-index:75;background:#fff;
+  border-radius:16px;padding:20px 20px 8px;box-shadow:0 24px 48px -12px rgba(16,24,40,.35)}
+.notif b{display:block;font:600 16px/24px var(--sans);color:var(--g900)}
+.nf-row{display:flex;justify-content:flex-end;gap:4px;margin-top:14px}
+.nf-row button{border:0;background:none;padding:10px 12px;border-radius:10px;
+  font:600 14px/20px var(--sans);color:var(--brand)}
+.nf-row button:active{background:var(--brand50)}
 
 /* ---------- Chat · free minutes over ----------
    The screen the journey turns on. Today it ends on a billing notice; the

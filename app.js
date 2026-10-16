@@ -92,9 +92,16 @@ var FLOW_A_DAY1 = [
   { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
 ];
 
+/* The two loops share one wallet, and that is the point: ₹20 start + ₹9 + ₹11
+   + ₹13 crosses ₹49 on day 3. The rewards she earned by coming back pay for
+   the report — the close costs her nothing out of pocket. */
+var REWARD = { 1: 9, 2: 11, 3: 13 };
+var WALLET_AT = { 1: 20, 2: 29, 3: 40 };   // start of each day, pre-answer
+
 var state = {
   day: 1,
   flow: 'b',
+  answered: false,
   entry: 'today-a',
   wallet: 20,
   lang: 'en',
@@ -179,10 +186,11 @@ function onEnter(id) {
 /* ---------------------------------------------------------------- wallet */
 function paintWallet() {
   $$('[data-wallet]').forEach(function (el) { el.textContent = '₹' + state.wallet; });
-  $('#buyWallet').textContent = '−₹' + state.wallet;
-  var pay = 49 - state.wallet;
+  // Day 3's wallet is past ₹49 — the deduction caps at the price, pay at zero.
+  $('#buyWallet').textContent = '−₹' + Math.min(state.wallet, 49);
+  var pay = Math.max(0, 49 - state.wallet);
   $('#buyTotal').textContent = '₹' + pay;
-  $('#payBtn').textContent = 'Pay ₹' + pay;
+  $('#payBtn').textContent = pay > 0 ? 'Pay ₹' + pay : 'Unlock with wallet · ₹0';
 }
 
 /* Reveal something that animates in from a parked transform. Reading offsetHeight
@@ -650,7 +658,7 @@ function openBook() {
 function pay() {
   closeSheet();
   state.paid = true;
-  state.wallet = 0;
+  state.wallet = Math.max(0, state.wallet - 49);
   paintWallet();
   toast('Payment successful', 'success');
   later(function () {
@@ -713,6 +721,7 @@ function remindCard() {
    point: she can see what she has and what is missing. */
 function renderOffer() {
   var d = JOURNEY[state.day], n = d.unlocked, left = CHAPTERS.length - n;
+  var covered = state.day >= 3 && state.answered && state.wallet >= 49;
   var dots = CHAPTERS.map(function (c, i) {
     return '<i class="' + (i < n ? 'got' : '') + '" title="' + esc(c.t) + '"></i>';
   }).join('');
@@ -727,42 +736,70 @@ function renderOffer() {
         '<span class="of-dots">' + dots + '</span>' +
       '</span>' +
     '</div>' +
-    '<p class="of-note">' + esc(d.today.note) + '</p>' +
+    '<p class="of-note">' + esc(covered
+      ? 'Aapke wallet mein ₹' + state.wallet + ' hai — baaki ' + left + ' chapters ₹0 extra mein.'
+      : d.today.note) + '</p>' +
     '<button class="btn sm primary" type="button" data-go="report">' +
-      (state.day >= 3 ? 'Unlock ' + left + ' chapters · ₹49' : 'Open chapter ' + n) +
+      (state.day >= 3
+        ? 'Unlock ' + left + ' chapters · ' + (covered ? '₹0 from wallet' : '₹49')
+        : 'Open chapter ' + n) +
     '</button>';
 }
 
-/* Day 1 is structurally different, not just differently worded. The check-in
-   has not been answered, so Hemali has no bubble on the page — which is why the
-   report cannot live where it lives on day 2 and 3. It goes on the expert card,
-   the one surface that is already hers and already on screen. */
-function renderDayOne() {
-  var d1 = state.day === 1;
-  $('#countdownLine').innerHTML = JOURNEY[state.day].countdown;
-  $('#checkinCard').hidden  = !d1;
-  $('#answeredCard').hidden = d1;
-  $('#expertSlot').hidden   = !d1;
-  // The ladder has to agree with the card: nothing collected until she answers.
-  state.claimed = d1 ? 0 : 1;
+/* Every day lands unanswered, per the daily reward board: the check-in is the
+   day's one job, and Hemali's reply (with the report in it) is what answering
+   buys. Until then the chapter sits on the expert card — the one surface that
+   is already hers and already on screen. */
+function renderDayToday() {
+  var day = state.day, r = REWARD[day];
+  $('#countdownLine').innerHTML = JOURNEY[day].countdown;
+  $('#checkinCard').hidden  = state.answered;
+  $('#answeredCard').hidden = !state.answered;
+  $('#checkinTitle').innerHTML =
+    'Day ' + day + ' · Answer to get <span class="amt">₹' + r + '</span> in your wallet';
+  $('#answeredTitle').innerHTML =
+    'Day ' + day + ' · <span class="amt">₹' + r + '</span> added to your wallet';
+  // The ladder has to agree with the card: today is not collected until she answers.
+  state.claimed = state.answered ? day : day - 1;
   renderLadder();
-  if (!d1) return;
+
+  // Once she answers, Hemali has a bubble and the report lives there instead.
+  $('#expertSlot').hidden = state.answered;
+  if (state.answered) return;
 
   // In flow A this card IS the day-1 delivery, so it cannot say "from your
   // chat" — the chat never mentioned it. It has to introduce itself.
+  var eyebrow = day === 1
+    ? (state.flow === 'a' ? '✦ Hemali ne aapke liye likha hai' : '✦ From your chat just now')
+    : '✦ Aaj ka chapter khul gaya';
   $('#expertSlot').innerHTML =
-    '<span class="ex-eyebrow">' + (state.flow === 'a'
-      ? '✦ Hemali ne aapke liye likha hai'
-      : '✦ From your chat just now') + '</span>' +
+    '<span class="ex-eyebrow">' + eyebrow + '</span>' +
     '<div class="ex-row">' +
       '<span class="bk3" aria-hidden="true"></span>' +
       '<span class="ex-t">' +
-        '<b>' + esc(CHAPTERS[0].t) + '</b>' +
-        '<span>Chapter 1 is open and free. Six more inside.</span>' +
+        '<b>' + esc(CHAPTERS[day - 1].t) + '</b>' +
+        '<span>Chapter ' + day + ' is open and free. ' + (7 - day) + ' more inside.</span>' +
       '</span>' +
     '</div>' +
     '<div class="ex-pr"><b>₹49</b><s>₹199</s><i>75% OFF</i></div>' +
-    '<button class="btn outline" type="button" data-go="report">Read chapter 1 →</button>';
+    '<button class="btn outline" type="button" data-go="report">Read chapter ' + day + ' →</button>';
+}
+
+/* Per the board's J1: answering opens the reward sheet — coin, ladder with
+   today claimed, tomorrow's amount as the comeback reason. On day 3 the wallet
+   has crossed ₹49, so the same sheet closes the report instead. */
+function openRewardSheet() {
+  $('#rewardTitle').textContent = '₹' + REWARD[state.day] + ' added to your wallet!';
+  if (state.day < 3) {
+    $('#rewardSub').textContent = 'Wallet mein ab ₹' + state.wallet +
+      ' hai. Kal wapas aaiye — ₹' + REWARD[state.day + 1] + ' aur milenge.';
+    $('#rewardCta').textContent = 'Remind me for tomorrow';
+  } else {
+    $('#rewardSub').textContent = 'Wallet mein ₹' + state.wallet +
+      ' — poori report (₹49) ab wallet se khul jaati hai. ₹0 extra.';
+    $('#rewardCta').textContent = 'Unlock full report — ₹0 extra';
+  }
+  openSheet('reward');
 }
 
 /* The intro sheet fires once, on the scroll past the free-chat section, exactly
@@ -778,7 +815,9 @@ function armIntroSheet() {
    view — waiting for the expert card to leave the screen entirely needs another
    full screen of scrolling, by which point she is already somewhere else. */
 function onTodayScroll() {
-  if (state.introShown || state.screen !== 'today-a') return;
+  // state.answered: once she has answered, the intro has nothing left to sell —
+  // and it must not steal the reward sheet that is opening at the same moment.
+  if (state.introShown || state.answered || state.screen !== 'today-a') return;
   var card = $('#checkinCard'), sc = $('#today-a [data-scroll]');
   if (card.getBoundingClientRect().top > sc.getBoundingClientRect().bottom - 80) return;
   state.introShown = true;
@@ -830,18 +869,20 @@ function restart() {
   clearTimers();
   closeSheet();
   hidePush();
-  state.wallet = 20;
+  state.answered = false;
+  state.wallet = WALLET_AT[state.day];
   state.lang = 'en';
   state.langFrom = 'sample';
   state.paid = false;
   state.reminded = false;
   state.stack = [];
+  $('#notifDlg').hidden = true;
   paintWallet();
   renderSample();
   renderChat();
   renderOffer();
   renderChapters();
-  renderDayOne();
+  renderDayToday();
   armIntroSheet();
   resetTimeline();
   $('#bookEl').classList.remove('open');
@@ -868,7 +909,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#pushNote,#scrim');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -905,18 +946,34 @@ document.addEventListener('click', function (e) {
     return;
   }
 
-  // Answering flips the card to the replied state — which is also the moment
-  // Hemali gets a bubble, and the report could move into it.
+  // Answering flips the card to the replied state — the moment Hemali gets a
+  // bubble and the report moves into it — and pays the day's reward.
   if (t.hasAttribute('data-mood')) {
-    $('#checkinCard').hidden = true;
-    $('#answeredCard').hidden = false;
-    $('#expertSlot').hidden = true;
-    state.claimed = 1;
-    renderLadder();
+    state.answered = true;
+    state.wallet += REWARD[state.day];
+    paintWallet();
+    renderDayToday();
     renderOffer();
-    toast('₹9 added to your wallet', 'success');
+    openRewardSheet();
     return;
   }
+
+  // The reward sheet's CTA: before day 3 it asks the OS for notifications;
+  // on day 3 the wallet covers ₹49, so it goes straight to the buy sheet.
+  if (t.id === 'rewardCta') {
+    if (state.day >= 3) { state.langFrom = 'buy'; openSheet('buy'); }
+    else $('#notifDlg').hidden = false;
+    return;
+  }
+  if (t.id === 'notifYes') {
+    $('#notifDlg').hidden = true;
+    closeSheet();
+    state.reminded = true;
+    renderChat();
+    toast('Reminder on — kal ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + agla chapter', 'success');
+    return;
+  }
+  if (t.id === 'notifNo') { $('#notifDlg').hidden = true; closeSheet(); return; }
 
   if (t.hasAttribute('data-lang')) {
     state.lang = t.getAttribute('data-lang');
@@ -1019,10 +1076,12 @@ if (linked) {
     b.classList.toggle('on', b.getAttribute('data-flow') === state.flow);
   });
 }
+state.wallet = WALLET_AT[state.day];
+paintWallet();
 renderChat();
 renderOffer();
 renderChapters();
-renderDayOne();
+renderDayToday();
 armIntroSheet();
 if (state.day === 1 && state.flow === 'b') {
   $('#today-a').classList.remove('on');

@@ -150,10 +150,11 @@
           <div class="sec-head"><span>Daily reward</span><a class="lnk" data-toast="Reminders are not part of this demo"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 0 0-4 4v2.6L3 11h10l-1-2.4V6a4 4 0 0 0-4-4Z" stroke="#667085" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.6 13a1.5 1.5 0 0 0 2.8 0" stroke="#667085" stroke-width="1.3" stroke-linecap="round"/></svg> Remind Me →</a></div>
         <div class="ladder-wrap" data-ladder></div>
 
-        <!-- Day 1 arrives unanswered: the question, three moods, nothing else.
-             Hemali has not replied yet, so there is no bubble on this day. -->
+        <!-- Every day arrives unanswered, per the daily reward board — the
+             check-in is the day's one job, and Hemali's reply (with the report
+             inside it) is what answering buys. Titles render per day. -->
         <div class="merged unanswered" id="checkinCard" hidden>
-          <h3 class="rh-t">Day 1 · Answer to get <span class="amt">₹9</span> in your wallet</h3>
+          <h3 class="rh-t" id="checkinTitle">Day 1 · Answer to get <span class="amt">₹9</span> in your wallet</h3>
           <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
           <div class="mood-row pick">
             <button class="mood-chip" type="button" data-mood>🙂 Achha</button>
@@ -164,7 +165,7 @@
         </div>
 
         <div class="merged" id="answeredCard">
-          <h3 class="rh-t">Day 1 · <span class="amt">₹9</span> added to your wallet</h3>
+          <h3 class="rh-t" id="answeredTitle">Day 1 · <span class="amt">₹9</span> added to your wallet</h3>
           <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
           <div class="mood-row"><span class="mood-chip">Pareshan</span></div>
 
@@ -529,6 +530,30 @@
     <div class="ladder-wrap" data-ladder></div>
     <button class="btn primary" type="button" id="answerNow">Answer now</button>
     <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
+  </div>
+
+  <!-- Daily reward · after answering. Per the board's J1: the coin, the ladder
+       with today claimed, and tomorrow's amount as the comeback reason. Body is
+       rendered per day — on day 3 the wallet crosses ₹49 and this sheet becomes
+       the report close instead of a comeback ask. -->
+  <div class="sheet" id="sheet-reward" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="intro-coin" aria-hidden="true"><span>₹</span></div>
+    <h3 class="intro-h" id="rewardTitle">₹9 added to your wallet!</h3>
+    <p class="sheet-sub intro-sub" id="rewardSub">Kal wapas aaiye — ₹11 milenge.</p>
+    <div class="ladder-wrap" data-ladder></div>
+    <button class="btn primary" type="button" id="rewardCta">Remind me for tomorrow</button>
+    <button class="btn text" type="button" data-close-sheet>Done</button>
+  </div>
+
+  <!-- Android notification permission, per the board's J1.5. The reward sheet's
+       "remind me" is the in-app yes; this is the OS asking the same thing. -->
+  <div class="notif" id="notifDlg" hidden>
+    <b>Allow AstroChat to send you notifications?</b>
+    <div class="nf-row">
+      <button type="button" id="notifNo">Don't allow</button>
+      <button type="button" id="notifYes">Allow</button>
+    </div>
   </div>
 
   <!-- R.3b · Choose language -->
