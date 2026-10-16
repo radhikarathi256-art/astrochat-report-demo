@@ -81,8 +81,20 @@ var JOURNEY = {
   }
 };
 
+/* Flow A's day 1: the chat is left exactly as it is today — complete answer,
+   billing notice, done. The report's first appearance is the Today hook, so the
+   whole day-1 difference between the flows lives in this array and the landing. */
+var FLOW_A_DAY1 = [
+  { who: 'sys',    text: 'Astrologer has joined to guide you' },
+  { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
+  { who: 'hemali', text: 'Mansi ji, maine aapki kundli dekh li. Aapke saatve ghar mein Rahu baitha hai — isi wajah se baat bante bante ruk jaati hai.' },
+  { who: 'hemali', text: 'Pareshan mat hoiye, iska upay hai. Agli baat mein poora bataungi.' },
+  { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
+];
+
 var state = {
   day: 1,
+  flow: 'b',
   entry: 'today-a',
   wallet: 20,
   lang: 'en',
@@ -675,7 +687,8 @@ function chapterBubble(idx, cut) {
 
 function renderChat() {
   var d = JOURNEY[state.day];
-  $('#chatThread').innerHTML = d.msgs.map(function (m) {
+  var msgs = (state.flow === 'a' && state.day === 1) ? FLOW_A_DAY1 : d.msgs;
+  $('#chatThread').innerHTML = msgs.map(function (m) {
     if (m.who === 'chapter') return chapterBubble(m.idx, m.cut);
     if (m.who === 'sys')     return '<p class="c-sys">' + esc(m.text) + '</p>';
     if (m.who === 'ended')   return '<p class="c-end">' + esc(m.text) + '</p>';
@@ -735,8 +748,12 @@ function renderDayOne() {
   renderLadder();
   if (!d1) return;
 
+  // In flow A this card IS the day-1 delivery, so it cannot say "from your
+  // chat" — the chat never mentioned it. It has to introduce itself.
   $('#expertSlot').innerHTML =
-    '<span class="ex-eyebrow">✦ From your chat just now</span>' +
+    '<span class="ex-eyebrow">' + (state.flow === 'a'
+      ? '✦ Hemali ne aapke liye likha hai'
+      : '✦ From your chat just now') + '</span>' +
     '<div class="ex-row">' +
       '<span class="bk3" aria-hidden="true"></span>' +
       '<span class="ex-t">' +
@@ -800,6 +817,14 @@ function setDay(n) {
   restart();
 }
 
+function setFlow(f) {
+  state.flow = f;
+  $$('.switcher [data-flow]').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-flow') === f);
+  });
+  restart();
+}
+
 /* ---------------------------------------------------------------- reset */
 function restart() {
   clearTimers();
@@ -820,10 +845,10 @@ function restart() {
   armIntroSheet();
   resetTimeline();
   $('#bookEl').classList.remove('open');
-  // Day 1 opens in the chat that just ran out — that is the moment being tested.
-  // On later days she lands on Today, the way a returning user actually does —
-  // with the push that brought her here still sitting at the top.
-  show(state.day === 1 ? 'chat' : state.entry, 'fade');
+  // Flow B's day 1 opens in the chat that just ran out — that is the moment
+  // being tested. Flow A's day 1 (and every later day) lands on Today, the way
+  // a returning user actually does — with the push still sitting at the top.
+  show(state.day === 1 && state.flow === 'b' ? 'chat' : state.entry, 'fade');
   if (state.day >= 2) later(showPush, 700);
 }
 
@@ -843,7 +868,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#pushNote,#scrim');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#pushNote,#scrim');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -866,7 +891,8 @@ document.addEventListener('click', function (e) {
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
-  if (t.hasAttribute('data-day')) { setDay(+t.getAttribute('data-day')); return; }
+  if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day')); return; }
+  if (t.hasAttribute('data-flow')) { setFlow(t.getAttribute('data-flow')); return; }
 
   // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
   // on the daily reward board. Your Experts stays on screen above it.
@@ -966,14 +992,18 @@ renderRead();
 paintWallet();
 resetTimeline();
 
-// Deep link, so a day can be shared: #day2, #day3.
+// Deep link, so a flow and day can be shared: #day2, #a-day1, #b-day3.
 var hash = (location.hash || '').replace('#', '');
-var linked = /^day([123])$/.exec(hash);
+var linked = /^(?:([ab])-)?day([123])$/.exec(hash);
 state.screen = 'today-a';
 if (linked) {
-  state.day = +linked[1];
+  if (linked[1]) state.flow = linked[1];
+  state.day = +linked[2];
   $$('.switcher [data-day]').forEach(function (b) {
     b.classList.toggle('on', +b.getAttribute('data-day') === state.day);
+  });
+  $$('.switcher [data-flow]').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-flow') === state.flow);
   });
 }
 renderChat();
@@ -981,11 +1011,11 @@ renderOffer();
 renderChapters();
 renderDayOne();
 armIntroSheet();
-if (state.day === 1) {
+if (state.day === 1 && state.flow === 'b') {
   $('#today-a').classList.remove('on');
   $('#chat').classList.add('on');
   state.screen = 'chat';
-} else {
+} else if (state.day >= 2) {
   later(showPush, 700);
 }
 })();
