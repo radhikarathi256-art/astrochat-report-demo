@@ -23,6 +23,20 @@ var CHAPTERS = [
   { t: 'How money changes after marriage',    s: 'Your chart after the wedding' }
 ];
 
+/* The free chapters, readable in full — the proof that the writing is about
+   her. Only the three ladder chapters have bodies; the rest are what ₹49 buys. */
+var CHAPTER_BODY = [
+  ['Mansi ji, aapke saatve ghar — shaadi ke ghar — mein Rahu baitha hai. Yehi woh graha hai jo baat bante bante rok deta hai: rishta aage badhta hai, phir achanak thanda pad jaata hai.',
+   'Yeh aapki kami nahi hai. Rahu ka kaam hi deri aur confusion dalna hai. Aapke chart mein iska zor 2026 ke end se kam hona shuru ho jaata hai.',
+   'Seedha matlab: jo rishte ab tak ruke, unka rukna likha tha. Aage ka raasta khul raha hai — kab aur kaise, woh agle chapters mein.'],
+  ['Jo insaan aapke chart mein likha hai, woh bahar se shaant hai aur andar se zidd wala. Bolta kam hai, mehsoos zyada karta hai — aapko do baar poochhna padega.',
+   'Kaam mein numbers ya systems — finance, engineering, ya apna chhota setup. Parivaar chhota, ek bhai-behen. Parents haan bolne se pehle bahut sawaal poochhte hain.',
+   'Milna kisi jaan-pehchaan ke zariye hoga. Aapka chart app wale ajnabi ki taraf nahi jaata.'],
+  ['Aapka sabse saaf window March 2027 se November 2027 tak khulta hai — Jupiter aapke shaadi ke ghar ke upar se guzarta hai.',
+   'Usse pehle do chhote windows hain, aur ek abhi chal raha hai. February 2028 mein family baat "sochte hain" se "milte hain" tak jaati hai.',
+   'Saal-dar-saal ke percentages, aur kaunsa mahina date fix karne ke liye galat hai — woh poori report mein.']
+];
+
 /* One person, three mornings. Each day has to earn the tap on its own terms:
    curiosity on day 1, progress on day 2, a deadline on day 3. */
 var JOURNEY = {
@@ -43,46 +57,54 @@ var JOURNEY = {
          only surface the 83% who never return will ever see. */
       { who: 'remind' }
     ],
-    today: { eyebrow: '✦ Chapter 1 of 7 · open', note: 'Kal chapter 2 khulega — ya abhi poori report kholiye.' },
-    countdown: '✦ CHAPTER 2 + FREE 2 MIN CHAT IN <b>14h : 23m</b>'
+    today: { eyebrow: '✦ Chapter 1 of 7 · open', note: 'Kal ₹11 reward milega — ya abhi poori report kholiye.' },
+    countdown: '✦ CHAPTER 2 READY + FREE 2 MIN CHAT IN <b>14h : 23m</b>'
   },
   2: {
-    unlocked: 2,
+    unlocked: 1,
     stamp: 'Yesterday',
-    /* Day 2 flips the position: the chapter opens the chat instead of closing
-       it, so there is a reason to tap in, and the free 2 minutes do not get
-       spent on "hi, what is your question". */
+    /* Only chapter 1 is ever free. Day 2 opens the chat with the tease: chapter
+       2 is written, the opening is shown, the rest stays locked. The free two
+       minutes deliver the pitch, not the product. */
     msgs: [
       { who: 'hemali', text: 'Mansi ji! Kal raat maine aapka chart dubara dekha.' },
-      { who: 'hemali', text: 'Jo insaan aapki life mein aane wala hai — uske baare mein likh diya hai. Yeh aapke liye free hai.' },
-      { who: 'chapter', idx: 1 },
+      { who: 'hemali', text: 'Jo insaan aapki life mein aane wala hai — chapter 2 mein likh diya hai. Shuruaat padhiye —' },
+      { who: 'chapter', idx: 1, cut: true },
       { who: 'user',   text: 'Ye to bilkul sahi laga 😳' },
-      { who: 'hemali', text: 'Bataiye, aur kya jaanna hai?' },
-      { who: 'ended',  text: 'Your free minutes are over. Chapter 2 aapki report mein save ho gaya.' },
+      { who: 'hemali', text: 'Poora chapter aapki report mein hai. Bataiye, aur kya jaanna hai?' },
+      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
       /* She came back for the chat — so the chat ends with the ask. Day 2 is
          the highest-intent moment of the journey: the return was voluntary. */
       { who: 'pitch' }
     ],
-    today: { eyebrow: '✦ Chapter 2 of 7 · open', note: 'Kal timing wala chapter khulega — ya abhi poori report kholiye.' },
-    countdown: '✦ CHAPTER 3 + FREE 2 MIN CHAT IN <b>14h : 23m</b>',
-    push: 'Jo insaan aapki life mein aane wala hai — Chapter 2 khul gaya 📖'
+    today: { eyebrow: '✦ Chapter 2 ready', note: 'Wallet mein ₹29 hai — baaki 6 chapters sirf ₹20 aur mein.' },
+    countdown: '✦ CHAPTER 3 READY + FREE 2 MIN CHAT IN <b>14h : 23m</b>',
+    push: 'Jo insaan aapki life mein aane wala hai — Chapter 2 ready hai 📖'
   },
   3: {
-    unlocked: 3,
+    unlocked: 1,
     stamp: '2 days ago',
     /* The cliffhanger lands on the one thing she wants most, and it is the
        truncation that sells — not the discount. */
     msgs: [
-      { who: 'hemali', text: 'Mansi ji, aaj timing wala chapter khol rahi hoon.' },
-      { who: 'hemali', text: 'Aapka sabse saaf window March 2027 mein khulta hai. Usse pehle do aur hain, aur ek abhi chal raha hai —' },
+      { who: 'hemali', text: 'Mansi ji, aaj aapki shaadi ki timing ka chapter likha hai.' },
+      { who: 'hemali', text: 'Aapka sabse saaf window March 2027 mein khulta hai. Shuruaat yeh rahi —' },
       { who: 'chapter', idx: 2, cut: true },
-      { who: 'ended',  text: 'Your free minutes are over. Baaki 4 chapters aaj raat tak ₹49 mein.' },
+      { who: 'ended',  text: 'Your free minutes are over. ₹49 price aaj raat khatam ho rahi hai.' },
       { who: 'pitch' }
     ],
-    today: { eyebrow: '✦ Chapter 3 of 7 · open', note: 'Baaki 4 chapters ₹49 mein — aaj raat tak.' },
+    today: { eyebrow: '✦ Last day · ₹49 ends tonight', note: 'Baaki 6 chapters ₹49 mein — aaj raat tak.' },
     countdown: '✦ LAST DAY · ₹49 PRICE ENDS IN <b>9h : 41m</b>',
     push: 'Aapki shaadi ki timing likh di hai — aur ₹49 price aaj raat khatam'
   }
+};
+
+/* The visible opening of a locked chapter, fading out mid-sentence. */
+var CUT_TEXT = {
+  1: 'Woh bahar se shaant hai aur andar se zidd wala. Kaam numbers ya systems se' +
+     '<span class="ch-fade"> juda hai — finance ya engineering. Aur aap usse milengi kisi</span>',
+  2: 'March 2027 ke pehle do aur windows hain. Pehla' +
+     '<span class="ch-fade"> window aapke 28ve saal mein khulta hai aur usme</span>'
 };
 
 /* Flow A's day 1: the chat is left exactly as it is today — complete answer,
@@ -119,6 +141,9 @@ var state = {
      is still unanswered — the intro sheet is asking for that first answer. */
   claimed: 0,
   reminded: false,
+  /* The morning's free chapter is waiting in History — the dot on the nav says
+     so, and visiting History clears it. */
+  histDot: true,
   timers: []
 };
 
@@ -289,7 +314,7 @@ var NAV_ICONS = {
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
-  { id: 'timeline', label: 'Timeline' },
+  { id: 'timeline', label: 'History' },
   { id: 'explore', label: 'Explore' }
 ];
 
@@ -298,7 +323,9 @@ function renderNav() {
     var active = el.getAttribute('data-bnav');
     el.innerHTML = NAV.map(function (n) {
       return '<button type="button" class="' + (n.id === active ? 'on' : '') + '"' +
-             ' data-nav="' + n.id + '">' + NAV_ICONS[n.id] + '<span>' + n.label + '</span></button>';
+             ' data-nav="' + n.id + '">' + NAV_ICONS[n.id] +
+             (n.id === 'timeline' && state.histDot ? '<i class="ndot"></i>' : '') +
+             '<span>' + n.label + '</span></button>';
     }).join('');
   });
 }
@@ -693,16 +720,16 @@ function esc(s) {
    mid-paragraph — the truncation is the sell, not the discount under it. */
 function chapterBubble(idx, cut) {
   var c = CHAPTERS[idx];
+  var left = CHAPTERS.length - JOURNEY[state.day].unlocked;
   return '<div class="ch-card' + (cut ? ' cut' : '') + '">' +
-    '<span class="ch-no">Chapter ' + (idx + 1) + ' of 7 · free</span>' +
+    '<span class="ch-no">Chapter ' + (idx + 1) + ' of 7 · ' + (cut ? 'locked' : 'free') + '</span>' +
     '<b class="ch-t">' + esc(c.t) + '</b>' +
     '<p class="ch-s">' + esc(c.s) + '</p>' +
     (cut
-      ? '<p class="ch-cut">March 2027 ke pehle do aur windows hain. Pehla' +
-        '<span class="ch-fade"> window aapke 28ve saal mein khulta hai aur usme</span></p>' +
-        '<button class="btn sm primary ch-go" type="button" data-go="report">Baaki 4 chapters kholiye · ₹49</button>'
-      : '<button class="btn sm outline ch-go" type="button" data-go="report">Padhiye →</button>') +
-    '<span class="ch-saved">Saved to your report</span>' +
+      ? '<p class="ch-cut">' + CUT_TEXT[idx] + '</p>' +
+        '<button class="btn sm primary ch-go" type="button" data-go="report">Baaki ' + left + ' chapters kholiye · ₹49</button>'
+      : '<button class="btn sm outline ch-go" type="button" data-read="' + idx + '">Padhiye →</button>') +
+    '<span class="ch-saved">' + (cut ? 'Waiting in your report' : 'Saved to your report') + '</span>' +
   '</div>';
 }
 
@@ -735,10 +762,9 @@ function pitchCard() {
       'Ya aaj ka check-in answer kijiye: ₹' + REWARD[3] + ' milenge aur yeh ₹0 ho jaata hai.';
     cta = 'Unlock ' + left + ' chapters · pay ₹' + pay;
   } else {
-    line = 'Agla chapter — <b>' + esc(CHAPTERS[JOURNEY[state.day].unlocked].t) +
-      '</b> — kal khulega. Ya abhi sab: wallet mein ₹' + state.wallet +
-      ' hai, sirf <b>₹' + pay + ' aur</b>.';
-    cta = 'Unlock all ' + left + ' now · pay ₹' + pay;
+    line = 'Chapter 2 — <b>' + esc(CHAPTERS[1].t) + '</b> — poora likha ja chuka hai. ' +
+      'Wallet mein ₹' + state.wallet + ' hai — saare ' + left + ' chapters sirf <b>₹' + pay + ' aur</b> mein.';
+    cta = 'Unlock all ' + left + ' · pay ₹' + pay;
   }
   return '<div class="rm-card pitch">' +
     '<p>' + line + '</p>' +
@@ -749,11 +775,11 @@ function pitchCard() {
 /* Tomorrow gets a name — the chapter 2 title — and one tap says yes. */
 function remindCard() {
   if (state.reminded) {
-    return '<div class="rm-card done"><p>🔔 Done. Kal <b>' + esc(CHAPTERS[1].t) +
-      '</b> khulte hi aapko bata denge.</p></div>';
+    return '<div class="rm-card done"><p>🔔 Done. <b>' + esc(CHAPTERS[1].t) +
+      '</b> ready hote hi aapko bata denge.</p></div>';
   }
   return '<div class="rm-card">' +
-    '<p>Kal chapter 2 khulega — <b>' + esc(CHAPTERS[1].t) + '</b>. Yaad dila dein?</p>' +
+    '<p>Hemali kal chapter 2 likh rahi hain — <b>' + esc(CHAPTERS[1].t) + '</b>. Ready hote hi yaad dila dein?</p>' +
     '<button class="btn sm primary" type="button" data-remind>🔔 Haan, yaad dilaiye</button>' +
   '</div>';
 }
@@ -804,26 +830,48 @@ function renderDayToday() {
   state.claimed = state.answered ? day : day - 1;
   renderLadder();
 
-  // Once she answers, Hemali has a bubble and the report lives there instead.
-  $('#expertSlot').hidden = state.answered;
-  if (state.answered) return;
+  // Day 1: the hook sits on the expert card (and moves into Hemali's reply
+  // bubble once she answers). Days 2/3: the hook lives in Personalised
+  // Guidance instead, and the expert card goes back to being the chat card.
+  var onExpert = day === 1 && !state.answered;
+  $('#expertSlot').hidden = !onExpert;
+  $('#guideSlot').hidden  = day === 1;
+  $('#offerSlot').hidden  = day >= 2;
+  if (day >= 2) renderGuideTile();
+  if (!onExpert) return;
 
   // In flow A this card IS the day-1 delivery, so it cannot say "from your
   // chat" — the chat never mentioned it. It has to introduce itself.
-  var eyebrow = day === 1
-    ? (state.flow === 'a' ? '✦ Hemali ne aapke liye likha hai' : '✦ From your chat just now')
-    : '✦ Aaj ka chapter khul gaya';
+  var eyebrow = state.flow === 'a' ? '✦ Hemali ne aapke liye likha hai' : '✦ From your chat just now';
+  // One compact tappable row — reading happens on the report page, not here.
   $('#expertSlot').innerHTML =
-    '<span class="ex-eyebrow">' + eyebrow + '</span>' +
-    '<div class="ex-row">' +
+    '<div class="ex-tap" data-go="report" role="button" tabindex="0">' +
+      '<span class="ex-eyebrow">' + eyebrow + '</span>' +
+      '<div class="ex-row">' +
+        '<span class="bk3" aria-hidden="true"></span>' +
+        '<span class="ex-t">' +
+          '<b>' + esc(CHAPTERS[day - 1].t) + '</b>' +
+          '<span class="ex-pr2">Chapter ' + day + ' free · <b>₹49</b> <s>₹199</s> <i>75% OFF</i></span>' +
+        '</span>' +
+        '<span class="ex-chev" aria-hidden="true">›</span>' +
+      '</div>' +
+    '</div>';
+}
+
+/* Days 2/3: the report is one tile among her guidance — same object as the
+   tarot and prediction tiles, priced from the wallet. */
+function renderGuideTile() {
+  var pay = Math.max(0, 49 - state.wallet);
+  var sub = state.day >= 3
+    ? (pay === 0 ? 'Wallet covers it — ₹0 extra, aaj raat tak' : '₹49 aaj raat tak — wallet se sirf ₹' + pay)
+    : 'Chapter 2 ready — ' + CHAPTERS[1].t;
+  $('#guideSlot').innerHTML =
+    '<button class="tile" type="button" data-go="report">' +
       '<span class="bk3" aria-hidden="true"></span>' +
-      '<span class="ex-t">' +
-        '<b>' + esc(CHAPTERS[day - 1].t) + '</b>' +
-        '<span>Chapter ' + day + ' is open and free. ' + (7 - day) + ' more inside.</span>' +
-      '</span>' +
-    '</div>' +
-    '<div class="ex-pr"><b>₹49</b><s>₹199</s><i>75% OFF</i></div>' +
-    '<button class="btn outline" type="button" data-go="report">Read chapter ' + day + ' →</button>';
+      '<span class="tt"><b>Marriage Yog report</b><small>' + esc(sub) + '</small></span>' +
+      '<i class="tag green">' + (pay === 0 ? '₹0' : '₹' + pay) + '</i>' +
+      '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</button>';
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -841,6 +889,23 @@ function openRewardSheet() {
     $('#rewardCta').textContent = 'Unlock full report — ₹0 extra';
   }
   openSheet('reward');
+}
+
+/* The chapter, readable in place — a sheet, so she never leaves the sell page.
+   The CTA under the last paragraph is the next ask. */
+function openChapterSheet(i) {
+  var c = CHAPTERS[i];
+  var left = CHAPTERS.length - JOURNEY[state.day].unlocked;
+  var pay = Math.max(0, 49 - state.wallet);
+  $('#chrNo').textContent = 'Chapter ' + (i + 1) + ' of 7';
+  $('#chrTitle').textContent = c.t;
+  $('#chrBody').innerHTML = (CHAPTER_BODY[i] || []).map(function (p) {
+    return '<p>' + esc(p) + '</p>';
+  }).join('');
+  $('#chrCta').textContent = pay === 0
+    ? 'Unlock ' + left + ' more chapters · ₹0 from wallet'
+    : 'Unlock ' + left + ' more chapters · ₹49';
+  openSheet('chapter');
 }
 
 /* The intro sheet fires once, on the scroll past the free-chat section, exactly
@@ -880,7 +945,8 @@ function renderChapters() {
         '<b>' + esc(c.t) + '</b>' +
         '<span>' + esc(c.s) + '</span>' +
         (open
-          ? '<button class="ch-ask" type="button" data-toast="Chat is not part of this demo">Ask Hemali about this →</button>'
+          ? '<button class="ch-read" type="button" data-read="' + i + '">Read chapter ' + (i + 1) + ' →</button>' +
+            '<button class="ch-ask" type="button" data-toast="Chat is not part of this demo">Ask Hemali about this →</button>'
           : '') +
       '</span>' +
     '</li>';
@@ -916,7 +982,9 @@ function restart() {
   state.langFrom = 'sample';
   state.paid = false;
   state.reminded = false;
+  state.histDot = true;
   state.stack = [];
+  renderNav();
   $('#notifDlg').hidden = true;
   paintWallet();
   renderSample();
@@ -950,7 +1018,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -967,9 +1035,12 @@ document.addEventListener('click', function (e) {
     renderChat();
     var sc = $('#chat [data-scroll]');
     if (sc) sc.scrollTop = sc.scrollHeight;
-    toast('Reminder set — kal chapter 2 khulte hi', 'success');
+    toast('Reminder set — chapter 2 ready hote hi', 'success');
     return;
   }
+  if (t.hasAttribute('data-read')) { openChapterSheet(+t.getAttribute('data-read')); return; }
+  if (t.id === 'chrCta') { state.langFrom = 'buy'; openSheet('buy'); return; }
+
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
@@ -1012,7 +1083,7 @@ document.addEventListener('click', function (e) {
     closeSheet();
     state.reminded = true;
     renderChat();
-    toast('Reminder on — kal ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + agla chapter', 'success');
+    toast('Reminder on — kal ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + agla chapter ready', 'success');
     return;
   }
   if (t.id === 'notifNo') { $('#notifDlg').hidden = true; closeSheet(); return; }
@@ -1065,7 +1136,7 @@ document.addEventListener('click', function (e) {
   if (t.hasAttribute('data-nav')) {
     var nav = t.getAttribute('data-nav');
     if (nav === 'today')    { state.stack = []; show(state.entry, 'fade'); return; }
-    if (nav === 'timeline') { state.stack = []; show('timeline', 'fade'); return; }
+    if (nav === 'timeline') { state.stack = []; state.histDot = false; renderNav(); show('timeline', 'fade'); return; }
     toast(t.textContent.trim() + ' is not part of this demo');
     return;
   }
