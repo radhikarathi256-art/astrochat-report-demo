@@ -1071,7 +1071,7 @@ function renderChapters() {
           ? '<button class="ch-read" type="button" data-read="' + i + '">' +
               (state.read1 ? 'Read chapter ' + (i + 1) + ' →' : 'Read chapter 1 free →') + '</button>' +
             (state.read1
-              ? '<button class="ch-ask" type="button" data-toast="Chat is not part of this demo">Ask Hemali about this →</button>'
+              ? '<button class="ch-ask" type="button" data-chat>Ask Hemali about this →</button>'
               : '')
           : '') +
       '</span>' +
@@ -1237,9 +1237,13 @@ document.addEventListener('click', function (e) {
 
   if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
   if (t.id === 'payBtn')    { pay(); return; }
+  // Every chat door — Continue Chat, the header icon, Ask Hemali — lands in
+  // the real thread, scrolled to its end, where the day's pitch sits.
   if (t.hasAttribute('data-chat')) {
-    toast('Chat is not part of this demo');
-    later(function () { state.stack = []; show(state.entry, 'fade'); }, 700);
+    renderChat();
+    if (state.screen !== 'chat') go('chat');
+    var cs = $('#chat [data-scroll]');
+    if (cs) requestAnimationFrame(function () { cs.scrollTop = cs.scrollHeight; });
     return;
   }
 
