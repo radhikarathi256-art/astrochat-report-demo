@@ -905,7 +905,7 @@ function renderDayToday() {
     act = ' data-go="report"';
   } else {
     title = CHAPTERS[0].t;
-    sub = (state.flow === 'a' ? 'Hemali ne aapke liye likha' : 'Aapki chat se') + ' · 2 min read';
+    sub = (state.flow === 'a' ? 'Hemali ne likha' : 'Aapki chat se') + ' · 2 min read';
     pill = 'FREE';
     act = ' data-go="report"';
   }
