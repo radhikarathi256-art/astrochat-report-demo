@@ -74,7 +74,7 @@ var JOURNEY = {
       { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Chapter 1 of 7 · open', note: '' },
-    countdown: '✦ FREE 2 MIN CHAT READY · REPORT PRICE DROP LIVE',
+    countdown: '✦ FREE 2 MIN CHAT READY',
     push: 'Hemali ne jo aapke liye likha tha, abhi tak padha nahi 📖 Aaj ki free chat bhi ready hai'
   },
   3: {
@@ -92,7 +92,7 @@ var JOURNEY = {
       { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Last day · ₹49 ends tonight', note: '' },
-    countdown: '✦ LAST DAY · ₹49 PRICE ENDS IN <b>9h : 41m</b>',
+    countdown: '✦ FREE 2 MIN CHAT READY',
     push: 'Aakhri din — ₹49 price aaj raat khatam. Chapter 1 abhi bhi free hai 📖'
   }
 };
@@ -111,7 +111,7 @@ var READ_JOURNEY = {
       { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Chapter 1 padh liya ✓', note: '' },
-    countdown: '✦ FREE 2 MIN CHAT READY · REPORT PRICE DROP LIVE',
+    countdown: '✦ FREE 2 MIN CHAT READY',
     push: 'Kal jo padha tha, uske aage ke 6 chapters ₹49 mein khul rahe hain 📖'
   },
   3: {
@@ -123,7 +123,7 @@ var READ_JOURNEY = {
       { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Chapter 1 padh liya ✓', note: '' },
-    countdown: '✦ FREE 2 MIN CHAT READY · ₹49 PRICE DROP LIVE',
+    countdown: '✦ FREE 2 MIN CHAT READY',
     push: 'Aapki report ab bhi ₹49 par hai — kaun aur kab, sab andar 📖'
   },
   4: {
@@ -135,7 +135,7 @@ var READ_JOURNEY = {
       { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Last day · ₹49 ends tonight', note: '' },
-    countdown: '✦ LAST DAY · ₹49 PRICE ENDS IN <b>9h : 41m</b>',
+    countdown: '✦ FREE 2 MIN CHAT READY',
     push: 'Aakhri din — ₹49 price aaj raat khatam. Baaki 6 chapters abhi kholiye 📖'
   }
 };
