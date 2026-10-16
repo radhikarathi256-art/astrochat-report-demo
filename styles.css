@@ -132,9 +132,11 @@ img{display:block}
   font:500 12px/16px var(--sans);color:var(--g500);padding:2px 0}
 .bnav button.on{color:var(--brand);font-weight:600}
 .bnav svg{display:block}
-/* The morning's free chapter waits in History — the dot says so. */
-.bnav .ndot{position:absolute;top:1px;left:calc(50% + 7px);width:8px;height:8px;
-  border-radius:50%;background:#F04438;border:1.5px solid #fff}
+/* The morning's free chapter waits in History — the badge counts it. */
+.bnav .ndot{position:absolute;top:-4px;left:calc(50% + 4px);min-width:17px;height:17px;
+  padding:0 4px;border-radius:9px;background:#F04438;border:1.5px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  font:700 10px/1 var(--sans);font-style:normal;color:#fff}
 
 /* ---------- Buttons ---------- */
 .btn{height:48px;border-radius:12px;border:1px solid transparent;font:600 16px/24px var(--sans);

@@ -344,7 +344,7 @@ function renderNav() {
     el.innerHTML = NAV.map(function (n) {
       return '<button type="button" class="' + (n.id === active ? 'on' : '') + '"' +
              ' data-nav="' + n.id + '">' + NAV_ICONS[n.id] +
-             (n.id === 'timeline' && state.histDot ? '<i class="ndot"></i>' : '') +
+             (n.id === 'timeline' && state.histDot ? '<i class="ndot">1</i>' : '') +
              '<span>' + n.label + '</span></button>';
     }).join('');
   });
