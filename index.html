@@ -46,6 +46,14 @@
     </span>
   </div>
 
+  <!-- What actually brought her back on day 2 and 3: a push that carries the
+       chapter, not a reminder about minutes. Slides in over the screen on day
+       switch, tap lands in the chat. -->
+  <button class="push-note" id="pushNote" type="button" hidden>
+    <img src="assets/hemali.png" alt="">
+    <span class="pn-t"><span class="pn-top"><b>Astro Hemali</b><small>now</small></span><p id="pushText"></p></span>
+  </button>
+
   <div class="screens" id="screens">
 
     <!-- ===================== R.0 · Chat · free minutes over =====================
@@ -112,7 +120,9 @@
           <section class="sec">
           <div class="sec-head"><span>YOUR EXPERTS</span><a class="lnk" data-toast="Expert list is not part of this demo">Consult Others →</a></div>
         <div class="expert-card">
-          <div class="expert-top">✦ NEXT FREE 2 MINS CHAT IN <b>14h : 23m</b></div>
+          <!-- Rendered per day. "Free 2 mins" alone brings back 17%; tomorrow
+               needs a name, and the name is the next chapter. -->
+          <div class="expert-top" id="countdownLine">✦ CHAPTER 2 + FREE 2 MIN CHAT IN <b>14h : 23m</b></div>
           <div class="expert-body">
             <div class="expert-row">
               <span class="av-ring"><img src="assets/hemali.png" alt="Astro Hemali"><i class="dot"></i></span>

@@ -37,9 +37,14 @@ var JOURNEY = {
       { who: 'hemali', text: 'Mansi ji, maine aapki kundli dekh li. Aapke saatve ghar mein Rahu baitha hai — isi wajah se baat bante bante ruk jaati hai.' },
       { who: 'hemali', text: 'Poora likh diya hai aapke liye. Padhiye —' },
       { who: 'chapter', idx: 0 },
-      { who: 'ended',  text: 'Your free minutes are over. Hemali ne jo likha hai woh aapka hai — kal phir 2 minute milenge.' }
+      { who: 'ended',  text: 'Your free minutes are over. Hemali ne jo likha hai woh aapka hai — kal phir 2 minute milenge.' },
+      /* The opt-in, at the moment she has just read Hemali's writing about her
+         own chart. Day 1's real output is this yes, not the sale — push is the
+         only surface the 83% who never return will ever see. */
+      { who: 'remind' }
     ],
-    today: { eyebrow: '✦ Chapter 1 of 7 · open', note: 'Kal chapter 2 khulega — ya abhi poori report kholiye.' }
+    today: { eyebrow: '✦ Chapter 1 of 7 · open', note: 'Kal chapter 2 khulega — ya abhi poori report kholiye.' },
+    countdown: '✦ CHAPTER 2 + FREE 2 MIN CHAT IN <b>14h : 23m</b>'
   },
   2: {
     unlocked: 2,
@@ -55,7 +60,9 @@ var JOURNEY = {
       { who: 'hemali', text: 'Bataiye, aur kya jaanna hai?' },
       { who: 'ended',  text: 'Your free minutes are over. Chapter 2 aapki report mein save ho gaya.' }
     ],
-    today: { eyebrow: '✦ Chapter 2 of 7 · open', note: 'Kal timing wala chapter khulega — ya abhi poori report kholiye.' }
+    today: { eyebrow: '✦ Chapter 2 of 7 · open', note: 'Kal timing wala chapter khulega — ya abhi poori report kholiye.' },
+    countdown: '✦ CHAPTER 3 + FREE 2 MIN CHAT IN <b>14h : 23m</b>',
+    push: 'Jo insaan aapki life mein aane wala hai — Chapter 2 khul gaya 📖'
   },
   3: {
     unlocked: 3,
@@ -68,7 +75,9 @@ var JOURNEY = {
       { who: 'chapter', idx: 2, cut: true },
       { who: 'ended',  text: 'Your free minutes are over. Baaki 4 chapters aaj raat tak ₹49 mein.' }
     ],
-    today: { eyebrow: '✦ Chapter 3 of 7 · open', note: 'Baaki 4 chapters ₹49 mein — aaj raat tak.' }
+    today: { eyebrow: '✦ Chapter 3 of 7 · open', note: 'Baaki 4 chapters ₹49 mein — aaj raat tak.' },
+    countdown: '✦ LAST DAY · ₹49 PRICE ENDS IN <b>9h : 41m</b>',
+    push: 'Aapki shaadi ki timing likh di hai — aur ₹49 price aaj raat khatam'
   }
 };
 
@@ -83,6 +92,10 @@ var state = {
   stack: [],
   sheet: null,
   introShown: false,
+  /* Coins collected on the 7-day ladder. Day 1 starts at 0 because the check-in
+     is still unanswered — the intro sheet is asking for that first answer. */
+  claimed: 0,
+  reminded: false,
   timers: []
 };
 
@@ -218,9 +231,7 @@ var DAYS = [
   { d: 'Day 6', v: 19 },
   { d: 'Day 7', v: 51 }
 ];
-/* Day 1 is both today and already answered, so its coin reads as collected and the
-   rail has nothing to fill yet. Sizes and lifts match the daily-reward prototype. */
-var CLAIMED = 1;
+/* Sizes and lifts match the daily-reward prototype. */
 var COIN_SIZE = [26, 28, 30, 30, 33, 38, 46];
 var COIN_LIFT = [0, 1, 3, 5, 8, 11, 15];
 var CHECK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none">' +
@@ -228,7 +239,7 @@ var CHECK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none">' +
 
 function renderLadder() {
   var cols = DAYS.map(function (day, i) {
-    var done = i < CLAIMED;
+    var done = i < state.claimed;
     var cls = 'col' + (done ? ' done' : '') + (i === DAYS.length - 1 ? ' goal' : '');
     return '<div class="' + cls + '">' +
              '<span class="ic"><span class="coin' + (done ? ' got' : '') + '" style="width:' +
@@ -239,7 +250,7 @@ function renderLadder() {
            '</div>';
   }).join('');
 
-  var html = '<div class="ladder" style="--f:' + ((CLAIMED - 1) / 6) + '">' + cols + '</div>';
+  var html = '<div class="ladder" style="--f:' + (Math.max(state.claimed - 1, 0) / 6) + '">' + cols + '</div>';
   $$('[data-ladder]').forEach(function (el) { el.innerHTML = html; });
 }
 
@@ -668,8 +679,21 @@ function renderChat() {
     if (m.who === 'chapter') return chapterBubble(m.idx, m.cut);
     if (m.who === 'sys')     return '<p class="c-sys">' + esc(m.text) + '</p>';
     if (m.who === 'ended')   return '<p class="c-end">' + esc(m.text) + '</p>';
+    if (m.who === 'remind')  return remindCard();
     return '<div class="c-b ' + m.who + '"><p>' + esc(m.text) + '</p><time>02:24 PM</time></div>';
   }).join('');
+}
+
+/* Tomorrow gets a name — the chapter 2 title — and one tap says yes. */
+function remindCard() {
+  if (state.reminded) {
+    return '<div class="rm-card done"><p>🔔 Done. Kal <b>' + esc(CHAPTERS[1].t) +
+      '</b> khulte hi aapko bata denge.</p></div>';
+  }
+  return '<div class="rm-card">' +
+    '<p>Kal chapter 2 khulega — <b>' + esc(CHAPTERS[1].t) + '</b>. Yaad dila dein?</p>' +
+    '<button class="btn sm primary" type="button" data-remind>🔔 Haan, yaad dilaiye</button>' +
+  '</div>';
 }
 
 /* The Today slot is the same container every day, filling up. The count is the
@@ -702,9 +726,13 @@ function renderOffer() {
    the one surface that is already hers and already on screen. */
 function renderDayOne() {
   var d1 = state.day === 1;
+  $('#countdownLine').innerHTML = JOURNEY[state.day].countdown;
   $('#checkinCard').hidden  = !d1;
   $('#answeredCard').hidden = d1;
   $('#expertSlot').hidden   = !d1;
+  // The ladder has to agree with the card: nothing collected until she answers.
+  state.claimed = d1 ? 0 : 1;
+  renderLadder();
   if (!d1) return;
 
   $('#expertSlot').innerHTML =
@@ -776,10 +804,12 @@ function setDay(n) {
 function restart() {
   clearTimers();
   closeSheet();
+  hidePush();
   state.wallet = 20;
   state.lang = 'en';
   state.langFrom = 'sample';
   state.paid = false;
+  state.reminded = false;
   state.stack = [];
   paintWallet();
   renderSample();
@@ -791,16 +821,48 @@ function restart() {
   resetTimeline();
   $('#bookEl').classList.remove('open');
   // Day 1 opens in the chat that just ran out — that is the moment being tested.
-  // On later days she lands on Today, the way a returning user actually does.
+  // On later days she lands on Today, the way a returning user actually does —
+  // with the push that brought her here still sitting at the top.
   show(state.day === 1 ? 'chat' : state.entry, 'fade');
+  if (state.day >= 2) later(showPush, 700);
+}
+
+/* ---------------------------------------------------------------- push note */
+function showPush() {
+  var el = $('#pushNote');
+  $('#pushText').textContent = JOURNEY[state.day].push;
+  el.hidden = false;
+  requestAnimationFrame(function () { el.classList.add('on'); });
+  later(hidePush, 6000);
+}
+function hidePush() {
+  var el = $('#pushNote');
+  el.classList.remove('on');
+  setTimeout(function () { if (!el.classList.contains('on')) el.hidden = true; }, 300);
 }
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#scrim');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#pushNote,#scrim');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
+
+  // The push is the door back in: it lands in the chat, where the chapter is.
+  if (t.id === 'pushNote') {
+    hidePush();
+    if (state.screen !== 'chat') go('chat');
+    return;
+  }
+
+  if (t.hasAttribute('data-remind')) {
+    state.reminded = true;
+    renderChat();
+    var sc = $('#chat [data-scroll]');
+    if (sc) sc.scrollTop = sc.scrollHeight;
+    toast('Reminder set — kal chapter 2 khulte hi', 'success');
+    return;
+  }
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
@@ -823,6 +885,8 @@ document.addEventListener('click', function (e) {
     $('#checkinCard').hidden = true;
     $('#answeredCard').hidden = false;
     $('#expertSlot').hidden = true;
+    state.claimed = 1;
+    renderLadder();
     renderOffer();
     toast('₹9 added to your wallet', 'success');
     return;
@@ -921,5 +985,7 @@ if (state.day === 1) {
   $('#today-a').classList.remove('on');
   $('#chat').classList.add('on');
   state.screen = 'chat';
+} else {
+  later(showPush, 700);
 }
 })();
