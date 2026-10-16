@@ -97,6 +97,49 @@ var JOURNEY = {
   }
 };
 
+/* The other track: she read chapter 1 on day 1, so her mornings are buy
+   nudges, not read nudges — days 2 and 3 sell on curiosity, day 4 closes on
+   the deadline. The deadline always sits on the track's LAST day. */
+var READ_JOURNEY = {
+  2: {
+    stamp: 'Yesterday',
+    msgs: [
+      { who: 'hemali', text: 'Aapne chapter 1 padh liya — ab aap jaanti hain rukavat kya thi.' },
+      { who: 'user',   text: 'Haan, Rahu wali baat bilkul sahi lagi 😳' },
+      { who: 'hemali', text: 'Aage ke 6 chapters mein likha hai: kaun hoga, kab hoga, love ya arranged. Poori report ₹49 mein — ₹499 se price drop chal raha hai.' },
+      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
+      { who: 'pitch' }
+    ],
+    today: { eyebrow: '✦ Chapter 1 padh liya ✓', note: '' },
+    countdown: '✦ FREE 2 MIN CHAT READY · REPORT PRICE DROP LIVE',
+    push: 'Kal jo padha tha, uske aage ke 6 chapters ₹49 mein khul rahe hain 📖'
+  },
+  3: {
+    stamp: '2 days ago',
+    msgs: [
+      { who: 'hemali', text: 'Mansi ji, jo rukavat chapter 1 mein padhi thi — uska poora jawab baaki 6 chapters mein hai. Kaun, kab, love ya arranged.' },
+      { who: 'hemali', text: 'Price drop abhi bhi chal raha hai: poori report ₹49 mein, ₹499 se.' },
+      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
+      { who: 'pitch' }
+    ],
+    today: { eyebrow: '✦ Chapter 1 padh liya ✓', note: '' },
+    countdown: '✦ FREE 2 MIN CHAT READY · ₹49 PRICE DROP LIVE',
+    push: 'Aapki report ab bhi ₹49 par hai — kaun aur kab, sab andar 📖'
+  },
+  4: {
+    stamp: '3 days ago',
+    msgs: [
+      { who: 'hemali', text: 'Mansi ji, aaj aakhri din hai — ₹49 wali price aaj raat khatam ho rahi hai.' },
+      { who: 'hemali', text: 'Chapter 1 mein aapne rukavat padhi. Baaki 6 chapters mein uska jawab hai — kaun, kab, love ya arranged.' },
+      { who: 'ended',  text: 'Your free minutes are over. ₹49 price aaj raat khatam ho rahi hai.' },
+      { who: 'pitch' }
+    ],
+    today: { eyebrow: '✦ Last day · ₹49 ends tonight', note: '' },
+    countdown: '✦ LAST DAY · ₹49 PRICE ENDS IN <b>9h : 41m</b>',
+    push: 'Aakhri din — ₹49 price aaj raat khatam. Baaki 6 chapters abhi kholiye 📖'
+  }
+};
+
 /* Flow A's day 1: the chat is left exactly as it is today — complete answer,
    billing notice, done. The report's first appearance is the Today hook, so the
    whole day-1 difference between the flows lives in this array and the landing. */
@@ -110,8 +153,8 @@ var FLOW_A_DAY1 = [
 
 /* Daily-reward coins. The wallet is the habit loop's own currency — the report
    is flat ₹49 (down from ₹499) and never discounts off the wallet. */
-var REWARD = { 1: 9, 2: 11, 3: 13 };
-var WALLET_AT = { 1: 20, 2: 29, 3: 40 };   // start of each day, pre-answer
+var REWARD = { 1: 9, 2: 11, 3: 13, 4: 16 };
+var WALLET_AT = { 1: 20, 2: 29, 3: 40, 4: 53 };   // start of each day, pre-answer
 
 var state = {
   day: 1,
@@ -134,6 +177,9 @@ var state = {
      1 is the hook, and an unread hook sells nothing. Once read — on whichever
      day — the same surfaces flip to the buy. */
   read1: false,
+  /* Which track the demo sits on: false = she never read chapter 1 (days 1-3),
+     true = she read it on day 1 (days 2-4). Set by the journey switcher. */
+  preRead: false,
   /* The morning's free chapter is waiting in History — the dot on the nav says
      so, and visiting History clears it. */
   histDot: true,
@@ -700,6 +746,15 @@ function pay() {
 }
 
 /* ------------------------------------------------------------- journey */
+/* The day's content and its deadline, track-aware. The ₹49 price "ends
+   tonight" only on the LAST day of whichever track she is on. */
+function dayData() {
+  return state.preRead ? READ_JOURNEY[state.day] : JOURNEY[state.day];
+}
+function lastDay() {
+  return state.preRead ? 4 : 3;
+}
+
 function esc(s) {
   return String(s).replace(/[&<>"]/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -722,9 +777,10 @@ function chapterBubble(idx) {
 }
 
 function renderChat() {
-  var d = JOURNEY[state.day], msgs;
-  if (state.day === 1) msgs = state.flow === 'a' ? FLOW_A_DAY1 : d.msgs;
-  else msgs = state.read1 ? d.msgsRead : d.msgsUnread;
+  var msgs;
+  if (state.day === 1) msgs = state.flow === 'a' ? FLOW_A_DAY1 : JOURNEY[1].msgs;
+  else if (state.preRead) msgs = READ_JOURNEY[state.day].msgs;
+  else msgs = state.read1 ? JOURNEY[state.day].msgsRead : JOURNEY[state.day].msgsUnread;
   $('#chatThread').innerHTML = msgs.map(function (m) {
     if (m.who === 'chapter') return chapterBubble(m.idx);
     if (m.who === 'sys')     return '<p class="c-sys">' + esc(m.text) + '</p>';
@@ -747,7 +803,7 @@ function pitchCard() {
     '</div>';
   }
   var line, cta;
-  if (state.day >= 3) {
+  if (state.day >= lastDay()) {
     line = 'Baaki 6 chapters — kaun, kab, love ya arranged — <b>₹49</b> mein. Aaj raat ke baad wapas ₹499.';
     cta = 'Unlock full report · ₹49 — ends tonight';
   } else {
@@ -774,7 +830,7 @@ function remindCard() {
 /* The Today slot is the same container every day, filling up. The count is the
    point: she can see what she has and what is missing. */
 function renderOffer() {
-  var d = JOURNEY[state.day];
+  var d = dayData();
   var dots = CHAPTERS.map(function (c, i) {
     return '<i class="' + (state.paid || i === 0 ? 'got' : '') + '" title="' + esc(c.t) + '"></i>';
   }).join('');
@@ -809,7 +865,7 @@ function renderOffer() {
    is already hers and already on screen. */
 function renderDayToday() {
   var day = state.day, r = REWARD[day];
-  $('#countdownLine').innerHTML = JOURNEY[day].countdown;
+  $('#countdownLine').innerHTML = dayData().countdown;
   $('#checkinCard').hidden  = state.answered;
   $('#answeredCard').hidden = !state.answered;
   $('#checkinTitle').innerHTML =
@@ -834,36 +890,34 @@ function renderDayToday() {
   // chat" — the chat never mentioned it. It has to introduce itself.
   // Before the read, the row lands on the report page, where chapter 1 sits
   // highlighted and free. After it, the same row asks for the other six.
-  var eyebrow, title, priceLine, act;
+  // One compact row inside the expert card: book · title + one sub-line ·
+  // status pill · chevron. No eyebrow — the sub-line carries the credit.
+  var title, sub, pill, act;
   if (state.paid) {
-    eyebrow = '✦ Aapki poori report ready hai';
     title = 'Marriage Yog report';
-    priceLine = 'Saaton chapters khule ✓ · upay poochhne ke liye chat kijiye';
+    sub = 'Saaton chapters khule ✓ · upay poochhiye';
+    pill = 'Ready';
     act = ' data-go="read"';
   } else if (state.read1) {
-    eyebrow = '✦ Aapne chapter 1 padh liya';
     title = 'Unlock the other 6 chapters';
-    priceLine = '<b>₹49</b> <s>₹499</s> <i>90% OFF</i>';
+    sub = 'Baaki 6 chapters · <s>₹499</s> 90% OFF';
+    pill = '₹49';
     act = ' data-go="report"';
   } else {
-    eyebrow = state.flow === 'a'
-      ? '✦ Astro Hemali ne aapke liye likha hai'
-      : '✦ Aapki chat se — Astro Hemali ne likha hai';
     title = CHAPTERS[0].t;
-    priceLine = 'Chapter 1 aapke liye <b>free</b> hai — bas 2 min ka read';
+    sub = (state.flow === 'a' ? 'Hemali ne aapke liye likha' : 'Aapki chat se') + ' · 2 min read';
+    pill = 'FREE';
     act = ' data-go="report"';
   }
   $('#expertSlot').innerHTML =
     '<div class="ex-tap"' + act + ' role="button" tabindex="0">' +
-      '<span class="ex-eyebrow">' + eyebrow + '</span>' +
-      '<div class="ex-row">' +
-        '<span class="bk3" aria-hidden="true"></span>' +
-        '<span class="ex-t">' +
-          '<b>' + esc(title) + '</b>' +
-          '<span class="ex-pr2">' + priceLine + '</span>' +
-        '</span>' +
-        '<span class="ex-chev" aria-hidden="true">›</span>' +
-      '</div>' +
+      '<span class="bk3" aria-hidden="true"></span>' +
+      '<span class="ex-t">' +
+        '<b>' + esc(title) + '</b>' +
+        '<span class="ex-sub">' + sub + '</span>' +
+      '</span>' +
+      '<i class="ex-pill">' + pill + '</i>' +
+      '<span class="ex-chev" aria-hidden="true">›</span>' +
     '</div>';
 }
 
@@ -877,11 +931,11 @@ function renderGuideTile() {
     tag = 'Ready';
     act = ' data-go="read"';
   } else if (state.read1) {
-    sub = state.day >= 3 ? '₹49 aaj raat tak — phir ₹499' : 'Baaki 6 chapters · ₹49 <s>₹499</s>';
+    sub = state.day >= lastDay() ? '₹49 aaj raat tak — phir ₹499' : 'Baaki 6 chapters · ₹49 <s>₹499</s>';
     tag = '₹49';
     act = ' data-go="report"';
   } else {
-    sub = state.day >= 3
+    sub = state.day >= lastDay()
       ? 'Chapter 1 free — ₹49 price aaj raat tak'
       : 'Hemali ne chapter 1 likha hai — 2 min mein padhiye';
     tag = 'Open';
@@ -901,7 +955,7 @@ function renderGuideTile() {
    comeback line for the deadline. */
 function openRewardSheet() {
   $('#rewardTitle').textContent = '₹' + REWARD[state.day] + ' added to your wallet!';
-  if (state.day < 3) {
+  if (state.day < lastDay()) {
     $('#rewardSub').textContent = 'Wallet mein ab ₹' + state.wallet +
       ' hai. Kal wapas aaiye — ₹' + REWARD[state.day + 1] + ' aur milenge.';
     $('#rewardCta').textContent = 'Remind me for tomorrow';
@@ -933,9 +987,9 @@ function openChapterSheet(i) {
       }).join('') +
     '</div>' +
     '<p class="chr-price"><b>₹49</b> <s>₹499</s> <em>90% OFF · PRICE DROP</em>' +
-      (state.day >= 3 ? '<span class="ends">Ends tonight</span>' : '') + '</p>';
+      (state.day >= lastDay() ? '<span class="ends">Ends tonight</span>' : '') + '</p>';
   // Pinned above the CTA so the price is on screen without scrolling the body.
-  $('#chrLimited').innerHTML = state.day >= 3
+  $('#chrLimited').innerHTML = state.day >= lastDay()
     ? 'Limited-time price — <b class="rd">ends tonight</b> · <s>₹499</s> <b>₹49</b>'
     : 'Limited-time price drop · <s>₹499</s> <b>₹49</b>';
   $('#chrCta').textContent = 'Unlock all 7 chapters · ₹49';
@@ -993,10 +1047,12 @@ function renderChapters() {
 
 /* Picking a day rewinds the whole demo to that morning: day 1 starts in the
    chat that just ran out, later days start on Today the way she would land. */
-function setDay(n) {
+function setDay(n, r1) {
   state.day = n;
+  state.preRead = !!r1;
   $$('.switcher [data-day]').forEach(function (b) {
-    b.classList.toggle('on', +b.getAttribute('data-day') === n);
+    b.classList.toggle('on',
+      +b.getAttribute('data-day') === n && b.hasAttribute('data-r1') === state.preRead);
   });
   restart();
 }
@@ -1020,7 +1076,7 @@ function restart() {
   state.langFrom = 'sample';
   state.paid = false;
   state.reminded = false;
-  state.read1 = false;
+  state.read1 = state.preRead;   // the read track starts with chapter 1 done
   state.histDot = true;
   state.stack = [];
   renderNav();
@@ -1044,7 +1100,7 @@ function restart() {
 /* ---------------------------------------------------------------- push note */
 function showPush() {
   var el = $('#pushNote');
-  $('#pushText').textContent = JOURNEY[state.day].push;
+  $('#pushText').textContent = dayData().push;
   el.hidden = false;
   requestAnimationFrame(function () { el.classList.add('on'); });
   later(hidePush, 6000);
@@ -1092,7 +1148,7 @@ document.addEventListener('click', function (e) {
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
-  if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day')); return; }
+  if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day'), t.hasAttribute('data-r1')); return; }
   if (t.hasAttribute('data-flow')) { setFlow(t.getAttribute('data-flow')); return; }
 
   // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
@@ -1122,7 +1178,7 @@ document.addEventListener('click', function (e) {
   // The reward sheet's CTA: before day 3 it asks the OS for notifications;
   // on day 3 the wallet covers ₹49, so it goes straight to the buy sheet.
   if (t.id === 'rewardCta') {
-    if (state.day >= 3) { state.langFrom = 'buy'; openSheet('buy'); }
+    if (state.day >= lastDay()) { state.langFrom = 'buy'; openSheet('buy'); }
     else $('#notifDlg').hidden = false;
     return;
   }
@@ -1225,13 +1281,17 @@ resetTimeline();
 
 // Deep link, so a flow and day can be shared: #day2, #a-day1, #b-day3.
 var hash = (location.hash || '').replace('#', '');
-var linked = /^(?:([ab])-)?day([123])$/.exec(hash);
+// #day2 / #a-day1 / #b-day3 (unread track) and #r-day2..#r-day4 (read track).
+var linked = /^(?:([abr])-)?day([1-4])$/.exec(hash);
 state.screen = 'today-a';
 if (linked) {
-  if (linked[1]) state.flow = linked[1];
+  if (linked[1] === 'a' || linked[1] === 'b') state.flow = linked[1];
+  state.preRead = linked[1] === 'r' || +linked[2] === 4;   // day 4 only exists read
   state.day = +linked[2];
+  state.read1 = state.preRead;
   $$('.switcher [data-day]').forEach(function (b) {
-    b.classList.toggle('on', +b.getAttribute('data-day') === state.day);
+    b.classList.toggle('on',
+      +b.getAttribute('data-day') === state.day && b.hasAttribute('data-r1') === state.preRead);
   });
   $$('.switcher [data-flow]').forEach(function (b) {
     b.classList.toggle('on', b.getAttribute('data-flow') === state.flow);

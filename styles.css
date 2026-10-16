@@ -247,23 +247,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    Day 1 has no Hemali bubble, because the check-in is still unanswered. The
    expert card is the only surface already in her name, so the report sits
    inside it under a divider, rather than floating as a card of its own. */
-.ex-report{margin-top:12px;padding-top:12px;border-top:1px dashed #E7DAF5}
-.ex-eyebrow{display:block;margin-bottom:8px;font:700 10px/15px var(--sans);
-  letter-spacing:.06em;text-transform:uppercase;color:var(--brand-dk)}
-.ex-row{display:flex;gap:11px;align-items:center}
-.ex-row .bk3{--bw:42px;--bh:56px}
-.ex-t{min-width:0;display:flex;flex-direction:column;gap:3px}
-.ex-t b{font:700 14px/19px var(--sans);color:var(--g900)}
-.ex-t>span{font:400 12px/17px var(--sans);color:var(--g500)}
+.ex-report{margin-top:10px;padding-top:10px;border-top:1px dashed #E7DAF5}
 /* One tappable row — the reading happens on the report page, so the card
-   carries no button of its own, just a chevron. */
-.ex-tap{cursor:pointer}
-.ex-row .ex-chev{margin-left:auto;font:400 24px/24px var(--sans);color:var(--g400)}
-.ex-pr2{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font:400 12px/17px var(--sans);color:var(--g500)}
-.ex-pr2 b{font:700 13px/17px var(--sans);color:var(--g900)}
-.ex-pr2 s{color:var(--g400)}
-.ex-pr2 i{font-style:normal;font:700 10px/14px var(--sans);padding:1px 5px;border-radius:5px;
-  background:#ECFDF3;color:#067647}
+   carries no button of its own, just a pill and a chevron. */
+.ex-tap{display:flex;gap:10px;align-items:center;cursor:pointer}
+.ex-tap .bk3{--bw:30px;--bh:40px}
+.ex-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ex-t b{font:700 13px/17px var(--sans);color:var(--g900);
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ex-sub{font:400 11px/15px var(--sans);color:var(--g500);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-sub s{color:var(--g400)}
+.ex-pill{flex:none;font:700 10px/14px var(--sans);font-style:normal;
+  padding:2px 7px;border-radius:6px;background:#ECFDF3;color:#067647}
+.ex-tap .ex-chev{flex:none;font:400 20px/20px var(--sans);color:var(--g400)}
 
 /* ---------- Day 1 · check-in, not yet answered ----------
    Three moods and no reply. This is why the report cannot sit in a bubble on
