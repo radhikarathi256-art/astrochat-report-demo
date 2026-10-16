@@ -140,17 +140,6 @@ var READ_JOURNEY = {
   }
 };
 
-/* Flow A's day 1: the chat is left exactly as it is today — complete answer,
-   billing notice, done. The report's first appearance is the Today hook, so the
-   whole day-1 difference between the flows lives in this array and the landing. */
-var FLOW_A_DAY1 = [
-  { who: 'sys',    text: 'Astrologer has joined to guide you' },
-  { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
-  { who: 'hemali', text: 'Mansi ji, maine aapki kundli dekh li. Aapke saatve ghar mein Rahu baitha hai — isi wajah se baat bante bante ruk jaati hai.' },
-  { who: 'hemali', text: 'Pareshan mat hoiye, iska upay hai. Agli baat mein poora bataungi.' },
-  { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
-];
-
 /* Daily-reward coins. The wallet is the habit loop's own currency — the report
    is flat ₹49 (down from ₹499) and never discounts off the wallet. */
 var REWARD = { 1: 9, 2: 11, 3: 13, 4: 16 };
@@ -661,6 +650,8 @@ function paintBuySheet() {
 
 /* ---------------------------------------------------------------- timeline: making -> ready */
 function resetTimeline() {
+  // The "report being made / ready" card only exists after the purchase.
+  $('#tlReport').hidden = !state.paid;
   $('#tlReportTime').textContent = '10:42 AM';
   $('#repStatus').textContent = 'Your report is being made';
   $('#repStatus').classList.remove('green');
@@ -766,19 +757,25 @@ function esc(s) {
 function chapterBubble(idx) {
   var c = CHAPTERS[idx];
   return '<div class="ch-card">' +
-    '<span class="ch-no">Chapter ' + (idx + 1) + ' of 7 · free</span>' +
-    '<b class="ch-t">' + esc(c.t) + '</b>' +
-    '<p class="ch-s">' + esc(c.s) + '</p>' +
+    '<div class="ch-row">' +
+      '<img class="ch-cover" src="assets/book.svg" alt="">' +
+      '<div class="ch-meta">' +
+        '<span class="ch-no">Chapter ' + (idx + 1) + ' of 7' +
+          (state.read1 ? '' : '<i class="ch-free">FREE</i>') + '</span>' +
+        '<b class="ch-t">' + esc(c.t) + '</b>' +
+        '<p class="ch-s">' + esc(c.s) + '</p>' +
+      '</div>' +
+    '</div>' +
     (state.read1
       ? '<button class="btn sm primary ch-go" type="button" data-go="report">Baaki 6 chapters kholiye · ₹49</button>' :
-        '<button class="btn sm outline ch-go" type="button" data-go="report">Padhiye →</button>') +
+        '<button class="btn sm primary ch-go" type="button" data-go="report">Padhiye · 2 min →</button>') +
     '<span class="ch-saved">' + (state.read1 ? 'Padh liya ✓ · saved to your report' : 'Saved to your report') + '</span>' +
   '</div>';
 }
 
 function renderChat() {
   var msgs;
-  if (state.day === 1) msgs = state.flow === 'a' ? FLOW_A_DAY1 : JOURNEY[1].msgs;
+  if (state.day === 1) msgs = JOURNEY[1].msgs;
   else if (state.preRead) msgs = READ_JOURNEY[state.day].msgs;
   else msgs = state.read1 ? JOURNEY[state.day].msgsRead : JOURNEY[state.day].msgsUnread;
   $('#chatThread').innerHTML = msgs.map(function (m) {

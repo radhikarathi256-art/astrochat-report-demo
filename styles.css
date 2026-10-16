@@ -344,9 +344,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Two leaves peeking out behind it — the stack reads as "there are more". */
 .ch-card::before{content:"";position:absolute;inset:-6px 10px 6px 14px;z-index:-1;
   border-radius:12px;background:#FBE4D2}
+.ch-row{display:flex;gap:11px;align-items:flex-start}
+.ch-cover{flex:none;width:44px;height:58px;border-radius:6px;object-fit:cover;
+  box-shadow:0 3px 8px rgba(122,46,14,.18)}
+.ch-meta{min-width:0}
 .ch-no{display:block;font:700 10px/15px var(--sans);letter-spacing:.06em;
   text-transform:uppercase;color:var(--brand-dk)}
-.ch-t{display:block;margin-top:4px;font:700 16px/21px var(--sans);color:var(--g900)}
+.ch-t{display:block;margin-top:3px;font:700 16px/21px var(--sans);color:var(--g900)}
 .ch-s{margin:3px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
 /* Scoped past `.btn.sm`, which sets width:auto. A chapter handed to her in the
    chat is the main action on the screen, so it takes the card's full width. */
