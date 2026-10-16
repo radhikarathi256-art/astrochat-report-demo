@@ -69,8 +69,8 @@ var JOURNEY = {
       { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Chapter 1 of 7 · open', note: '' },
-    countdown: '✦ FREE 2 MIN CHAT READY',
-    push: 'Hemali ne jo aapke liye likha tha, abhi tak padha nahi 📖 Aaj ki free chat bhi ready hai'
+    countdown: '✦ FREE 2 MIN CHAT READY'
+    /* No push on day 2 — the chapter-1 read push fires on day 3 only (user ruling). */
   },
   3: {
     stamp: '2 days ago',
@@ -1090,7 +1090,7 @@ function renderTpTabs() {
     { id: 'reader',  l: 'Chapter 1 reader' },
     { id: 'history', l: 'History · card + dot' }
   );
-  if (JOURNEY[state.day].push) tabs.push({ id: 'push', l: 'Push note' });
+  if (dayData().push) tabs.push({ id: 'push', l: 'Push note' });
 
   var wrap = document.createElement('div');
   wrap.className = 'tp-wrap';
@@ -1143,7 +1143,7 @@ function restart() {
   resetTimeline();
   $('#bookEl').classList.remove('open');
   show(state.entry, 'fade');
-  if (state.day >= 2) later(showPush, 700);
+  if (dayData().push) later(showPush, 700);
 }
 
 /* ---------------------------------------------------------------- push note */
@@ -1380,5 +1380,5 @@ renderChapters();
 renderDayToday();
 renderTpTabs();
 armIntroSheet();
-if (state.day >= 2) later(showPush, 700);
+if (dayData().push) later(showPush, 700);
 })();
