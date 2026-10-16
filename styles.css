@@ -29,8 +29,10 @@ img{display:block}
 
 /* ---------- Desktop stage + phone frame ---------- */
 .stage{height:100dvh;display:grid;place-items:center;padding:24px}
+/* No max-height: that used to squash the frame on short laptop screens and
+   break the 9:20 ratio. fitPhone() in app.js zooms the whole frame instead. */
 .phone{
-  position:relative;width:360px;height:800px;max-height:calc(100dvh - 48px);
+  position:relative;width:360px;height:800px;
   background:#fff;border-radius:40px;
   /* clip, not hidden: the parked sheet and the off-screen screens create scrollable
      overflow, and `hidden` would let a focus/scrollIntoView drag the whole frame. */

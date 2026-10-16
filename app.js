@@ -984,7 +984,20 @@ $$('.screen').forEach(function (s) {
   }, { passive: true });
 });
 
+/* ---------------------------------------------------------------- fit */
+/* Small laptops: the frame is 360x800; when the window is shorter, zoom the
+   whole phone down so the mobile aspect ratio holds instead of squashing.
+   On real phones (<=600px) the frame is the viewport and must stay unzoomed. */
+function fitPhone() {
+  var ph = $('#phone');
+  if (window.innerWidth <= 600) { ph.style.zoom = ''; return; }
+  var s = Math.min(1, (window.innerHeight - 48) / 800);
+  ph.style.zoom = s < 1 ? s : '';
+}
+window.addEventListener('resize', fitPhone);
+
 /* ---------------------------------------------------------------- boot */
+fitPhone();
 renderLadder();
 renderNav();
 renderSample();
