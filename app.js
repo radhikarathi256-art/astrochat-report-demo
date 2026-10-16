@@ -1079,6 +1079,25 @@ function renderChapters() {
   }).join('');
 }
 
+/* Demo chrome: one tab per nudge surface of the selected day, so a PM can jump
+   straight to each touchpoint instead of hunting for it inside the phone. */
+function renderTpTabs() {
+  var tabs = [
+    { id: 'today',   l: state.day === 1 ? 'Today · expert card' : 'Today · guidance tile' },
+    { id: 'chat',    l: 'Chat · pitch' },
+    { id: 'report',  l: 'Report page' },
+    { id: 'reader',  l: 'Chapter 1 reader' },
+    { id: 'history', l: 'History · card + dot' }
+  ];
+  if (JOURNEY[state.day].push) tabs.push({ id: 'push', l: 'Push note' });
+  $('#tpNote').textContent = state.read1
+    ? 'Chapter 1 read — every surface asks the buy · ₹49'
+    : 'Chapter 1 unread — every surface asks the read · free';
+  $('#tpTabs').innerHTML = tabs.map(function (t) {
+    return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
+  }).join('');
+}
+
 /* Picking a day rewinds the whole demo to that morning: day 1 starts in the
    chat that just ran out, later days start on Today the way she would land. */
 function setDay(n, r1) {
@@ -1113,6 +1132,7 @@ function restart() {
   renderOffer();
   renderChapters();
   renderDayToday();
+  renderTpTabs();
   armIntroSheet();
   resetTimeline();
   $('#bookEl').classList.remove('open');
@@ -1139,7 +1159,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta,[data-tp]');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -1237,6 +1257,33 @@ document.addEventListener('click', function (e) {
 
   if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
   if (t.id === 'payBtn')    { pay(); return; }
+  // Touchpoint tabs in the demo sidebar: jump the phone to that surface.
+  if (t.hasAttribute('data-tp')) {
+    var tp = t.getAttribute('data-tp');
+    closeSheet();
+    if (tp === 'chat') {
+      renderChat();
+      if (state.screen !== 'chat') go('chat');
+      var tsc = $('#chat [data-scroll]');
+      if (tsc) requestAnimationFrame(function () { tsc.scrollTop = tsc.scrollHeight; });
+    } else if (tp === 'report') {
+      if (state.screen !== 'report') go('report');
+    } else if (tp === 'reader') {
+      openChapterSheet(0);
+    } else if (tp === 'history') {
+      state.stack = []; show('timeline', 'fade');
+    } else if (tp === 'push') {
+      if (state.screen === 'chat') show(state.entry, 'fade');
+      showPush();
+    } else {
+      state.stack = [];
+      show(state.entry, 'fade');
+      var slot = $(state.day === 1 ? '#expertSlot' : '#guideSlot');
+      if (slot) later(function () { slot.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
+    }
+    return;
+  }
+
   // Every chat door — Continue Chat, the header icon, Ask Hemali — lands in
   // the real thread, scrolled to its end, where the day's pitch sits.
   if (t.hasAttribute('data-chat')) {
@@ -1329,6 +1376,7 @@ renderChat();
 renderOffer();
 renderChapters();
 renderDayToday();
+renderTpTabs();
 armIntroSheet();
 if (state.day === 1 && state.flow === 'b') {
   $('#today-a').classList.remove('on');
