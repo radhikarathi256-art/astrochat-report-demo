@@ -305,7 +305,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .cn-t small{display:flex;align-items:center;gap:5px;font:500 12px/16px var(--sans);color:#067647}
 .cn-t small::before{content:"";width:6px;height:6px;border-radius:50%;background:#12B76A}
 .chat-scroll{background:#FDF0EB}
-.chat-thread{display:flex;flex-direction:column;gap:9px;padding:14px 16px 4px}
+/* The bottom padding clears the absolutely-positioned .chat-cta (~145px tall),
+   so the last card — the pitch — can scroll fully above it. */
+.chat-thread{display:flex;flex-direction:column;gap:9px;padding:14px 16px 156px}
 
 .c-b{max-width:84%;padding:9px 12px;border-radius:12px;position:relative}
 .c-b p{margin:0;font:400 15px/21px var(--sans);color:var(--g800)}

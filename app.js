@@ -58,7 +58,10 @@ var JOURNEY = {
       { who: 'chapter', idx: 1 },
       { who: 'user',   text: 'Ye to bilkul sahi laga 😳' },
       { who: 'hemali', text: 'Bataiye, aur kya jaanna hai?' },
-      { who: 'ended',  text: 'Your free minutes are over. Chapter 2 aapki report mein save ho gaya.' }
+      { who: 'ended',  text: 'Your free minutes are over. Chapter 2 aapki report mein save ho gaya.' },
+      /* She came back for the chat — so the chat ends with the ask. Day 2 is
+         the highest-intent moment of the journey: the return was voluntary. */
+      { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Chapter 2 of 7 · open', note: 'Kal timing wala chapter khulega — ya abhi poori report kholiye.' },
     countdown: '✦ CHAPTER 3 + FREE 2 MIN CHAT IN <b>14h : 23m</b>',
@@ -73,7 +76,8 @@ var JOURNEY = {
       { who: 'hemali', text: 'Mansi ji, aaj timing wala chapter khol rahi hoon.' },
       { who: 'hemali', text: 'Aapka sabse saaf window March 2027 mein khulta hai. Usse pehle do aur hain, aur ek abhi chal raha hai —' },
       { who: 'chapter', idx: 2, cut: true },
-      { who: 'ended',  text: 'Your free minutes are over. Baaki 4 chapters aaj raat tak ₹49 mein.' }
+      { who: 'ended',  text: 'Your free minutes are over. Baaki 4 chapters aaj raat tak ₹49 mein.' },
+      { who: 'pitch' }
     ],
     today: { eyebrow: '✦ Chapter 3 of 7 · open', note: 'Baaki 4 chapters ₹49 mein — aaj raat tak.' },
     countdown: '✦ LAST DAY · ₹49 PRICE ENDS IN <b>9h : 41m</b>',
@@ -161,7 +165,8 @@ function show(id, mode) {
   }
 
   state.screen = id;
-  if (id !== 'timeline') hidePush();
+  if (id !== 'timeline') hideReadyPush();
+  hidePush();
   var sc = $('[data-scroll]', next);
   if (sc) sc.scrollTop = 0;
   onEnter(id);
@@ -493,7 +498,7 @@ function renderRead() {
     '<div class="upsell">' +
       '<b>Have a question about this part?</b>' +
       '<p>Ask Astro Hemali. She made this report for you.</p>' +
-      '<button class="btn primary" type="button" id="chatHemali">Chat with Hemali</button>' +
+      '<button class="btn primary" type="button" data-chat>Chat with Hemali</button>' +
     '</div>' +
 
     '<div class="r-sec">' +
@@ -564,6 +569,14 @@ function renderRead() {
                  '<span class="pc-btn">View report</span></button>';
         }).join('') +
       '</div>' +
+    '</div>' +
+
+    /* Post-completion: the report ends on a door, not a full stop. The reader
+       who just finished has questions — the chat is where they get spent. */
+    '<div class="upsell">' +
+      '<b>Poora padh liya?</b>' +
+      '<p>Hemali abhi online hai. Report ke kisi bhi hisse par seedha unse poochh lijiye.</p>' +
+      '<button class="btn primary" type="button" data-chat>Chat with Hemali</button>' +
     '</div>';
 }
 
@@ -594,7 +607,7 @@ function resetTimeline() {
   $('#repNotify').hidden = false;
   $('#repActs').hidden = true;
   $$('#repSteps .step').forEach(function (s) { s.classList.remove('done', 'now'); });
-  hidePush();
+  hideReadyPush();
 }
 
 function runMaking() {
@@ -622,16 +635,16 @@ function markReady() {
     $('#repSteps').hidden = true;
     $('#repNotify').hidden = true;
     $('#repActs').hidden = false;
-    showPush();
+    showReadyPush();
   }, 500);
 }
 
-function showPush() {
+function showReadyPush() {
   // If the user already opened the report the banner is stale, so drop it.
   if (state.screen !== 'timeline') return;
   reveal($('#push'));
 }
-function hidePush() {
+function hideReadyPush() {
   var p = $('#push');
   p.classList.remove('on');
   setTimeout(function () { if (!p.classList.contains('on')) p.hidden = true; }, 440);
@@ -639,7 +652,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- book opening (R.6b / R.6c) */
 function openBook() {
-  hidePush();
+  hideReadyPush();
   go('book', 'fade');
   var bk = $('#bookEl'), cap = $('#bookCap');
   bk.classList.remove('open');
@@ -701,8 +714,36 @@ function renderChat() {
     if (m.who === 'sys')     return '<p class="c-sys">' + esc(m.text) + '</p>';
     if (m.who === 'ended')   return '<p class="c-end">' + esc(m.text) + '</p>';
     if (m.who === 'remind')  return remindCard();
+    if (m.who === 'pitch')   return pitchCard();
     return '<div class="c-b ' + m.who + '"><p>' + esc(m.text) + '</p><time>02:24 PM</time></div>';
   }).join('');
+}
+
+/* The end-of-chat ask, priced from the wallet — so the number on the button
+   shrinks every day she comes back: ₹20 on day 2, ₹9 on day 3, ₹0 once the
+   day-3 check-in is answered. The ₹49 anchor stays in the text above it. */
+function pitchCard() {
+  var left = CHAPTERS.length - JOURNEY[state.day].unlocked;
+  var pay = Math.max(0, 49 - state.wallet);
+  var line, cta;
+  if (pay === 0) {
+    line = 'Wallet mein ₹' + state.wallet + ' ho gaye — baaki ' + left +
+      ' chapters ab <b>₹0 extra</b> mein khul jaate hain.';
+    cta = 'Unlock full report · ₹0 from wallet';
+  } else if (state.day >= 3) {
+    line = 'Wallet mein ₹' + state.wallet + ' hai — sirf <b>₹' + pay + ' aur</b>. ' +
+      'Ya aaj ka check-in answer kijiye: ₹' + REWARD[3] + ' milenge aur yeh ₹0 ho jaata hai.';
+    cta = 'Unlock ' + left + ' chapters · pay ₹' + pay;
+  } else {
+    line = 'Agla chapter — <b>' + esc(CHAPTERS[JOURNEY[state.day].unlocked].t) +
+      '</b> — kal khulega. Ya abhi sab: wallet mein ₹' + state.wallet +
+      ' hai, sirf <b>₹' + pay + ' aur</b>.';
+    cta = 'Unlock all ' + left + ' now · pay ₹' + pay;
+  }
+  return '<div class="rm-card pitch">' +
+    '<p>' + line + '</p>' +
+    '<button class="btn sm primary" type="button" data-go="report">' + cta + '</button>' +
+  '</div>';
 }
 
 /* Tomorrow gets a name — the chapter 2 title — and one tap says yes. */
@@ -909,7 +950,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,#chatHemali,#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -954,6 +995,7 @@ document.addEventListener('click', function (e) {
     paintWallet();
     renderDayToday();
     renderOffer();
+    renderChat();     // the chat's pitch card prices off the wallet
     openRewardSheet();
     return;
   }
@@ -995,7 +1037,7 @@ document.addEventListener('click', function (e) {
 
   if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
   if (t.id === 'payBtn')    { pay(); return; }
-  if (t.id === 'chatHemali') {
+  if (t.hasAttribute('data-chat')) {
     toast('Chat is not part of this demo');
     later(function () { state.stack = []; show(state.entry, 'fade'); }, 700);
     return;
