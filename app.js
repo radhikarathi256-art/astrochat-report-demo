@@ -1080,9 +1080,15 @@ function renderChapters() {
   }).join('');
 }
 
-/* Demo chrome: one tab per nudge surface of the selected day, so a PM can jump
-   straight to each touchpoint instead of hunting for it inside the phone. */
+/* Demo chrome: the selected day's touchpoints, as chips docked right under its
+   card in the switcher — tap one to jump the phone to that surface. */
 function renderTpTabs() {
+  var old = $('.switcher .tp-wrap');
+  if (old) old.parentNode.removeChild(old);
+  $$('.switcher .has-tp').forEach(function (b) { b.classList.remove('has-tp'); });
+  var host = $('.switcher [data-day].on');
+  if (!host) return;
+
   var tabs = [
     { id: 'today',   l: state.day === 1 ? 'Today · expert card' : 'Today · guidance tile' },
     { id: 'chat',    l: 'Chat · pitch' },
@@ -1091,12 +1097,17 @@ function renderTpTabs() {
     { id: 'history', l: 'History · card + dot' }
   ];
   if (JOURNEY[state.day].push) tabs.push({ id: 'push', l: 'Push note' });
-  $('#tpNote').textContent = state.read1
-    ? 'Chapter 1 read — every surface asks the buy · ₹49'
-    : 'Chapter 1 unread — every surface asks the read · free';
-  $('#tpTabs').innerHTML = tabs.map(function (t) {
-    return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
-  }).join('');
+
+  var wrap = document.createElement('div');
+  wrap.className = 'tp-wrap';
+  wrap.innerHTML =
+    '<p class="tp-note">Touchpoints — ' +
+      (state.read1 ? 'every surface asks the buy · ₹49' : 'every surface asks the read · free') + '</p>' +
+    '<div class="tp-tabs">' + tabs.map(function (t) {
+      return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
+    }).join('') + '</div>';
+  host.classList.add('has-tp');
+  host.insertAdjacentElement('afterend', wrap);
 }
 
 /* Picking a day rewinds the whole demo to that morning: day 1 starts in the

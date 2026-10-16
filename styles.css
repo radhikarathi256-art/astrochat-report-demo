@@ -54,8 +54,13 @@ img{display:block}
 .switcher button small{display:block;font-size:12px;line-height:18px;font-weight:400;color:var(--g500);margin-top:1px}
 .switcher button.on{border-color:var(--brand);background:var(--brand50);color:var(--w900)}
 .switcher hr{border:0;border-top:1px solid var(--g200);margin:10px 0}
-/* Touchpoint tabs: compact chips that jump the phone to one nudge surface. */
-.tp-note{margin:-4px 0 8px;font:500 11px/16px var(--sans);color:var(--g500)}
+/* Touchpoint chips: docked under the selected day's card, they continue it —
+   the day button loses its bottom corners and the panel carries them instead. */
+.switcher button.on.has-tp{border-bottom-left-radius:0;border-bottom-right-radius:0;margin-bottom:0}
+.tp-wrap{margin:0 0 6px;padding:0 11px 10px;background:var(--brand50);
+  border:1px solid var(--brand);border-top:0;border-radius:0 0 10px 10px}
+.tp-wrap::before{content:"";display:block;border-top:1px dashed #F0C4AD;margin:0 0 8px}
+.tp-note{margin:0 0 7px;font:500 11px/15px var(--sans);color:var(--g500)}
 .tp-tabs{display:flex;flex-wrap:wrap;gap:6px}
 .switcher .tp-tabs button{display:inline-block;width:auto;margin:0;padding:5px 10px;
   border-radius:999px;font-size:12px;line-height:17px;font-weight:600;color:var(--g700)}
