@@ -158,7 +158,7 @@ var WALLET_AT = { 1: 20, 2: 29, 3: 40, 4: 53 };   // start of each day, pre-answ
 
 var state = {
   day: 1,
-  flow: 'b',
+  flow: 'a',
   answered: false,
   entry: 'today-a',
   wallet: 20,
@@ -1057,14 +1057,6 @@ function setDay(n, r1) {
   restart();
 }
 
-function setFlow(f) {
-  state.flow = f;
-  $$('.switcher [data-flow]').forEach(function (b) {
-    b.classList.toggle('on', b.getAttribute('data-flow') === f);
-  });
-  restart();
-}
-
 /* ---------------------------------------------------------------- reset */
 function restart() {
   clearTimers();
@@ -1113,7 +1105,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],[data-flow],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta');
   if (!t) return;
 
   if (t.id === 'push')    { openBook(); return; }
@@ -1149,7 +1141,6 @@ document.addEventListener('click', function (e) {
   if (t.id === 'restart') { restart(); return; }
 
   if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day'), t.hasAttribute('data-r1')); return; }
-  if (t.hasAttribute('data-flow')) { setFlow(t.getAttribute('data-flow')); return; }
 
   // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
   // on the daily reward board. Your Experts stays on screen above it.
@@ -1292,9 +1283,6 @@ if (linked) {
   $$('.switcher [data-day]').forEach(function (b) {
     b.classList.toggle('on',
       +b.getAttribute('data-day') === state.day && b.hasAttribute('data-r1') === state.preRead);
-  });
-  $$('.switcher [data-flow]').forEach(function (b) {
-    b.classList.toggle('on', b.getAttribute('data-flow') === state.flow);
   });
 }
 state.wallet = WALLET_AT[state.day];
