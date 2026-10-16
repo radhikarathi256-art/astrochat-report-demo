@@ -163,6 +163,9 @@ var state = {
   /* Which track the demo sits on: false = she never read chapter 1 (days 1-3),
      true = she read it on day 1 (days 2-4). Set by the journey switcher. */
   preRead: false,
+  /* The post-purchase journey: she bought the report. Set by the switcher's
+     "Report bought" entry; restart() carries it into state.paid. */
+  prePaid: false,
   /* The morning's free chapter is waiting in History — the dot on the nav says
      so, and visiting History clears it. */
   histDot: true,
@@ -656,6 +659,20 @@ function resetTimeline() {
   hideReadyPush();
 }
 
+/* The switcher's "Report bought" entry lands with the report already made —
+   the timeline card sits in its settled "Ready to read" state, no animation. */
+function applyPaidTimeline() {
+  if (!state.paid) return;
+  $('#tlReport').hidden = false;
+  $('#tlReportTime').textContent = '12:10 PM';
+  var st = $('#repStatus');
+  st.textContent = 'Ready to read';
+  st.classList.add('green');
+  $('#repSteps').hidden = true;
+  $('#repNotify').hidden = true;
+  $('#repActs').hidden = false;
+}
+
 function runMaking() {
   var steps = $$('#repSteps .step');
   steps.forEach(function (s) { s.classList.remove('done', 'now'); });
@@ -1111,22 +1128,35 @@ function renderTpTabs() {
   var host = $('.switcher [data-day].on');
   if (!host) return;
 
-  var tabs = [
-    { id: 'today',   l: state.day === 1 ? 'Today · expert card' : 'Today · guidance tile' }
-  ];
-  // Day 1's chat is the plain free chat — the pitch only enters it from day 2.
-  if (state.day >= 2) tabs.push({ id: 'chat', l: 'Chat · pitch' });
-  tabs.push(
-    { id: 'reader',  l: 'Chapter 1 reader' },
-    { id: 'history', l: 'History · card + dot' }
-  );
-  if (dayData().push) tabs.push({ id: 'push', l: 'Push note' });
+  var tabs;
+  if (state.paid) {
+    // Post-purchase: every sell surface has retired into the follow-up.
+    tabs = [
+      { id: 'today',   l: 'Today · read your report' },
+      { id: 'chat',    l: 'Chat · continue chat' },
+      { id: 'read',    l: 'Full report' },
+      { id: 'upsell',  l: 'Report end · upsell' },
+      { id: 'history', l: 'History · report ready' }
+    ];
+  } else {
+    tabs = [
+      { id: 'today',   l: state.day === 1 ? 'Today · expert card' : 'Today · guidance tile' }
+    ];
+    // Day 1's chat is the plain free chat — the pitch only enters it from day 2.
+    if (state.day >= 2) tabs.push({ id: 'chat', l: 'Chat · pitch' });
+    tabs.push(
+      { id: 'reader',  l: 'Chapter 1 reader' },
+      { id: 'history', l: 'History · card + dot' }
+    );
+    if (dayData().push) tabs.push({ id: 'push', l: 'Push note' });
+  }
 
   var wrap = document.createElement('div');
   wrap.className = 'tp-wrap';
   wrap.innerHTML =
     '<p class="tp-note">Touchpoints — ' +
-      (state.read1 ? 'every surface asks the buy · ₹49' : 'every surface asks the read · free') + '</p>' +
+      (state.paid ? 'report bought · every surface is the follow-up'
+        : state.read1 ? 'every surface asks the buy · ₹49' : 'every surface asks the read · free') + '</p>' +
     '<div class="tp-tabs">' + tabs.map(function (t) {
       return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
     }).join('') + '</div>';
@@ -1136,12 +1166,15 @@ function renderTpTabs() {
 
 /* Picking a day rewinds the whole demo to that morning: day 1 starts in the
    chat that just ran out, later days start on Today the way she would land. */
-function setDay(n, r1) {
+function setDay(n, r1, paid) {
   state.day = n;
   state.preRead = !!r1;
+  state.prePaid = !!paid;
   $$('.switcher [data-day]').forEach(function (b) {
     b.classList.toggle('on',
-      +b.getAttribute('data-day') === n && b.hasAttribute('data-r1') === state.preRead);
+      +b.getAttribute('data-day') === n &&
+      b.hasAttribute('data-r1') === state.preRead &&
+      b.hasAttribute('data-paid') === state.prePaid);
   });
   restart();
 }
@@ -1155,9 +1188,9 @@ function restart() {
   state.wallet = WALLET_AT[state.day];
   state.lang = 'en';
   state.langFrom = 'sample';
-  state.paid = false;
+  state.paid = state.prePaid;
   state.reminded = false;
-  state.read1 = state.preRead;   // the read track starts with chapter 1 done
+  state.read1 = state.preRead || state.prePaid;   // read/bought tracks start with chapter 1 done
   state.histDot = true;
   state.stack = [];
   renderNav();
@@ -1172,9 +1205,10 @@ function restart() {
   renderHistCard();
   armIntroSheet();
   resetTimeline();
+  applyPaidTimeline();
   $('#bookEl').classList.remove('open');
   show(state.entry, 'fade');
-  if (dayData().push) later(showPush, 700);
+  if (!state.paid && dayData().push) later(showPush, 700);
 }
 
 /* ---------------------------------------------------------------- push note */
@@ -1228,7 +1262,7 @@ document.addEventListener('click', function (e) {
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
-  if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day'), t.hasAttribute('data-r1')); return; }
+  if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day'), t.hasAttribute('data-r1'), t.hasAttribute('data-paid')); return; }
 
   // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
   // on the daily reward board. Your Experts stays on screen above it.
@@ -1304,6 +1338,15 @@ document.addEventListener('click', function (e) {
       if (state.screen !== 'report') go('report');
     } else if (tp === 'reader') {
       openChapterSheet(0);
+    } else if (tp === 'read') {
+      if (state.screen !== 'read') { state.stack = [state.entry]; show('read', 'fade'); }
+    } else if (tp === 'upsell') {
+      if (state.screen !== 'read') { state.stack = [state.entry]; show('read', 'fade'); }
+      // The read body has inline ask-Hemali cards too — the carousel + closing
+      // upsell sit at the end, so jump to the last one.
+      var ups = $$('#read .upsell');
+      var up = ups[ups.length - 1];
+      if (up) later(function () { up.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 420);
     } else if (tp === 'history') {
       state.stack = []; show('timeline', 'fade');
     } else if (tp === 'push') {
@@ -1389,18 +1432,22 @@ renderRead();
 paintWallet();
 resetTimeline();
 
-// Deep link, so a flow and day can be shared: #day2, #a-day1, #b-day3.
+// Deep link, so a track and day can be shared: #day2 (unread), #r-day2..#r-day4
+// (read track) and #p-day2 (report bought).
 var hash = (location.hash || '').replace('#', '');
-// #day2 / #a-day1 / #b-day3 (unread track) and #r-day2..#r-day4 (read track).
-var linked = /^(?:([abr])-)?day([1-4])$/.exec(hash);
+var linked = /^(?:([rp])-)?day([1-4])$/.exec(hash);
 state.screen = 'today-a';
 if (linked) {
-  state.preRead = linked[1] === 'r' || +linked[2] === 4;   // day 4 only exists read
+  state.prePaid = linked[1] === 'p';
+  state.preRead = linked[1] === 'r' || state.prePaid || +linked[2] === 4;   // day 4 only exists read
   state.day = +linked[2];
+  state.paid = state.prePaid;
   state.read1 = state.preRead;
   $$('.switcher [data-day]').forEach(function (b) {
     b.classList.toggle('on',
-      +b.getAttribute('data-day') === state.day && b.hasAttribute('data-r1') === state.preRead);
+      +b.getAttribute('data-day') === state.day &&
+      b.hasAttribute('data-r1') === state.preRead &&
+      b.hasAttribute('data-paid') === state.prePaid);
   });
 }
 state.wallet = WALLET_AT[state.day];
@@ -1412,5 +1459,6 @@ renderDayToday();
 renderTpTabs();
 renderHistCard();
 armIntroSheet();
-if (dayData().push) later(showPush, 700);
+applyPaidTimeline();
+if (!state.paid && dayData().push) later(showPush, 700);
 })();
