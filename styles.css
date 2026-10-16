@@ -347,11 +347,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:500 11px/16px var(--sans);color:#067647}
 .ch-saved::before{content:"";width:13px;height:13px;border-radius:50%;background:#ECFDF3;
   box-shadow:inset 0 0 0 1.4px #ABEFC6}
-/* Day 3. The sentence stops mid-air and fades out — the truncation is the sell,
-   not the discount underneath it. */
-.ch-cut{position:relative;margin:9px 0 0;font:400 14px/21px var(--sans);color:var(--g700)}
-.ch-fade{background:linear-gradient(90deg,var(--g700) 0,rgba(71,84,103,.08) 86%);
-  -webkit-background-clip:text;background-clip:text;color:transparent}
 
 /* ---------- Day 1 · the reminder opt-in ----------
    Sits after the end-of-chat notice, in the system voice's position but warmer:
@@ -419,6 +414,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border:1px solid var(--brand);background:#fff;color:var(--brand);
   font:600 12px/17px var(--sans)}
 .ch-ask:active{background:var(--brand50)}
+/* Unread: chapter 1 is the highlighted free unlock on the sell page. */
+.chlist li.hl{margin:2px 0 4px;padding:13px 12px;background:#FFF9F2;border:1px solid #F0D6BE;border-radius:12px}
+.ch-free{margin-left:6px;padding:2px 6px;border-radius:6px;background:#ECFDF3;color:#067647;
+  font:700 10px/14px var(--sans);font-style:normal;vertical-align:1.5px}
 
 /* ---------- R.1b hero + expert card ---------- */
 .hero{position:relative;padding:calc(var(--sbh) + 58px) 16px 10px;text-align:center;
@@ -922,6 +921,37 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .chr-no{font:700 10px/15px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--brand-dk)}
 .chr-body{display:flex;flex-direction:column;gap:10px;overflow-y:auto}
 .chr-body p{margin:0;font:400 14px/22px var(--sans);color:var(--g700)}
+/* Chapter 1 ends on the sell: the ch-2 hook, the 7-chapter map, one price. */
+.chr-hook{padding:10px 12px;border-radius:10px;background:#FFF6EC;
+  border:1px solid #F0D6BE}
+.chr-body .chr-hook{font:400 13px/19px var(--sans)}
+.chr-hook b{color:var(--g900)}
+.chr-list{display:flex;flex-direction:column;gap:9px;padding:12px;
+  border:1px solid var(--g200);border-radius:12px}
+.cl-h{margin:0 0 1px;font:700 10px/15px var(--sans);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--g500)}
+.chr-body p.cl-h{font:700 10px/15px var(--sans)}
+.cl-row{display:flex;gap:9px;align-items:flex-start}
+.cl-row i{flex:0 0 auto;width:18px;height:18px;border-radius:50%;margin-top:1px;
+  font:700 10px/18px var(--sans);font-style:normal;text-align:center;
+  background:var(--g100);color:var(--g500)}
+.cl-row.done i{background:#ECFDF3;color:#067647}
+.cl-row span{display:flex;flex-direction:column}
+.cl-row b{font:600 13px/18px var(--sans);color:var(--g900)}
+.cl-row small{font:400 11px/15px var(--sans);color:var(--g500)}
+.chr-price{display:flex;align-items:center;gap:7px}
+.chr-price b{font:800 18px/22px var(--sans);color:var(--g900)}
+.chr-price s{font:400 13px/18px var(--sans);color:var(--g400)}
+.chr-price em{font:700 10px/14px var(--sans);font-style:normal;padding:2px 6px;
+  border-radius:6px;background:#ECFDF3;color:#067647}
+.chr-price .ends{margin-left:auto;font:700 11px/16px var(--sans);color:#B42318}
+/* Pinned price line between the reader body and its CTA — on screen always. */
+.chr-limited{margin:10px 0 -4px;text-align:center;font:500 12px/17px var(--sans);color:var(--g500)}
+.chr-limited b{font-weight:800;color:var(--g900)}
+.chr-limited b.rd{color:#B42318}
+.chr-limited s{color:var(--g400)}
+/* Strikes inside tile subtitles and chat buttons stay quiet. */
+.tile .tt small s{color:var(--g400)}
 
 /* ---------- Real phone: full screen ---------- */
 @media (max-width:600px){

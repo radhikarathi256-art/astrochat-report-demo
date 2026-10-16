@@ -32,8 +32,8 @@
   <hr>
   <b>Journey</b>
   <button type="button" data-day="1" class="on">Day 1 · The first chat<small>And where the report first appears</small></button>
-  <button type="button" data-day="2">Day 2 · She comes back<small>Chat opens with chapter 2</small></button>
-  <button type="button" data-day="3">Day 3 · The close<small>Chapter 3 stops. ₹49 ends tonight</small></button>
+  <button type="button" data-day="2">Day 2 · She comes back<small>Chapter 1 re-nudged — or the buy, once read</small></button>
+  <button type="button" data-day="3">Day 3 · The close<small>₹49 ends tonight</small></button>
   <hr>
   <button type="button" id="restart" class="ghost">Restart demo</button>
   <a class="sw-link" href="variations.html">20 attachment variations →</a>
@@ -342,7 +342,7 @@
         <div class="buy-row">
           <!-- The discount lives here, not on Today: she has chosen to read more,
                so the saving is an answer to "why now", not a shout. -->
-          <div class="price"><b>₹49</b><small><s>₹199</s><i>75% OFF</i></small></div>
+          <div class="price"><b>₹49</b><small><s>₹499</s><i>90% OFF</i></small></div>
           <button class="btn primary grow" type="button" data-sheet="buy">Buy now</button>
         </div>
       </div>
@@ -372,7 +372,7 @@
           Learn how Rahu is delaying your marriage
         </p>
         <div class="buy-row">
-          <div class="price"><b>₹49</b><small><s>₹199</s><i>75% OFF</i></small></div>
+          <div class="price"><b>₹49</b><small><s>₹499</s><i>90% OFF</i></small></div>
           <button class="btn primary grow" type="button" id="buyInLang">Buy in English</button>
         </div>
       </div>
@@ -419,7 +419,7 @@
                 </div>
               </div>
               <div class="rep-acts">
-                <button class="btn primary grow" type="button" data-read="0">Read chapter 1</button>
+                <button class="btn primary grow" type="button" data-go="report">Read chapter 1</button>
               </div>
             </div>
           </div>
@@ -572,6 +572,7 @@
     <span class="chr-no" id="chrNo"></span>
     <h3 id="chrTitle"></h3>
     <div class="chr-body" id="chrBody"></div>
+    <p class="chr-limited" id="chrLimited"></p>
     <button class="btn primary" type="button" id="chrCta"></button>
     <button class="btn text" type="button" data-close-sheet>Close</button>
   </div>
@@ -607,12 +608,12 @@
       <button class="lnk-btn strong" type="button" data-sheet="lang">Change</button>
     </div>
     <div class="buy-price">
-      <div class="brow"><span>Report price</span><span>₹49</span></div>
-      <div class="brow green"><span>From your wallet</span><span id="buyWallet">−₹20</span></div>
+      <div class="brow"><span>Original price</span><span><s>₹499</s></span></div>
+      <div class="brow green"><span>Price drop · 90% OFF</span><span>−₹450</span></div>
       <hr>
-      <div class="brow total"><span>You pay</span><span id="buyTotal">₹29</span></div>
+      <div class="brow total"><span>You pay</span><span>₹49</span></div>
     </div>
-    <button class="btn primary" type="button" id="payBtn">Pay ₹29</button>
+    <button class="btn primary" type="button" id="payBtn">Pay ₹49</button>
     <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
   </div>
 
