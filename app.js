@@ -720,7 +720,7 @@ function pay() {
   state.wallet = Math.max(0, state.wallet - 49);
   paintWallet();
   // Every sell surface retires into the follow-up: read, chat, upay, other reports.
-  renderDayToday(); renderOffer(); renderChat(); renderChapters();
+  renderDayToday(); renderOffer(); renderChat(); renderChapters(); renderHistCard();
   toast('Payment successful', 'success');
   later(function () {
     state.stack = [state.entry];
@@ -793,18 +793,49 @@ function pitchCard() {
       '<button class="btn sm primary" type="button" data-chat>Continue chat with Hemali</button>' +
     '</div>';
   }
-  var line, cta;
-  if (state.day >= lastDay()) {
-    line = 'Baaki 6 chapters — kaun, kab, love ya arranged — <b>₹49</b> mein. Aaj raat ke baad wapas ₹499.';
-    cta = 'Unlock full report · ₹49 — ends tonight';
-  } else {
-    line = 'Poori report — saaton chapters — <b>₹49</b> <s>₹499</s> mein khul jaati hai. 90% price drop chal raha hai.';
-    cta = 'Unlock full report · ₹49';
-  }
-  return '<div class="rm-card pitch">' +
-    '<p>' + line + '</p>' +
-    '<button class="btn sm primary" type="button" data-go="report">' + cta + '</button>' +
+  var ending = state.day >= lastDay();
+  return '<div class="ch-card">' +
+    '<div class="ch-row">' +
+      '<img class="ch-cover" src="assets/book.svg" alt="">' +
+      '<div class="ch-meta">' +
+        '<span class="ch-no">Full report · 7 chapters</span>' +
+        '<b class="ch-t">Kaun, kab, love ya arranged — sab likha hai</b>' +
+        '<p class="ch-price"><b>₹49</b><s>₹499</s><i>90% OFF</i></p>' +
+      '</div>' +
+    '</div>' +
+    (ending ? '<p class="ch-end">Aaj raat ke baad wapas ₹499</p>' : '') +
+    '<button class="btn sm primary ch-go" type="button" data-go="report">Unlock full report · ₹49</button>' +
   '</div>';
+}
+
+/* History's morning chapter card: read nudge until chapter 1 is read, buy
+   pitch after, and gone once the report is bought (tlReport takes over). */
+function renderHistCard() {
+  $('#tlChap').hidden = state.paid;
+  if (state.paid) return;
+  $('#tlChapCard').innerHTML = state.read1
+    ? '<div class="rep-top">' +
+        '<img src="assets/book.svg" alt="">' +
+        '<div>' +
+          '<p class="eyebrow">Your report · Astro Hemali</p>' +
+          '<b>' + esc(CHAPTERS[0].t) + '</b>' +
+          '<p class="rep-status green">Chapter 1 padh liya ✓ · 6 chapters locked</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rep-acts">' +
+        '<button class="btn primary grow" type="button" data-go="report">Unlock all 7 chapters · ₹49</button>' +
+      '</div>'
+    : '<div class="rep-top">' +
+        '<img src="assets/book.svg" alt="">' +
+        '<div>' +
+          '<p class="eyebrow">Free chapter · Astro Hemali</p>' +
+          '<b>' + esc(CHAPTERS[0].t) + '</b>' +
+          '<p class="rep-status green">Chapter 1 ready to read</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rep-acts">' +
+        '<button class="btn primary grow" type="button" data-go="report">Read chapter 1</button>' +
+      '</div>';
 }
 
 /* Tomorrow's reason to return: the free chat and the next coin. */
@@ -1086,7 +1117,6 @@ function renderTpTabs() {
   // Day 1's chat is the plain free chat — the pitch only enters it from day 2.
   if (state.day >= 2) tabs.push({ id: 'chat', l: 'Chat · pitch' });
   tabs.push(
-    { id: 'report',  l: 'Report page' },
     { id: 'reader',  l: 'Chapter 1 reader' },
     { id: 'history', l: 'History · card + dot' }
   );
@@ -1139,6 +1169,7 @@ function restart() {
   renderChapters();
   renderDayToday();
   renderTpTabs();
+  renderHistCard();
   armIntroSheet();
   resetTimeline();
   $('#bookEl').classList.remove('open');
@@ -1187,7 +1218,7 @@ document.addEventListener('click', function (e) {
     // Reading chapter 1 flips every day-1 surface from "read it" to "buy the rest".
     if (ci === 0 && !state.read1) {
       state.read1 = true;
-      renderDayToday(); renderOffer(); renderChat(); renderChapters();
+      renderDayToday(); renderOffer(); renderChat(); renderChapters(); renderHistCard();
     }
     openChapterSheet(ci);
     return;
@@ -1379,6 +1410,7 @@ renderOffer();
 renderChapters();
 renderDayToday();
 renderTpTabs();
+renderHistCard();
 armIntroSheet();
 if (dayData().push) later(showPush, 700);
 })();

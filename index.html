@@ -404,23 +404,11 @@
         <div class="tl-today"><i></i>TODAY</div>
 
         <div class="tl">
-          <!-- The morning's free chapter — written overnight, ready when she
-               wakes. This is what the dot on the History tab points at. -->
-          <div class="tl-item">
+          <!-- The morning's chapter card — read nudge until chapter 1 is read,
+               buy pitch after, gone once bought. Rendered by renderHistCard(). -->
+          <div class="tl-item" id="tlChap">
             <time>8:02 AM</time>
-            <div class="card tl-card">
-              <div class="rep-top">
-                <img src="assets/book.svg" alt="">
-                <div>
-                  <p class="eyebrow">Free chapter · Astro Hemali</p>
-                  <b>Why Rahu is delaying your marriage</b>
-                  <p class="rep-status green">Chapter 1 ready to read</p>
-                </div>
-              </div>
-              <div class="rep-acts">
-                <button class="btn primary grow" type="button" data-go="report">Read chapter 1</button>
-              </div>
-            </div>
+            <div class="card tl-card" id="tlChapCard"></div>
           </div>
 
           <!-- The report entry: swaps between "making" (R.5) and "ready" (R.6) -->
