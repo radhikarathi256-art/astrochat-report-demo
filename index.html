@@ -565,16 +565,25 @@
     <button class="btn text" type="button" data-close-sheet>Done</button>
   </div>
 
-  <!-- Chapter reader: the free chapter in full, ending on the next ask. -->
-  <div class="sheet" id="sheet-chapter" aria-hidden="true">
-    <div class="grab"></div>
-    <span class="chr-no" id="chrNo"></span>
-    <h3 id="chrTitle"></h3>
-    <div class="chr-body" id="chrBody"></div>
-    <p class="chr-limited" id="chrLimited"></p>
-    <button class="btn primary" type="button" id="chrCta"></button>
-    <button class="btn text" type="button" data-close-sheet>Close</button>
-  </div>
+  <!-- Chapter reader: a full ebook page — paper ground, chart figures in the
+       prose, the sell at the end, price + CTA pinned below. -->
+  <section class="screen" id="chapter" data-screen="chapter">
+    <header class="chr-top">
+      <button class="ic-btn" type="button" data-back aria-label="Back">
+        <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#2C2318" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="chr-no" id="chrNo"></span>
+      <span class="chr-top-sp" aria-hidden="true"></span>
+    </header>
+    <div class="scroll chr-scroll" data-scroll>
+      <h3 id="chrTitle"></h3>
+      <div class="chr-body" id="chrBody"></div>
+    </div>
+    <footer class="chr-foot">
+      <p class="chr-limited" id="chrLimited"></p>
+      <button class="btn primary" type="button" id="chrCta"></button>
+    </footer>
+  </section>
 
   <!-- Android notification permission, per the board's J1.5. The reward sheet's
        "remind me" is the in-app yes; this is the OS asking the same thing. -->

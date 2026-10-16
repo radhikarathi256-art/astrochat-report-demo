@@ -966,15 +966,48 @@ function openRewardSheet() {
   openSheet('reward');
 }
 
-/* The chapter, readable in place — a sheet, so she never leaves the page.
-   Chapter 1 is general on purpose: it ends on the chapter-2 hook, then the
-   7-chapter map (what each one teaches), then the one price that opens them. */
+/* The chapter's astrology figures — a North-Indian kundli with Rahu sitting in
+   the 7th house, and the transit bar that puts a date on his exit. Drawn
+   inline so the page reads like a report, not a chat message. */
+function kundliFig() {
+  var H = { 1:[100,44], 2:[52,24], 3:[24,52], 4:[52,100], 5:[24,148], 6:[52,176],
+            7:[100,152], 8:[148,176], 9:[176,148], 10:[148,100], 11:[176,52], 12:[148,24] };
+  function g(h, t, hl) {
+    return '<text class="kg' + (hl ? ' hl' : '') + '" x="' + H[h][0] + '" y="' + H[h][1] + '">' + t + '</text>';
+  }
+  return '<figure class="chr-fig">' +
+    '<svg viewBox="0 0 200 200" role="img" aria-label="Janam chart — Rahu saatve ghar mein">' +
+      '<rect x="2" y="2" width="196" height="196" rx="8"/>' +
+      '<path d="M2 2 198 198M198 2 2 198M100 2 2 100l98 98 98-98Z"/>' +
+      '<circle class="khl" cx="100" cy="148" r="15"/>' +
+      g(7, 'Ra', true) + g(1, 'La') + g(4, 'Ch') + g(10, 'Sa') +
+      g(2, 'Gu') + g(11, 'Su') + g(9, 'Ma') + g(5, 'Ve') +
+    '</svg>' +
+    '<figcaption>Aapka janam chart — <b>Rahu</b> saatve ghar mein, shaadi ke ghar mein</figcaption>' +
+  '</figure>';
+}
+function transitFig() {
+  return '<figure class="chr-fig chr-trans">' +
+    '<div class="ktl"><span class="ktl-bar"><i></i></span><span class="ktl-dot"></span></div>' +
+    '<div class="ktl-lab"><span>Aaj</span><span><b>Nov 2026</b> · Rahu nikalta hai</span></div>' +
+    '<figcaption>Rahu ka saatva ghar chhodna — yahin se raasta khulta hai</figcaption>' +
+  '</figure>';
+}
+
+/* The chapter as a full ebook page. Chapter 1 is general on purpose: it ends
+   on the chapter-2 hook, then the 7-chapter map (what each one teaches), then
+   the one price that opens them. */
 function openChapterSheet(i) {
   var c = CHAPTERS[i];
+  var paras = (CHAPTER_BODY[i] || []).map(function (p) { return '<p>' + esc(p) + '</p>'; });
   $('#chrNo').textContent = 'Chapter ' + (i + 1) + ' of 7 · free';
   $('#chrTitle').textContent = c.t;
   $('#chrBody').innerHTML =
-    (CHAPTER_BODY[i] || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+    paras.slice(0, 2).join('') +
+    (i === 0 ? kundliFig() : '') +
+    paras.slice(2, 3).join('') +
+    (i === 0 ? transitFig() : '') +
+    paras.slice(3).join('') +
     '<p class="chr-hook">Agla chapter: <b>' + esc(CHAPTERS[i + 1].t) + '</b> — ' +
       esc(CHAPTERS[i + 1].s.toLowerCase()) + '.</p>' +
     '<div class="chr-list">' +
@@ -993,7 +1026,8 @@ function openChapterSheet(i) {
     ? 'Limited-time price — <b class="rd">ends tonight</b> · <s>₹499</s> <b>₹49</b>'
     : 'Limited-time price drop · <s>₹499</s> <b>₹49</b>';
   $('#chrCta').textContent = 'Unlock all 7 chapters · ₹49';
-  openSheet('chapter');
+  $('#chapter [data-scroll]').scrollTop = 0;
+  go('chapter');
 }
 
 /* The intro sheet fires once, on the scroll past the free-chat section, exactly
