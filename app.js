@@ -38,19 +38,14 @@ var CHAPTER_BODY = [
 var JOURNEY = {
   1: {
     stamp: 'Just now',
-    /* The free chat does not end cleanly. It stops mid-sentence, and the rest
-       of the sentence is the chapter. */
+    /* Day 1's chat is left exactly as it is today — complete answer, billing
+       notice, done. The report's first appearance is the Today expert card. */
     msgs: [
       { who: 'sys',    text: 'Astrologer has joined to guide you' },
       { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
       { who: 'hemali', text: 'Mansi ji, maine aapki kundli dekh li. Aapke saatve ghar mein Rahu baitha hai — isi wajah se baat bante bante ruk jaati hai.' },
-      { who: 'hemali', text: 'Poora likh diya hai aapke liye. Padhiye —' },
-      { who: 'chapter', idx: 0 },
-      { who: 'ended',  text: 'Your free minutes are over. Hemali ne jo likha hai woh aapka hai — kal phir 2 minute milenge.' },
-      /* The opt-in, at the moment she has just read Hemali's writing about her
-         own chart. Day 1's real output is this yes, not the sale — push is the
-         only surface the 83% who never return will ever see. */
-      { who: 'remind' }
+      { who: 'hemali', text: 'Pareshan mat hoiye, iska upay hai. Poora maine likh diya hai aapke liye.' },
+      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
     ],
     today: { eyebrow: '✦ Chapter 1 of 7 · open', note: 'Chapter 1 free hai — padhiye. Poori report ₹49, ₹499 se price drop.' },
     countdown: '✦ NEXT FREE 2 MIN CHAT IN <b>14h : 23m</b>'
@@ -147,7 +142,6 @@ var WALLET_AT = { 1: 20, 2: 29, 3: 40, 4: 53 };   // start of each day, pre-answ
 
 var state = {
   day: 1,
-  flow: 'a',
   answered: false,
   entry: 'today-a',
   wallet: 20,
@@ -1087,12 +1081,15 @@ function renderTpTabs() {
   if (!host) return;
 
   var tabs = [
-    { id: 'today',   l: state.day === 1 ? 'Today · expert card' : 'Today · guidance tile' },
-    { id: 'chat',    l: 'Chat · pitch' },
+    { id: 'today',   l: state.day === 1 ? 'Today · expert card' : 'Today · guidance tile' }
+  ];
+  // Day 1's chat is the plain free chat — the pitch only enters it from day 2.
+  if (state.day >= 2) tabs.push({ id: 'chat', l: 'Chat · pitch' });
+  tabs.push(
     { id: 'report',  l: 'Report page' },
     { id: 'reader',  l: 'Chapter 1 reader' },
     { id: 'history', l: 'History · card + dot' }
-  ];
+  );
   if (JOURNEY[state.day].push) tabs.push({ id: 'push', l: 'Push note' });
 
   var wrap = document.createElement('div');
@@ -1145,10 +1142,7 @@ function restart() {
   armIntroSheet();
   resetTimeline();
   $('#bookEl').classList.remove('open');
-  // Flow B's day 1 opens in the chat that just ran out — that is the moment
-  // being tested. Flow A's day 1 (and every later day) lands on Today, the way
-  // a returning user actually does — with the push still sitting at the top.
-  show(state.day === 1 && state.flow === 'b' ? 'chat' : state.entry, 'fade');
+  show(state.entry, 'fade');
   if (state.day >= 2) later(showPush, 700);
 }
 
@@ -1370,7 +1364,6 @@ var hash = (location.hash || '').replace('#', '');
 var linked = /^(?:([abr])-)?day([1-4])$/.exec(hash);
 state.screen = 'today-a';
 if (linked) {
-  if (linked[1] === 'a' || linked[1] === 'b') state.flow = linked[1];
   state.preRead = linked[1] === 'r' || +linked[2] === 4;   // day 4 only exists read
   state.day = +linked[2];
   state.read1 = state.preRead;
@@ -1387,11 +1380,5 @@ renderChapters();
 renderDayToday();
 renderTpTabs();
 armIntroSheet();
-if (state.day === 1 && state.flow === 'b') {
-  $('#today-a').classList.remove('on');
-  $('#chat').classList.add('on');
-  state.screen = 'chat';
-} else if (state.day >= 2) {
-  later(showPush, 700);
-}
+if (state.day >= 2) later(showPush, 700);
 })();
