@@ -904,8 +904,9 @@ function renderDayToday() {
     pill = '₹49';
     act = ' data-go="report"';
   } else {
+    // Unread: just the chapter title and the FREE pill — no credit line.
     title = CHAPTERS[0].t;
-    sub = (state.flow === 'a' ? 'Hemali ne likha' : 'Aapki chat se') + ' · 2 min read';
+    sub = '';
     pill = 'FREE';
     act = ' data-go="report"';
   }
@@ -914,7 +915,7 @@ function renderDayToday() {
       '<span class="bk3" aria-hidden="true"></span>' +
       '<span class="ex-t">' +
         '<b>' + esc(title) + '</b>' +
-        '<span class="ex-sub">' + sub + '</span>' +
+        (sub ? '<span class="ex-sub">' + sub + '</span>' : '') +
       '</span>' +
       '<i class="ex-pill">' + pill + '</i>' +
       '<span class="ex-chev" aria-hidden="true">›</span>' +
