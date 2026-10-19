@@ -141,30 +141,76 @@ var READ_JOURNEY = {
    reports are offered and the user picks; there is no free chapter, only a
    preview; day 2 re-offers in the free chat and on Today. Kept as its own track
    so the two models can be clicked side by side. */
-/* `ask` is the brief's sixth point: the report has to end in a conversation,
-   so each one carries the three questions a reader actually leaves with. */
+/* Three reports: finding someone, marrying them, and work. Each one carries
+   - `learn`: the questions it answers, written against HER chart. This is the
+     sell, so it is phrased as her questions, not as a contents page.
+   - `ask`:  the brief's sixth point — what she leaves the report wanting to
+     ask the astrologer.
+   - `cover`: its own colourway, so three reports do not look like one product.
+   - `sample`: the whole report on the demo chart, for the free preview. */
 var REPORTS = [
-  { id: 'love',   t: 'Partner & Relationship', s: 'Kaun, kab, love ya arranged — aur rukavat kya hai', pages: 38,
+  {
+    id: 'partner', t: 'Partner Prediction', s: 'Kaun, kahan, kab milega — aur kya rok raha hai', pages: 38,
     why: 'Aapke saatve ghar mein Rahu — isi par aapne poochha tha',
+    cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
+    learn: [
+      'Aapka partner dikhne mein kaisa hoga — kundli se bani tasveer',
+      'Is janam mein sachcha pyaar kab milega',
+      'Kahan aur kaise mulaqat hogi',
+      'Rishta kaisa chalega — rozmarra ki sachchai',
+      'Abhi us vyakti se milne mein kya rukavat hai',
+      'Love hoga ya arranged — chart kya kehta hai',
+      'Baar baar kis tarah ke galat log aapki taraf khinchte hain',
+      'Aapki attachment style aur love language',
+      'Kis tarah ka saathi aapke liye sabse sahi hai',
+      'Roz kya kijiye jisse woh vyakti paas aaye'
+    ],
     ask: [
-      { q: 'March 2027 ka matlab kya hai?', a: 'Us dauran Guru aapke saatve ghar ko dekhta hai. Rishte ki baat usi samay sabse jaldi aage badhti hai — baat chhedne ke liye wahi window sabse saaf hai.' },
+      { q: 'Woh kahan milega?',             a: 'Aapke navamsa se disha saaf hai — kaam ya padhai ki jagah se juda hua parichay. Akele kisi anjaan jagah par nahi; kisi jaan-pehchaan ke beech se.' },
       { q: 'Rahu ka upay kya hai?',          a: 'Budhwar ko Durga ji ka dhyan aur ek vyakti ko bhojan. Aur jo baat atki hai, usme teen hafte tak koi naya vaada mat kijiye.' },
-      { q: 'Rahul ke saath banegi?',         a: 'Aapke 36 mein se 24 gun milte hain. Bharosa aur parivaar ke mamle mein jodi strong hai; gussa dono taraf sambhalna padega.' }
-    ] },
-  { id: 'money',  t: 'Money & Wealth',         s: 'Paisa kab tikega, kahan ruk raha hai',               pages: 32,
-    why: 'Aapka doosra ghar kamzor chal raha hai — paisa tikta nahi',
+      { q: 'Galat log kyun aate hain?',      a: 'Rahu wahi dikhata hai jo turant mil jaaye. Jo rishta pehle hafte mein hi bahut tez lage — wahi aapka pattern hai. Teen hafte rukiye, pattern toot jaata hai.' }
+    ]
+  },
+  {
+    id: 'marriage', t: 'Marriage Report', s: 'Manglik, timing, sasuraal aur gun milan', pages: 42,
+    why: 'Saatve ghar mein Rahu ke saath Mangal ka sawaal bhi hai',
+    cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
+    learn: [
+      'Main Manglik hoon ya nahi — aur kitna gehra hai',
+      'Shaadi kab hogi, aur sabse achha samay kaunsa hai',
+      'Shaadi ke ghar ka poora kundli vishleshan',
+      'Kaisa jeevansaathi aapke bhagya mein likha hai',
+      'Sasuraal waale saath denge ya nahi',
+      'Shaadi ke baad paise ki sthiti badlegi kya',
+      '36 mein se kitne gun milte hain — poora compatibility',
+      'Kaun se dosh hain aur unke theek upay'
+    ],
     ask: [
-      { q: 'Kharch ka leak kahan hai?', a: 'Aapka doosra ghar kamzor hai — chhote regular kharch sabse zyada le jaate hain, bade nahi. Teen mahine ka hisaab likh lijiye, khud dikh jayega.' },
-      { q: 'Loan lena theek rahega?',   a: 'Abhi Shani ki drishti chal rahi hai. Naya bada loan agle mahine ke baad dekhiye — tab tak ek purana band karna zyada faayda dega.' },
-      { q: 'Shani ka upay kya hai?',    a: 'Shanivar ko sarson ke tel ka daan aur kisi buzurg ki madad. Aur ek purani zimmedari isi mahine band kijiye.' }
-    ] },
-  { id: 'career', t: 'Career & Job',           s: 'Job change, promotion aur unka sahi time',           pages: 34,
+      { q: 'Manglik kitna serious hai?',   a: 'Mangal aapke chart mein hai par kamzor sthiti mein — isse "nichla Manglik" kehte hain. Samaan chart wale saathi se yeh apne aap sant ho jaata hai.' },
+      { q: 'Sabse achha mahina kaunsa?',    a: 'Jab Guru aapke saatve ghar ko dekhta hai. Us window mein baat bhi banti hai aur parivaar bhi raazi hota hai.' },
+      { q: 'Sasuraal kaisa milega?',        a: 'Chauthe ghar ka swami theek hai — ghar shaant rahega. Shuruaat ke chh: mahine thoda adjustment maangenge, uske baad sthir.' }
+    ]
+  },
+  {
+    id: 'career', t: 'Career & Job', s: 'Switch, promotion, boss aur unka sahi time', pages: 34,
     why: 'Dasve ghar ka swami uchch ka hai, par Shani dekh raha hai',
+    cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
+    learn: [
+      'Aane waale teen mahine ka ek bada career theme',
+      'Raise maangne aur idea rakhne ki sabse achhi tareekhein',
+      'Business karein ya job — chart kya kehta hai',
+      'Aapke boss aapke baare mein asal mein kya sochte hain',
+      'Kaam mein kya badalna hai, aur kaam kaise dikhana hai',
+      'Job switch ke liye achha mahina kaunsa hai',
+      'Is job mein increment milne ki kitni sambhavna hai',
+      'Kaam ki safalta ke liye rang, disha aur mantra'
+    ],
     ask: [
       { q: 'Job change kab karun?',        a: 'Jab Guru aapke dasve ghar ko dekhega. Us window mein offer bhi achhi aati hai aur baat banti bhi hai — usse pehle sirf baat chalaiye, switch mat kijiye.' },
-      { q: 'Promotion ke chance hain?',    a: 'Dasve ghar ka swami uchch ka hai, to pehchaan milegi hi. Par abhi mehnat dikh nahi rahi — apna kaam likhit mein record kijiye.' },
-      { q: 'Boss se dikkat ka upay?',      a: 'Surya ko jal aur Ravivar ko namak kam. Aur jo bhi tay ho use mail par confirm kijiye — zubani baat hi sabse zyada ulajh rahi hai.' }
-    ] }
+      { q: 'Boss kya sochte hain?',        a: 'Surya theek hai par Shani dekh raha hai — kaam par bharosa hai, dikhawe par nahi. Isliye aapka kaam unhe pata to hai, yaad nahi rehta.' },
+      { q: 'Increment milega?',            a: 'Dasve ghar ka swami uchch ka hai, to haan — par maangne par, apne aap nahi. Jin tareekhon ka zikr report mein hai, unhi mein baat kijiye.' }
+    ]
+  }
 ];
 function reportById(id) {
   for (var i = 0; i < REPORTS.length; i++) if (REPORTS[i].id === id) return REPORTS[i];
@@ -187,15 +233,15 @@ var PM_JOURNEY = {
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
       { who: 'gap',    text: '15 minutes later' },
-      { who: 'hemali', text: 'Mansi ji, aapke saatve ghar par maine poori report taiyar ki hai — Rahu ki rukavat, timing aur upay, sab usme hai. Pehle 2 pages free mein padh lijiye.' },
+      { who: 'hemali', text: 'Mansi ji, aapke saatve ghar par maine poori report taiyar ki hai — Rahu ki rukavat, timing, partner kaisa hoga aur upay, sab usme hai. Ek doosri kundli par bani poori report free mein khuli hai — dekh lijiye ki kitni gehri hai.' },
       { who: 'offer3' }
     ],
     today: { eyebrow: '', note: '' },
     countdown: '✦ NEXT FREE 2 MIN CHAT IN <b>14h : 23m</b>',
     /* A notification that names her own house and opens that one preview beats
        a storefront ad that makes her choose again on the other side of the tap. */
-    lead: 'love',
-    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner & Relationship report ka preview free hai 📖'
+    lead: 'partner',
+    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner Prediction report poori free padh lijiye 📖'
   },
   /* `lead` is the one report each day actually suggests. Day 1 and 2 lead with
      the house she asked about; if that has not landed in two days the
@@ -203,7 +249,7 @@ var PM_JOURNEY = {
      repeating it. The other two are always one tap away, never stacked. */
   2: {
     stamp: 'Yesterday',
-    lead: 'love',
+    lead: 'partner',
     surf: { chat: false, today: true, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi ji! Kal aapne partner ke baare mein poochha tha. Aaj kya poochhna hai?' },
@@ -230,11 +276,11 @@ var PM_JOURNEY = {
      because a silent last ask is a wasted one. */
   4: {
     stamp: '3 days ago',
-    lead: 'money',
+    lead: 'marriage',
     lastAsk: true,
     surf: { chat: true, today: true, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi ji, aapka doosra ghar kamzor chal raha hai — isi wajah se paisa aata hai par tikta nahi. Uski report dekh lijiye.' },
+      { who: 'hemali', text: 'Mansi ji, ek baat reh gayi thi — aapke chart mein Mangal ka sawaal hai, isliye Manglik, shaadi ki timing aur sasuraal ka hissa alag report mein hai. Aaj dekh lijiye.' },
       { who: 'offer3' },
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
     ],
@@ -291,7 +337,7 @@ var state = {
      from, preview instead of a free chapter. Its own journey, its own
      surfaces — the chapter-1 model is untouched by it. */
   pm: false,
-  pick: 'love',     // which of the three reports she is looking at
+  pick: 'partner',  // which of the three reports she is looking at
   /* The morning's free chapter is waiting in History — the dot on the nav says
      so, and visiting History clears it. */
   histDot: true,
@@ -631,6 +677,32 @@ function dial(label, sub, pct, col) {
 }
 
 function renderRead() {
+  /* On the PM track she bought one of three, so the reader renders that one on
+     her own chart. The legacy Marriage Yog content below stays for the other
+     track, which only ever sells the one report. */
+  if (state.pm) {
+    $('#readBody').innerHTML = reportBody(state.pick, 'her') +
+      // The end of the report is a door, not a full stop: the other two
+      // reports, then the chat where the questions it raised get spent.
+      '<div class="carousel-wrap">' +
+        '<p class="lbl">AAPKE CHART PAR AUR BHI HAI</p>' +
+        '<div class="carousel">' +
+          REPORTS.filter(function (x) { return x.id !== state.pick; }).map(function (x) {
+            return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
+              coverArt(x, 'cv-sm') +
+              '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
+              '<span class="pc-pr"><em>₹49</em><s>₹499</s></span>' +
+              '<span class="pc-btn">Poori report free dekhiye</span></button>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="upsell">' +
+        '<b>Poora padh liya?</b>' +
+        '<p>Hemali abhi online hai. Report ka koi bhi hissa samajhna ho, ya apne chart ke <b>upay</b> poochhne ho — seedha unse poochh lijiye.</p>' +
+        '<button class="btn primary" type="button" data-chat>Chat with Hemali — upay poochhiye</button>' +
+      '</div>';
+    return;
+  }
   $('#readBody').innerHTML =
     '<div class="r-cover">' +
       '<p class="eyebrow">MADE BY ASTRO HEMALI</p>' +
@@ -753,11 +825,14 @@ function renderRead() {
     '</div>';
 }
 
-function animateBars() {
+/* `root` is the reader by default and the free preview on the PM track — both
+   render the same report body, so both need their bars and dials filled. */
+function animateBars(root) {
+  root = root || '#readBody';
   // Reset to 0 first so the fill animates every time the screen is opened.
-  var bars = $$('#readBody .track i');
+  var bars = $$(root + ' .track i');
   bars.forEach(function (i) { i.style.width = '0'; });
-  var arcs = $$('#readBody .dial .ar');
+  var arcs = $$(root + ' .dial .ar');
   arcs.forEach(function (a) { a.setAttribute('stroke-dasharray', '0 265'); });
   later(function () {
     bars.forEach(function (i) { i.style.width = i.getAttribute('data-w') + '%'; });
@@ -894,7 +969,7 @@ function pmQuiet() { return state.pm && !!dayData().quiet; }
 function pmSurf() { return (state.pm && dayData().surf) || {}; }
 /* What she actually owns: on the PM track that is whichever of the three she
    picked, everywhere else it is the one Marriage Yog report. */
-function boughtTitle() { return state.pm ? reportById(state.pick).t + ' report' : 'Marriage Yog report'; }
+function boughtTitle() { return state.pm ? reportById(state.pick).t : 'Marriage Yog report'; }
 /* Six surfaces name the report she owns — buy sheet, "ready" push, sample
    cover, timeline card, book cover and the reader's own header. They used to
    be hard-coded to Marriage Yog, so picking Money and paying handed her
@@ -939,7 +1014,7 @@ function chapterBubble(idx) {
 /* The one report today suggests. A three-row menu makes her choose before she
    has any reason to care; a single report tied to a house Hemali already named
    is a recommendation, and the other two stay one tap away. */
-function leadReport() { return reportById(dayData().lead || 'love'); }
+function leadReport() { return reportById(dayData().lead || 'partner'); }
 
 /* The PM brief's offer as it lands in the chat. Swiggy's hierarchy: one
    coloured strip states the deal once, the dish owns the card, the price is a
@@ -950,20 +1025,20 @@ function offer3Card() {
   if (state.paid) return '';
   var r = leadReport();
   return '<div class="of3">' +
-    '<p class="of3-strip">PREVIEW FREE · PEHLE 2 PAGES</p>' +
+    '<p class="of3-strip">POORI REPORT FREE PADHIYE</p>' +
     '<div class="of3-in">' +
       '<div class="of3-head">' +
         '<b>' + esc(r.t) + '</b>' +
         '<span class="of3-price"><b>₹49</b><s>₹499</s><i>90% OFF</i></span>' +
       '</div>' +
       '<button class="of3-lead" type="button" data-pick="' + r.id + '">' +
-        '<img src="assets/book.svg" alt="">' +
+        coverArt(r, 'cv-sm') +
         '<span class="of3-t">' +
           '<small>' + esc(r.why) + '</small>' +
           '<em>' + r.pages + ' pages · aapki bhasha + English</em>' +
         '</span>' +
       '</button>' +
-      '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">Preview free padhiye</button>' +
+      '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">Poori report free dekhiye</button>' +
       '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
         (dayData().lastAsk
           ? 'Aaj ke baad yeh yahan nahi dikhega'
@@ -1074,7 +1149,7 @@ function renderHistCard() {
           '<div>' +
             '<p class="eyebrow">Saved on your chart</p>' +
             '<b>3 reports</b>' +
-            '<p class="rep-status">Partner · Money · Career</p>' +
+            '<p class="rep-status">' + REPORTS.map(function (x) { return x.t; }).join(' · ') + '</p>' +
           '</div>' +
           '<button class="lnk-btn" type="button" data-go="picker">View</button>' +
         '</div>';
@@ -1084,15 +1159,15 @@ function renderHistCard() {
     var hr = leadReport();
     $('#tlChapCard').innerHTML =
       '<div class="rep-top">' +
-        '<img src="assets/book.svg" alt="">' +
+        coverArt(hr, 'cv-sm') +
         '<div>' +
           '<p class="eyebrow">From Astro Hemali</p>' +
-          '<b>' + esc(hr.t) + ' report</b>' +
+          '<b>' + esc(hr.t) + '</b>' +
           '<p class="rep-status green">' + esc(hr.why) + '</p>' +
         '</div>' +
       '</div>' +
       '<div class="rep-acts">' +
-        '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">Preview free padhiye</button>' +
+        '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">Poori report free dekhiye</button>' +
       '</div>';
     return;
   }
@@ -1199,7 +1274,7 @@ function renderDayToday() {
     var lr = leadReport();
     $('#expertSlot').innerHTML =
       '<div class="ex-tap" data-pick="' + lr.id + '" role="button" tabindex="0">' +
-        '<span class="bk3" aria-hidden="true"></span>' +
+        coverArt(lr, 'cv-sm') +
         '<span class="ex-t">' +
           '<b>' + esc(lr.t) + '</b>' +
           '<span class="ex-sub wrap' + (dayData().lastAsk ? ' last' : '') + '">' +
@@ -1308,11 +1383,11 @@ function renderPicker() {
   // which problem she has, and the chevron is the only thing on the right.
   $('#pkList').innerHTML = REPORTS.map(function (r) {
     return '<button class="pk-card" type="button" data-pick="' + r.id + '">' +
-      '<img class="pk-bk" src="assets/book.svg" alt="">' +
+      coverArt(r, 'cv-md pk-bk') +
       '<span class="pk-t">' +
         '<b>' + esc(r.t) + '</b>' +
         '<small>' + esc(r.s) + '</small>' +
-        '<span class="pk-meta"><i class="pk-free">PREVIEW FREE</i>' + r.pages + ' pages</span>' +
+        '<span class="pk-meta"><i class="pk-free">POORI REPORT FREE</i>' + r.pages + ' pages</span>' +
       '</span>' +
       '<em class="pk-chev" aria-hidden="true">›</em>' +
     '</button>';
@@ -1323,67 +1398,332 @@ function renderPicker() {
    the preview is all she gets before paying. */
 /* `show` is what she reads free; `cut` is the sentence that gets taken away
    mid-thought — the fade lands on the answer, never on filler. */
-var PREVIEW = {
-  love: {
-    show: [
-      'Aapki kundli ke saatve ghar mein Rahu baitha hai. Yeh wahi ghar hai jo shaadi, partner aur long-term rishton ko chalata hai — aur Rahu yahan baithkar har baat ko aakhri waqt par ulajha deta hai.',
-      'Isi wajah se aapko lagta hai ki baat ban rahi thi, phir achanak ruk gayi. Galti aapki nahi hai; timing ki hai.'
-    ],
-    cut: [
-      'Rahu is ghar se nikalne ki taiyari mein hai. Jis mahine woh nikalta hai, usi se aapke liye sabse saaf window shuru hoti hai — woh mahina hai',
-      'Aur partner kis disha se aayega, yeh aapke chart ke navamsa se saaf dikhta hai. Woh disha hai'
-    ],
-    toc: ['Shaadi ka sahi saal aur mahina', 'Partner kaisa hoga, kahan se milega', 'Love ya arranged — chart kya kehta hai', 'Rukavat ka kaaran aur uske upay']
+/* Two charts, one set of reports. The free preview renders the WHOLE report on
+   the demo chart, so she sees real depth instead of two pages that stop
+   mid-sentence; buying swaps in her own numbers. Same prose, different chart —
+   which is exactly what a real report is. */
+var CHARTS = {
+  sample: {
+    who: 'Priya S.', meta: '14 March 1996 · 6:42 AM · Pune',
+    partner: {
+      big: 'Saatve ghar mein Rahu baitha hai — isiliye baat banti bhi hai aur aakhri waqt par ulajh bhi jaati hai. Sabse saaf window June 2027 se khulti hai.',
+      dials: [['Milne ka yog', 'Strong', 74, '#DC6803'], ['Rishte ki sthirta', 'Steady', 61, '#027A48'],
+              ['Rukavat', 'Ghat rahi hai', 48, '#7D58A1'], ['Love ya arranged', 'Love tilt', 62, '#0E9384']],
+      w1: { h: 'June 2027 se January 2028', p: 'Rahu saatve ghar se nikal raha hai. Is dauran naye parichay sabse zyada bante hain.' },
+      w2: { h: 'April 2029', p: 'Doosri window — agar pehli mein baat nahi badhi to yahan phir khulti hai.' },
+      bands: [['Baaki 2026', 14], ['2027', 71], ['2028', 55], ['2029', 34], ['2030 ke baad', 18]],
+      look: 'Gehra gehua rang, saadharan kad, chehre par thodi si daadhi. Aankhein shaant, hansi dheemi.',
+      traits: [['Swabhav', 'Bahar se shaant, andar se zidd. Jo mehsoos karta hai woh kam bolta hai.'],
+               ['Kaam', 'Numbers ya systems se juda — finance, engineering ya apna chhota setup.'],
+               ['Parivaar', 'Chhota parivaar, ek bhai ya behan. Maata-pita haan kehne se pehle bahut poochhte hain.'],
+               ['Mulaqat', 'Kisi jaan-pehchaan ke zariye. Chart mein kisi anjaan app ka ishara nahi hai.'],
+               ['Disha', 'Aapke shehar se uttar ya uttar-paschim, ek din ke safar ke andar.']],
+      tilt: 62,
+      block: 'Rahu wahi dikhata hai jo turant mil jaaye. Isliye jo rishta pehle hafte mein hi bahut tez lagta hai, wahi baad mein rukta hai.',
+      patterns: ['Jo bahut jaldi bahut kareeb aa jaaye', 'Jo apni baat se zyada aapki zarurat samjhe', 'Jo maafi maange par aadat na badle'],
+      attach: [['Attachment style', 'Anxious-secure ke beech. Jawab der se aaye to mann bhaagta hai.'],
+               ['Love language', 'Waqt dena — tohfe nahi. Saath baithna sabse zyada asar karta hai.']],
+      daily: ['Budhwar ko Durga ji ka dhyan', 'Guruwar ko peela kuch daan', 'Teen hafte tak koi naya vaada nahi']
+    },
+    marriage: {
+      big: 'Mangal chart mein hai par kamzor sthiti mein — nichla Manglik. 36 mein se 28 gun milte hain, jo achha maana jaata hai.',
+      dials: [['Shaadi ka samay', 'Strong', 70, '#DC6803'], ['Gun milan', '28 / 36', 78, '#027A48'],
+              ['Sasuraal', 'Dheere ghulta hai', 58, '#7D58A1'], ['Manglik dosh', 'Halka', 35, '#B42318']],
+      w1: { h: 'November 2027 se June 2028', p: 'Guru saatve ghar ko dekhta hai. Parivaar bhi isi dauran sabse jaldi raazi hota hai.' },
+      w2: { h: 'January 2030', p: 'Agar pehli window nikal jaaye to agla saaf samay yahi hai.' },
+      bands: [['Baaki 2026', 9], ['2027', 58], ['2028', 76], ['2029', 41], ['2030 ke baad', 22]],
+      gun: [['Bharosa', 8], ['Parivaar ke sanskaar', 9], ['Baat-cheet', 6], ['Dhairya', 5]],
+      traits: [['Jeevansaathi', 'Umar mein 2–4 saal bada, sthir naukri, kam bolne wala.'],
+               ['Sasuraal', 'Shuruaat ke chh: mahine adjustment maangenge, uske baad ghar shaant.'],
+               ['Paisa', 'Shaadi ke baad sthiti sudhrti hai — doosra ghar majboot hota hai.'],
+               ['Vidhi', 'Guruwar ya Shukrawar. Mangalwar ki tareekh na rakhein.']],
+      doshas: [['Manglik dosh', 'HALKA', 'amber', 'Mangal kamzor sthiti mein hai. Samaan chart wale saathi se apne aap sant ho jaata hai.'],
+               ['Nadi dosh', 'NAHI HAI', 'green', 'Dono ki nadi alag hai. Koi alag vidhi ki zarurat nahi.']],
+      greens: ['Shukra saatve ghar mein theek baitha hai.', 'Guru 2028 bhar shaadi ke ghar ko dekhta hai.',
+               'Doosra ghar joint paisa support karta hai.'],
+      ambers: ['Shani February tak parivaar ki baat dheemi rakhta hai.', 'May 2028 mein Budh vakri — us mahine tareekh na rakhein.'],
+      tip: 'Parivaar se baat Diwali ke baad chhediye. Guruwar aur Shukrawar aapke chart mein sabse bhaari din hain.'
+    },
+    career: {
+      big: 'Dasve ghar ka swami uchch ka hai — pehchaan banegi, isme shak nahi. Par Shani ki drishti hai, isliye mehnat dikhti nahi.',
+      dials: [['Switch ka yog', 'Strong', 68, '#DC6803'], ['Increment', 'Sambhav', 62, '#027A48'],
+              ['Business vs job', 'Job tilt', 71, '#7D58A1'], ['Boss ka bharosa', 'Hai', 66, '#0E9384']],
+      w1: { h: 'August 2027 se December 2027', p: 'Guru dasve ghar ko dekhta hai. Offer bhi achhi aati hai aur baat banti bhi hai.' },
+      w2: { h: 'March 2029', p: 'Doosri window — agar pehli mein switch nahi hua.' },
+      bands: [['Baaki 2026', 20], ['2027', 69], ['2028', 47], ['2029', 52], ['2030 ke baad', 25]],
+      dates: [['Raise maangne ke liye', 'Guruwar, mahine ka doosra hafta'],
+              ['Idea rakhne ke liye', 'Budhwar subah, 10 se 12'],
+              ['Interview ke liye', 'Shukrawar — Shukra aapke chart ka mitra hai'],
+              ['Kuch bada shuru karne ke liye', 'Shukla paksh ka pehla Guruwar']],
+      theme: 'Aane waale teen mahine ka theme: aapka kaam logon tak pahunchna, naya kaam milna nahi. Jo kar chuke hain woh dikhaiye.',
+      boss: 'Surya theek hai par Shani dekh raha hai — bharosa kaam par hai, dikhawe par nahi. Isliye aapka kaam unhe pata to hai, yaad nahi rehta.',
+      change: ['Har kaam ka likhit record rakhiye', 'Zubani tay baat mail par confirm kijiye', 'Mahine mein ek baar kaam ka summary bhejiye'],
+      luck: [['Rang', 'Gehra neela aur safed'], ['Disha', 'Uttar — mez is taraf mod lijiye'], ['Mantra', 'Ravivar ko Surya ko jal']],
+      tip: 'Raise ki baat August ke doosre hafte mein kijiye, aur usse pehle teen mahine ka kaam likhit bhej dijiye.'
+    }
   },
-  money: {
-    show: [
-      'Aapke gyarahve ghar — aamdani ka ghar — par Shani ki drishti hai. Paisa aata hai, par thehrta nahi: kharch hamesha ek kadam aage nikal jaata hai.',
-      'Aapke chart mein paisa rukne ka ek saaf raasta hai, aur woh kamai badhane se nahi khulta.'
-    ],
-    cut: [
-      'Woh ek purani zimmedari band karne se khulta hai. Aapke chart mein woh zimmedari saaf dikh rahi hai — woh hai',
-      'Iske baad aapki bachat kis mahine se badhni shuru hogi, uska time bhi tay hai. Woh mahina hai'
-    ],
-    toc: ['Paisa kis mahine se tikna shuru hoga', 'Kharch ka asli leak kahan hai', 'Udhaar, loan aur property ka samay', 'Aamdani badhane ke upay']
-  },
-  career: {
-    show: [
-      'Dasve ghar ka swami aapke chart mein apni uchch rashi mein hai — kaam mein aapki pehchaan banegi, isme shak nahi. Par abhi woh ek aisi jagah se guzar raha hai jahan mehnat dikhti nahi.',
-      'Job change ka sawaal aapke mann mein pichhle kuch mahino se hai. Chart kehta hai ki haan — par abhi nahi.'
-    ],
-    cut: [
-      'Sahi mahina wahi hai jab Guru aapke dasve ghar ko dekhta hai. Aapke chart mein woh mahina padta hai',
-      'Aur us waqt kis tarah ka role aapke liye khulega, woh bhi likha hai — woh hai'
-    ],
-    toc: ['Job change ka sahi mahina', 'Promotion aur salary ka samay', 'Kaunsa field aapke chart ko suit karta hai', 'Boss aur office ke rukavat ke upay']
+  her: {
+    who: 'Mansi', meta: 'Lagna · Navamsa · 14 Oct 2026',
+    partner: {
+      big: 'Aapke saatve ghar mein Rahu baitha hai — isiliye baat bante bante ruk jaati hai. Sabse saaf window March 2027 se khulti hai.',
+      dials: [['Milne ka yog', 'Strong', 79, '#DC6803'], ['Rishte ki sthirta', 'Steady', 66, '#027A48'],
+              ['Rukavat', 'Ghat rahi hai', 42, '#7D58A1'], ['Love ya arranged', 'Arranged tilt', 66, '#0E9384']],
+      w1: { h: 'March 2027 se November 2027', p: 'Guru aapke saatve ghar par aata hai. Yeh aane waale saalon ki sabse saaf window hai.' },
+      w2: { h: 'February 2028', p: 'Parivaar ki baat "sochte hain" se "miltе hain" tak badhti hai.' },
+      bands: [['Baaki 2026', 18], ['2027', 74], ['2028', 52], ['2029', 30], ['2030 ke baad', 16]],
+      look: 'Gora rang, lamba kad, chehra saaf. Aankhon mein thehrav, bolne se pehle sochta hai.',
+      traits: [['Swabhav', 'Bahar se shaant, andar se zidd. Dil ki baat poochhne par hi kehta hai.'],
+               ['Kaam', 'Kuch sthir — finance, engineering ya apna chhota setup.'],
+               ['Parivaar', 'Chhota parivaar, ek bhai ya behan. Maata-pita dheere raazi hote hain.'],
+               ['Mulaqat', 'Kisi jaan-pehchaan ke zariye — chart mein anjaan app ka ishara nahi hai.'],
+               ['Disha', 'Uttar ya uttar-paschim, ek din ke safar ke andar.']],
+      tilt: 34,
+      block: 'Rahu wahi dikhata hai jo turant mil jaaye. Jo rishta pehle hafte mein bahut tez lage — wahi aapka pattern hai.',
+      patterns: ['Jo bahut jaldi bahut kareeb aa jaaye', 'Jo aapki zarurat ko pyaar samajh le', 'Jo maafi maange par aadat na badle'],
+      attach: [['Attachment style', 'Anxious. Jawab der se aaye to sabse bura soch lete hain.'],
+               ['Love language', 'Waqt dena. Tohfe se zyada saath baithna asar karta hai.']],
+      daily: ['Budhwar ko Durga ji ka dhyan', 'Ek vyakti ko bhojan', 'Teen hafte tak koi naya vaada nahi']
+    },
+    marriage: {
+      big: 'Aapke chart mein Manglik dosh nahi hai — kuch alag se milane ki zarurat nahi. 36 mein se 24 gun milte hain.',
+      dials: [['Shaadi ka samay', 'Strong', 72, '#DC6803'], ['Gun milan', '24 / 36', 67, '#027A48'],
+              ['Sasuraal', 'Dheere ghulta hai', 60, '#7D58A1'], ['Manglik dosh', 'Nahi hai', 100, '#0E9384']],
+      w1: { h: 'March 2027 se November 2027', p: 'Guru aapke shaadi ke ghar par aata hai. Parivaar ki baat isi dauran shuru hoti hai.' },
+      w2: { h: 'February 2028', p: 'Doosri window — baat "let us think" se "let us meet" tak badhti hai.' },
+      bands: [['Baaki 2026', 18], ['2027', 74], ['2028', 52], ['2029', 30], ['2030 ke baad', 16]],
+      gun: [['Bharosa', 8], ['Parivaar ke sanskaar', 9], ['Baat-cheet', 6], ['Dhairya', 5]],
+      traits: [['Jeevansaathi', 'Umar mein 2–4 saal bada, sthir naukri, kam bolne wala.'],
+               ['Sasuraal', 'Haan kehte hain, par kehne mein waqt lagta hai. Chhote kadam rakhiye.'],
+               ['Paisa', 'Shaadi ke baad sthiti sudhrti hai — doosra ghar joint paisa support karta hai.'],
+               ['Vidhi', 'Guruwar aur Shukrawar aapke chart mein sabse bhaari din hain.']],
+      doshas: [['Manglik dosh', 'NAHI HAI', 'green', 'Mangal kisi Manglik ghar mein nahi hai. Koi alag milan ki zarurat nahi.'],
+               ['Parivaar ka aashirvaad', 'DHEERE', 'amber', 'Parivaar haan kehta hai, par dheere. Baat chhote kadam mein chhediye.']],
+      greens: ['Shukra aapke saatve ghar mein theek baitha hai.', 'Guru 2027 bhar shaadi ke ghar ko dekhta hai.',
+               'Manglik dosh nahi — kuch match karne ki zarurat nahi.', 'Doosra ghar joint ghar aur joint paisa support karta hai.'],
+      ambers: ['Shani February tak parivaar ki baat dheemi rakhta hai.', 'May 2027 mein Budh vakri — us mahine tareekh na rakhein.',
+               'Gussa dono taraf se ek niyam maangta hai, jeet nahi.'],
+      tip: 'Parivaar se shaadi ki baat Diwali ke baad chhediye. Guruwar aur Shukrawar sabse bhaari din hain.'
+    },
+    career: {
+      big: 'Dasve ghar ka swami aapke chart mein uchch ka hai — pehchaan banegi. Par abhi Shani ki drishti hai, isliye mehnat dikhti nahi.',
+      dials: [['Switch ka yog', 'Strong', 73, '#DC6803'], ['Increment', 'Sambhav', 58, '#027A48'],
+              ['Business vs job', 'Job tilt', 76, '#7D58A1'], ['Boss ka bharosa', 'Hai', 63, '#0E9384']],
+      w1: { h: 'May 2027 se October 2027', p: 'Guru aapke dasve ghar ko dekhta hai. Offer bhi achhi aati hai aur baat banti bhi hai.' },
+      w2: { h: 'January 2029', p: 'Doosri window — agar pehli mein switch nahi hua.' },
+      bands: [['Baaki 2026', 16], ['2027', 72], ['2028', 44], ['2029', 49], ['2030 ke baad', 23]],
+      dates: [['Raise maangne ke liye', 'Guruwar, mahine ka doosra hafta'],
+              ['Idea rakhne ke liye', 'Budhwar subah, 10 se 12'],
+              ['Interview ke liye', 'Shukrawar — Shukra aapke chart ka mitra hai'],
+              ['Kuch bada shuru karne ke liye', 'Shukla paksh ka pehla Guruwar']],
+      theme: 'Aane waale teen mahine ka theme: aapka kaam logon tak pahunchna, naya kaam milna nahi. Jo kar chuke hain woh dikhaiye.',
+      boss: 'Surya theek hai par Shani dekh raha hai — bharosa aapke kaam par hai, dikhawe par nahi. Isliye kaam unhe pata to hai, yaad nahi rehta.',
+      change: ['Har kaam ka likhit record rakhiye', 'Zubani tay baat mail par confirm kijiye', 'Mahine mein ek baar kaam ka summary bhejiye'],
+      luck: [['Rang', 'Gehra neela aur safed'], ['Disha', 'Uttar — mez is taraf mod lijiye'], ['Mantra', 'Ravivar ko Surya ko jal']],
+      tip: 'Raise ki baat May ke doosre hafte mein kijiye, aur usse pehle teen mahine ka kaam likhit bhej dijiye.'
+    }
   }
 };
 
+/* ------------------------------------------------- report body (shared) */
+/* Small helpers so the three reports can be written as content, not markup. */
+function secOpen(h, sub) {
+  return '<div class="r-sec"><div class="top-bar"></div>' +
+    '<div class="shead"><h3>' + esc(h) + '</h3><p>' + esc(sub) + '</p></div>';
+}
+function winBlock(w, strong, lbl) {
+  return '<div class="win' + (strong ? ' strong' : '') + '">' +
+    '<p class="wlbl">' + esc(lbl) + '</p>' +
+    '<h4' + (strong ? '' : ' class="sm"') + '>' + esc(w.h) + '</h4>' +
+    '<p>' + esc(w.p) + '</p></div>';
+}
+function barBlock(lbl, items, max) {
+  return '<div class="bars bands"><p class="blbl">' + esc(lbl) + '</p>' +
+    items.map(function (b) {
+      return '<div class="bar-row"><span>' + esc(b[0]) + '</span>' +
+        '<span class="track"><i data-w="' + (b[1] * (100 / max)) + '"></i></span>' +
+        '<em>' + b[1] + (max === 100 ? '%' : '') + '</em></div>';
+    }).join('') + '</div>';
+}
+function factBlock(items) {
+  return '<div class="facts">' + items.map(function (p) {
+    return '<div><span>' + esc(p[0]) + '</span><p>' + esc(p[1]) + '</p></div>';
+  }).join('') + '</div>';
+}
+function listBlock(lbl, items) {
+  return '<div class="rlist"><p class="blbl">' + esc(lbl) + '</p><ul>' +
+    items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+}
+
+/* Each report gets its own cover instead of all three sharing one book icon —
+   on a shelf of three, the colourway is what tells them apart at a glance. */
+var MOTIFS = {
+  heart: '<path fill="currentColor" d="M20 30c-5.7-4.2-10-7.8-10-12.6 0-3 2.3-5.4 5.1-5.4 2 0 3.7 1.1 4.9 2.8 1.2-1.7 2.9-2.8 4.9-2.8 2.8 0 5.1 2.4 5.1 5.4C30 22.2 25.7 25.8 20 30z"/>',
+  knot:  '<g fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="16" cy="21" r="6.4"/><circle cx="24" cy="21" r="6.4"/></g>',
+  arrow: '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 27l6.5-6.5 4 4L30 15"/><path d="M23.5 15H30v6.5"/></g>'
+};
+function coverArt(r, cls) {
+  var c = r.cover;
+  return '<span class="cv' + (cls ? ' ' + cls : '') + '" aria-hidden="true"' +
+    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+    '<svg class="cv-art" viewBox="0 0 40 52">' +
+      '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
+      '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
+      '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
+      '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
+    '</svg>' +
+  '</span>';
+}
+
+/* The partner, seen from behind and dissolving into light. A face would claim
+   a specific person exists and looks like this; a turned back says "someone is
+   coming" without the lie — and it is the more wanted image of the two. */
+function portraitArt() {
+  return '<div class="pt-art" aria-hidden="true">' +
+    '<svg class="pt-fig" viewBox="0 0 400 480" preserveAspectRatio="xMidYMax slice">' +
+      '<defs><linearGradient id="ptg" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#D9A7BD"/>' +
+        '<stop offset=".42" stop-color="#C87FA0"/>' +
+        '<stop offset="1" stop-color="#A5527A"/>' +
+      '</linearGradient></defs>' +
+      '<g fill="url(#ptg)">' +
+        '<path d="M88 480c5-94 54-162 112-162s107 68 112 162z"/>' +
+        '<rect x="174" y="226" width="52" height="76" rx="24"/>' +
+        '<ellipse cx="200" cy="166" rx="68" ry="84"/>' +
+        '<ellipse cx="263" cy="180" rx="13" ry="22"/>' +
+      '</g>' +
+    '</svg>' +
+  '</div>';
+}
+
+function partnerBody(c) {
+  return secOpen('Woh kab milega', 'Aapke chart ka sabse saaf jawab') +
+      winBlock(c.w1, true, 'WINDOW 1 · SABSE SAAF SAMAY') +
+      winBlock(c.w2, false, 'WINDOW 2 · DOOSRA MAUKA') +
+      barBlock('SAAL DAR SAAL SAMBHAVNA', c.bands, 100) +
+    '</div>' +
+
+    secOpen('Woh dikhega kaisa', 'Kundli se bani tasveer') +
+      '<figure class="pt">' + portraitArt() +
+        '<figcaption>' + esc(c.look) + '</figcaption>' +
+      '</figure>' +
+      factBlock(c.traits) +
+    '</div>' +
+
+    secOpen('Love ya arranged', 'Aapka chart kis taraf jhukta hai') +
+      '<div class="tilt">' +
+        '<div class="tilt-top"><span>Love</span><span>Arranged</span></div>' +
+        '<span class="track"><i data-w="' + c.tilt + '"></i></span>' +
+        '<div class="tilt-top n"><span>' + c.tilt + '%</span><span>' + (100 - c.tilt) + '%</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    secOpen('Abhi kya rok raha hai', 'Rukavat ka asli kaaran aur uska ilaaj') +
+      accent('ISKA MATLAB AAPKE LIYE', esc(c.block)) +
+      listBlock('BAAR BAAR KAUN KHINCHTA HAI', c.patterns) +
+      factBlock(c.attach) +
+      listBlock('ROZ YEH KIJIYE', c.daily) +
+    '</div>';
+}
+
+function marriageBody(c) {
+  return secOpen('Shaadi kab hogi', 'Chart ka headline jawab') +
+      winBlock(c.w1, true, 'WINDOW 1 · SABSE SAAF SAMAY') +
+      winBlock(c.w2, false, 'WINDOW 2 · DOOSRA MAUKA') +
+      barBlock('SAAL DAR SAAL SAMBHAVNA', c.bands, 100) +
+    '</div>' +
+
+    secOpen('Gun milan', '36 mein se kitne milte hain') +
+      barBlock('KIS BAAT PAR KITNA', c.gun, 10) +
+    '</div>' +
+
+    secOpen('Kya likha hai', 'Jeevansaathi, sasuraal aur uske baad') +
+      factBlock(c.traits) +
+    '</div>' +
+
+    c.doshas.map(function (d) {
+      return '<div class="tagged"><div class="th"><h4>' + esc(d[0]) + '</h4>' +
+        '<span class="tpill ' + d[2] + '">' + esc(d[1]) + '</span></div>' +
+        '<p>' + esc(d[3]) + '</p></div>';
+    }).join('') +
+
+    '<div class="verdicts">' +
+      '<div class="vlist go"><p class="vh">AAPKE PAKSH MEIN</p><ul>' +
+        c.greens.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="vlist hold"><p class="vh">DHYAAN SE</p><ul>' +
+        c.ambers.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul></div>' +
+    '</div>' +
+    accent('→ PRACTICAL TIP', esc(c.tip));
+}
+
+function careerBody(c) {
+  return secOpen('Aane waale teen mahine', 'Ek bada theme, baaki sab uske neeche') +
+      accent('ISKA MATLAB AAPKE LIYE', esc(c.theme)) +
+    '</div>' +
+
+    secOpen('Switch ka sahi samay', 'Kab baat chalaiye, kab chhodiye') +
+      winBlock(c.w1, true, 'WINDOW 1 · SABSE SAAF SAMAY') +
+      winBlock(c.w2, false, 'WINDOW 2 · DOOSRA MAUKA') +
+      barBlock('SAAL DAR SAAL SAMBHAVNA', c.bands, 100) +
+    '</div>' +
+
+    secOpen('Sahi tareekhein', 'Kaunsa din kis kaam ke liye') +
+      factBlock(c.dates) +
+    '</div>' +
+
+    secOpen('Boss kya sochte hain', 'Aur usme kya badalna hai') +
+      accent('ISKA MATLAB AAPKE LIYE', esc(c.boss)) +
+      listBlock('YEH TEEN CHEEZEIN BADLIYE', c.change) +
+    '</div>' +
+
+    secOpen('Rang, disha aur mantra', 'Kaam ki safalta ke liye') +
+      factBlock(c.luck) +
+    '</div>' +
+    accent('→ PRACTICAL TIP', esc(c.tip));
+}
+
+/* One body, two charts. `mode` is 'sample' for the free preview (the demo
+   chart, whole report, nothing withheld) and 'her' once she has paid. */
+function reportBody(id, mode) {
+  var r = reportById(id), ch = CHARTS[mode], c = ch[id];
+  return '<div class="r-cover rc-art" style="--cva:' + r.cover.a + ';--cvb:' + r.cover.b + '">' +
+      coverArt(r, 'cv-lg') +
+      '<p class="eyebrow">MADE BY ASTRO HEMALI</p>' +
+      '<h2>' + esc(r.t) + '</h2>' +
+      '<p class="rfor">For ' + esc(ch.who) + '</p>' +
+      '<p class="rmeta">' + esc(ch.meta) + '</p>' +
+    '</div>' +
+    accent('THE BIG PICTURE', esc(c.big)) +
+    '<div class="r-scores"><p class="dlbl">CHART AT A GLANCE</p>' +
+      c.dials.map(function (d) { return dial(d[0], d[1], d[2], d[3]); }).join('') +
+    '</div>' +
+    (id === 'partner' ? partnerBody(c) : id === 'marriage' ? marriageBody(c) : careerBody(c));
+}
+
+/* The free preview: her own questions answered against her chart as a list,
+   then the ENTIRE report on somebody else's chart. She learns the depth from
+   the sample and that it is about her from the list. */
 function renderPreview() {
   var r = reportById(state.pick);
   $('#pvTitle').textContent = r.t;
-  $('#pvTag').textContent = 'Preview · 2 of ' + r.pages + ' pages';
-  // The wall: real sentences fading into the page rather than grey bars, so
-  // the cut feels like a page break and not a loading state.
+  $('#pvTop').innerHTML = coverArt(r, 'cv-md') +
+    '<span class="pv-tag">' + r.pages + ' pages · aapki bhasha + English</span>';
   $('#pvBody').innerHTML =
-    PREVIEW[r.id].show.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
-    '<div class="pv-fade" aria-hidden="true">' +
-      PREVIEW[r.id].cut.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+    '<div class="pv-learn">' +
+      '<p class="pv-lh">Aapki report in sab ka jawab degi</p>' +
+      '<ul>' + r.learn.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+      '<p class="pv-lw">' + esc(r.why) + '</p>' +
     '</div>' +
-    '<div class="pv-lockbar">' +
-      '<span class="pv-lk" aria-hidden="true">' +
-        '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="3.2" y="7" width="9.6" height="6.4" rx="1.6" stroke="#B54708" stroke-width="1.4"/><path d="M5.6 7V5.4a2.4 2.4 0 0 1 4.8 0V7" stroke="#B54708" stroke-width="1.4" stroke-linecap="round"/></svg>' +
-      '</span>' +
-      '<span class="pv-lkt">' +
-        '<b>Baaki ' + (r.pages - 2) + ' pages locked hain</b>' +
-        '<small>Timing, upay aur poora jawab — sab aage hai</small>' +
-      '</span>' +
+    '<div class="pv-samp">' +
+      '<p class="pv-sh"><b>Neeche poori report hai — shuru se aakhir tak</b>' +
+      '<small>Yeh ' + esc(CHARTS.sample.who) + ' ki kundli par bani hai, taaki aap dekh sakein ki report kitni gehri hai. ' +
+      'Aapki report bilkul aisi hi hogi — aapke apne chart par.</small></p>' +
     '</div>' +
-    '<p class="pv-toch">Aage in sawaalon ka jawab hai</p>' +
-    '<ul class="pv-toc">' +
-      PREVIEW[r.id].toc.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
-    '</ul>';
+    '<div class="read-body pv-report">' + reportBody(r.id, 'sample') + '</div>';
   $('#pvPrice').innerHTML = '<b>₹49</b><small><s>₹499</s><i>90% OFF</i></small>';
+  // Nothing is locked any more, so "Unlock" would be a lie — what ₹49 buys is
+  // this same report recalculated on her chart.
+  $('#pvCta').textContent = 'Meri kundli par banwaiye · ₹49';
+  animateBars('#pvBody');
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -1535,7 +1875,7 @@ function renderTpTabs() {
     if (sf.hist)  tabs.push({ id: 'history', l: 'History · 3 reports' });
     if (sf.today) tabs.push({ id: 'today',   l: 'Today · expert card' });
     if (sf.guide) tabs.push({ id: 'guide',   l: 'Today · personalised' });
-    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'preview', l: 'Preview (locked)' });
+    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'preview', l: 'Full report free' });
     // Day 5: nothing asks, but the shelf in History is still reachable.
     if (!tabs.length) tabs.push(
       { id: 'today',   l: 'Today · nothing asks' },
@@ -1570,7 +1910,7 @@ function renderTpTabs() {
     '<p class="tp-note">Touchpoints — ' +
       (state.paid ? 'report bought · every surface is the follow-up'
         : state.pm ? (pmQuiet() ? 'nudging has stopped — every surface is quiet'
-                                : 'pick 1 of 3 · preview free · ₹49')
+                                : 'one report a day · whole sample free · ₹49')
         : state.read1 ? 'every surface asks the buy · ₹49' : 'every surface asks the read · free') + '</p>' +
     '<div class="tp-tabs">' + tabs.map(function (t) {
       return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
@@ -1608,7 +1948,7 @@ function restart() {
   state.paid = state.prePaid;
   state.reminded = false;
   state.read1 = state.preRead || state.prePaid;   // read/bought tracks start with chapter 1 done
-  state.pick = 'love';
+  state.pick = (state.pm && dayData().lead) || 'partner';
   state.histDot = true;
   state.stack = [];
   renderNav();

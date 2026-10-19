@@ -400,8 +400,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-lead{display:flex;align-items:center;gap:11px;width:100%;padding:10px 9px;
   border:0;border-radius:10px;background:#FFFBF6;text-align:left;cursor:pointer}
 .of3-lead:hover{background:#FFF4E8}
-.of3-lead img{flex:none;width:38px;height:50px;border-radius:5px;object-fit:cover;
-  box-shadow:0 2px 7px rgba(122,46,14,.18)}
 .of3-t{flex:1;min-width:0}
 .of3-t small{display:block;font:400 12px/17px var(--sans);color:var(--g700)}
 .of3-t em{display:block;margin-top:3px;font:500 10px/14px var(--sans);
@@ -436,6 +434,28 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rep-top.quiet > div{flex:1;min-width:0}
 .rep-top.quiet .rep-status{color:var(--g500)}
 
+/* ---------- Per-report cover art ----------
+   Three reports on one shelf need three covers, or they read as one product
+   listed three times. The colourway and motif come from the report's own
+   data, so a fourth report is a data change, not a CSS change. */
+.cv{position:relative;flex:none;display:block;
+  width:var(--cw,38px);height:var(--ch,50px);
+  border-radius:2px 5px 5px 2px;overflow:hidden;
+  background:linear-gradient(145deg,var(--cva) 0%,var(--cvb) 100%);
+  box-shadow:0 3px 9px rgba(16,24,40,.22)}
+/* Spine shadow on the left, page leaves on the fore-edge. */
+.cv::before{content:'';position:absolute;left:0;top:0;bottom:0;width:17%;
+  background:linear-gradient(90deg,rgba(0,0,0,.3),rgba(0,0,0,0))}
+.cv::after{content:'';position:absolute;right:0;top:5%;bottom:5%;width:3px;
+  background:repeating-linear-gradient(90deg,#FFFDF7 0 1px,rgba(227,212,191,.9) 1px 2px)}
+.cv-art{position:absolute;inset:0;width:100%;height:100%;color:var(--cvi)}
+.cv-star{fill:var(--cvi);opacity:.45}
+.cv-sm{--cw:38px;--ch:50px}
+.cv-md{--cw:44px;--ch:58px}
+.cv-lg{--cw:104px;--ch:138px;margin:0 auto 16px;border-radius:3px 8px 8px 3px}
+.ex-tap .cv{--cw:34px;--ch:45px}
+.rep-top .cv{--cw:44px;--ch:56px}
+
 /* Picker screen */
 .pk-lead{margin:14px 16px 0;font:400 14px/21px var(--sans);color:var(--g600)}
 /* One price for all three, said once. */
@@ -451,8 +471,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;
   cursor:pointer;box-shadow:0 2px 8px rgba(16,24,40,.05)}
 .pk-card:hover{border-color:var(--brand);background:#FFFBF6}
-.pk-bk{flex:none;width:44px;height:58px;border-radius:6px;object-fit:cover;
-  box-shadow:0 3px 8px rgba(122,46,14,.18)}
 .pk-t{flex:1;min-width:0}
 .pk-t b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
 .pk-t small{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
@@ -464,34 +482,32 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pk-note{margin:16px;padding:11px 12px;border-radius:10px;background:#F9FAFB;
   font:400 12px/18px var(--sans);color:var(--g600)}
 
-/* Preview screen: two real pages, then the wall. */
+/* Preview screen. Nothing is withheld any more: her questions answered
+   against her chart as a list, then the WHOLE report on the demo chart. The
+   old fade-and-wall classes are gone with the wall. */
 .pv-top{display:flex;align-items:center;gap:11px;padding:16px 16px 0}
-.pv-top img{width:38px;height:50px;border-radius:5px;object-fit:cover;
-  box-shadow:0 3px 8px rgba(122,46,14,.18)}
 .pv-tag{font:600 12px/17px var(--sans);color:var(--brand-dk)}
-.pv-body{padding:14px 16px 0}
-.pv-body p{margin:0 0 13px;font:400 15px/24px var(--sans);color:#3A3022}
-/* The cut: real prose dissolving into the paper, so it reads as "there is more
-   of this" rather than "something failed to load". */
-.pv-fade{position:relative;max-height:120px;overflow:hidden;
-  -webkit-mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.35) 55%,transparent 100%);
-          mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.35) 55%,transparent 100%)}
-.pv-fade p{margin:0 0 13px;font:400 15px/24px var(--sans);color:#3A3022;
-  user-select:none}
-.pv-lockbar{display:flex;align-items:center;gap:10px;margin-top:2px;padding:12px;
-  border-radius:12px;background:#FFF6EC;border:1px solid #F0D6BE}
-.pv-lk{flex:none;display:grid;place-items:center;width:30px;height:30px;
-  border-radius:50%;background:#FFE9D4}
-.pv-lkt{min-width:0}
-.pv-lkt b{display:block;font:700 14px/19px var(--sans);color:var(--g900)}
-.pv-lkt small{display:block;margin-top:1px;font:400 12px/17px var(--sans);color:var(--g600)}
-/* The value inventory. The wall says what was taken away; this says what is waiting. */
-.pv-toch{margin:18px 0 9px;font:700 11px/15px var(--sans);letter-spacing:.06em;
-  text-transform:uppercase;color:var(--g600)}
-.pv-toc{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
-.pv-toc li{position:relative;padding-left:24px;font:500 13px/18px var(--sans);color:var(--g900)}
-.pv-toc li::before{content:"";position:absolute;left:0;top:1px;width:16px;height:16px;
+.pv-body{padding:14px 0 0}
+/* What she will learn. Written as her own questions, not a contents page —
+   this is the only part of the screen that is about her chart. */
+.pv-learn{margin:0 16px;padding:14px;border-radius:14px;background:#FFF6EC;
+  border:1px solid #F0D6BE}
+.pv-lh{margin:0;font:700 15px/21px var(--sans);color:var(--g900)}
+.pv-learn ul{margin:11px 0 0;padding:0;list-style:none;
+  display:flex;flex-direction:column;gap:9px}
+.pv-learn li{position:relative;padding-left:25px;font:500 13px/19px var(--sans);color:var(--g900)}
+.pv-learn li::before{content:"";position:absolute;left:0;top:2px;width:16px;height:16px;
   border-radius:50%;background:#FFE9D4 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 3.8 7.5 8.5 2.8' fill='none' stroke='%23B54708' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/10px 10px no-repeat}
+.pv-lw{margin:12px 0 0;padding-top:10px;border-top:1px solid #F0D6BE;
+  font:600 12px/18px var(--sans);color:#B54708}
+/* The handover. The sample is somebody else's chart; said plainly, once, so
+   the depth below reads as proof rather than as her reading. */
+.pv-samp{margin:18px 16px 0;padding:12px 13px;border-radius:12px;background:#F9FAFB;
+  border:1px dashed var(--g300)}
+.pv-sh{margin:0}
+.pv-sh b{display:block;font:700 14px/20px var(--sans);color:var(--g900)}
+.pv-sh small{display:block;margin-top:4px;font:400 12px/18px var(--sans);color:var(--g600)}
+.pv-report{margin-top:14px}
 
 /* ---------- Day 1 · the reminder opt-in ----------
    Sits after the end-of-chat notice, in the system voice's position but warmer:
@@ -825,6 +841,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r-cover h2{margin:8px 0 0;font:700 24px/30px var(--sans);color:var(--g700)}
 .r-cover .rfor{margin:8px 0 0;font:600 16px/20px var(--sans);color:var(--brand)}
 .r-cover .rmeta{margin:8px 0 0;font:400 12px/18px var(--sans);color:var(--g500)}
+/* The report's own colourway carried onto its title page. */
+.r-cover.rc-art{position:relative;overflow:hidden;padding-top:34px}
+.r-cover.rc-art::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;
+  background:linear-gradient(90deg,var(--cva),var(--cvb))}
 .r-card{background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:16px}
 /* Ring dials, after Melooha: the arc carries the degree and the word under the
    label carries the meaning, so no raw number is ever shown. */
@@ -878,6 +898,38 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .facts span{display:block;font:600 12px/18px var(--sans);letter-spacing:.04em;
   text-transform:uppercase;color:var(--g500)}
 .facts p{margin:4px 0 0;font:400 16px/24px var(--sans);color:var(--g700)}
+
+/* A plain bulleted list inside a report section — patterns, remedies, the
+   three things to change at work. */
+.rlist{padding:0 16px;margin-top:16px}
+.rlist .blbl{margin:0 0 10px;font:600 12px/18px var(--sans);letter-spacing:.04em;
+  color:var(--g500)}
+.rlist ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.rlist li{position:relative;padding-left:18px;font:400 15px/23px var(--sans);color:var(--g700)}
+.rlist li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;
+  border-radius:50%;background:var(--brand)}
+
+/* ---------- The partner, seen from behind ----------
+   Per the reference: a figure turned away, dissolving into a pink aurora.
+   Three radial washes make the light, the silhouette is blurred and masked so
+   it never gets an edge, and a white vignette eats it from every side — which
+   is what keeps it a feeling instead of a claim about a real face. */
+.pt{margin:14px 16px 0;padding:0;border-radius:14px;overflow:hidden;background:#FDF2F7}
+.pt-art{position:relative;height:210px;
+  background:
+    radial-gradient(70% 55% at 22% 16%,#FFE1EE 0,rgba(255,225,238,0) 70%),
+    radial-gradient(62% 50% at 82% 26%,#E8DBFB 0,rgba(232,219,251,0) 72%),
+    radial-gradient(95% 72% at 50% 106%,#FFD4C7 0,rgba(255,212,199,0) 68%),
+    linear-gradient(180deg,#FFF8FB 0,#FBE6F0 100%)}
+.pt-fig{position:absolute;left:50%;bottom:0;width:76%;height:96%;
+  transform:translateX(-50%);opacity:.82;filter:blur(6px);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.5) 24%,#000 60%);
+          mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.5) 24%,#000 60%)}
+/* Light eats the silhouette from the sides, the way it does in the reference. */
+.pt-art::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(64% 76% at 50% 56%,rgba(255,255,255,0) 44%,rgba(255,255,255,.72) 100%)}
+.pt figcaption{margin:0;padding:13px 14px 15px;background:#fff;
+  font:400 15px/23px var(--sans);color:var(--g700)}
 
 .tilt{padding:0 16px;margin-top:16px}
 /* Filled from the right, because the figure under the fill is the arranged side. */
