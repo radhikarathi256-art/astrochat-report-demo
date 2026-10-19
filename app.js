@@ -141,10 +141,27 @@ var READ_JOURNEY = {
    reports are offered and the user picks; there is no free chapter, only a
    preview; day 2 re-offers in the free chat and on Today. Kept as its own track
    so the two models can be clicked side by side. */
+/* `ask` is the brief's sixth point: the report has to end in a conversation,
+   so each one carries the three questions a reader actually leaves with. */
 var REPORTS = [
-  { id: 'love',   t: 'Partner & Relationship', s: 'Kaun, kab, love ya arranged — aur rukavat kya hai', pages: 38 },
-  { id: 'money',  t: 'Money & Wealth',         s: 'Paisa kab tikega, kahan ruk raha hai',               pages: 32 },
-  { id: 'career', t: 'Career & Job',           s: 'Job change, promotion aur unka sahi time',           pages: 34 }
+  { id: 'love',   t: 'Partner & Relationship', s: 'Kaun, kab, love ya arranged — aur rukavat kya hai', pages: 38,
+    ask: [
+      { q: 'March 2027 ka matlab kya hai?', a: 'Us dauran Guru aapke saatve ghar ko dekhta hai. Rishte ki baat usi samay sabse jaldi aage badhti hai — baat chhedne ke liye wahi window sabse saaf hai.' },
+      { q: 'Rahu ka upay kya hai?',          a: 'Budhwar ko Durga ji ka dhyan aur ek vyakti ko bhojan. Aur jo baat atki hai, usme teen hafte tak koi naya vaada mat kijiye.' },
+      { q: 'Rahul ke saath banegi?',         a: 'Aapke 36 mein se 24 gun milte hain. Bharosa aur parivaar ke mamle mein jodi strong hai; gussa dono taraf sambhalna padega.' }
+    ] },
+  { id: 'money',  t: 'Money & Wealth',         s: 'Paisa kab tikega, kahan ruk raha hai',               pages: 32,
+    ask: [
+      { q: 'Kharch ka leak kahan hai?', a: 'Aapka doosra ghar kamzor hai — chhote regular kharch sabse zyada le jaate hain, bade nahi. Teen mahine ka hisaab likh lijiye, khud dikh jayega.' },
+      { q: 'Loan lena theek rahega?',   a: 'Abhi Shani ki drishti chal rahi hai. Naya bada loan agle mahine ke baad dekhiye — tab tak ek purana band karna zyada faayda dega.' },
+      { q: 'Shani ka upay kya hai?',    a: 'Shanivar ko sarson ke tel ka daan aur kisi buzurg ki madad. Aur ek purani zimmedari isi mahine band kijiye.' }
+    ] },
+  { id: 'career', t: 'Career & Job',           s: 'Job change, promotion aur unka sahi time',           pages: 34,
+    ask: [
+      { q: 'Job change kab karun?',        a: 'Jab Guru aapke dasve ghar ko dekhega. Us window mein offer bhi achhi aati hai aur baat banti bhi hai — usse pehle sirf baat chalaiye, switch mat kijiye.' },
+      { q: 'Promotion ke chance hain?',    a: 'Dasve ghar ka swami uchch ka hai, to pehchaan milegi hi. Par abhi mehnat dikh nahi rahi — apna kaam likhit mein record kijiye.' },
+      { q: 'Boss se dikkat ka upay?',      a: 'Surya ko jal aur Ravivar ko namak kam. Aur jo bhi tay ho use mail par confirm kijiye — zubani baat hi sabse zyada ulajh rahi hai.' }
+    ] }
 ];
 function reportById(id) {
   for (var i = 0; i < REPORTS.length; i++) if (REPORTS[i].id === id) return REPORTS[i];
@@ -172,7 +189,10 @@ var PM_JOURNEY = {
     ],
     today: { eyebrow: '', note: '' },
     countdown: '✦ NEXT FREE 2 MIN CHAT IN <b>14h : 23m</b>',
-    push: 'Aapke chart par 3 reports taiyar hain — preview free hai 📖'
+    /* A notification that names her own house and opens that one preview beats
+       a storefront ad that makes her choose again on the other side of the tap. */
+    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner & Relationship report ka preview free hai 📖',
+    pushPick: 'love'
   },
   2: {
     stamp: 'Yesterday',
@@ -197,8 +217,11 @@ var PM_JOURNEY = {
     today: { eyebrow: '✦ 3 reports ready for you', note: 'Preview free hai — poori report ₹49, ₹499 se price drop.' },
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
+  /* Day 4 is the last ask. Nothing gets louder — one line of copy says so,
+     because a silent last ask is a wasted one. */
   4: {
     stamp: '3 days ago',
+    lastAsk: true,
     surf: { chat: true, today: true, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi ji, aapke chart par teeno reports abhi bhi taiyar hain — jo chahiye uska preview free mein dekh lijiye.' },
@@ -601,7 +624,7 @@ function renderRead() {
   $('#readBody').innerHTML =
     '<div class="r-cover">' +
       '<p class="eyebrow">MADE BY ASTRO HEMALI</p>' +
-      '<h2>Marriage Yog report</h2>' +
+      '<h2>' + esc(boughtTitle()) + '</h2>' +
       '<p class="rfor">For Mansi · from your chat</p>' +
       '<p class="rmeta">Lagna · Navamsa · Manglik · 14 Oct 2026</p>' +
     '</div>' +
@@ -735,6 +758,7 @@ function animateBars() {
 /* ---------------------------------------------------------------- buy sheet */
 function paintBuySheet() {
   $('#buyLang').textContent = langById(state.lang).label;
+  paintBought();
   paintWallet();
 }
 
@@ -827,10 +851,13 @@ function openBook() {
 function pay() {
   closeSheet();
   state.paid = true;
-  state.wallet = Math.max(0, state.wallet - 49);
+  // The report is flat ₹49 and never comes out of the wallet — the wallet is
+  // the daily-reward habit's own currency and spending it here would punish
+  // the one loop that actually brings her back.
   paintWallet();
+  paintBought();
   // Every sell surface retires into the follow-up: read, chat, upay, other reports.
-  renderDayToday(); renderOffer(); renderChat(); renderChapters(); renderHistCard(); renderTpTabs();
+  renderDayToday(); renderOffer(); renderChat(); renderChapters(); renderHistCard(); renderTpTabs(); renderRead();
   toast('Payment successful', 'success');
   later(function () {
     state.stack = [state.entry];
@@ -858,6 +885,19 @@ function pmSurf() { return (state.pm && dayData().surf) || {}; }
 /* What she actually owns: on the PM track that is whichever of the three she
    picked, everywhere else it is the one Marriage Yog report. */
 function boughtTitle() { return state.pm ? reportById(state.pick).t + ' report' : 'Marriage Yog report'; }
+/* Six surfaces name the report she owns — buy sheet, "ready" push, sample
+   cover, timeline card, book cover and the reader's own header. They used to
+   be hard-coded to Marriage Yog, so picking Money and paying handed her
+   somebody else's report. One writer keeps them honest. */
+function paintBought() {
+  var t = boughtTitle();
+  $('#buyTitle').textContent  = 'Your ' + t;
+  $('#r2Title').textContent   = 'Your ' + t;
+  $('#pushReadyTitle').textContent = 'Your ' + t + ' is ready';
+  $('#repTitle').textContent  = t;
+  $('#bookTitle').textContent = t;
+  $('#readTitle').textContent = t;
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, function (c) {
@@ -889,7 +929,9 @@ function chapterBubble(idx) {
 /* The PM brief's offer, as it lands in the chat: three reports, she picks one,
    preview before paying. One card, three rows — a menu, not a sell. */
 function offer3Card() {
-  if (state.paid) return pitchCard();
+  // Once she owns one, the offer leaves the thread entirely — segueCard() is
+  // the follow-up, and two follow-ups in a row is one too many.
+  if (state.paid) return '';
   // Swiggy's offer-card hierarchy: one coloured strip states the deal once, the
   // title owns the card, and each row carries only what separates it from its
   // neighbours — name, one line, chevron. The price is NOT repeated per row.
@@ -907,7 +949,11 @@ function offer3Card() {
           '<i class="of3-chev" aria-hidden="true">›</i>' +
         '</button>';
       }).join('') +
-      '<span class="of3-foot">Aapki bhasha + English · hamesha History mein</span>' +
+      '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
+        (dayData().lastAsk
+          ? 'Aaj ke baad yeh yahan nahi dikhega'
+          : 'Aapki bhasha + English · hamesha History mein') +
+      '</span>' +
     '</div>' +
   '</div>';
 }
@@ -927,7 +973,44 @@ function renderChat() {
     if (m.who === 'remind')  return remindCard();
     if (m.who === 'pitch')   return pitchCard();
     return '<div class="c-b ' + m.who + '"><p>' + esc(m.text) + '</p><time>02:24 PM</time></div>';
-  }).join('');
+  }).join('') + (state.pm && state.paid ? segueCard() : '');
+}
+
+/* Live thread helpers — only the post-purchase follow-up appends to the chat
+   after render, so they stay small and local to it. */
+function bubble(who, text) {
+  var el = document.createElement('div');
+  el.className = 'c-b ' + who;
+  el.innerHTML = '<p>' + esc(text) + '</p><time>02:41 PM</time>';
+  return el;
+}
+function scrollChat() {
+  var sc = $('#chat [data-scroll]');
+  if (sc) requestAnimationFrame(function () { sc.scrollTop = sc.scrollHeight; });
+}
+function typing(done) {
+  var el = document.createElement('div');
+  el.className = 'c-b hemali c-typing';
+  el.innerHTML = '<span></span><span></span><span></span>';
+  $('#chatThread').insertBefore(el, $('#sgChips'));
+  scrollChat();
+  later(function () { el.remove(); done(); }, 900);
+}
+
+/* Brief point 6: the report has to end in a conversation, not a full stop.
+   Once she owns one, the thread picks up where the report left off and hands
+   her the three questions that report actually leaves people with. */
+function segueCard() {
+  var r = reportById(state.pick);
+  return '<div class="c-b hemali"><p>Mansi ji, aapki <b>' + esc(r.t) +
+      '</b> report khul gayi hai. Jo hissa samajhna ho ya upay poochhne ho — yahin poochh lijiye.</p>' +
+      '<time>02:41 PM</time></div>' +
+    '<div class="sg" id="sgChips">' +
+      '<p class="sg-h">Report se aage poochhiye</p>' +
+      r.ask.map(function (x, i) {
+        return '<button class="sg-q" type="button" data-ask="' + i + '">' + esc(x.q) + '</button>';
+      }).join('') +
+    '</div>';
 }
 
 /* The end-of-chat ask: flat ₹49 against the ₹499 anchor. Day 3 adds the
@@ -962,8 +1045,25 @@ function renderHistCard() {
   // PM track: History is the brief's third surface — the same three reports,
   // and once bought the purchased report stays here for good (tlReport).
   if (state.pm) {
+    // Once the nudging stops the reports do not disappear — they become a
+    // shelf. Nothing asks; the row is simply still there when the problem
+    // arrives, which for a report is often weeks later.
+    var shelf = !state.paid && pmQuiet();
     var show3 = !state.paid && !!pmSurf().hist;
-    $('#tlChap').hidden = !show3;
+    $('#tlChap').hidden = !(show3 || shelf);
+    if (shelf) {
+      $('#tlChapCard').innerHTML =
+        '<div class="rep-top quiet">' +
+          '<img src="assets/book.svg" alt="">' +
+          '<div>' +
+            '<p class="eyebrow">Saved on your chart</p>' +
+            '<b>3 reports</b>' +
+            '<p class="rep-status">Partner · Money · Career</p>' +
+          '</div>' +
+          '<button class="lnk-btn" type="button" data-go="picker">View</button>' +
+        '</div>';
+      return;
+    }
     if (!show3) return;
     $('#tlChapCard').innerHTML =
       '<div class="rep-top">' +
@@ -1030,7 +1130,7 @@ function renderOffer() {
     '<div class="of-row">' +
       '<span class="bk3" aria-hidden="true"><span class="bk3-stack"></span></span>' +
       '<span class="of-t">' +
-        '<b class="of-hook">Marriage Yog report</b>' +
+        '<b class="of-hook">' + esc(boughtTitle()) + '</b>' +
         '<span class="of-sub">' + esc(CHAPTERS[0].t) + '</span>' +
         '<span class="of-dots">' + dots + '</span>' +
       '</span>' +
@@ -1084,7 +1184,9 @@ function renderDayToday() {
         '<span class="bk3" aria-hidden="true"></span>' +
         '<span class="ex-t">' +
           '<b>3 reports ready · preview free</b>' +
-          '<span class="ex-sub">Partner · Money · Career</span>' +
+          '<span class="ex-sub' + (dayData().lastAsk ? ' last' : '') + '">' +
+            (dayData().lastAsk ? 'Aaj ke baad yeh yahan nahi dikhega' : 'Partner · Money · Career') +
+          '</span>' +
         '</span>' +
         '<i class="ex-pill">₹49</i>' +
         '<span class="ex-chev" aria-hidden="true">›</span>' +
@@ -1411,7 +1513,12 @@ function renderTpTabs() {
     if (sf.today) tabs.push({ id: 'today',   l: 'Today · expert card' });
     if (sf.guide) tabs.push({ id: 'guide',   l: 'Today · personalised' });
     if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'preview', l: 'Preview (locked)' });
-    if (!tabs.length) tabs.push({ id: 'today', l: 'Today · nothing asks' }, { id: 'chat', l: 'Chat · nothing asks' });
+    // Day 5: nothing asks, but the shelf in History is still reachable.
+    if (!tabs.length) tabs.push(
+      { id: 'today',   l: 'Today · nothing asks' },
+      { id: 'chat',    l: 'Chat · nothing asks' },
+      { id: 'history', l: 'History · still on the shelf' },
+      { id: 'picker',  l: 'Pick 1 of 3' });
   } else if (state.paid) {
     // Post-purchase: every sell surface has retired into the follow-up.
     tabs = [
@@ -1484,7 +1591,9 @@ function restart() {
   renderNav();
   $('#notifDlg').hidden = true;
   paintWallet();
+  paintBought();
   renderSample();
+  renderRead();
   renderChat();
   renderOffer();
   renderChapters();
@@ -1517,7 +1626,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta,[data-tp],[data-pick],#pvCta');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta,[data-tp],[data-pick],#pvCta,[data-ask]');
   if (!t) return;
 
   // PM track: picking one of the three reports opens its preview.
@@ -1535,7 +1644,24 @@ document.addEventListener('click', function (e) {
   // The push is the door back in: it lands in the chat, where the chapter is.
   if (t.id === 'pushNote') {
     hidePush();
+    // On the PM track the notification names one report, so it has to land on
+    // that report's preview. Dropping her on the picker would ask her to make
+    // the same choice twice.
+    var pick = state.pm && !state.paid && dayData().pushPick;
+    if (pick) { state.pick = pick; renderPreview(); go('preview'); return; }
     if (state.screen !== 'chat') go('chat');
+    return;
+  }
+
+  // The report's own follow-up questions, answered in the thread.
+  if (t.hasAttribute('data-ask')) {
+    var qa = reportById(state.pick).ask[+t.getAttribute('data-ask')];
+    var thread = $('#chatThread'), chips = $('#sgChips');
+    t.remove();
+    thread.insertBefore(bubble('user', qa.q), chips);
+    scrollChat();
+    typing(function () { thread.insertBefore(bubble('hemali', qa.a), chips); scrollChat(); });
+    if (!chips.querySelector('.sg-q')) chips.remove();
     return;
   }
 
@@ -1764,6 +1890,8 @@ if (linked) {
 }
 state.wallet = WALLET_AT[state.day];
 paintWallet();
+paintBought();
+renderRead();
 renderChat();
 renderOffer();
 renderChapters();

@@ -406,6 +406,30 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-foot{display:block;margin-top:10px;padding-top:9px;border-top:1px solid #F5EEE6;
   font:500 11px/16px var(--sans);color:var(--g500)}
 
+/* Day 4 says it is the last ask in words, never in colour — escalating the
+   pixels is how you teach people to stop looking. */
+.of3-foot.last,.ex-sub.last{color:#B54708;font-weight:600}
+
+/* Post-purchase follow-up: the report's own questions, asked in the thread. */
+.sg{align-self:stretch;margin-top:4px;display:flex;flex-direction:column;
+  align-items:flex-start;gap:7px}
+.sg-h{margin:2px 0 0;font:700 10px/14px var(--sans);letter-spacing:.07em;
+  text-transform:uppercase;color:var(--g500)}
+.sg-q{padding:8px 13px;border-radius:16px;background:#fff;border:1px solid #F0C6AE;
+  font:500 13px/18px var(--sans);color:#B54708;cursor:pointer;text-align:left}
+.sg-q:hover{background:#FFF6EC}
+.c-typing{display:flex;align-items:center;gap:4px;padding:13px 14px}
+.c-typing span{width:6px;height:6px;border-radius:50%;background:#C7B9A8;
+  animation:sgdot 1s infinite ease-in-out}
+.c-typing span:nth-child(2){animation-delay:.15s}
+.c-typing span:nth-child(3){animation-delay:.3s}
+@keyframes sgdot{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* The day-5 shelf: present, reachable, asking nothing. */
+.rep-top.quiet{align-items:center}
+.rep-top.quiet > div{flex:1;min-width:0}
+.rep-top.quiet .rep-status{color:var(--g500)}
+
 /* Picker screen */
 .pk-lead{margin:14px 16px 0;font:400 14px/21px var(--sans);color:var(--g600)}
 /* One price for all three, said once. */
