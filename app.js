@@ -145,18 +145,21 @@ var READ_JOURNEY = {
    so each one carries the three questions a reader actually leaves with. */
 var REPORTS = [
   { id: 'love',   t: 'Partner & Relationship', s: 'Kaun, kab, love ya arranged — aur rukavat kya hai', pages: 38,
+    why: 'Aapke saatve ghar mein Rahu — isi par aapne poochha tha',
     ask: [
       { q: 'March 2027 ka matlab kya hai?', a: 'Us dauran Guru aapke saatve ghar ko dekhta hai. Rishte ki baat usi samay sabse jaldi aage badhti hai — baat chhedne ke liye wahi window sabse saaf hai.' },
       { q: 'Rahu ka upay kya hai?',          a: 'Budhwar ko Durga ji ka dhyan aur ek vyakti ko bhojan. Aur jo baat atki hai, usme teen hafte tak koi naya vaada mat kijiye.' },
       { q: 'Rahul ke saath banegi?',         a: 'Aapke 36 mein se 24 gun milte hain. Bharosa aur parivaar ke mamle mein jodi strong hai; gussa dono taraf sambhalna padega.' }
     ] },
   { id: 'money',  t: 'Money & Wealth',         s: 'Paisa kab tikega, kahan ruk raha hai',               pages: 32,
+    why: 'Aapka doosra ghar kamzor chal raha hai — paisa tikta nahi',
     ask: [
       { q: 'Kharch ka leak kahan hai?', a: 'Aapka doosra ghar kamzor hai — chhote regular kharch sabse zyada le jaate hain, bade nahi. Teen mahine ka hisaab likh lijiye, khud dikh jayega.' },
       { q: 'Loan lena theek rahega?',   a: 'Abhi Shani ki drishti chal rahi hai. Naya bada loan agle mahine ke baad dekhiye — tab tak ek purana band karna zyada faayda dega.' },
       { q: 'Shani ka upay kya hai?',    a: 'Shanivar ko sarson ke tel ka daan aur kisi buzurg ki madad. Aur ek purani zimmedari isi mahine band kijiye.' }
     ] },
   { id: 'career', t: 'Career & Job',           s: 'Job change, promotion aur unka sahi time',           pages: 34,
+    why: 'Dasve ghar ka swami uchch ka hai, par Shani dekh raha hai',
     ask: [
       { q: 'Job change kab karun?',        a: 'Jab Guru aapke dasve ghar ko dekhega. Us window mein offer bhi achhi aati hai aur baat banti bhi hai — usse pehle sirf baat chalaiye, switch mat kijiye.' },
       { q: 'Promotion ke chance hain?',    a: 'Dasve ghar ka swami uchch ka hai, to pehchaan milegi hi. Par abhi mehnat dikh nahi rahi — apna kaam likhit mein record kijiye.' },
@@ -184,51 +187,58 @@ var PM_JOURNEY = {
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
       { who: 'gap',    text: '15 minutes later' },
-      { who: 'hemali', text: 'Mansi ji, aapke chart par maine 3 reports taiyar ki hain. Jo aapke kaam ki lage, uska preview free mein dekh lijiye.' },
+      { who: 'hemali', text: 'Mansi ji, aapke saatve ghar par maine poori report taiyar ki hai — Rahu ki rukavat, timing aur upay, sab usme hai. Pehle 2 pages free mein padh lijiye.' },
       { who: 'offer3' }
     ],
     today: { eyebrow: '', note: '' },
     countdown: '✦ NEXT FREE 2 MIN CHAT IN <b>14h : 23m</b>',
     /* A notification that names her own house and opens that one preview beats
        a storefront ad that makes her choose again on the other side of the tap. */
-    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner & Relationship report ka preview free hai 📖',
-    pushPick: 'love'
+    lead: 'love',
+    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner & Relationship report ka preview free hai 📖'
   },
+  /* `lead` is the one report each day actually suggests. Day 1 and 2 lead with
+     the house she asked about; if that has not landed in two days the
+     hypothesis was wrong, so days 3 and 4 change the question instead of
+     repeating it. The other two are always one tap away, never stacked. */
   2: {
     stamp: 'Yesterday',
+    lead: 'love',
     surf: { chat: false, today: true, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi ji! Kal aapne partner ke baare mein poochha tha. Aaj kya poochhna hai?' },
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
     ],
-    today: { eyebrow: '✦ 3 reports ready for you', note: 'Preview free hai — poori report ₹49, ₹499 se price drop.' },
+    today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
   /* Days 3 and 4 are identical — Today keeps the offer and the chat joins in.
      Nothing escalates: same three reports, same preview, same price. */
   3: {
     stamp: '2 days ago',
+    lead: 'career',
     surf: { chat: true, today: true, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi ji, aapke chart par teeno reports abhi bhi taiyar hain — jo chahiye uska preview free mein dekh lijiye.' },
+      { who: 'hemali', text: 'Mansi ji, ek aur baat chart mein dikhi — aapke dasve ghar par Shani ki drishti hai. Job aur promotion ki timing uspar tiki hai. Uski report bhi taiyar hai.' },
       { who: 'offer3' },
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
     ],
-    today: { eyebrow: '✦ 3 reports ready for you', note: 'Preview free hai — poori report ₹49, ₹499 se price drop.' },
+    today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
   /* Day 4 is the last ask. Nothing gets louder — one line of copy says so,
      because a silent last ask is a wasted one. */
   4: {
     stamp: '3 days ago',
+    lead: 'money',
     lastAsk: true,
     surf: { chat: true, today: true, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi ji, aapke chart par teeno reports abhi bhi taiyar hain — jo chahiye uska preview free mein dekh lijiye.' },
+      { who: 'hemali', text: 'Mansi ji, aapka doosra ghar kamzor chal raha hai — isi wajah se paisa aata hai par tikta nahi. Uski report dekh lijiye.' },
       { who: 'offer3' },
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
     ],
-    today: { eyebrow: '✦ 3 reports ready for you', note: 'Preview free hai — poori report ₹49, ₹499 se price drop.' },
+    today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
   /* Day 5: the stop. Everything the brief asks for has been asked four times —
@@ -926,33 +936,39 @@ function chapterBubble(idx) {
   '</div>';
 }
 
-/* The PM brief's offer, as it lands in the chat: three reports, she picks one,
-   preview before paying. One card, three rows — a menu, not a sell. */
+/* The one report today suggests. A three-row menu makes her choose before she
+   has any reason to care; a single report tied to a house Hemali already named
+   is a recommendation, and the other two stay one tap away. */
+function leadReport() { return reportById(dayData().lead || 'love'); }
+
+/* The PM brief's offer as it lands in the chat. Swiggy's hierarchy: one
+   coloured strip states the deal once, the dish owns the card, the price is a
+   single token, and everything else is a quiet second line. */
 function offer3Card() {
   // Once she owns one, the offer leaves the thread entirely — segueCard() is
   // the follow-up, and two follow-ups in a row is one too many.
   if (state.paid) return '';
-  // Swiggy's offer-card hierarchy: one coloured strip states the deal once, the
-  // title owns the card, and each row carries only what separates it from its
-  // neighbours — name, one line, chevron. The price is NOT repeated per row.
+  var r = leadReport();
   return '<div class="of3">' +
-    '<p class="of3-strip">PREVIEW FREE · ALL 3 REPORTS</p>' +
+    '<p class="of3-strip">PREVIEW FREE · PEHLE 2 PAGES</p>' +
     '<div class="of3-in">' +
       '<div class="of3-head">' +
-        '<b>3 reports taiyar hain</b>' +
+        '<b>' + esc(r.t) + '</b>' +
         '<span class="of3-price"><b>₹49</b><s>₹499</s><i>90% OFF</i></span>' +
       '</div>' +
-      REPORTS.map(function (r) {
-        return '<button class="of3-row" type="button" data-pick="' + r.id + '">' +
-          '<img src="assets/book.svg" alt="">' +
-          '<span class="of3-t"><b>' + esc(r.t) + '</b><small>' + esc(r.s) + '</small></span>' +
-          '<i class="of3-chev" aria-hidden="true">›</i>' +
-        '</button>';
-      }).join('') +
+      '<button class="of3-lead" type="button" data-pick="' + r.id + '">' +
+        '<img src="assets/book.svg" alt="">' +
+        '<span class="of3-t">' +
+          '<small>' + esc(r.why) + '</small>' +
+          '<em>' + r.pages + ' pages · aapki bhasha + English</em>' +
+        '</span>' +
+      '</button>' +
+      '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">Preview free padhiye</button>' +
       '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
         (dayData().lastAsk
           ? 'Aaj ke baad yeh yahan nahi dikhega'
-          : 'Aapki bhasha + English · hamesha History mein') +
+          : 'Aapke chart par 2 aur reports hain') +
+        '<button class="lnk-btn" type="button" data-go="picker">Sabhi dekhiye</button>' +
       '</span>' +
     '</div>' +
   '</div>';
@@ -1065,17 +1081,18 @@ function renderHistCard() {
       return;
     }
     if (!show3) return;
+    var hr = leadReport();
     $('#tlChapCard').innerHTML =
       '<div class="rep-top">' +
         '<img src="assets/book.svg" alt="">' +
         '<div>' +
           '<p class="eyebrow">From Astro Hemali</p>' +
-          '<b>3 reports on your chart</b>' +
-          '<p class="rep-status green">Partner · Money · Career — preview free</p>' +
+          '<b>' + esc(hr.t) + ' report</b>' +
+          '<p class="rep-status green">' + esc(hr.why) + '</p>' +
         '</div>' +
       '</div>' +
       '<div class="rep-acts">' +
-        '<button class="btn primary grow" type="button" data-go="picker">See the 3 reports</button>' +
+        '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">Preview free padhiye</button>' +
       '</div>';
     return;
   }
@@ -1179,16 +1196,17 @@ function renderDayToday() {
     $('#offerSlot').hidden  = true;
     if (sf.guide) renderGuideTile();
     if (!sf.today) return;
+    var lr = leadReport();
     $('#expertSlot').innerHTML =
-      '<div class="ex-tap" data-go="picker" role="button" tabindex="0">' +
+      '<div class="ex-tap" data-pick="' + lr.id + '" role="button" tabindex="0">' +
         '<span class="bk3" aria-hidden="true"></span>' +
         '<span class="ex-t">' +
-          '<b>3 reports ready · preview free</b>' +
-          '<span class="ex-sub' + (dayData().lastAsk ? ' last' : '') + '">' +
-            (dayData().lastAsk ? 'Aaj ke baad yeh yahan nahi dikhega' : 'Partner · Money · Career') +
+          '<b>' + esc(lr.t) + '</b>' +
+          '<span class="ex-sub wrap' + (dayData().lastAsk ? ' last' : '') + '">' +
+            (dayData().lastAsk ? 'Aaj ke baad yeh yahan nahi dikhega' : esc(lr.why)) +
           '</span>' +
         '</span>' +
-        '<i class="ex-pill">₹49</i>' +
+        '<i class="ex-pill">FREE</i>' +
         '<span class="ex-chev" aria-hidden="true">›</span>' +
       '</div>';
     return;
@@ -1243,10 +1261,15 @@ function renderDayToday() {
 function renderGuideTile() {
   var sub, tag, act;
   if (state.pm && !state.paid) {
+    // The guidance tile is the quieter of Today's two surfaces, so it carries
+    // the other two reports — the expert card above it already leads with one.
     $('#guideSlot').innerHTML =
       '<button class="tile" type="button" data-go="picker">' +
         '<span class="bk3" aria-hidden="true"></span>' +
-        '<span class="tt"><b>3 reports for you</b><small>Partner · Money · Career</small></span>' +
+        '<span class="tt"><b>2 aur reports aapke chart par</b><small>' +
+          esc(REPORTS.filter(function (x) { return x.id !== leadReport().id; })
+                     .map(function (x) { return x.t; }).join(' · ')) +
+        '</small></span>' +
         '<i class="tag green">₹49</i>' +
         '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
@@ -1647,8 +1670,12 @@ document.addEventListener('click', function (e) {
     // On the PM track the notification names one report, so it has to land on
     // that report's preview. Dropping her on the picker would ask her to make
     // the same choice twice.
-    var pick = state.pm && !state.paid && dayData().pushPick;
-    if (pick) { state.pick = pick; renderPreview(); go('preview'); return; }
+    if (state.pm && !state.paid && dayData().lead) {
+      state.pick = dayData().lead;
+      renderPreview();
+      go('preview');
+      return;
+    }
     if (state.screen !== 'chat') go('chat');
     return;
   }
