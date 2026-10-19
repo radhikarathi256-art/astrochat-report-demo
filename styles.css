@@ -241,20 +241,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .offer{margin:11px -14px -12px;padding:11px 14px 12px;
   border-top:1px dashed #F0CFBD;border-radius:0 0 12px 12px;
   background:linear-gradient(180deg,#FFF7F2 0,#FFFFFF 72%)}
-.of-row{display:flex;gap:10px;align-items:center}
-.of-t{min-width:0;display:flex;flex-direction:column;gap:2px}
-/* Scoped to .bubble so it beats `.bubble b`, the red speaker label. */
-.bubble .of-hook{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
-.of-sub{font:400 12px/17px var(--sans);color:var(--g500)}
+/* Scoped to .bubble so it beats `.bubble b`{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
 .offer .btn{margin-top:10px}
-.of-eyebrow{display:block;margin-bottom:8px;font:700 11px/16px var(--sans);
-  letter-spacing:.05em;text-transform:uppercase;color:var(--brand-dk)}
-/* Seven pips, filled as the chapters arrive. This is the whole idea in 90px:
-   she can see what she has and what is still shut, every day. */
-.of-dots{display:flex;gap:4px;margin-top:7px}
-.of-dots i{width:100%;height:4px;border-radius:2px;background:#F2D7C8}
-.of-dots i.got{background:var(--brand)}
-.of-note{margin:10px 0 0;font:500 12px/17px var(--sans);color:var(--g600)}
 
 /* ---------- Day 1 · the report on the expert card ----------
    Day 1 has no Hemali bubble, because the check-in is still unanswered. The
@@ -342,31 +330,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .c-sys,.c-end{margin:4px 0;padding:9px 14px;border-radius:10px;text-align:center;
   background:#EEF1F6;font:400 13px/19px var(--sans);color:var(--g600)}
 .c-end{margin-top:8px}
-
-/* The chapter, handed over in the chat. Warm paper, not a product card. */
-.ch-card{align-self:stretch;position:relative;padding:13px 14px 12px;border-radius:14px;
-  background:linear-gradient(180deg,#FFF6EC 0,#FFFFFF 62%);
-  border:1px solid #F0D6BE;box-shadow:0 6px 16px rgba(122,46,14,.09)}
-/* Two leaves peeking out behind it — the stack reads as "there are more". */
-.ch-card::before{content:"";position:absolute;inset:-6px 10px 6px 14px;z-index:-1;
-  border-radius:12px;background:#FBE4D2}
-.ch-row{display:flex;gap:11px;align-items:flex-start}
-.ch-cover{flex:none;width:44px;height:58px;border-radius:6px;object-fit:cover;
-  box-shadow:0 3px 8px rgba(122,46,14,.18)}
-.ch-meta{min-width:0}
-.ch-no{display:block;font:700 10px/15px var(--sans);letter-spacing:.06em;
-  text-transform:uppercase;color:var(--brand-dk)}
-.ch-t{display:block;margin-top:3px;font:700 16px/21px var(--sans);color:var(--g900)}
 .ch-s{margin:3px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
 /* Scoped past `.btn.sm`, which sets width:auto. A chapter handed to her in the
-   chat is the main action on the screen, so it takes the card's full width. */
-.ch-card .btn.ch-go{margin-top:11px;width:100%;height:42px;font-size:15px}
-.ch-price{display:flex;align-items:baseline;gap:7px;margin:5px 0 0}
-.ch-price b{font:700 17px/22px var(--sans);color:var(--g900)}
-.ch-price s{font:400 13px/18px var(--sans);color:var(--g400)}
-.ch-price i{padding:2px 6px;border-radius:6px;background:#ECFDF3;color:#067647;
-  font:700 10px/14px var(--sans);font-style:normal}
-.ch-end{margin:9px 0 0;font:600 12px/17px var(--sans);color:#B42318}
+   chat is the main action on the screen{margin-top:11px;width:100%;height:42px;font-size:15px}
 .ch-saved{display:flex;align-items:center;gap:5px;margin-top:9px;
   font:500 11px/16px var(--sans);color:#067647}
 .ch-saved::before{content:"";width:13px;height:13px;border-radius:50%;background:#ECFDF3;
@@ -521,37 +487,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .cc-row s{color:var(--g400)}
 .cc-row b{color:#067647}
 .chat-cta .btn{margin-top:10px}
-
-/* ---------- The 7 chapters, on the sell page ----------
-   What she already owns sits open at the top, so the paywall is asking her to
-   continue something rather than to start something. */
-.chlist{margin:0;padding:0;list-style:none}
-.chlist li{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid var(--g200)}
-.chlist li:last-child{border-bottom:0;padding-bottom:0}
-.ch-ic{flex:none;width:22px;height:22px;margin-top:1px;border-radius:50%;position:relative}
-/* Open: a green tick. Shut: a lock drawn from a box and an arc. */
-.chlist .open .ch-ic{background:var(--s50)}
-.chlist .open .ch-ic::after{content:"";position:absolute;left:7px;top:7px;width:7px;height:4px;
-  border:1.7px solid var(--s700);border-top:0;border-right:0;transform:rotate(-45deg)}
-.chlist .shut .ch-ic{background:var(--g100)}
-.chlist .shut .ch-ic::before{content:"";position:absolute;left:6px;top:10px;width:10px;height:7px;
-  border-radius:1.5px;background:var(--g400)}
-.chlist .shut .ch-ic::after{content:"";position:absolute;left:8px;top:6px;width:6px;height:5px;
-  border:1.5px solid var(--g400);border-bottom:0;border-radius:3px 3px 0 0}
-.ch-body{min-width:0;display:flex;flex-direction:column;gap:2px}
-.ch-body b{font:600 15px/21px var(--sans);color:var(--g900)}
-.chlist .shut .ch-body b{color:var(--g500)}
-.ch-body>span{font:400 13px/19px var(--sans);color:var(--g500)}
-/* The report makes the questions; the chat answers them. A free user stares at
-   an empty box, a reader has seven questions already written for her. */
-.ch-ask{align-self:flex-start;margin-top:7px;padding:5px 10px;border-radius:7px;
-  border:1px solid var(--brand);background:#fff;color:var(--brand);
-  font:600 12px/17px var(--sans)}
-.ch-ask:active{background:var(--brand50)}
-/* Unread: chapter 1 is the highlighted free unlock on the sell page. */
-.chlist li.hl{margin:2px 0 4px;padding:13px 12px;background:#FFF9F2;border:1px solid #F0D6BE;border-radius:12px}
-.ch-free{margin-left:6px;padding:2px 6px;border-radius:6px;background:#ECFDF3;color:#067647;
-  font:700 10px/14px var(--sans);font-style:normal;vertical-align:1.5px}
 
 /* ---------- R.1b hero + expert card ---------- */
 .hero{position:relative;padding:calc(var(--sbh) + 58px) 16px 10px;text-align:center;
@@ -711,7 +646,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-block{padding:24px 16px;border-top:1px solid var(--g200)}
 .r2-h{display:flex;align-items:baseline;margin:0 0 4px;
   font:600 20px/28px var(--sans);color:var(--g900)}
-.r2-h .pgs{margin-left:auto;font-style:normal;font:400 14px/20px var(--sans);color:var(--g500)}
 
 /* PM track: what the report answers, as her own questions. It stands in for the
    chapter ladder, because a ladder with nothing shut is only a contents page. */
@@ -1096,37 +1030,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .ci-coins{position:absolute;top:14px;right:14px;font-size:20px;line-height:1}
 /* The guidance slot renders a .tile; the wrapper itself must not add a box. */
 .gslot{display:contents}
-/* Read button on each open chapter of the sell page. */
-.ch-read{align-self:flex-start;margin-top:7px;padding:6px 11px;border-radius:7px;border:0;
-  background:var(--brand);color:#fff;font:600 12px/17px var(--sans)}
-.ch-read:active{opacity:.85}
-.ch-read + .ch-ask{margin-top:6px}
 /* Chapter reader — a full ebook page. Paper ground, centred chapter opener,
    clean sans prose with the chart figures sitting inside it. The sell blocks
    at the end read as UI, not prose. */
 #chapter{background:#FCF7ED}
-.chr-top{display:flex;align-items:center;gap:10px;flex:none;
-  padding:calc(var(--sbh) + 6px) 10px 8px;background:#FCF7ED;border-bottom:1px solid #EFE3CC}
-.chr-top .chr-no{flex:1}
-.chr-top-sp{flex:none;width:38px}
-.chr-no{text-align:center;font:700 10px/15px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#A5742F}
-.chr-scroll{padding:20px 20px 18px}
 #chapter h3{font-family:var(--serif);font-weight:700;font-size:26px;line-height:31px;
   text-align:center;color:#2C2318;margin:0}
 #chapter h3::after{content:"";display:block;width:54px;height:1px;background:#D8C5A5;margin:14px auto 16px}
-.chr-body{display:flex;flex-direction:column;gap:12px}
-.chr-body p{margin:0;font:400 14px/22px var(--sans);color:var(--g700)}
-.chr-body p:not([class]){font:400 15px/24px var(--sans);color:#3A3022}
-/* The figures: janam chart and the Rahu transit bar, drawn like report plates. */
-.chr-fig{margin:6px 0;display:flex;flex-direction:column;align-items:center;gap:9px}
-.chr-fig svg{width:210px;height:auto}
-.chr-fig rect,.chr-fig path{fill:none;stroke:#C9B188;stroke-width:1.2}
-.chr-fig .khl{fill:#F8E9C8;stroke:#C9972F;stroke-width:1.2}
-.chr-fig .kg{font:600 11px var(--sans);fill:#9A865F;text-anchor:middle;dominant-baseline:middle}
-.chr-fig .kg.hl{font-weight:800;fill:#9A6A14}
-.chr-fig figcaption{font:400 12px/17px var(--sans);color:#8A7A5E;text-align:center}
-.chr-fig figcaption b{color:#9A6A14}
-.chr-trans{align-items:stretch;margin:4px 0}
 .ktl{position:relative;height:12px;margin:2px 6px 0}
 .ktl-bar{display:block;height:6px;margin-top:3px;border-radius:3px;background:#EFE3CC;overflow:hidden}
 .ktl-bar i{display:block;height:100%;width:82%;background:linear-gradient(90deg,#E8CE93,#C9972F)}
@@ -1134,16 +1044,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:#C9972F;border:2px solid #FCF7ED;transform:translateX(-50%)}
 .ktl-lab{display:flex;justify-content:space-between;margin:5px 6px 0;font:500 11px/15px var(--sans);color:#8A7A5E}
 .ktl-lab b{color:#9A6A14}
-/* Chapter 1 ends on the sell: the ch-2 hook, the 7-chapter map, one price. */
-.chr-hook{margin-top:20px;padding:10px 12px;border-radius:10px;background:#FFF3E2;
-  border:1px solid #EAD9BD}
-.chr-body .chr-hook{font:400 13px/19px var(--sans)}
-.chr-hook b{color:var(--g900)}
-.chr-list{display:flex;flex-direction:column;gap:9px;margin:12px 0;padding:12px;
-  background:#fff;border:1px solid #EADFC9;border-radius:12px}
 .cl-h{margin:0 0 1px;font:700 10px/15px var(--sans);letter-spacing:.06em;
   text-transform:uppercase;color:var(--g500)}
-.chr-body p.cl-h{font:700 10px/15px var(--sans)}
 .cl-row{display:flex;gap:9px;align-items:flex-start}
 .cl-row i{flex:0 0 auto;width:18px;height:18px;border-radius:50%;margin-top:1px;
   font:700 10px/18px var(--sans);font-style:normal;text-align:center;
@@ -1152,19 +1054,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .cl-row span{display:flex;flex-direction:column}
 .cl-row b{font:600 13px/18px var(--sans);color:var(--g900)}
 .cl-row small{font:400 11px/15px var(--sans);color:var(--g500)}
-.chr-price{display:flex;align-items:center;gap:7px}
-.chr-price b{font:800 18px/22px var(--sans);color:var(--g900)}
-.chr-price s{font:400 13px/18px var(--sans);color:var(--g400)}
-.chr-price em{font:700 10px/14px var(--sans);font-style:normal;padding:2px 6px;
-  border-radius:6px;background:#ECFDF3;color:#067647}
-.chr-price .ends{margin-left:auto;font:700 11px/16px var(--sans);color:#B42318}
-/* Pinned footer: price line + CTA, on screen whatever the scroll. */
-.chr-foot{flex:none;padding:10px 16px 14px;background:#FCF7ED;border-top:1px solid #EFE3CC}
-.chr-foot .btn{width:100%}
-.chr-limited{margin:0 0 8px;text-align:center;font:500 12px/17px var(--sans);color:var(--g500)}
-.chr-limited b{font-weight:800;color:var(--g900)}
-.chr-limited b.rd{color:#B42318}
-.chr-limited s{color:var(--g400)}
 /* Strikes inside tile subtitles and chat buttons stay quiet. */
 .tile .tt small s{color:var(--g400)}
 

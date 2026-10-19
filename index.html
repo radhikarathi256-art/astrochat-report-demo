@@ -24,28 +24,15 @@
      app UI. Days, not entry points — one person meets this screen repeatedly,
      nobody ever sees three variants of it. -->
 <aside class="switcher" id="switcher">
-  <b>Chapter 1 not read</b>
-  <button type="button" data-day="1" class="on">Day 1 · The first chat<small>Report appears; every nudge is the read</small></button>
-  <button type="button" data-day="2">Day 2 · She comes back<small>Read nudge: inside chat · guidance tile · history card + dot</small></button>
-  <button type="button" data-day="3">Day 3 · The close<small>₹49 ends tonight — same 3 surfaces, chapter 1 still free</small></button>
-  <hr>
-  <b>Chapter 1 read on day 1</b>
-  <button type="button" data-day="2" data-r1>Day 2 · The buy nudge<small>Buy nudge: inside chat · guidance tile · history</small></button>
-  <button type="button" data-day="3" data-r1>Day 3 · Still deciding<small>Price drop live, no pressure yet</small></button>
-  <button type="button" data-day="4" data-r1>Day 4 · The close<small>₹49 ends tonight</small></button>
-  <hr>
-  <b>Report bought</b>
-  <button type="button" data-day="2" data-r1 data-paid>Post-purchase · The follow-up<small>Read report · continue chat · more-reports upsell</small></button>
-  <hr>
-  <!-- The PM brief, built as written, so the two models can be compared:
-       +10 min pitch, three reports to pick from, the whole report given away on
-       a demo chart instead of a free chapter, same ask on days 1-4, silence after. -->
+  <!-- The PM brief, built as written: +15 min notification, three reports to
+       pick from, the whole report given away on a demo chart, same ask on
+       days 1-4, silence after. -->
   <b>PM spec · pick 1 of 3, whole report free</b>
-  <button type="button" data-day="1" data-pm>Day 1 · 15 min after the chat<small>Notification · chat · history — Today untouched</small></button>
-  <button type="button" data-day="2" data-pm>Day 2 · No purchase yet<small>Today: expert card + personalised. No chat pitch</small></button>
-  <button type="button" data-day="3" data-pm>Day 3 · Chat joins in<small>Expert card + personalised + inside the free chat</small></button>
-  <button type="button" data-day="4" data-pm>Day 4 · Last ask<small>Same as day 3; after today the nudging stops</small></button>
-  <button type="button" data-day="5" data-pm>Day 5 · Nudging stops<small>Every surface quiet — reports stay reachable</small></button>
+  <button type="button" data-day="1" class="on">Day 1 · 15 min after the chat<small>Notification · chat · history — Today untouched</small></button>
+  <button type="button" data-day="2">Day 2 · No purchase yet<small>Today: expert card + personalised. No chat pitch</small></button>
+  <button type="button" data-day="3">Day 3 · Chat joins in<small>Expert card + personalised + inside the free chat</small></button>
+  <button type="button" data-day="4">Day 4 · Last ask<small>Same as day 3; after today the nudging stops</small></button>
+  <button type="button" data-day="5">Day 5 · Nudging stops<small>Every surface quiet — reports stay reachable</small></button>
   <hr>
   <button type="button" id="restart" class="ghost">Restart demo</button>
   <a class="sw-link" href="variations.html">20 attachment variations →</a>
@@ -186,14 +173,6 @@
             <img class="av" src="assets/hemali.png" alt="Astro Hemali">
             <div class="bubble">
               <p>Aaj Rahul ke saath baat aasaani se hogi. Shaam ko ek chhota sa plan banaiye, rishta aur mazboot hoga.</p>
-
-              <!-- Entry A — the sell lives inside Hemali's own bubble, under a
-                   divider, so it reads as something she made in the chat.
-                   The bubble is already hers, so the offer carries no speaker
-                   label and no eyebrow: cover, hook, price, button. -->
-              <!-- Rendered per day: the same slot, filling up. Not an ad —
-                   a container she watched fill, one chapter at a time. -->
-              <div class="offer" id="offerSlot"></div>
             </div>
           </div>
         </div>
@@ -236,9 +215,6 @@
               <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="r2-nav-r">
-              <!-- Sample lives up here as a small chip; it used to be a full-width
-                   button in the prose and pushed the chapter list below the fold. -->
-              <button class="chip samp" type="button" id="r2Samp" data-go="sample">Sample ↗</button>
               <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
                 <span data-wallet>₹20</span>
@@ -270,27 +246,14 @@
           </div>
         </div>
 
-        <!-- The chip row used to repeat the contents list word for word; the
-             contents list does it better, so only the prose stays. -->
+        <!-- The lead is written per report — one of three gets sold here. -->
         <div class="r2-about">
-          <p class="r2-lead" id="r2Lead">Know <b>when</b> you will marry, <b>who</b> it will be, and <b>what is holding it up</b>. Written by Hemali from your chat, in English, Hindi, Hinglish <b>+6</b>.</p>
-          <!-- The PM track sells one of three reports, so its lead is written
-               per report. Paired with the line above rather than overwriting it,
-               so neither track's copy has to live in JS. -->
-          <p class="r2-lead" id="r2LeadPm" hidden></p>
+          <p class="r2-lead" id="r2Lead"></p>
         </div>
 
-        <!-- PM track only: what this report answers, in her own words. Nothing
-             is locked on that track, so a chapter ladder has nothing to shut. -->
-        <div class="r2-block" id="r2Learn" hidden></div>
-
-        <!-- One list, not two. The old page had "Find answers to" and "What's
-             inside" saying the same seven things twice. Now it is the ladder:
-             what she already owns, then what is still shut. -->
-        <div class="r2-block" id="r2Chapters">
-          <h2 class="r2-h">Your 7 chapters <i class="pgs" id="chapterCount"></i></h2>
-          <ol class="chlist" id="chapterList"></ol>
-        </div>
+        <!-- What this report answers, in her own words. Nothing is locked, so a
+             chapter ladder would have nothing to shut. -->
+        <div class="r2-block" id="r2Learn"></div>
 
         <div class="r2-block">
           <h2 class="r2-h">What readers say</h2>
@@ -317,43 +280,18 @@
           </div>
         </div>
 
-        <!-- PM track only: the entire report, rendered on a demo chart. The
-             depth is the pitch, so it is given away rather than described. -->
-        <div class="r2-block" id="r2Sample" hidden></div>
+        <!-- The entire report, rendered on a demo chart. The depth is the
+             pitch, so it is given away rather than described. -->
+        <div class="r2-block" id="r2Sample"></div>
 
         <!-- Upsells belong on the sell page, not only after the read: someone
              weighing ₹49 is the person most likely to take a second ₹49. All
              four stay inside marriage, love and partner. -->
+        <!-- Upsells belong on the sell page, not only after the read: someone
+             weighing ₹49 is the person most likely to take a second ₹49. -->
         <div class="r2-block" id="r2Also">
-          <h2 class="r2-h"><span id="r2AlsoH1">Readers also bought</span><span id="r2AlsoH2" hidden>Aapke chart par aur bhi hai</span></h2>
-          <div class="carousel" id="r2AlsoList">
-            <button class="pcard" type="button" data-toast="Kundli Milan report is not part of this demo">
-              <span class="bk3" aria-hidden="true"></span>
-              <b>Kundli Milan report</b><small>Your two charts, point by point</small>
-              <span class="pc-pr"><em>₹49</em><s>₹199</s></span>
-              <span class="pc-btn">View report</span>
-            </button>
-            <button class="pcard" type="button" data-toast="Partner sketch is not part of this demo">
-              <span class="bk3" aria-hidden="true"></span>
-              <b>Partner sketch</b><small>See the face you will marry</small>
-              <span class="pc-pr"><em>₹49</em><s>₹199</s></span>
-              <span class="pc-btn">View report</span>
-            </button>
-            <button class="pcard" type="button" data-toast="Love report is not part of this demo">
-              <span class="bk3" aria-hidden="true"></span>
-              <b>Love report</b><small>What your heart needs</small>
-              <span class="pc-pr"><em>₹49</em><s>₹199</s></span>
-              <span class="pc-btn">View report</span>
-            </button>
-            <button class="pcard" type="button" data-toast="Rishta timing report is not part of this demo">
-              <span class="bk3" aria-hidden="true"></span>
-              <b>Rishta timing report</b><small>The best months to say yes</small>
-              <span class="pc-pr"><em>₹49</em><s>₹199</s></span>
-              <span class="pc-btn">View report</span>
-            </button>
-          </div>
-          <!-- On the PM track the other two real reports go here instead. -->
-          <div class="carousel" id="r2AlsoPm" hidden></div>
+          <h2 class="r2-h">Aapke chart par aur bhi hai</h2>
+          <div class="carousel" id="r2AlsoList"></div>
         </div>
         <div class="pad-buy"></div>
       </div>
@@ -363,8 +301,7 @@
         <p class="buy-why">
           <!-- The old crossed square read as a missing-glyph box at 15px. -->
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1.2 9.9 6.1 14.8 8 9.9 9.9 8 14.8 6.1 9.9 1.2 8 6.1 6.1 8 1.2Z" fill="#B54708"/></svg>
-          <span id="r2Why">Learn how Rahu is delaying your marriage</span>
-          <span id="r2WhyPm" hidden></span>
+          <span id="r2Why"></span>
         </p>
         <div class="buy-row">
           <!-- The discount lives here, not on Today: she has chosen to read more,
@@ -602,23 +539,6 @@
 
   <!-- Chapter reader: a full ebook page — paper ground, chart figures in the
        prose, the sell at the end, price + CTA pinned below. -->
-  <section class="screen" id="chapter" data-screen="chapter">
-    <header class="chr-top">
-      <button class="ic-btn" type="button" data-back aria-label="Back">
-        <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#2C2318" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <span class="chr-no" id="chrNo"></span>
-      <span class="chr-top-sp" aria-hidden="true"></span>
-    </header>
-    <div class="scroll chr-scroll" data-scroll>
-      <h3 id="chrTitle"></h3>
-      <div class="chr-body" id="chrBody"></div>
-    </div>
-    <footer class="chr-foot">
-      <p class="chr-limited" id="chrLimited"></p>
-      <button class="btn primary" type="button" id="chrCta"></button>
-    </footer>
-  </section>
 
   <!-- Android notification permission, per the board's J1.5. The reward sheet's
        "remind me" is the in-app yes; this is the OS asking the same thing. -->
