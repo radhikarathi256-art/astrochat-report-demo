@@ -921,7 +921,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
     radial-gradient(62% 50% at 82% 26%,#E8DBFB 0,rgba(232,219,251,0) 72%),
     radial-gradient(95% 72% at 50% 106%,#FFD4C7 0,rgba(255,212,199,0) 68%),
     linear-gradient(180deg,#FFF8FB 0,#FBE6F0 100%)}
-.pt-fig{position:absolute;left:50%;bottom:0;width:76%;height:96%;
+.pt-fig{position:absolute;left:50%;bottom:0;width:100%;height:100%;
   transform:translateX(-50%);opacity:.82;filter:blur(6px);
   -webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.5) 24%,#000 60%);
           mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.5) 24%,#000 60%)}

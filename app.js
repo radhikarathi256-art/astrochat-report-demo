@@ -1579,17 +1579,22 @@ function coverArt(r, cls) {
    coming" without the lie — and it is the more wanted image of the two. */
 function portraitArt() {
   return '<div class="pt-art" aria-hidden="true">' +
-    '<svg class="pt-fig" viewBox="0 0 400 480" preserveAspectRatio="xMidYMax slice">' +
+    /* `meet`, not `slice`: slice crops from the top, which beheaded the figure
+       and left a dome. Nothing may be cropped here — the head IS the image. */
+    '<svg class="pt-fig" viewBox="0 0 400 480" preserveAspectRatio="xMidYMax meet">' +
       '<defs><linearGradient id="ptg" x1="0" y1="0" x2="0" y2="1">' +
         '<stop offset="0" stop-color="#D9A7BD"/>' +
         '<stop offset=".42" stop-color="#C87FA0"/>' +
         '<stop offset="1" stop-color="#A5527A"/>' +
       '</linearGradient></defs>' +
       '<g fill="url(#ptg)">' +
-        '<path d="M88 480c5-94 54-162 112-162s107 68 112 162z"/>' +
-        '<rect x="174" y="226" width="52" height="76" rx="24"/>' +
-        '<ellipse cx="200" cy="166" rx="68" ry="84"/>' +
-        '<ellipse cx="263" cy="180" rx="13" ry="22"/>' +
+        /* Shoulders need a shoulder LINE — a smooth cone reads as a chess
+           pawn. The two short segments are the trapezius rising to the neck,
+           the curve between them is the neckline. */
+        '<path d="M58 480c0-80 27-131 74-150l26-10c15 23 69 23 84 0l26 10c47 19 74 70 74 150z"/>' +
+        '<rect x="170" y="248" width="60" height="78" rx="28"/>' +
+        '<ellipse cx="200" cy="196" rx="72" ry="88"/>' +
+        '<ellipse cx="268" cy="212" rx="13" ry="23"/>' +
       '</g>' +
     '</svg>' +
   '</div>';
