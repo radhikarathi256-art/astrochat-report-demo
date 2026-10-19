@@ -368,6 +368,73 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .ch-saved::before{content:"";width:13px;height:13px;border-radius:50%;background:#ECFDF3;
   box-shadow:inset 0 0 0 1.4px #ABEFC6}
 
+/* ---------------------------------------------- PM spec: 3-report surfaces */
+/* The brief's 10-minute wait, drawn into the thread so the gap is visible. */
+.c-gap{display:flex;align-items:center;gap:9px;margin:14px 2px 10px;
+  font:600 11px/16px var(--sans);color:var(--g400)}
+.c-gap::before,.c-gap::after{content:"";flex:1;height:1px;background:#EAECF0}
+
+/* The in-chat menu: three reports, she picks. A list, not a poster. */
+.of3{align-self:stretch;padding:12px 12px 10px;border-radius:14px;background:#fff;
+  border:1px solid #F0D6BE;box-shadow:0 6px 16px rgba(122,46,14,.09)}
+.of3-head{margin:0 0 9px}
+.of3-head b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
+.of3-head span{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
+.of3-head s{color:var(--g400)}
+.of3-row{display:flex;align-items:center;gap:10px;width:100%;padding:9px 8px;
+  border:0;border-radius:10px;background:#FFFBF6;text-align:left;cursor:pointer;
+  margin-bottom:6px}
+.of3-row:last-of-type{margin-bottom:0}
+.of3-row:hover{background:#FFF4E8}
+.of3-row img{flex:none;width:30px;height:40px;border-radius:4px;object-fit:cover;
+  box-shadow:0 2px 6px rgba(122,46,14,.16)}
+.of3-t{flex:1;min-width:0}
+.of3-t b{display:block;font:600 13px/18px var(--sans);color:var(--g900)}
+.of3-t small{display:block;font:400 11px/15px var(--sans);color:var(--g600);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.of3-chev{flex:none;font-style:normal;font-size:18px;color:var(--g400)}
+.of3-foot{display:block;margin-top:9px;font:500 11px/16px var(--sans);color:var(--g500)}
+
+/* Picker screen */
+.pk-lead{margin:14px 16px 0;font:400 14px/21px var(--sans);color:var(--g600)}
+.pk-list{display:flex;flex-direction:column;gap:10px;padding:14px 16px 0}
+.pk-card{display:flex;align-items:center;gap:12px;width:100%;padding:12px;
+  border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;
+  cursor:pointer;box-shadow:0 2px 8px rgba(16,24,40,.05)}
+.pk-card:hover{border-color:var(--brand);background:#FFFBF6}
+.pk-bk{flex:none;width:44px;height:58px;border-radius:6px;object-fit:cover;
+  box-shadow:0 3px 8px rgba(122,46,14,.18)}
+.pk-t{flex:1;min-width:0}
+.pk-t b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
+.pk-t small{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
+.pk-meta{display:block;margin-top:5px;font:500 11px/15px var(--sans);color:var(--g400)}
+.pk-r{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.pk-price{font:700 16px/21px var(--sans);font-style:normal;color:var(--g900)}
+.pk-r s{font:400 11px/15px var(--sans);color:var(--g400)}
+.pk-r em{margin-top:4px;font:600 11px/15px var(--sans);font-style:normal;color:var(--brand-dk)}
+.pk-note{margin:16px;padding:11px 12px;border-radius:10px;background:#F9FAFB;
+  font:400 12px/18px var(--sans);color:var(--g600)}
+
+/* Preview screen: two real pages, then the wall. */
+.pv-top{display:flex;align-items:center;gap:11px;padding:16px 16px 0}
+.pv-top img{width:38px;height:50px;border-radius:5px;object-fit:cover;
+  box-shadow:0 3px 8px rgba(122,46,14,.18)}
+.pv-tag{font:600 12px/17px var(--sans);color:var(--brand-dk)}
+.pv-body{padding:14px 16px 0}
+.pv-body p{margin:0 0 13px;font:400 15px/24px var(--sans);color:#3A3022}
+.pv-lock{position:relative;margin-top:4px}
+.pv-blur{padding:2px 0 26px}
+.pv-blur span{display:block;height:11px;margin-bottom:9px;border-radius:5px;
+  background:#E4E7EC;filter:blur(2.5px)}
+.pv-blur span:nth-child(2){width:92%}
+.pv-blur span:nth-child(3){width:97%}
+.pv-blur span:nth-child(4){width:78%}
+.pv-blur span:nth-child(5){width:88%}
+.pv-lockbar{position:absolute;left:0;right:0;bottom:0;padding:12px;border-radius:12px;
+  background:#FFF6EC;border:1px solid #F0D6BE;text-align:center}
+.pv-lockbar b{display:block;font:700 14px/19px var(--sans);color:var(--g900)}
+.pv-lockbar small{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
+
 /* ---------- Day 1 · the reminder opt-in ----------
    Sits after the end-of-chat notice, in the system voice's position but warmer:
    it is the one ask of the day, made right after she has read her own chapter. */

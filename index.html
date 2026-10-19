@@ -37,6 +37,16 @@
   <b>Report bought</b>
   <button type="button" data-day="2" data-r1 data-paid>Post-purchase · The follow-up<small>Read report · continue chat · more-reports upsell</small></button>
   <hr>
+  <!-- The PM brief, built as written, so the two models can be compared:
+       +10 min pitch, three reports to pick from, preview instead of a free
+       chapter, same ask on days 1-4 and silence after. -->
+  <b>PM spec · pick 1 of 3, preview only</b>
+  <button type="button" data-day="1" data-pm>Day 1 · 15 min after the chat<small>Notification · chat · history — Today untouched</small></button>
+  <button type="button" data-day="2" data-pm>Day 2 · No purchase yet<small>Today: expert card + personalised. No chat pitch</small></button>
+  <button type="button" data-day="3" data-pm>Day 3 · Chat joins in<small>Expert card + personalised + inside the free chat</small></button>
+  <button type="button" data-day="4" data-pm>Day 4 · Last ask<small>Same as day 3; after today the nudging stops</small></button>
+  <button type="button" data-day="5" data-pm>Day 5 · Nudging stops<small>Every surface quiet — reports stay reachable</small></button>
+  <hr>
   <button type="button" id="restart" class="ghost">Restart demo</button>
   <a class="sw-link" href="variations.html">20 attachment variations →</a>
 </aside>
@@ -346,6 +356,51 @@
                so the saving is an answer to "why now", not a shout. -->
           <div class="price"><b>₹49</b><small><s>₹499</s><i>90% OFF</i></small></div>
           <button class="btn primary grow" type="button" data-sheet="buy">Buy now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PM spec · pick 1 of 3 ===================== -->
+    <section class="screen" id="picker" data-screen="picker">
+      <header class="topnav">
+        <button class="ic-btn" type="button" data-back aria-label="Back">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2>Reports for you</h2>
+        <button class="chip lang" type="button" data-sheet="lang"><span>English</span> ▾</button>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <p class="pk-lead">Astro Hemali ne aapki kundli par 3 reports taiyar ki hain. Har ek ka preview free hai.</p>
+        <div class="pk-list" id="pkList"></div>
+        <p class="pk-note">Har report aapki chuni hui bhasha aur English — dono mein milti hai, aur khareedne ke baad hamesha aapke Chat History mein rehti hai.</p>
+        <div class="pad-nav"></div>
+      </div>
+    </section>
+
+    <!-- ===================== PM spec · preview (locked) ===================== -->
+    <section class="screen" id="preview" data-screen="preview">
+      <header class="topnav">
+        <button class="ic-btn" type="button" data-back aria-label="Back">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2 id="pvTitle">Preview</h2>
+        <button class="chip lang" type="button" data-sheet="lang"><span>English</span> ▾</button>
+      </header>
+
+      <div class="scroll" data-scroll>
+        <div class="pv-top">
+          <img src="assets/book.svg" alt="">
+          <span class="pv-tag" id="pvTag"></span>
+        </div>
+        <div class="pv-body" id="pvBody"></div>
+        <div class="pad-buy"></div>
+      </div>
+
+      <div class="buybar">
+        <div class="buy-row">
+          <div class="price" id="pvPrice"></div>
+          <button class="btn primary grow" type="button" id="pvCta">Unlock full report · ₹49</button>
         </div>
       </div>
     </section>
