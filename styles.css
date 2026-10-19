@@ -1028,6 +1028,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Coins on the check-in card, per Figma 2638:16701. */
 #checkinCard{position:relative}
 .ci-coins{position:absolute;top:14px;right:14px;font-size:20px;line-height:1}
+/* The coin floats over the card's top-right corner, so the title has to end
+   before it — otherwise "wallet" runs underneath it. */
+#checkinCard .rh-t{padding-right:30px}
 /* The guidance slot renders a .tile; the wrapper itself must not add a box. */
 .gslot{display:contents}
 /* Chapter reader — a full ebook page. Paper ground, centred chapter opener,
