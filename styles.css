@@ -374,13 +374,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 11px/16px var(--sans);color:var(--g400)}
 .c-gap::before,.c-gap::after{content:"";flex:1;height:1px;background:#EAECF0}
 
-/* The in-chat menu: three reports, she picks. A list, not a poster. */
-.of3{align-self:stretch;padding:12px 12px 10px;border-radius:14px;background:#fff;
+/* The in-chat menu: three reports, she picks. A list, not a poster.
+   Hierarchy, top to bottom: deal strip (said once) > card title > row names.
+   The price appears exactly once — repeating it per row flattened the card. */
+.of3{align-self:stretch;overflow:hidden;border-radius:14px;background:#fff;
   border:1px solid #F0D6BE;box-shadow:0 6px 16px rgba(122,46,14,.09)}
-.of3-head{margin:0 0 9px}
-.of3-head b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
-.of3-head span{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
-.of3-head s{color:var(--g400)}
+.of3-strip{margin:0;padding:6px 12px;background:#FFF1E3;
+  font:700 10px/14px var(--sans);letter-spacing:.07em;color:var(--brand-dk)}
+.of3-in{padding:11px 12px 10px}
+.of3-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  margin:0 0 10px}
+.of3-head>b{flex:1;min-width:0;font:700 15px/20px var(--sans);color:var(--g900);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.of3-price{flex:none;display:flex;align-items:baseline;gap:5px}
+.of3-price b{font:700 17px/21px var(--sans);color:var(--g900)}
+.of3-price s{font:400 12px/16px var(--sans);color:var(--g400)}
+.of3-price i{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
+  font:700 9px/13px var(--sans);font-style:normal}
 .of3-row{display:flex;align-items:center;gap:10px;width:100%;padding:9px 8px;
   border:0;border-radius:10px;background:#FFFBF6;text-align:left;cursor:pointer;
   margin-bottom:6px}
@@ -393,11 +403,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-t small{display:block;font:400 11px/15px var(--sans);color:var(--g600);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .of3-chev{flex:none;font-style:normal;font-size:18px;color:var(--g400)}
-.of3-foot{display:block;margin-top:9px;font:500 11px/16px var(--sans);color:var(--g500)}
+.of3-foot{display:block;margin-top:10px;padding-top:9px;border-top:1px solid #F5EEE6;
+  font:500 11px/16px var(--sans);color:var(--g500)}
 
 /* Picker screen */
 .pk-lead{margin:14px 16px 0;font:400 14px/21px var(--sans);color:var(--g600)}
-.pk-list{display:flex;flex-direction:column;gap:10px;padding:14px 16px 0}
+/* One price for all three, said once. */
+.pk-strip{display:flex;align-items:baseline;gap:7px;margin:12px 16px 0;padding:9px 12px;
+  border-radius:10px;background:#FFF1E3}
+.pk-strip span{flex:1;min-width:0;font:500 12px/17px var(--sans);color:#8A4B21}
+.pk-strip b{font:700 17px/21px var(--sans);color:var(--g900)}
+.pk-strip s{font:400 12px/17px var(--sans);color:var(--g400)}
+.pk-strip i{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
+  font:700 9px/13px var(--sans);font-style:normal;letter-spacing:.04em}
+.pk-list{display:flex;flex-direction:column;gap:10px;padding:12px 16px 0}
 .pk-card{display:flex;align-items:center;gap:12px;width:100%;padding:12px;
   border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;
   cursor:pointer;box-shadow:0 2px 8px rgba(16,24,40,.05)}
@@ -407,11 +426,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pk-t{flex:1;min-width:0}
 .pk-t b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
 .pk-t small{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
-.pk-meta{display:block;margin-top:5px;font:500 11px/15px var(--sans);color:var(--g400)}
-.pk-r{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:1px}
-.pk-price{font:700 16px/21px var(--sans);font-style:normal;color:var(--g900)}
-.pk-r s{font:400 11px/15px var(--sans);color:var(--g400)}
-.pk-r em{margin-top:4px;font:600 11px/15px var(--sans);font-style:normal;color:var(--brand-dk)}
+.pk-meta{display:flex;align-items:center;gap:6px;margin-top:6px;
+  font:500 11px/15px var(--sans);color:var(--g400)}
+.pk-free{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
+  font:700 9px/13px var(--sans);font-style:normal;letter-spacing:.04em}
+.pk-chev{flex:none;font:400 19px/19px var(--sans);font-style:normal;color:#C7B9A8}
 .pk-note{margin:16px;padding:11px 12px;border-radius:10px;background:#F9FAFB;
   font:400 12px/18px var(--sans);color:var(--g600)}
 
@@ -422,18 +441,27 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pv-tag{font:600 12px/17px var(--sans);color:var(--brand-dk)}
 .pv-body{padding:14px 16px 0}
 .pv-body p{margin:0 0 13px;font:400 15px/24px var(--sans);color:#3A3022}
-.pv-lock{position:relative;margin-top:4px}
-.pv-blur{padding:2px 0 26px}
-.pv-blur span{display:block;height:11px;margin-bottom:9px;border-radius:5px;
-  background:#E4E7EC;filter:blur(2.5px)}
-.pv-blur span:nth-child(2){width:92%}
-.pv-blur span:nth-child(3){width:97%}
-.pv-blur span:nth-child(4){width:78%}
-.pv-blur span:nth-child(5){width:88%}
-.pv-lockbar{position:absolute;left:0;right:0;bottom:0;padding:12px;border-radius:12px;
-  background:#FFF6EC;border:1px solid #F0D6BE;text-align:center}
-.pv-lockbar b{display:block;font:700 14px/19px var(--sans);color:var(--g900)}
-.pv-lockbar small{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
+/* The cut: real prose dissolving into the paper, so it reads as "there is more
+   of this" rather than "something failed to load". */
+.pv-fade{position:relative;max-height:120px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.35) 55%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.35) 55%,transparent 100%)}
+.pv-fade p{margin:0 0 13px;font:400 15px/24px var(--sans);color:#3A3022;
+  user-select:none}
+.pv-lockbar{display:flex;align-items:center;gap:10px;margin-top:2px;padding:12px;
+  border-radius:12px;background:#FFF6EC;border:1px solid #F0D6BE}
+.pv-lk{flex:none;display:grid;place-items:center;width:30px;height:30px;
+  border-radius:50%;background:#FFE9D4}
+.pv-lkt{min-width:0}
+.pv-lkt b{display:block;font:700 14px/19px var(--sans);color:var(--g900)}
+.pv-lkt small{display:block;margin-top:1px;font:400 12px/17px var(--sans);color:var(--g600)}
+/* The value inventory. The wall says what was taken away; this says what is waiting. */
+.pv-toch{margin:18px 0 9px;font:700 11px/15px var(--sans);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--g600)}
+.pv-toc{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.pv-toc li{position:relative;padding-left:24px;font:500 13px/18px var(--sans);color:var(--g900)}
+.pv-toc li::before{content:"";position:absolute;left:0;top:1px;width:16px;height:16px;
+  border-radius:50%;background:#FFE9D4 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 3.8 7.5 8.5 2.8' fill='none' stroke='%23B54708' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/10px 10px no-repeat}
 
 /* ---------- Day 1 · the reminder opt-in ----------
    Sits after the end-of-chat notice, in the system voice's position but warmer:

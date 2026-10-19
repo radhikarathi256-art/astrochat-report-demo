@@ -890,16 +890,25 @@ function chapterBubble(idx) {
    preview before paying. One card, three rows — a menu, not a sell. */
 function offer3Card() {
   if (state.paid) return pitchCard();
+  // Swiggy's offer-card hierarchy: one coloured strip states the deal once, the
+  // title owns the card, and each row carries only what separates it from its
+  // neighbours — name, one line, chevron. The price is NOT repeated per row.
   return '<div class="of3">' +
-    '<p class="of3-head"><b>3 reports taiyar hain</b><span>Preview free · poori report ₹49 <s>₹499</s></span></p>' +
-    REPORTS.map(function (r) {
-      return '<button class="of3-row" type="button" data-pick="' + r.id + '">' +
-        '<img src="assets/book.svg" alt="">' +
-        '<span class="of3-t"><b>' + esc(r.t) + '</b><small>' + esc(r.s) + '</small></span>' +
-        '<i class="of3-chev" aria-hidden="true">›</i>' +
-      '</button>';
-    }).join('') +
-    '<span class="of3-foot">Aapki bhasha + English dono mein milegi</span>' +
+    '<p class="of3-strip">PREVIEW FREE · ALL 3 REPORTS</p>' +
+    '<div class="of3-in">' +
+      '<div class="of3-head">' +
+        '<b>3 reports taiyar hain</b>' +
+        '<span class="of3-price"><b>₹49</b><s>₹499</s><i>90% OFF</i></span>' +
+      '</div>' +
+      REPORTS.map(function (r) {
+        return '<button class="of3-row" type="button" data-pick="' + r.id + '">' +
+          '<img src="assets/book.svg" alt="">' +
+          '<span class="of3-t"><b>' + esc(r.t) + '</b><small>' + esc(r.s) + '</small></span>' +
+          '<i class="of3-chev" aria-hidden="true">›</i>' +
+        '</button>';
+      }).join('') +
+      '<span class="of3-foot">Aapki bhasha + English · hamesha History mein</span>' +
+    '</div>' +
   '</div>';
 }
 
@@ -1074,8 +1083,8 @@ function renderDayToday() {
       '<div class="ex-tap" data-go="picker" role="button" tabindex="0">' +
         '<span class="bk3" aria-hidden="true"></span>' +
         '<span class="ex-t">' +
-          '<b>3 reports ready for you</b>' +
-          '<span class="ex-sub">Partner · Money · Career — preview free</span>' +
+          '<b>3 reports ready · preview free</b>' +
+          '<span class="ex-sub">Partner · Money · Career</span>' +
         '</span>' +
         '<i class="ex-pill">₹49</i>' +
         '<span class="ex-chev" aria-hidden="true">›</span>' +
@@ -1135,7 +1144,7 @@ function renderGuideTile() {
     $('#guideSlot').innerHTML =
       '<button class="tile" type="button" data-go="picker">' +
         '<span class="bk3" aria-hidden="true"></span>' +
-        '<span class="tt"><b>3 reports on your chart</b><small>Partner · Money · Career — preview free</small></span>' +
+        '<span class="tt"><b>3 reports for you</b><small>Partner · Money · Career</small></span>' +
         '<i class="tag green">₹49</i>' +
         '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
@@ -1167,56 +1176,89 @@ function renderGuideTile() {
 }
 
 /* ---------------------------------------------------------------- PM: picker + preview */
-/* The brief's shop front: three reports, she picks. Price and language sit on
-   every row so the choice is made before the preview, not after it. */
+/* The brief's shop front: three reports, she picks. */
 function renderPicker() {
+  // All three cost the same, so repeating ₹49 three times only flattens the
+  // choice. Price moves to one strip above the list; the cards are then about
+  // which problem she has, and the chevron is the only thing on the right.
   $('#pkList').innerHTML = REPORTS.map(function (r) {
     return '<button class="pk-card" type="button" data-pick="' + r.id + '">' +
       '<img class="pk-bk" src="assets/book.svg" alt="">' +
       '<span class="pk-t">' +
         '<b>' + esc(r.t) + '</b>' +
         '<small>' + esc(r.s) + '</small>' +
-        '<span class="pk-meta">' + r.pages + ' pages · aapki bhasha + English</span>' +
+        '<span class="pk-meta"><i class="pk-free">PREVIEW FREE</i>' + r.pages + ' pages</span>' +
       '</span>' +
-      '<span class="pk-r">' +
-        '<i class="pk-price">₹49</i><s>₹499</s>' +
-        '<em>Preview →</em>' +
-      '</span>' +
+      '<em class="pk-chev" aria-hidden="true">›</em>' +
     '</button>';
   }).join('');
 }
 
 /* Two pages of the real thing, then the wall. No free chapter on this track —
    the preview is all she gets before paying. */
+/* `show` is what she reads free; `cut` is the sentence that gets taken away
+   mid-thought — the fade lands on the answer, never on filler. */
 var PREVIEW = {
-  love: [
-    'Aapki kundli ke saatve ghar mein Rahu baitha hai. Yeh wahi ghar hai jo shaadi, partner aur long-term rishton ko chalata hai — aur Rahu yahan baithkar har baat ko aakhri waqt par ulajha deta hai.',
-    'Isi wajah se aapko lagta hai ki baat ban rahi thi, phir achanak ruk gayi. Galti aapki nahi hai; timing ki hai. Rahu is ghar se nikalne ki taiyari mein hai, aur uske baad ka window aapke liye sabse saaf hai.'
-  ],
-  money: [
-    'Aapke gyarahve ghar — aamdani ka ghar — par Shani ki drishti hai. Paisa aata hai, par thehrta nahi: kharch hamesha ek kadam aage nikal jaata hai.',
-    'Aapke chart mein paisa rukne ka ek saaf raasta hai, aur woh kamai badhane se nahi khulta. Woh ek purani zimmedari band karne se khulta hai, jiska zikr aage ke panno mein hai.'
-  ],
-  career: [
-    'Dasve ghar ka swami aapke chart mein apni uchch rashi mein hai — kaam mein aapki pehchaan banegi, isme shak nahi. Par abhi woh ek aisi jagah se guzar raha hai jahan mehnat dikhti nahi.',
-    'Job change ka sawaal aapke mann mein pichhle kuch mahino se hai. Chart kehta hai ki haan — par abhi nahi. Sahi mahina aur uski wajah aage likhi hai.'
-  ]
+  love: {
+    show: [
+      'Aapki kundli ke saatve ghar mein Rahu baitha hai. Yeh wahi ghar hai jo shaadi, partner aur long-term rishton ko chalata hai — aur Rahu yahan baithkar har baat ko aakhri waqt par ulajha deta hai.',
+      'Isi wajah se aapko lagta hai ki baat ban rahi thi, phir achanak ruk gayi. Galti aapki nahi hai; timing ki hai.'
+    ],
+    cut: [
+      'Rahu is ghar se nikalne ki taiyari mein hai. Jis mahine woh nikalta hai, usi se aapke liye sabse saaf window shuru hoti hai — woh mahina hai',
+      'Aur partner kis disha se aayega, yeh aapke chart ke navamsa se saaf dikhta hai. Woh disha hai'
+    ],
+    toc: ['Shaadi ka sahi saal aur mahina', 'Partner kaisa hoga, kahan se milega', 'Love ya arranged — chart kya kehta hai', 'Rukavat ka kaaran aur uske upay']
+  },
+  money: {
+    show: [
+      'Aapke gyarahve ghar — aamdani ka ghar — par Shani ki drishti hai. Paisa aata hai, par thehrta nahi: kharch hamesha ek kadam aage nikal jaata hai.',
+      'Aapke chart mein paisa rukne ka ek saaf raasta hai, aur woh kamai badhane se nahi khulta.'
+    ],
+    cut: [
+      'Woh ek purani zimmedari band karne se khulta hai. Aapke chart mein woh zimmedari saaf dikh rahi hai — woh hai',
+      'Iske baad aapki bachat kis mahine se badhni shuru hogi, uska time bhi tay hai. Woh mahina hai'
+    ],
+    toc: ['Paisa kis mahine se tikna shuru hoga', 'Kharch ka asli leak kahan hai', 'Udhaar, loan aur property ka samay', 'Aamdani badhane ke upay']
+  },
+  career: {
+    show: [
+      'Dasve ghar ka swami aapke chart mein apni uchch rashi mein hai — kaam mein aapki pehchaan banegi, isme shak nahi. Par abhi woh ek aisi jagah se guzar raha hai jahan mehnat dikhti nahi.',
+      'Job change ka sawaal aapke mann mein pichhle kuch mahino se hai. Chart kehta hai ki haan — par abhi nahi.'
+    ],
+    cut: [
+      'Sahi mahina wahi hai jab Guru aapke dasve ghar ko dekhta hai. Aapke chart mein woh mahina padta hai',
+      'Aur us waqt kis tarah ka role aapke liye khulega, woh bhi likha hai — woh hai'
+    ],
+    toc: ['Job change ka sahi mahina', 'Promotion aur salary ka samay', 'Kaunsa field aapke chart ko suit karta hai', 'Boss aur office ke rukavat ke upay']
+  }
 };
 
 function renderPreview() {
   var r = reportById(state.pick);
   $('#pvTitle').textContent = r.t;
   $('#pvTag').textContent = 'Preview · 2 of ' + r.pages + ' pages';
+  // The wall: real sentences fading into the page rather than grey bars, so
+  // the cut feels like a page break and not a loading state.
   $('#pvBody').innerHTML =
-    PREVIEW[r.id].map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
-    '<div class="pv-lock">' +
-      '<div class="pv-blur" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>' +
-      '<div class="pv-lockbar">' +
+    PREVIEW[r.id].show.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+    '<div class="pv-fade" aria-hidden="true">' +
+      PREVIEW[r.id].cut.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+    '</div>' +
+    '<div class="pv-lockbar">' +
+      '<span class="pv-lk" aria-hidden="true">' +
+        '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="3.2" y="7" width="9.6" height="6.4" rx="1.6" stroke="#B54708" stroke-width="1.4"/><path d="M5.6 7V5.4a2.4 2.4 0 0 1 4.8 0V7" stroke="#B54708" stroke-width="1.4" stroke-linecap="round"/></svg>' +
+      '</span>' +
+      '<span class="pv-lkt">' +
         '<b>Baaki ' + (r.pages - 2) + ' pages locked hain</b>' +
         '<small>Timing, upay aur poora jawab — sab aage hai</small>' +
-      '</div>' +
-    '</div>';
-  $('#pvPrice').innerHTML = '<b>₹49</b><s>₹499</s><i>90% OFF</i>';
+      '</span>' +
+    '</div>' +
+    '<p class="pv-toch">Aage in sawaalon ka jawab hai</p>' +
+    '<ul class="pv-toc">' +
+      PREVIEW[r.id].toc.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+    '</ul>';
+  $('#pvPrice').innerHTML = '<b>₹49</b><small><s>₹499</s><i>90% OFF</i></small>';
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
