@@ -482,33 +482,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pk-note{margin:16px;padding:11px 12px;border-radius:10px;background:#F9FAFB;
   font:400 12px/18px var(--sans);color:var(--g600)}
 
-/* Preview screen. Nothing is withheld any more: her questions answered
-   against her chart as a list, then the WHOLE report on the demo chart. The
-   old fade-and-wall classes are gone with the wall. */
-.pv-top{display:flex;align-items:center;gap:11px;padding:16px 16px 0}
-.pv-tag{font:600 12px/17px var(--sans);color:var(--brand-dk)}
-.pv-body{padding:14px 0 0}
-/* What she will learn. Written as her own questions, not a contents page —
-   this is the only part of the screen that is about her chart. */
-.pv-learn{margin:0 16px;padding:14px;border-radius:14px;background:#FFF6EC;
-  border:1px solid #F0D6BE}
-.pv-lh{margin:0;font:700 15px/21px var(--sans);color:var(--g900)}
-.pv-learn ul{margin:11px 0 0;padding:0;list-style:none;
-  display:flex;flex-direction:column;gap:9px}
-.pv-learn li{position:relative;padding-left:25px;font:500 13px/19px var(--sans);color:var(--g900)}
-.pv-learn li::before{content:"";position:absolute;left:0;top:2px;width:16px;height:16px;
-  border-radius:50%;background:#FFE9D4 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 3.8 7.5 8.5 2.8' fill='none' stroke='%23B54708' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/10px 10px no-repeat}
-.pv-lw{margin:12px 0 0;padding-top:10px;border-top:1px solid #F0D6BE;
-  font:600 12px/18px var(--sans);color:#B54708}
-/* The handover. The sample is somebody else's chart; said plainly, once, so
-   the depth below reads as proof rather than as her reading. */
-.pv-samp{margin:18px 16px 0;padding:12px 13px;border-radius:12px;background:#F9FAFB;
-  border:1px dashed var(--g300)}
-.pv-sh{margin:0}
-.pv-sh b{display:block;font:700 14px/20px var(--sans);color:var(--g900)}
-.pv-sh small{display:block;margin-top:4px;font:400 12px/18px var(--sans);color:var(--g600)}
-.pv-report{margin-top:14px}
-
 /* ---------- Day 1 · the reminder opt-in ----------
    Sits after the end-of-chat notice, in the system voice's position but warmer:
    it is the one ask of the day, made right after she has read her own chapter. */
@@ -739,6 +712,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-h{display:flex;align-items:baseline;margin:0 0 4px;
   font:600 20px/28px var(--sans);color:var(--g900)}
 .r2-h .pgs{margin-left:auto;font-style:normal;font:400 14px/20px var(--sans);color:var(--g500)}
+
+/* PM track: what the report answers, as her own questions. It stands in for the
+   chapter ladder, because a ladder with nothing shut is only a contents page. */
+.r2-learn{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.r2-learn li{position:relative;padding-left:30px;font:500 14px/21px var(--sans);color:var(--g800)}
+.r2-learn li::before{content:"";position:absolute;left:0;top:1px;width:20px;height:20px;
+  border-radius:50%;background:var(--brand50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 3.8 7.5 8.5 2.8' fill='none' stroke='%23D9572A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/11px 11px no-repeat}
+/* The handover, said plainly and once: the pages below are somebody else's
+   chart, so the depth reads as proof rather than as her own reading. */
+.r2-sampnote{margin:6px 0 0;font:400 14px/21px var(--sans);color:var(--g600)}
+/* The report body is already its own typographic world, so it only needs room
+   away from the section heading — and its own full-bleed left edge back, since
+   the block it sits in is indented 16px. */
+.r2-report{margin:18px -16px 0}
 
 /* Questions as a plain divided list. The "?" bubbles were decoration, not signal. */
 /* A question mark disc in front of every row — seven unmarked text lines with

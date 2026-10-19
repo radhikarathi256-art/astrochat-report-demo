@@ -38,9 +38,9 @@
   <button type="button" data-day="2" data-r1 data-paid>Post-purchase · The follow-up<small>Read report · continue chat · more-reports upsell</small></button>
   <hr>
   <!-- The PM brief, built as written, so the two models can be compared:
-       +10 min pitch, three reports to pick from, preview instead of a free
-       chapter, same ask on days 1-4 and silence after. -->
-  <b>PM spec · pick 1 of 3, preview only</b>
+       +10 min pitch, three reports to pick from, the whole report given away on
+       a demo chart instead of a free chapter, same ask on days 1-4, silence after. -->
+  <b>PM spec · pick 1 of 3, whole report free</b>
   <button type="button" data-day="1" data-pm>Day 1 · 15 min after the chat<small>Notification · chat · history — Today untouched</small></button>
   <button type="button" data-day="2" data-pm>Day 2 · No purchase yet<small>Today: expert card + personalised. No chat pitch</small></button>
   <button type="button" data-day="3" data-pm>Day 3 · Chat joins in<small>Expert card + personalised + inside the free chat</small></button>
@@ -238,7 +238,7 @@
             <div class="r2-nav-r">
               <!-- Sample lives up here as a small chip; it used to be a full-width
                    button in the prose and pushed the chapter list below the fold. -->
-              <button class="chip samp" type="button" data-go="sample">Sample ↗</button>
+              <button class="chip samp" type="button" id="r2Samp" data-go="sample">Sample ↗</button>
               <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
                 <span data-wallet>₹20</span>
@@ -273,13 +273,21 @@
         <!-- The chip row used to repeat the contents list word for word; the
              contents list does it better, so only the prose stays. -->
         <div class="r2-about">
-          <p class="r2-lead">Know <b>when</b> you will marry, <b>who</b> it will be, and <b>what is holding it up</b>. Written by Hemali from your chat, in English, Hindi, Hinglish <b>+6</b>.</p>
+          <p class="r2-lead" id="r2Lead">Know <b>when</b> you will marry, <b>who</b> it will be, and <b>what is holding it up</b>. Written by Hemali from your chat, in English, Hindi, Hinglish <b>+6</b>.</p>
+          <!-- The PM track sells one of three reports, so its lead is written
+               per report. Paired with the line above rather than overwriting it,
+               so neither track's copy has to live in JS. -->
+          <p class="r2-lead" id="r2LeadPm" hidden></p>
         </div>
+
+        <!-- PM track only: what this report answers, in her own words. Nothing
+             is locked on that track, so a chapter ladder has nothing to shut. -->
+        <div class="r2-block" id="r2Learn" hidden></div>
 
         <!-- One list, not two. The old page had "Find answers to" and "What's
              inside" saying the same seven things twice. Now it is the ladder:
              what she already owns, then what is still shut. -->
-        <div class="r2-block">
+        <div class="r2-block" id="r2Chapters">
           <h2 class="r2-h">Your 7 chapters <i class="pgs" id="chapterCount"></i></h2>
           <ol class="chlist" id="chapterList"></ol>
         </div>
@@ -309,12 +317,16 @@
           </div>
         </div>
 
+        <!-- PM track only: the entire report, rendered on a demo chart. The
+             depth is the pitch, so it is given away rather than described. -->
+        <div class="r2-block" id="r2Sample" hidden></div>
+
         <!-- Upsells belong on the sell page, not only after the read: someone
              weighing ₹49 is the person most likely to take a second ₹49. All
              four stay inside marriage, love and partner. -->
-        <div class="r2-block">
-          <h2 class="r2-h">Readers also bought</h2>
-          <div class="carousel">
+        <div class="r2-block" id="r2Also">
+          <h2 class="r2-h"><span id="r2AlsoH1">Readers also bought</span><span id="r2AlsoH2" hidden>Aapke chart par aur bhi hai</span></h2>
+          <div class="carousel" id="r2AlsoList">
             <button class="pcard" type="button" data-toast="Kundli Milan report is not part of this demo">
               <span class="bk3" aria-hidden="true"></span>
               <b>Kundli Milan report</b><small>Your two charts, point by point</small>
@@ -340,6 +352,8 @@
               <span class="pc-btn">View report</span>
             </button>
           </div>
+          <!-- On the PM track the other two real reports go here instead. -->
+          <div class="carousel" id="r2AlsoPm" hidden></div>
         </div>
         <div class="pad-buy"></div>
       </div>
@@ -349,13 +363,14 @@
         <p class="buy-why">
           <!-- The old crossed square read as a missing-glyph box at 15px. -->
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1.2 9.9 6.1 14.8 8 9.9 9.9 8 14.8 6.1 9.9 1.2 8 6.1 6.1 8 1.2Z" fill="#B54708"/></svg>
-          Learn how Rahu is delaying your marriage
+          <span id="r2Why">Learn how Rahu is delaying your marriage</span>
+          <span id="r2WhyPm" hidden></span>
         </p>
         <div class="buy-row">
           <!-- The discount lives here, not on Today: she has chosen to read more,
                so the saving is an answer to "why now", not a shout. -->
           <div class="price"><b>₹49</b><small><s>₹499</s><i>90% OFF</i></small></div>
-          <button class="btn primary grow" type="button" data-sheet="buy">Buy now</button>
+          <button class="btn primary grow" type="button" id="r2Cta" data-sheet="buy">Buy now</button>
         </div>
       </div>
     </section>
@@ -376,30 +391,6 @@
         <div class="pk-list" id="pkList"></div>
         <p class="pk-note">Har report aapki chuni hui bhasha aur English — dono mein milti hai, aur khareedne ke baad hamesha aapke Chat History mein rehti hai.</p>
         <div class="pad-nav"></div>
-      </div>
-    </section>
-
-    <!-- ===================== PM spec · preview (locked) ===================== -->
-    <section class="screen" id="preview" data-screen="preview">
-      <header class="topnav">
-        <button class="ic-btn" type="button" data-back aria-label="Back">
-          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <h2 id="pvTitle">Preview</h2>
-        <button class="chip lang" type="button" data-sheet="lang"><span>English</span> ▾</button>
-      </header>
-
-      <div class="scroll" data-scroll>
-        <div class="pv-top" id="pvTop"></div>
-        <div class="pv-body" id="pvBody"></div>
-        <div class="pad-buy"></div>
-      </div>
-
-      <div class="buybar">
-        <div class="buy-row">
-          <div class="price" id="pvPrice"></div>
-          <button class="btn primary grow" type="button" id="pvCta">Unlock full report · ₹49</button>
-        </div>
       </div>
     </section>
 

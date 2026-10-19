@@ -1704,31 +1704,63 @@ function reportBody(id, mode) {
     (id === 'partner' ? partnerBody(c) : id === 'marriage' ? marriageBody(c) : careerBody(c));
 }
 
-/* The free preview: her own questions answered against her chart as a list,
-   then the ENTIRE report on somebody else's chart. She learns the depth from
-   the sample and that it is about her from the list. */
-function renderPreview() {
+/* One sell page for both tracks. The hero GIF and the cover swinging open off
+   its spine are this page's entire first impression, so the PM track reuses it
+   rather than growing a second, flatter preview screen beside it.
+   Off the PM track the page sells the one Marriage Yog report behind a chapter
+   ladder. On it nothing is locked: the pointers say what the report answers,
+   and then the ENTIRE report follows, rendered on a demo chart. She learns the
+   depth from the sample and that it is about her from the pointers. */
+function renderReport() {
+  var pm = state.pm;
+  // The sample is inline below on the PM track, so the chip would send her on a
+  // side trip to a thinner version of the page she is already reading.
+  $('#r2Samp').hidden     = pm;
+  $('#r2Chapters').hidden = pm;
+  $('#r2Lead').hidden     = pm;
+  $('#r2Why').hidden      = pm;
+  $('#r2AlsoH1').hidden   = pm;
+  $('#r2AlsoList').hidden = pm;
+  $('#r2Learn').hidden    = !pm;
+  $('#r2Sample').hidden   = !pm;
+  $('#r2LeadPm').hidden   = !pm;
+  $('#r2WhyPm').hidden    = !pm;
+  $('#r2AlsoH2').hidden   = !pm;
+  $('#r2AlsoPm').hidden   = !pm;
+  if (!pm) {
+    $('#r2Cta').textContent = 'Buy now';
+    return;
+  }
+
   var r = reportById(state.pick);
-  $('#pvTitle').textContent = r.t;
-  $('#pvTop').innerHTML = coverArt(r, 'cv-md') +
-    '<span class="pv-tag">' + r.pages + ' pages · aapki bhasha + English</span>';
-  $('#pvBody').innerHTML =
-    '<div class="pv-learn">' +
-      '<p class="pv-lh">Aapki report in sab ka jawab degi</p>' +
-      '<ul>' + r.learn.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
-      '<p class="pv-lw">' + esc(r.why) + '</p>' +
-    '</div>' +
-    '<div class="pv-samp">' +
-      '<p class="pv-sh"><b>Neeche poori report hai — shuru se aakhir tak</b>' +
-      '<small>Yeh ' + esc(CHARTS.sample.who) + ' ki kundli par bani hai, taaki aap dekh sakein ki report kitni gehri hai. ' +
-      'Aapki report bilkul aisi hi hogi — aapke apne chart par.</small></p>' +
-    '</div>' +
-    '<div class="read-body pv-report">' + reportBody(r.id, 'sample') + '</div>';
-  $('#pvPrice').innerHTML = '<b>₹49</b><small><s>₹499</s><i>90% OFF</i></small>';
-  // Nothing is locked any more, so "Unlock" would be a lie — what ₹49 buys is
-  // this same report recalculated on her chart.
-  $('#pvCta').textContent = 'Meri kundli par banwaiye · ₹49';
-  animateBars('#pvBody');
+  // The pick has just changed, so every surface that names the report she is
+  // buying — this title included — has to be rewritten with it.
+  paintBought();
+  $('#r2LeadPm').innerHTML = esc(r.s) + '. Astro Hemali ne aapki kundli se likhi hai — ' +
+    '<b>' + r.pages + ' pages</b>, aapki bhasha aur English dono mein.';
+  $('#r2Learn').innerHTML =
+    '<h2 class="r2-h">Aapki report in sab ka jawab degi</h2>' +
+    '<ul class="r2-learn">' +
+      r.learn.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+    '</ul>';
+  $('#r2Sample').innerHTML =
+    '<h2 class="r2-h">Poori report, shuru se aakhir tak</h2>' +
+    '<p class="r2-sampnote">Yeh ' + esc(CHARTS.sample.who) + ' ki kundli par bani hai, taaki aap dekh ' +
+      'sakein ki report kitni gehri hai. Aapki report bilkul aisi hi hogi — aapke apne chart par.</p>' +
+    '<div class="read-body r2-report">' + reportBody(r.id, 'sample') + '</div>';
+  $('#r2AlsoPm').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
+    .map(function (x) {
+      return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
+        coverArt(x, 'cv-sm') +
+        '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
+        '<span class="pc-pr"><em>₹49</em><s>₹499</s></span>' +
+        '<span class="pc-btn">Poori report free dekhiye</span></button>';
+    }).join('');
+  $('#r2WhyPm').textContent = r.why;
+  // Nothing is locked, so "Buy now" would be answering a question she has not
+  // asked — what ₹49 buys is this same report recalculated on her chart.
+  $('#r2Cta').textContent = 'Meri kundli par banwaiye · ₹49';
+  animateBars('#r2Sample');
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -1880,13 +1912,14 @@ function renderTpTabs() {
     if (sf.hist)  tabs.push({ id: 'history', l: 'History · 3 reports' });
     if (sf.today) tabs.push({ id: 'today',   l: 'Today · expert card' });
     if (sf.guide) tabs.push({ id: 'guide',   l: 'Today · personalised' });
-    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'preview', l: 'Full report free' });
+    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'report', l: 'Report page · whole report free' });
     // Day 5: nothing asks, but the shelf in History is still reachable.
     if (!tabs.length) tabs.push(
       { id: 'today',   l: 'Today · nothing asks' },
       { id: 'chat',    l: 'Chat · nothing asks' },
       { id: 'history', l: 'History · still on the shelf' },
-      { id: 'picker',  l: 'Pick 1 of 3' });
+      { id: 'picker',  l: 'Pick 1 of 3' },
+      { id: 'report',  l: 'Report page' });
   } else if (state.paid) {
     // Post-purchase: every sell surface has retired into the follow-up.
     tabs = [
@@ -1966,7 +1999,7 @@ function restart() {
   renderOffer();
   renderChapters();
   renderPicker();
-  renderPreview();
+  renderReport();
   renderDayToday();
   renderTpTabs();
   renderHistCard();
@@ -1994,18 +2027,21 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta,[data-tp],[data-pick],#pvCta,[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-read],#chrCta,[data-tp],[data-pick],[data-ask]');
   if (!t) return;
 
-  // PM track: picking one of the three reports opens its preview.
+  // PM track: picking one of the three reports opens it on the report page.
   if (t.hasAttribute('data-pick')) {
     state.pick = t.getAttribute('data-pick');
-    renderPreview();
-    go('preview');
+    renderReport();
+    // The rail at the foot of this page picks too, so it can already be the
+    // current screen. `go` would push it onto its own back stack, so only the
+    // scroll comes back to the hero — otherwise she lands mid-way down a
+    // report she has not seen the cover of.
+    $('#report [data-scroll]').scrollTop = 0;
+    if (state.screen !== 'report') go('report');
     return;
   }
-  // Preview's one button: the buy sheet, where language is chosen.
-  if (t.id === 'pvCta') { state.langFrom = 'buy'; openSheet('buy'); return; }
 
   if (t.id === 'push')    { openBook(); return; }
 
@@ -2013,12 +2049,13 @@ document.addEventListener('click', function (e) {
   if (t.id === 'pushNote') {
     hidePush();
     // On the PM track the notification names one report, so it has to land on
-    // that report's preview. Dropping her on the picker would ask her to make
-    // the same choice twice.
+    // that report's page. Dropping her on the picker would ask her to make the
+    // same choice twice.
     if (state.pm && !state.paid && dayData().lead) {
       state.pick = dayData().lead;
-      renderPreview();
-      go('preview');
+      renderReport();
+      $('#report [data-scroll]').scrollTop = 0;
+      if (state.screen !== 'report') go('report');
       return;
     }
     if (state.screen !== 'chat') go('chat');
@@ -2133,6 +2170,8 @@ document.addEventListener('click', function (e) {
       var tsc = $('#chat [data-scroll]');
       if (tsc) requestAnimationFrame(function () { tsc.scrollTop = tsc.scrollHeight; });
     } else if (tp === 'report') {
+      renderReport();
+      $('#report [data-scroll]').scrollTop = 0;
       if (state.screen !== 'report') go('report');
     } else if (tp === 'guide') {
       state.stack = [];
@@ -2141,9 +2180,6 @@ document.addEventListener('click', function (e) {
       if (gs) later(function () { gs.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
     } else if (tp === 'picker') {
       if (state.screen !== 'picker') go('picker');
-    } else if (tp === 'preview') {
-      renderPreview();
-      if (state.screen !== 'preview') go('preview');
     } else if (tp === 'reader') {
       openChapterSheet(0);
     } else if (tp === 'read') {
@@ -2268,7 +2304,7 @@ renderChat();
 renderOffer();
 renderChapters();
 renderPicker();
-renderPreview();
+renderReport();
 renderDayToday();
 renderTpTabs();
 renderHistCard();
