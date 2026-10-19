@@ -347,7 +347,7 @@ function renderLadder() {
     return '<div class="' + cls + '">' +
              '<span class="ic"><span class="coin' + (done ? ' got' : '') + '" style="width:' +
                COIN_SIZE[i] + 'px;height:' + COIN_SIZE[i] + 'px;margin-bottom:' + COIN_LIFT[i] + 'px">' +
-               '<span class="cv"><small>₹</small><b>' + day.v + '</b></span></span></span>' +
+               '<span class="cn-v"><small>₹</small><b>' + day.v + '</b></span></span></span>' +
              '<span class="tr"><i class="dot">' + (done ? CHECK : '') + '</i></span>' +
              '<span class="lb">Day<b>' + (i + 1) + '</b></span>' +
            '</div>';

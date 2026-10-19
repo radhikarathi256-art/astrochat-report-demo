@@ -181,7 +181,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:linear-gradient(180deg,#FEF0C7 0,#FEC84B 100%);
   box-shadow:inset 0 -2px 0 rgba(0,0,0,.1),0 6px 14px -6px rgba(224,138,0,.22);
   color:var(--w900);text-shadow:0 1px 0 rgba(255,236,170,.6)}
-.coin .cv{display:inline-flex;align-items:baseline;line-height:1}
+/* Not `.cv` — that class is the report book-cover art further down, and its
+   38x50 card + page-edge stripe used to paint behind every coin amount. */
+.coin .cn-v{display:inline-flex;align-items:baseline;line-height:1}
 .coin small,.coin b{font:600 12px/18px var(--sans)}
 .coin.got{opacity:.5}
 .ladder .goal .coin.got{opacity:1}
