@@ -375,6 +375,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .ex-report .fomo{margin:10px 0 0}
 #pkFomo .fomo{margin:10px 16px 0}
 .tl-card .fomo{margin:12px 0 0}
+/* The History card holds the same hero, so it has to bleed past the card's own
+   padding and take the card's corners. */
+.tl-card .sell-hit{margin:8px -14px 0;width:auto}
+.tl-card .sell-hero{border-radius:0}
 
 /* The pointers. These are the product — the list of her own questions — so
    they get real line-height and a tick, not a bullet lost in grey text. */
@@ -389,19 +393,45 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pts .pts-more{padding-left:21px;font-weight:600;color:var(--brand-dk)}
 .pts .pts-more::before{background:#FFF1E3;background-image:none}
 
-/* The in-chat offer. One report, so the card can lead with the cover and spend
-   its middle on the pointers; price and CTA sit together at the foot, which is
-   where the eye is once the list has done its work. */
-.of3{align-self:stretch;overflow:hidden;border-radius:14px;background:#fff;
-  border:1px solid #F0D6BE;box-shadow:0 10px 24px -8px rgba(122,46,14,.22)}
-.of3-in{padding:12px}
-.of3-lead{display:flex;align-items:center;gap:12px;width:100%;padding:0;
-  border:0;background:none;text-align:left;cursor:pointer}
-.of3-t{flex:1;min-width:0}
-.of3-t b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
-.of3-t small{display:block;margin-top:3px;font:400 12px/17px var(--sans);color:var(--g700)}
-.of3-t em{display:block;margin-top:4px;font:500 10px/14px var(--sans);
-  font-style:normal;color:var(--g500)}
+/* ---------- The sell card's banner ----------
+   Same artwork and same open book as the report page, but composed as a card,
+   not as a shrunken page: the band is wide and short, the book sits inside it
+   instead of standing on top of it, and the title is beside the book instead of
+   centred under it. A miniature of the page is just a worse page. */
+.sell-hit{display:block;width:100%;padding:0;border:0;background:none;
+  text-align:left;cursor:pointer;font:inherit;color:inherit}
+/* The artwork is a portrait, so a short wide window can only hold a slice of it.
+   It is pushed right and scrimmed from the left: the couple reads as atmosphere
+   behind the book, and the title gets a near-solid field to sit on. */
+/* The tint is deeper than the book's cream on purpose. Matched to it, the book
+   dissolved — at this size separation has to come from the backdrop, not from
+   the shadow alone. */
+.sell-hero{position:relative;display:flex;align-items:center;gap:12px;
+  height:112px;padding:0 14px;overflow:hidden;
+  background:#F6DFD4 url(assets/r2-hero.png) right 34%/auto 215% no-repeat}
+/* The scrim never reaches zero: the stats line runs to within a few px of the
+   right edge, and on bare artwork its tail went unreadable. The couple is pale
+   enough that 62% tint still leaves it visible as atmosphere. */
+.sell-hero::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(
+  90deg,rgba(246,223,212,.96) 0,rgba(246,223,212,.86) 52%,rgba(246,223,212,.62) 100%)}
+.sell-bk{position:relative;z-index:2;flex:none;width:126px;height:84px;
+  object-fit:contain;filter:drop-shadow(0 9px 14px rgba(104,38,10,.45))}
+.sell-hd{position:relative;z-index:2;flex:1;min-width:0;display:block}
+.sell-t{display:block;font:700 20px/24px var(--serif);color:var(--g900)}
+/* Two deliberate lines, not the page's three-column stat bar with its dividers
+   and stacked labels — that bar is most of what made this read as a page. */
+.sell-stats{display:block;margin-top:5px;font:500 11px/16px var(--sans);color:#7A5A4B}
+.sell-stats em{display:block;font-style:normal}
+.sell-stats i{font-style:normal;color:#F79009}
+.sell-stats b{font-weight:700;color:var(--g900)}
+.sell-body{display:block;padding:11px 14px 0}
+.sell-why{display:block;font:400 12.5px/18px var(--sans);color:var(--g600)}
+
+/* The in-chat offer. The hero does the wanting, the pointers do the convincing,
+   one full-width button does the asking. */
+.of3{align-self:stretch;overflow:hidden;border-radius:16px;background:#fff;
+  border:1px solid #F0D6BE;box-shadow:0 12px 28px -10px rgba(122,46,14,.26)}
+.of3-in{padding:0 12px 12px;text-align:left}
 .of3-price{flex:none;display:flex;align-items:baseline;gap:5px}
 .of3-price b{font:700 19px/23px var(--sans);color:var(--g900)}
 .of3-price s{font:400 12px/16px var(--sans);color:var(--g400)}

@@ -25,7 +25,7 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    - `sample`: the whole report on the demo chart, for the free preview. */
 var REPORTS = [
   {
-    id: 'partner', t: 'Partner Prediction', s: 'Kaun, kahan, kab milega — aur kya rok raha hai', pages: 38,
+    id: 'partner', t: 'Partner Prediction', s: 'Kaun, kahan, kab milega — aur kya rok raha hai', pages: 38, rating: '4.7', sold: 128880,
     why: 'Aapke saatve ghar mein Rahu — isi par aapne poochha tha',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     learn: [
@@ -47,7 +47,7 @@ var REPORTS = [
     ]
   },
   {
-    id: 'marriage', t: 'Marriage Report', s: 'Manglik, timing, sasuraal aur gun milan', pages: 42,
+    id: 'marriage', t: 'Marriage Report', s: 'Manglik, timing, sasuraal aur gun milan', pages: 42, rating: '4.8', sold: 96440,
     why: 'Saatve ghar mein Rahu ke saath Mangal ka sawaal bhi hai',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     learn: [
@@ -67,7 +67,7 @@ var REPORTS = [
     ]
   },
   {
-    id: 'career', t: 'Career & Job', s: 'Switch, promotion, boss aur unka sahi time', pages: 34,
+    id: 'career', t: 'Career & Job', s: 'Switch, promotion, boss aur unka sahi time', pages: 34, rating: '4.6', sold: 71250,
     why: 'Dasve ghar ka swami uchch ka hai, par Shani dekh raha hai',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     learn: [
@@ -763,6 +763,34 @@ function fomoStrip() {
   '</p>';
 }
 
+/* 1,28,880 -> "1,28,880". Indian grouping: last three, then pairs. */
+function inr(n) {
+  var s = String(n), last3 = s.slice(-3), rest = s.slice(0, -3);
+  return rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3 : last3;
+}
+
+/* The report page's artwork and its open book, recomposed as a card banner —
+   book and title side by side, one meta line, not a miniature of the page. The
+   flat 38x50 cover art was doing nothing for desire; this makes the nudge and
+   the thing being sold look like one product. */
+function sellCard(r) {
+  return '<button class="sell-hit" type="button" data-pick="' + r.id + '">' +
+    '<span class="sell-hero">' +
+      '<img class="sell-bk" src="assets/open-book.png" alt="">' +
+      '<span class="sell-hd">' +
+        '<b class="sell-t">' + esc(r.t) + '</b>' +
+        '<span class="sell-stats">' +
+          '<em><b>' + r.rating + '</b><i>★</i> · ' + r.pages + ' pages</em>' +
+          '<em><b>' + inr(r.sold) + '</b> padh chuke</em>' +
+        '</span>' +
+      '</span>' +
+    '</span>' +
+    '<span class="sell-body">' +
+      '<span class="sell-why">' + esc(r.why) + '</span>' +
+    '</span>' +
+  '</button>';
+}
+
 /* The PM brief's offer as it lands in the chat. The card has to do the whole
    job on its own: what it answers, what it costs, how long that price lasts. */
 function offer3Card() {
@@ -772,21 +800,15 @@ function offer3Card() {
   var r = leadReport();
   return '<div class="of3">' +
     fomoStrip() +
+    sellCard(r) +
     '<div class="of3-in">' +
-      '<button class="of3-lead" type="button" data-pick="' + r.id + '">' +
-        coverArt(r, 'cv-md') +
-        '<span class="of3-t">' +
-          '<b>' + esc(r.t) + '</b>' +
-          '<small>' + esc(r.why) + '</small>' +
-          '<em>' + r.pages + ' pages · aapki bhasha + English</em>' +
-        '</span>' +
-      '</button>' +
       '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
       pointers(r, 3) +
       // The strip above already says 499 -> 49, so the price is said once more
-      // and only on the button — two price blocks read as two different offers.
+      // and only on the button. The sample lives inside the report page, so the
+      // button has to promise the read, not a checkout.
       '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">' +
-        'Poori report dekhiye · ₹49</button>' +
+        'Poora sample padhiye · apni ₹49</button>' +
       '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
         (dayData().lastAsk
           ? 'Aaj ke baad yeh yahan nahi dikhega'
@@ -869,21 +891,17 @@ function renderHistCard() {
   }
   if (!show3) return;
   var hr = leadReport();
+  // Same card as the chat, so History reads as the same offer she already saw
+  // rather than a second, different one.
   $('#tlChapCard').innerHTML =
-    '<div class="rep-top">' +
-      coverArt(hr, 'cv-md') +
-      '<div>' +
-        '<p class="eyebrow">From Astro Hemali</p>' +
-        '<b>' + esc(hr.t) + '</b>' +
-        '<p class="rep-status green">' + esc(hr.why) + '</p>' +
-      '</div>' +
-    '</div>' +
+    '<p class="eyebrow">From Astro Hemali</p>' +
+    sellCard(hr) +
     '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
     pointers(hr, 3) +
     fomoStrip() +
     '<div class="rep-acts">' +
       '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">' +
-        'Poori report dekhiye · ₹49</button>' +
+        'Poora sample padhiye · apni ₹49</button>' +
     '</div>';
 }
 
