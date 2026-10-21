@@ -749,7 +749,18 @@ setInterval(function () {
   if (FOMO_LEFT > 0) FOMO_LEFT--;
   var t = fomoClock();
   $$('[data-clock]').forEach(function (el) { el.textContent = t; });
+  // Roughly one every seven seconds. Faster and it reads as a slot machine.
+  if (++FOMO_TICK % 7 === 0) {
+    FOMO_BUY++;
+    $$('[data-lasthour]').forEach(function (el) { el.textContent = inr(FOMO_BUY); });
+  }
 }, 1000);
+
+/* Other people, buying it right now. A deadline says "hurry"; a live count says
+   "this is worth hurrying for", which is the harder of the two to fake past.
+   DEMO NUMBER — in the app this has to be read off real orders, or it is a lie
+   that a single screenshot from a quiet hour would expose. */
+var FOMO_BUY = 1162, FOMO_TICK = 0;
 
 function fomoStrip() {
   // Day 5 is the stop. A countdown on a quiet day is the one thing that would
@@ -758,9 +769,21 @@ function fomoStrip() {
   var last = dayData().lastAsk;
   return '<p class="fomo' + (last ? ' last' : '') + '">' +
     '<i class="fomo-dot" aria-hidden="true"></i>' +
-    '<span>' + (last ? 'Aakhri din — kal se yeh ₹499' : '₹499 → ₹49 · aaj raat tak') + '</span>' +
+    '<span>' + (last
+      ? 'Aakhri din — kal se yeh ₹499'
+      // Short enough to survive the History card, which is 22px narrower than
+      // the chat one and was clipping the verb off the end.
+      : '<b data-lasthour>' + inr(FOMO_BUY) + '</b> ne is ghante mein liya') +
+    '</span>' +
     '<b data-clock>' + fomoClock() + '</b>' +
   '</p>';
+}
+
+/* 49 against 499, and what the 49 buys you forever. Said once per surface,
+   directly under the list of questions it pays for. */
+function priceRow() {
+  return '<p class="of3-price"><b>₹49</b><s>₹499</s><i>90% OFF</i>' +
+    '<em>one-time · hamesha aapki</em></p>';
 }
 
 /* 1,28,880 -> "1,28,880". Indian grouping: last three, then pairs. */
@@ -769,14 +792,34 @@ function inr(n) {
   return rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3 : last3;
 }
 
-/* The report page's artwork and its open book, recomposed as a card banner —
-   book and title side by side, one meta line, not a miniature of the page. The
-   flat 38x50 cover art was doing nothing for desire; this makes the nudge and
-   the thing being sold look like one product. */
+/* A closed book, turned so its spine faces her and carries the title the way a
+   real one does. The open book was the wrong object to show: an open book is
+   something already being read, and nothing about it says "not yours yet". */
+function book3d(r) {
+  var c = r.cover;
+  return '<span class="bk3" aria-hidden="true"' +
+    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+    '<span class="bk3-in">' +
+      '<span class="bk3-spine"><em>' + esc(r.t) + '</em></span>' +
+      '<span class="bk3-face">' +
+        '<svg class="bk3-art" viewBox="0 0 40 52">' +
+          '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
+          '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
+          '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
+          '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
+        '</svg>' +
+      '</span>' +
+    '</span>' +
+  '</span>';
+}
+
+/* The report's own artwork as the backdrop, the closed book standing in it, the
+   title and the numbers beside it — composed as a card, not as a miniature of
+   the report page. */
 function sellCard(r) {
   return '<button class="sell-hit" type="button" data-pick="' + r.id + '">' +
     '<span class="sell-hero">' +
-      '<img class="sell-bk" src="assets/open-book.png" alt="">' +
+      book3d(r) +
       '<span class="sell-hd">' +
         '<b class="sell-t">' + esc(r.t) + '</b>' +
         '<span class="sell-stats">' +
@@ -804,9 +847,11 @@ function offer3Card() {
     '<div class="of3-in">' +
       '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
       pointers(r, 3) +
-      // The strip above already says 499 -> 49, so the price is said once more
-      // and only on the button. The sample lives inside the report page, so the
-      // button has to promise the read, not a checkout.
+      // The price sits with the pointers, not off on its own: the number only
+      // means anything next to the list it is buying.
+      priceRow() +
+      // The sample lives inside the report page, so the button has to promise
+      // the read, not a checkout.
       '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">' +
         'Poora sample padhiye · apni ₹49</button>' +
       '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
@@ -898,6 +943,7 @@ function renderHistCard() {
     sellCard(hr) +
     '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
     pointers(hr, 3) +
+    priceRow() +
     fomoStrip() +
     '<div class="rep-acts">' +
       '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">' +
