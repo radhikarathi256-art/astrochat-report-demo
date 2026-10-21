@@ -108,7 +108,7 @@ var PM_JOURNEY = {
       { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
       { who: 'gap',    text: '15 minutes later' },
-      { who: 'hemali', text: 'Mansi ji, aapke saatve ghar par maine poori report taiyar ki hai — Rahu ki rukavat, timing, partner kaisa hoga aur upay, sab usme hai. Ek doosri kundli par bani poori report free mein khuli hai — dekh lijiye ki kitni gehri hai.' },
+      { who: 'hemali', text: 'Mansi ji, aapke saatve ghar par maine poori report taiyar ki hai — Rahu ki rukavat, timing, partner kaisa hoga aur upay, sab usme hai. Ek doosri kundli par bana poora sample khula hai — padh kar dekh lijiye ki kitni gehri hai.' },
       { who: 'offer3' }
     ],
     today: { eyebrow: '', note: '' },
@@ -116,7 +116,7 @@ var PM_JOURNEY = {
     /* A notification that names her own house and opens that one preview beats
        a storefront ad that makes her choose again on the other side of the tap. */
     lead: 'partner',
-    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner Prediction report poori free padh lijiye 📖'
+    push: 'Mansi ji, aapke saatve ghar mein Rahu — Partner Prediction report aaj ₹499 ki jagah ₹49 📖'
   },
   /* `lead` is the one report each day actually suggests. Day 1 and 2 lead with
      the house she asked about; if that has not landed in two days the
@@ -550,7 +550,7 @@ function renderRead() {
               coverArt(x, 'cv-sm') +
               '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
               '<span class="pc-pr"><em>₹49</em><s>₹499</s></span>' +
-              '<span class="pc-btn">Poori report free dekhiye</span></button>';
+              '<span class="pc-btn">Poori report dekhiye \u00b7 \u20b949</span></button>';
           }).join('') +
         '</div>' +
       '</div>' +
@@ -724,29 +724,69 @@ function esc(s) {
    is a recommendation, and the other two stay one tap away. */
 function leadReport() { return reportById(dayData().lead || 'partner'); }
 
-/* The PM brief's offer as it lands in the chat. Swiggy's hierarchy: one
-   coloured strip states the deal once, the dish owns the card, the price is a
-   single token, and everything else is a quiet second line. */
+/* The pointers ARE the sell. A title and a house name tell her nothing; the
+   list of questions tells her whether her own question is answered. So the
+   same list rides every surface — chat, History, Today — cut to the top few
+   with the remainder counted, so the report reads finite and worth ₹49. */
+function pointers(r, n) {
+  var top = r.learn.slice(0, n), rest = r.learn.length - top.length;
+  return '<ul class="pts">' +
+    top.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+    (rest > 0 ? '<li class="pts-more">+' + rest + ' aur sawaalon ke jawab</li>' : '') +
+  '</ul>';
+}
+
+/* Scarcity, stated once per surface and never twice. Day 4 is the last ask in
+   the PM schedule, so it says exactly that; the other days lean on the price
+   expiring tonight, with a clock that actually moves. */
+var FOMO_LEFT = 8 * 3600 + 41 * 60 + 12;
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function fomoClock() {
+  return pad2(Math.floor(FOMO_LEFT / 3600)) + ':' +
+         pad2(Math.floor(FOMO_LEFT % 3600 / 60)) + ':' + pad2(FOMO_LEFT % 60);
+}
+setInterval(function () {
+  if (FOMO_LEFT > 0) FOMO_LEFT--;
+  var t = fomoClock();
+  $$('[data-clock]').forEach(function (el) { el.textContent = t; });
+}, 1000);
+
+function fomoStrip() {
+  // Day 5 is the stop. A countdown on a quiet day is the one thing that would
+  // undo the whole point of the schedule.
+  if (pmQuiet()) return '';
+  var last = dayData().lastAsk;
+  return '<p class="fomo' + (last ? ' last' : '') + '">' +
+    '<i class="fomo-dot" aria-hidden="true"></i>' +
+    '<span>' + (last ? 'Aakhri din — kal se yeh ₹499' : '₹499 → ₹49 · aaj raat tak') + '</span>' +
+    '<b data-clock>' + fomoClock() + '</b>' +
+  '</p>';
+}
+
+/* The PM brief's offer as it lands in the chat. The card has to do the whole
+   job on its own: what it answers, what it costs, how long that price lasts. */
 function offer3Card() {
   // Once she owns one, the offer leaves the thread entirely — segueCard() is
   // the follow-up, and two follow-ups in a row is one too many.
   if (state.paid) return '';
   var r = leadReport();
   return '<div class="of3">' +
-    '<p class="of3-strip">POORI REPORT FREE PADHIYE</p>' +
+    fomoStrip() +
     '<div class="of3-in">' +
-      '<div class="of3-head">' +
-        '<b>' + esc(r.t) + '</b>' +
-        '<span class="of3-price"><b>₹49</b><s>₹499</s><i>90% OFF</i></span>' +
-      '</div>' +
       '<button class="of3-lead" type="button" data-pick="' + r.id + '">' +
-        coverArt(r, 'cv-sm') +
+        coverArt(r, 'cv-md') +
         '<span class="of3-t">' +
+          '<b>' + esc(r.t) + '</b>' +
           '<small>' + esc(r.why) + '</small>' +
           '<em>' + r.pages + ' pages · aapki bhasha + English</em>' +
         '</span>' +
       '</button>' +
-      '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">Poori report free dekhiye</button>' +
+      '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
+      pointers(r, 3) +
+      // The strip above already says 499 -> 49, so the price is said once more
+      // and only on the button — two price blocks read as two different offers.
+      '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">' +
+        'Poori report dekhiye · ₹49</button>' +
       '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
         (dayData().lastAsk
           ? 'Aaj ke baad yeh yahan nahi dikhega'
@@ -831,15 +871,19 @@ function renderHistCard() {
   var hr = leadReport();
   $('#tlChapCard').innerHTML =
     '<div class="rep-top">' +
-      coverArt(hr, 'cv-sm') +
+      coverArt(hr, 'cv-md') +
       '<div>' +
         '<p class="eyebrow">From Astro Hemali</p>' +
         '<b>' + esc(hr.t) + '</b>' +
         '<p class="rep-status green">' + esc(hr.why) + '</p>' +
       '</div>' +
     '</div>' +
+    '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
+    pointers(hr, 3) +
+    fomoStrip() +
     '<div class="rep-acts">' +
-      '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">Poori report free dekhiye</button>' +
+      '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">' +
+        'Poori report dekhiye · ₹49</button>' +
     '</div>';
 }
 
@@ -878,8 +922,10 @@ function renderDayToday() {
   if (!state.paid) {
     $('#expertSlot').hidden = !sf.today;
     $('#guideSlot').hidden  = !sf.guide;
-    if (sf.guide) renderGuideTile();
-    if (!sf.today) return;
+    if (sf.guide) renderGuideTile(); else $('#guideSlot').innerHTML = '';
+    // Hiding the slot is not enough — yesterday's countdown would survive in
+    // the DOM and reappear the moment anything unhid it.
+    if (!sf.today) { $('#expertSlot').innerHTML = ''; return; }
     var lr = leadReport();
     $('#expertSlot').innerHTML =
       '<div class="ex-tap" data-pick="' + lr.id + '" role="button" tabindex="0">' +
@@ -887,12 +933,13 @@ function renderDayToday() {
         '<span class="ex-t">' +
           '<b>' + esc(lr.t) + '</b>' +
           '<span class="ex-sub wrap' + (dayData().lastAsk ? ' last' : '') + '">' +
-            (dayData().lastAsk ? 'Aaj ke baad yeh yahan nahi dikhega' : esc(lr.why)) +
+            (dayData().lastAsk ? 'Aaj ke baad yeh yahan nahi dikhega' : esc(lr.learn[0])) +
           '</span>' +
         '</span>' +
-        '<i class="ex-pill">FREE</i>' +
+        '<i class="ex-pill">₹49<s>₹499</s></i>' +
         '<span class="ex-chev" aria-hidden="true">\u203a</span>' +
-      '</div>';
+      '</div>' +
+      fomoStrip();
     return;
   }
 
@@ -952,11 +999,13 @@ function renderPicker() {
       '<span class="pk-t">' +
         '<b>' + esc(r.t) + '</b>' +
         '<small>' + esc(r.s) + '</small>' +
-        '<span class="pk-meta"><i class="pk-free">POORI REPORT FREE</i>' + r.pages + ' pages</span>' +
+        '<span class="pk-meta"><i class="pk-n">' + r.learn.length + ' sawaalon ke jawab</i>' +
+          r.pages + ' pages</span>' +
       '</span>' +
       '<em class="pk-chev" aria-hidden="true">›</em>' +
     '</button>';
   }).join('');
+  $('#pkFomo').innerHTML = fomoStrip();
 }
 
 /* Two pages of the real thing, then the wall. No free chapter on this track —
@@ -1297,7 +1346,7 @@ function renderReport() {
         coverArt(x, 'cv-sm') +
         '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
         '<span class="pc-pr"><em>\u20b949</em><s>\u20b9499</s></span>' +
-        '<span class="pc-btn">Poori report free dekhiye</span></button>';
+        '<span class="pc-btn">Poori report dekhiye \u00b7 \u20b949</span></button>';
     }).join('');
   $('#r2Why').textContent = r.why;
   // Nothing is locked, so "Buy now" would be answering a question she has not
@@ -1373,7 +1422,7 @@ function renderTpTabs() {
     if (sf.hist)  tabs.push({ id: 'history', l: 'History \u00b7 3 reports' });
     if (sf.today) tabs.push({ id: 'today',   l: 'Today \u00b7 expert card' });
     if (sf.guide) tabs.push({ id: 'guide',   l: 'Today \u00b7 personalised' });
-    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'report', l: 'Report page \u00b7 whole report free' });
+    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'report', l: 'Report page \u00b7 \u20b949' });
     // Day 5: nothing asks, but the shelf in History is still reachable.
     if (!tabs.length) tabs.push(
       { id: 'today',   l: 'Today \u00b7 nothing asks' },
@@ -1389,7 +1438,7 @@ function renderTpTabs() {
     '<p class="tp-note">Touchpoints — ' +
       (state.paid ? 'report bought · every surface is the follow-up'
         : pmQuiet() ? 'nudging has stopped — every surface is quiet'
-        : 'one report a day · whole sample free · ₹49') + '</p>' +
+        : 'one report a day · ₹49, sample on a demo chart') + '</p>' +
     '<div class="tp-tabs">' + tabs.map(function (t) {
       return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
     }).join('') + '</div>';

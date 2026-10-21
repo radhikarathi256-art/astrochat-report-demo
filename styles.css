@@ -265,8 +265,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    finish its sentence — one ellipsis there and the card stops explaining. */
 .ex-sub.wrap{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;
   -webkit-box-orient:vertical}
-.ex-pill{flex:none;font:700 10px/14px var(--sans);font-style:normal;
-  padding:2px 7px;border-radius:6px;background:#ECFDF3;color:#067647}
+/* The pill is the price now, with the anchor struck through under it — a bare
+   "FREE" was promising the wrong thing, since the report costs 49. */
+.ex-pill{flex:none;display:flex;flex-direction:column;align-items:center;gap:1px;
+  font:700 12px/15px var(--sans);font-style:normal;
+  padding:3px 8px;border-radius:7px;background:#ECFDF3;color:#067647}
+.ex-pill s{font:400 9px/11px var(--sans);color:#7A9C87}
 .ex-tap .ex-chev{flex:none;font:400 20px/20px var(--sans);color:var(--g400)}
 
 /* ---------- Day 1 · check-in, not yet answered ----------
@@ -346,35 +350,66 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 11px/16px var(--sans);color:var(--g400)}
 .c-gap::before,.c-gap::after{content:"";flex:1;height:1px;background:#EAECF0}
 
-/* The in-chat menu: three reports, she picks. A list, not a poster.
-   Hierarchy, top to bottom: deal strip (said once) > card title > row names.
-   The price appears exactly once — repeating it per row flattened the card. */
-.of3{align-self:stretch;overflow:hidden;border-radius:14px;background:#fff;
-  border:1px solid #F0D6BE;box-shadow:0 6px 16px rgba(122,46,14,.09)}
-.of3-strip{margin:0;padding:6px 12px;background:#FFF1E3;
-  font:700 10px/14px var(--sans);letter-spacing:.07em;color:var(--brand-dk)}
-.of3-in{padding:11px 12px 10px}
-.of3-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
-  margin:0 0 10px}
-.of3-head>b{flex:1;min-width:0;font:700 15px/20px var(--sans);color:var(--g900);
+/* The scarcity strip. One per surface, never two — and the clock is the only
+   thing that moves, so the eye lands on the deadline rather than the decoration. */
+.fomo{display:flex;align-items:center;gap:7px;margin:0;padding:7px 12px;
+  background:linear-gradient(90deg,#FFF4E6 0,#FFE9D2 100%);
+  border-bottom:1px solid #F3DCC4}
+.fomo span{flex:1;min-width:0;font:600 11px/15px var(--sans);color:#8A4B21;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fomo b{flex:none;font:700 11px/15px var(--mono,var(--sans));color:var(--brand-dk);
+  font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.fomo-dot{width:6px;height:6px;flex:none;border-radius:50%;background:#D92D20;
+  box-shadow:0 0 0 0 rgba(217,45,32,.45);animation:fomoPulse 1.8s ease-out infinite}
+@keyframes fomoPulse{70%{box-shadow:0 0 0 6px rgba(217,45,32,0)}
+  100%{box-shadow:0 0 0 0 rgba(217,45,32,0)}}
+/* Day 4 is the last ask, so the strip drops the clock's optimism for a flat
+   statement — same pixels, different sentence. */
+.fomo.last{background:linear-gradient(90deg,#FEF3F2 0,#FEE4E2 100%);
+  border-bottom-color:#FDA29B}
+.fomo.last span{color:#B42318}
+.fomo.last b{color:#B42318}
+/* Standalone (not inside a card): give it its own edges. */
+.ex-report .fomo,#pkFomo .fomo,.tl-card .fomo{margin:10px -2px 0;border-radius:8px;
+  border:1px solid #F3DCC4}
+.ex-report .fomo{margin:10px 0 0}
+#pkFomo .fomo{margin:10px 16px 0}
+.tl-card .fomo{margin:12px 0 0}
+
+/* The pointers. These are the product — the list of her own questions — so
+   they get real line-height and a tick, not a bullet lost in grey text. */
+.pts-h{margin:12px 0 7px;font:700 11px/15px var(--sans);letter-spacing:.05em;
+  text-transform:uppercase;color:var(--g500)}
+.pts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pts li{position:relative;padding-left:21px;font:400 12.5px/17px var(--sans);
+  color:var(--g700)}
+.pts li::before{content:'';position:absolute;left:0;top:4px;width:14px;height:14px;
+  border-radius:50%;background:#ECFDF3;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path d='M3.8 7.2 6 9.3l4.2-4.4' fill='none' stroke='%23067647' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+.pts .pts-more{padding-left:21px;font-weight:600;color:var(--brand-dk)}
+.pts .pts-more::before{background:#FFF1E3;background-image:none}
+
+/* The in-chat offer. One report, so the card can lead with the cover and spend
+   its middle on the pointers; price and CTA sit together at the foot, which is
+   where the eye is once the list has done its work. */
+.of3{align-self:stretch;overflow:hidden;border-radius:14px;background:#fff;
+  border:1px solid #F0D6BE;box-shadow:0 10px 24px -8px rgba(122,46,14,.22)}
+.of3-in{padding:12px}
+.of3-lead{display:flex;align-items:center;gap:12px;width:100%;padding:0;
+  border:0;background:none;text-align:left;cursor:pointer}
+.of3-t{flex:1;min-width:0}
+.of3-t b{display:block;font:700 15px/20px var(--sans);color:var(--g900)}
+.of3-t small{display:block;margin-top:3px;font:400 12px/17px var(--sans);color:var(--g700)}
+.of3-t em{display:block;margin-top:4px;font:500 10px/14px var(--sans);
+  font-style:normal;color:var(--g500)}
 .of3-price{flex:none;display:flex;align-items:baseline;gap:5px}
-.of3-price b{font:700 17px/21px var(--sans);color:var(--g900)}
+.of3-price b{font:700 19px/23px var(--sans);color:var(--g900)}
 .of3-price s{font:400 12px/16px var(--sans);color:var(--g400)}
 .of3-price i{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
   font:700 9px/13px var(--sans);font-style:normal}
-/* One report, so the row can afford a bigger cover and two full lines — a
-   recommendation reads nothing like a three-item menu. */
-.of3-lead{display:flex;align-items:center;gap:11px;width:100%;padding:10px 9px;
-  border:0;border-radius:10px;background:#FFFBF6;text-align:left;cursor:pointer}
-.of3-lead:hover{background:#FFF4E8}
-.of3-t{flex:1;min-width:0}
-.of3-t small{display:block;font:400 12px/17px var(--sans);color:var(--g700)}
-.of3-t em{display:block;margin-top:3px;font:500 10px/14px var(--sans);
-  font-style:normal;color:var(--g500)}
-.btn.of3-go{width:100%;margin-top:9px}
+.btn.of3-go{width:100%;margin-top:12px}
 .of3-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  margin-top:10px;padding-top:9px;border-top:1px solid #F5EEE6;
+  margin-top:11px;padding-top:9px;border-top:1px solid #F5EEE6;
   font:500 11px/16px var(--sans);color:var(--g500)}
 .of3-foot .lnk-btn{flex:none;font:600 11px/16px var(--sans)}
 
@@ -444,7 +479,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pk-t small{display:block;margin-top:2px;font:400 12px/17px var(--sans);color:var(--g600)}
 .pk-meta{display:flex;align-items:center;gap:6px;margin-top:6px;
   font:500 11px/15px var(--sans);color:var(--g400)}
-.pk-free{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
+.pk-n{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
   font:700 9px/13px var(--sans);font-style:normal;letter-spacing:.04em}
 .pk-chev{flex:none;font:400 19px/19px var(--sans);font-style:normal;color:#C7B9A8}
 .pk-note{margin:16px;padding:11px 12px;border-radius:10px;background:#F9FAFB;
@@ -948,8 +983,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 @media (prefers-reduced-motion:reduce){.step.now .sdot{animation:none}}
 .notify{margin-top:14px;background:var(--w50);border-radius:10px;padding:10px 12px;
   font:500 13px/18px var(--sans);color:var(--w700)}
-.rep-acts{display:flex;gap:10px;margin-top:14px}
+.rep-acts{display:flex;align-items:center;gap:10px;margin-top:14px}
 .rep-acts .btn{height:44px;font-size:15px}
+.rep-acts .of3-price{flex:none}
 .rep-acts .btn.outline{width:auto;padding:0 20px}
 
 /* ---------- R.6b/c Book opening ---------- */
