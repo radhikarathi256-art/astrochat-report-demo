@@ -848,17 +848,39 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .revs::-webkit-scrollbar{display:none}
 .review{flex:none;width:258px;scroll-snap-align:start;background:var(--g50);
   border-radius:12px;padding:13px 15px}
-.review b{display:block;font:600 12px/18px var(--sans);color:var(--w700);margin-bottom:6px}
-.review p{margin:0;font:400 14px/20px var(--sans);color:var(--g600)}
+/* Stars, then the finding, then who found it — the quote is the evidence, so
+   the name goes under it as the signature rather than above it as a heading. */
+.rv-stars{display:block;font-style:normal;font:400 13px/18px var(--sans);
+  color:#F79009;letter-spacing:1.5px;margin-bottom:7px}
+.review p{margin:0;font:400 14px/20px var(--sans);color:var(--g700)}
+.review b{display:block;margin-top:9px;font:500 12px/18px var(--sans);color:var(--g500)}
 
-/* ---------- Sticky buy bar ---------- */
+/* ---------- What the report is: chips and the sample door ---------- */
+.r2-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.r2-chips span{display:inline-block;border:1px solid var(--g300);border-radius:999px;
+  padding:5px 11px;font:500 12px/17px var(--sans);color:var(--g700)}
+/* Outlined, not filled: the filled orange on this page is the ₹49 button, and
+   a free sample must not look like the thing that costs money. */
+.r2-samp{display:inline-block;margin-top:16px;cursor:pointer;
+  border:1.4px solid var(--brand);border-radius:10px;background:none;
+  padding:10px 18px;font:600 14px/20px var(--sans);color:var(--brand)}
+
+/* ---------- Sticky buy bar ----------
+   Not white any more: white made it part of the page, and this bar is the ask.
+   A warm gradient lifts it off, and the kundali sits behind as a watermark —
+   the square the whole report is read off. */
 .buybar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:10px;
-  padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;
-  border-top:1px solid var(--g200);box-shadow:0 -4px 16px -8px rgba(16,24,40,.18)}
+  overflow:hidden;
+  padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,#FFEADE 0%,#F9CFB7 100%);
+  border-top:1px solid rgba(181,71,8,.18);box-shadow:0 -6px 20px -8px rgba(74,24,8,.26)}
+.buy-kundali{position:absolute;right:-10px;bottom:-14px;width:104px;height:104px;
+  color:rgba(181,71,8,.14);pointer-events:none}
+.buybar > *:not(.buy-kundali){position:relative;z-index:1}
 /* Not green: green is wallet money everywhere else in the app, and a finding is
-   not money. The neutral surface also stops it competing with the CTA. */
+   not money. The translucent white keeps it legible on the gradient. */
 .buy-why{margin:0;display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:10px;
-  background:var(--g50);font:600 13px/18px var(--sans);color:var(--g700)}
+  background:rgba(255,255,255,.66);font:600 13px/18px var(--sans);color:var(--g800)}
 .buy-why svg{flex:none}
 .buy-row{display:flex;align-items:center;gap:16px}
 .price b{display:block;font:700 22px/28px var(--sans);color:var(--g900)}

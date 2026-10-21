@@ -31,6 +31,15 @@ var REPORTS = [
     // The only report with painted artwork so far. Where it exists the book is
     // the real thing opening; the other two still fall back to the drawing.
     art: { closed: 'assets/cover-partner.jpg', open: 'assets/spread-partner.jpg' },
+    // What is in the box, as chips — the one thing unique to this report first.
+    chips: ['Partner image', 'Birth chart analysis'],
+    // Quotes that name something the report called before it happened. A quote
+    // that only says "very good" proves nothing and sells nothing.
+    revs: [
+      { s: 5, n: 'Priya S., Jaipur', q: 'It said my partner would be from a creative field. Six months later I got a rishta from a graphic designer.' },
+      { s: 5, n: 'Neha K., Indore',  q: 'The part about meeting through people who already know me is exactly how it happened.' },
+      { s: 4, n: 'Ritu M., Nashik',  q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' }
+    ],
     learn: [
       'What your partner will look like — a picture drawn from your chart',
       'When real love arrives in this life',
@@ -53,6 +62,12 @@ var REPORTS = [
     id: 'marriage', t: 'Marriage Report', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
     why: 'Along with Rahu in the seventh house, there is a Mars question too',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
+    chips: ['36 guna match', 'Dosha check'],
+    revs: [
+      { s: 5, n: 'Anjali D., Surat',  q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
+      { s: 5, n: 'Kavya R., Chennai', q: 'The low-Manglik reading saved me months of panic. Two astrologers had said the opposite.' },
+      { s: 4, n: 'Pooja N., Bhopal',  q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' }
+    ],
     learn: [
       'Am I Manglik or not — and how strongly',
       'When the marriage happens, and the best window for it',
@@ -73,6 +88,12 @@ var REPORTS = [
     id: 'career', t: 'Career & Job', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
     why: 'Your tenth lord is exalted, but Saturn is watching it',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
+    chips: ['Switch timing', 'Raise window'],
+    revs: [
+      { s: 5, n: 'Shruti B., Pune',   q: 'It named March as the switch month. I got the offer on the 11th of March.' },
+      { s: 5, n: 'Meera T., Gurgaon', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
+      { s: 4, n: 'Divya S., Kochi',   q: 'Saturn watching the tenth lord explained a slow year I had been blaming myself for.' }
+    ],
     learn: [
       'The one big career theme of the next three months',
       'The best dates to ask for a raise or pitch an idea',
@@ -1455,18 +1476,20 @@ function renderReport() {
   // The pick has just changed, so every surface that names the report she is
   // buying — this title included — has to be rewritten with it.
   paintBought();
-  $('#r2Lead').innerHTML = esc(r.s) + '. Written by Astro Hemali from your own chart \u2014 ' +
-    '<b>' + r.pages + ' pages</b>, in your language and in English.';
+  $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
+  $('#r2Chips').innerHTML = r.chips.concat([r.pages + ' pages', 'Shareable', 'Private'])
+    .map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('');
   $('#r2Learn').innerHTML =
-    '<h2 class="r2-h">Your report answers all of this</h2>' +
+    '<h2 class="r2-h">What you will get</h2>' +
     '<ul class="r2-learn">' +
       r.learn.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
     '</ul>';
-  $('#r2Sample').innerHTML =
-    '<h2 class="r2-h">The full report, start to finish</h2>' +
-    '<p class="r2-sampnote">This one is written on ' + esc(CHARTS.sample.who) + '\u2019s chart so you can see ' +
-      'how deep the report goes. Yours will look exactly like this \u2014 on your own chart.</p>' +
-    '<div class="read-body r2-report">' + reportBody(r.id, 'sample') + '</div>';
+  $('#r2Revs').innerHTML = r.revs.map(function (v) {
+    return '<div class="review">' +
+      '<i class="rv-stars">' + '\u2605'.repeat(v.s) + '\u2606'.repeat(5 - v.s) + '</i>' +
+      '<p>\u201c' + esc(v.q) + '\u201d</p>' +
+      '<b>' + esc(v.n) + '</b></div>';
+  }).join('');
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
     .map(function (x) {
       return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
@@ -1479,7 +1502,6 @@ function renderReport() {
   // Nothing is locked, so "Buy now" would be answering a question she has not
   // asked — what ₹49 buys is this same report recalculated on her chart.
   $('#r2Cta').textContent = 'Get it on my chart \u00b7 \u20b949';
-  animateBars('#r2Sample');
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -1753,6 +1775,14 @@ document.addEventListener('click', function (e) {
   if (t.hasAttribute('data-lang')) {
     state.lang = t.getAttribute('data-lang');
     renderLangList();
+    return;
+  }
+
+  // The sample is a whole report, so it gets its own screen rather than being
+  // inlined under About, where it buried every section after it.
+  if (t.id === 'r2ViewSample') {
+    renderSample();
+    if (state.screen !== 'sample') go('sample');
     return;
   }
 

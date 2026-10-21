@@ -246,57 +246,44 @@
           </div>
         </div>
 
-        <!-- The lead is written per report — one of three gets sold here. -->
-        <div class="r2-about">
+        <!-- Below the rating the page follows the v2 board: what the report is,
+             what it answers, what readers found in it, what else is on her
+             chart. The sample moved behind a button — it is a sample, and
+             inlining the whole thing buried every section after it. -->
+        <div class="r2-block">
+          <h2 class="r2-h">About this report</h2>
           <p class="r2-lead" id="r2Lead"></p>
+          <div class="r2-chips" id="r2Chips"></div>
+          <button class="r2-samp" type="button" id="r2ViewSample">View sample report</button>
         </div>
 
         <!-- What this report answers, in her own words. Nothing is locked, so a
              chapter ladder would have nothing to shut. -->
         <div class="r2-block" id="r2Learn"></div>
 
+        <!-- Not "what readers say": what they found. The quotes that work are
+             the ones naming a thing the report called before it happened. -->
         <div class="r2-block">
-          <h2 class="r2-h">What readers say</h2>
-          <div class="rsum">
-            <b>4.7</b>
-            <span>
-              <i class="stars">★★★★★</i>
-              <em>From 9,412 verified readers</em>
-            </span>
-          </div>
-          <div class="revs">
-            <div class="review">
-              <b>★★★★★ Priya, Lucknow</b>
-              <p>“It told me exactly why things were stuck with my partner. Hemali's advice actually worked.”</p>
-            </div>
-            <div class="review">
-              <b>★★★★★ Sneha, Pune</b>
-              <p>“The 2027 window matched what my family had already started talking about. That was the moment I believed it.”</p>
-            </div>
-            <div class="review">
-              <b>★★★★☆ Aditya, Mumbai</b>
-              <p>“Read it twice. The part on his family asking a lot of questions before saying yes was uncomfortably accurate.”</p>
-            </div>
-          </div>
+          <h2 class="r2-h">What users found</h2>
+          <div class="revs" id="r2Revs"></div>
         </div>
 
-        <!-- The entire report, rendered on a demo chart. The depth is the
-             pitch, so it is given away rather than described. -->
-        <div class="r2-block" id="r2Sample"></div>
-
-        <!-- Upsells belong on the sell page, not only after the read: someone
-             weighing ₹49 is the person most likely to take a second ₹49. All
-             four stay inside marriage, love and partner. -->
         <!-- Upsells belong on the sell page, not only after the read: someone
              weighing ₹49 is the person most likely to take a second ₹49. -->
         <div class="r2-block" id="r2Also">
-          <h2 class="r2-h">More on your chart</h2>
+          <h2 class="r2-h">You may also like</h2>
           <div class="carousel" id="r2AlsoList"></div>
         </div>
         <div class="pad-buy"></div>
       </div>
 
       <div class="buybar">
+        <!-- The kundali square is the object the whole report is read off, so
+             it belongs beside the price rather than only in the cover art. -->
+        <svg class="buy-kundali" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect x="1.4" y="1.4" width="45.2" height="45.2" rx="2" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1.4 1.4 46.6 46.6M46.6 1.4 1.4 46.6M24 1.4 46.6 24 24 46.6 1.4 24Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
         <!-- The one finding that justifies the price, pulled above the CTA. -->
         <p class="buy-why">
           <!-- The old crossed square read as a missing-glyph box at 15px. -->
