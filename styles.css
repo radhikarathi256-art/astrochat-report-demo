@@ -901,6 +901,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:rgba(255,255,255,.66);font:600 13px/18px var(--sans);color:var(--g800)}
 .buy-why svg{flex:none}
 .buy-row{display:flex;align-items:center;gap:16px}
+/* Inside the report there is nothing left to argue, so the bar is plain white
+   and carries only the price and the button. */
+.buybar.plain{gap:0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  background:#fff;border-top:1px solid var(--g200);box-shadow:none}
+/* ₹49 and the struck ₹499 read as one price, so they share a line; the cut
+   sits under them as its own chip. */
+.buybar.plain .price{display:grid;grid-template-columns:auto auto;gap:1px 6px;
+  align-items:baseline;justify-content:start}
+.buybar.plain .price b{font:600 14px/20px var(--sans);color:var(--g900)}
+.buybar.plain .price small{display:contents}
+.buybar.plain .price small s{font:400 12px/18px var(--sans);color:var(--g400)}
+.buybar.plain .price small i{grid-column:1/-1;justify-self:start}
 .price b{display:block;font:700 22px/28px var(--sans);color:var(--g900)}
 /* The saving was one grey 12px line and read as a footnote. Same treatment as
    the entry points now: struck MRP, then the cut in a filled chip. */
@@ -916,67 +928,76 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    it as separate edge-to-edge sheets of paper with gaps between them, so the
    painting shows through the seams and the page reads as pages on a wall.
    =========================================================================== */
-.rp{background:#FBEFE8}
-.rp-arch{position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:#FBEFE8 url(assets/arch.png) top center/100% auto no-repeat}
+.rp{background:#FEF6FB}
+/* 360x607 in the frame, sitting 48px below the top edge and never scrolling. */
+.rp-arch{position:absolute;top:calc(var(--sbh) + 48px);left:0;right:0;height:660px;
+  z-index:0;pointer-events:none;
+  background:url(assets/arch.png) top center/100% auto no-repeat}
 .rp .scroll{position:relative;z-index:1}
 
-/* Transparent on the arch; a white surface only once prose is underneath. */
+/* Transparent on the arch; a white surface only once prose is underneath.
+   No title: the arch is the title, and a word on top of it only fights it. */
 .rp-head{position:absolute;top:0;left:0;right:0;z-index:14;flex:none;
-  display:flex;align-items:center;gap:10px;
-  padding:calc(var(--sbh) + 8px) 16px 10px;
+  display:flex;align-items:center;gap:10px;height:calc(var(--sbh) + 59px);
+  padding:var(--sbh) 16px 0;
   background:transparent;transition:background .2s ease,box-shadow .2s ease}
 .rp-head > :last-child{margin-left:auto}
 .rp-head.solid{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
   box-shadow:0 1px 0 var(--g200)}
 
-.rp-hero{padding:calc(var(--sbh) + 52px) 16px 18px;
-  display:flex;flex-direction:column;align-items:center;text-align:center}
-.rp-tag{margin:0;font:700 10.5px/15px var(--sans);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--w700)}
-.rp-tag.paid{color:var(--s700)}
-.rp-title{margin:5px 0 0;font:700 24px/31px var(--sans);color:var(--g900)}
-.rp-sub{margin:5px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
+/* 204px of arch before the card, because the card has to land inside it. */
+.rp-hero{padding:calc(var(--sbh) + 204px) 0 0;
+  display:flex;flex-direction:column;align-items:center}
 
-/* The sketch, as a card of paper with a turned corner. On the sample it is
-   blurred — it is the one thing ₹49 actually buys, so it is the hero AND the
-   thing held back. */
-.paper{position:relative;width:100%;margin-top:16px;background:#fff;border-radius:14px;
-  padding:10px;box-shadow:0 16px 34px -14px rgba(74,24,8,.38),0 0 0 1px rgba(74,24,8,.07)}
-.paper-art{position:relative;border-radius:10px;overflow:hidden;background:var(--g100)}
-.paper-art img{width:100%;height:auto}
-.paper.preview .paper-art img{filter:blur(8px) saturate(.88);transform:scale(1.09)}
-.pv-badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  background:rgba(255,255,255,.92);border-radius:999px;padding:6px 15px;
-  font:700 11px/15px var(--sans);letter-spacing:.16em;color:var(--w700);
-  box-shadow:0 4px 12px -4px rgba(74,24,8,.3)}
-.paper-foot{display:flex;align-items:center;gap:12px;padding:12px 4px 2px;text-align:left}
+/* The sketch, as a leaf of report paper with a turned corner, dropped at a
+   slight angle. On the sample it is blurred — it is the one thing ₹49 actually
+   buys, so it is the hero AND the thing held back. */
+.paper{position:relative;width:240px;background:#F8F0E4;
+  border-radius:12px 12px 0 12px;transform:rotate(3deg);
+  box-shadow:0 18px 34px -16px rgba(74,24,8,.4)}
+.paper-art{position:relative;height:236px;overflow:hidden;
+  border-radius:12px 12px 0 0;background:#EFE4D4}
+.paper-art img{width:100%;height:100%;object-fit:cover;display:block}
+/* Soft enough that the face is still a face — a heavier blur sells nothing,
+   because there is nothing left to want. */
+.paper.preview .paper-art img{filter:blur(6px) saturate(.92);transform:scale(1.08)}
+/* Top left, over the forehead — where a stamp would sit on a real print. */
+.pv-badge{position:absolute;left:12px;top:12px;display:flex;align-items:center;
+  height:26px;padding:0 11px;background:#F8F0E4;border-radius:10px;
+  font:700 11px/26px var(--sans);letter-spacing:.1em;color:var(--g600)}
+.paper-foot{display:flex;align-items:flex-start;gap:12px;height:93px;
+  margin:0 16px;padding-top:13px;border-top:1px solid #D1C2B2;text-align:left}
 .paper-foot > div{flex:1;min-width:0}
-.paper-foot i{flex:none;width:1px;height:30px;background:var(--g200)}
-.paper-foot small{display:block;font:600 9.5px/14px var(--sans);letter-spacing:.1em;
-  text-transform:uppercase;color:var(--g500)}
-.paper-foot b{display:block;font:600 13px/19px var(--sans);color:var(--g800)}
+.paper-foot i{flex:none;width:1px;height:44px;background:#D1C2B2;opacity:.7}
+.paper-foot small{display:block;font:500 11px/16px var(--sans);letter-spacing:.06em;
+  text-transform:uppercase;color:#A4917E}
+.paper-foot b{display:block;margin-top:2px;font:600 15px/21px var(--sans);color:#3F2D1E}
 .paper-fold{position:absolute;right:0;bottom:0;width:26px;height:26px;
-  border-bottom-right-radius:14px;
-  background:linear-gradient(225deg,#F1DED3 0 52%,transparent 52%)}
+  background:linear-gradient(225deg,#E6D0AA 0 50%,transparent 50%);
+  filter:drop-shadow(-2px -2px 3px rgba(230,196,188,.9))}
 
-.rp-lang{margin-top:16px;display:inline-flex;align-items:center;gap:6px;
-  border:1px solid rgba(74,24,8,.18);background:rgba(255,255,255,.88);
-  border-radius:999px;padding:8px 15px;backdrop-filter:blur(6px);
-  font:600 13px/18px var(--sans);color:var(--g700)}
-.rp-lang span{color:var(--brand-dk)}
-.rp-share{margin-top:16px;display:inline-flex;align-items:center;gap:7px;
-  border:1px solid #ABEFC6;background:var(--s50);border-radius:999px;padding:9px 16px;
-  font:600 13px/18px var(--sans);color:var(--s700)}
-.rp-covers{margin:18px 0 0;font:700 10.5px/15px var(--sans);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--w700)}
+/* A white pill, one colour: the language is the whole label, so splitting it
+   into grey and pink made two things out of one. */
+.rp-lang,.rp-share{margin-top:14px;display:inline-flex;align-items:center;gap:8px;
+  height:40px;padding:0 18px;border:0;border-radius:22px;background:#fff;cursor:pointer;
+  font:400 14px/20px var(--sans);color:var(--g700);
+  box-shadow:0 6px 16px -10px rgba(74,24,8,.4)}
+.rp-share{gap:10px}
+.rp-share i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--s500)}
 
-/* Edge to edge, with a gap: every direct child of the body becomes one sheet.
-   Specificity has to beat the report blocks' own card rules further down, so
-   these are written under .rp rather than relying on source order. */
+/* Rule, label, rule — a chapter break, not a shouted eyebrow. */
+.rp-covers{display:flex;align-items:center;justify-content:center;gap:12px;
+  margin:36px 20px 12px;font:400 14px/20px var(--sans);color:var(--g600)}
+.rp-covers::before,.rp-covers::after{content:"";flex:none;width:66px;height:1px;
+  background:var(--g200)}
+.rp-covers span{flex:none}
+
+/* Edge to edge, with a gap: every direct child of the body becomes one sheet
+   of the report, so the arch shows through the seams. Specificity has to beat
+   the report blocks' own card rules further down, so these are written under
+   .rp rather than relying on source order. */
 .rp-secs{display:flex;flex-direction:column;gap:12px}
-.rp .rp-secs > *{margin:0;border-radius:0;
-  box-shadow:0 8px 20px -14px rgba(74,24,8,.34)}
+.rp .rp-secs > *{margin:0;border-radius:24px;box-shadow:none}
 /* Each block keeps its own padding — several of them gutter their children
    instead, and forcing one value here would double it. */
 .rp .rp-secs > .rs,
@@ -985,13 +1006,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .r-card,
 .rp .rp-secs > .accent,
 .rp .rp-secs > .carousel-wrap{background:#fff}
-.rp .rp-secs > .rs{padding:18px 16px}
-.rp .rp-secs > .carousel-wrap{padding:16px 0 18px}
-.rp .rp-secs > .carousel-wrap .lbl{padding:0 16px 12px}
-.rp .rp-secs > .upsell{border-left:0;border-right:0}
-.rs-h{margin:0 0 10px;font:700 10.5px/15px var(--sans);letter-spacing:.12em;
-  text-transform:uppercase;color:var(--w700)}
-.rs-p{margin:0;font:400 16px/25px var(--sans);color:var(--g700)}
+.rp .rp-secs > .rs{padding:24px 20px}
+.rp .rp-secs > .carousel-wrap{padding:24px 0}
+.rp .rp-secs > .carousel-wrap .lbl{padding:0 20px 12px}
+.rp .rp-secs > .upsell{border:0}
+/* A dot and a quiet grey label. It names the section; it is not the headline. */
+.rs-h{display:flex;align-items:center;gap:8px;margin:0 0 14px;
+  font:600 12px/18px var(--sans);letter-spacing:.04em;
+  text-transform:uppercase;color:var(--g600)}
+.rs-h::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;
+  background:var(--g400)}
+.rs-p{margin:0;font:400 16px/24px var(--sans);color:var(--g600)}
 .rs-scores{display:flex;gap:10px}
 .rs-scores div{flex:1;border:1px solid var(--g200);border-radius:12px;padding:13px 0;text-align:center}
 .rs-scores b{display:block;font:700 18px/28px var(--sans);color:var(--w700)}

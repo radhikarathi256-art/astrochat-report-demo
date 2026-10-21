@@ -525,11 +525,7 @@ function renderSample() {
   var sec = $('#sample');
 
   sec.classList.toggle('dev', c.dev);
-  $('#langChipLabel').textContent = c.chip;
-  $('#sampleTag').textContent = c.tag;
-  $('#sampleTitle').textContent = c.title;
-  $('#sampleSub').textContent = c.subtitle;
-  $('#buyInLang').textContent = c.buy;
+  $('#langChipLabel').textContent = 'Read in ' + c.chip;
 
   $('#sampleBody').innerHTML =
     rsec(c.bpLabel, '<p class="rs-p">' + c.bpText + '</p>') +
@@ -854,7 +850,6 @@ function paintBought() {
   $('#pushReadyTitle').textContent = 'Your ' + t + ' is ready';
   $('#repTitle').textContent  = t;
   $('#bookTitle').textContent = t;
-  $('#readTitle').textContent = t;
 }
 
 function esc(s) {
