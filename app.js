@@ -1751,6 +1751,8 @@ document.addEventListener('click', function (e) {
   // Every chat door — Continue Chat, the header icon, Ask Hemali — lands in
   // the real thread, scrolled to its end, where the day's pitch sits.
   if (t.hasAttribute('data-chat')) {
+    // The chapter has been seen either way, so the dot clears from both doors.
+    if (state.histDot) { state.histDot = false; renderNav(); }
     renderChat();
     if (state.screen !== 'chat') go('chat');
     var cs = $('#chat [data-scroll]');
