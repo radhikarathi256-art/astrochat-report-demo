@@ -28,6 +28,9 @@ var REPORTS = [
     id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet — and what is holding it up', pages: 38, rating: '4.7', sold: 128880,
     why: 'Rahu sits in your seventh house — the thing you asked about',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
+    // The only report with painted artwork so far. Where it exists the book is
+    // the real thing opening; the other two still fall back to the drawing.
+    art: { closed: 'assets/cover-partner.jpg', open: 'assets/spread-partner.jpg' },
     learn: [
       'What your partner will look like — a picture drawn from your chart',
       'When real love arrives in this life',
@@ -257,6 +260,8 @@ function show(id, mode) {
 
 function go(id, mode) {
   if (mode !== 'back') state.stack.push(state.screen);
+  // The knock belongs to Today. Leaving the page is an answer to it either way.
+  if (id !== 'today-a') hideRepToast();
   show(id, mode || 'push');
 }
 
@@ -299,6 +304,30 @@ function toast(msg, kind) {
   }, 1600);
 }
 
+/* ---------------------------------------------------------------- the report's knock on Today
+   Day 1 and Day 3 only, and only once the check-in is answered: that is the
+   one moment she has just been handed something, so the ask is a reply rather
+   than an interruption. Day 2 is left clear — the same nudge three days running
+   stops being a nudge. */
+function repToastDays() { return state.day === 1 || state.day === 3; }
+
+function showRepToast() {
+  if (state.paid || state.repToastSeen || !repToastDays()) return;
+  var el = $('#repToast');
+  if (!el) return;
+  var r = leadReport();
+  $('#repToastLine').textContent = 'Hemali made your ' + r.t + ' Report · ₹49';
+  state.repToastSeen = true;
+  reveal(el);
+}
+
+function hideRepToast() {
+  var el = $('#repToast');
+  if (!el || el.hidden) return;
+  el.classList.remove('on');
+  setTimeout(function () { el.hidden = true; }, 260);
+}
+
 /* ---------------------------------------------------------------- sheets */
 function openSheet(name) {
   var el = $('#sheet-' + name);
@@ -322,6 +351,11 @@ function closeSheet() {
   var scrim = $('#scrim');
   scrim.classList.remove('on');
   setTimeout(function () { if (!state.sheet) scrim.hidden = true; }, 240);
+  // The reward sheet covers the page, so the knock waits for it to clear.
+  if (state.repToastPending) {
+    state.repToastPending = false;
+    setTimeout(showRepToast, 420);
+  }
 }
 
 /* ---------------------------------------------------------------- content: ladder */
@@ -809,6 +843,18 @@ function inr(n) {
    something already being read, and nothing about it says "not yours yet". */
 function book3d(r) {
   var c = r.cover;
+  // Where the painted cover and its spread exist, show those instead: the art
+  // is the argument, and a drawing of a book cannot make it.
+  if (r.art) {
+    return '<span class="bkt" aria-hidden="true">' +
+      '<span class="bkt-in">' +
+        // The spread sits under the cover, so when the cover lifts there is
+        // painted page in the gap rather than a hole.
+        '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
+        '<span class="bkt-face" style="background-image:url(' + r.art.closed + ')"></span>' +
+      '</span>' +
+    '</span>';
+  }
   return '<span class="bk3" aria-hidden="true"' +
     ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
     '<span class="bk3-in">' +
@@ -857,7 +903,6 @@ function offer3Card() {
   if (state.paid) return '';
   var r = leadReport();
   return '<div class="of3">' +
-    fomoStrip() +
     sellCard(r) +
     '<div class="of3-in">' +
       '<p class="pts-h">Your report answers all of this</p>' +
@@ -865,6 +910,9 @@ function offer3Card() {
       // The price sits with the pointers, not off on its own: the number only
       // means anything next to the list it is buying.
       priceRow() +
+      // The counter belongs beside the price, where the hesitation is — at the
+      // top of the card it was spent before she knew what it was counting.
+      fomoStrip() +
       // The sample lives inside the report page, so the button has to promise
       // the read, not a checkout.
       '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">' +
@@ -1546,6 +1594,9 @@ function restart() {
   state.langFrom = 'sample';
   state.paid = false;
   state.reminded = false;
+  state.repToastSeen = false;
+  state.repToastPending = false;
+  hideRepToast();
   state.pick = dayData().lead || 'partner';
   state.histDot = true;
   state.stack = [];
@@ -1664,9 +1715,23 @@ document.addEventListener('click', function (e) {
     paintWallet();
     renderDayToday();
     renderChat();
+    // Queued, not shown: the reward sheet is about to cover the page.
+    if (repToastDays() && !state.repToastSeen && !state.paid) state.repToastPending = true;
     openRewardSheet();
     return;
   }
+
+  // The knock's two buttons. "See" is the same door as the card, so it lands on
+  // the report rather than anywhere new.
+  if (t.id === 'repToastSee') {
+    hideRepToast();
+    state.pick = leadReport().id;
+    renderReport();
+    $('#report [data-scroll]').scrollTop = 0;
+    if (state.screen !== 'report') go('report');
+    return;
+  }
+  if (t.id === 'repToastX') { hideRepToast(); return; }
 
   // The reward sheet's CTA: before day 3 it asks the OS for notifications;
   // on day 3 the wallet covers ₹49, so it goes straight to the buy sheet.
