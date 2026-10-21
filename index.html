@@ -319,25 +319,63 @@
       </div>
     </section>
 
-    <!-- ===================== R.3 / R.3c · Sample report ===================== -->
-    <section class="screen" id="sample" data-screen="sample">
-      <header class="topnav">
+    <!-- ===================== R.3 / R.3c · Sample report =====================
+         The arch is painted once, behind everything, and never moves. The
+         report scrolls over it, so the page reads as pages laid on a wall
+         rather than as one long sheet. The header starts transparent on the
+         arch and only takes a white surface once content is underneath it. -->
+    <section class="screen rp" id="sample" data-screen="sample">
+      <div class="rp-arch" aria-hidden="true"></div>
+
+      <header class="rp-head" id="sampleHead">
         <button class="ic-btn" type="button" data-back aria-label="Back">
           <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <h2 data-i18n="sampleTitle">Sample report</h2>
-        <button class="chip lang" type="button" data-sheet="lang"><span id="langChipLabel">English</span> ▾</button>
+        <button class="wallet" type="button" data-toast="Wallet is not part of this demo">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="3" stroke="#344054" stroke-width="1.5"/><path d="M14 10h2" stroke="#344054" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-wallet>₹20</span>
+        </button>
       </header>
 
       <div class="scroll" data-scroll>
-        <div class="band"><b>ASTROCHAT</b><span id="sampleBandSub"></span></div>
-        <div class="sample-body" id="sampleBody"></div>
+        <!-- The sketch is the one thing she cannot have yet, so it is the hero
+             and it is the thing that is blurred. -->
+        <div class="rp-hero">
+          <p class="rp-tag" id="sampleTag">SAMPLE</p>
+          <h1 class="rp-title" id="sampleTitle">Marriage Yog report</h1>
+          <p class="rp-sub" id="sampleSub">Your personal reading by Astro Hemali</p>
+
+          <div class="paper preview">
+            <div class="paper-art">
+              <img src="assets/sketch.jpg" alt="Sketch of your future partner, blurred">
+              <span class="pv-badge">PREVIEW</span>
+            </div>
+            <div class="paper-foot">
+              <div><small>YOUR SKETCH</small><b>After you buy</b></div>
+              <i></i>
+              <div><small>YOU MEET</small><b>In full report</b></div>
+            </div>
+            <span class="paper-fold" aria-hidden="true"></span>
+          </div>
+
+          <button class="rp-lang" type="button" data-sheet="lang">
+            Read in <span id="langChipLabel">English</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m4 6 4 4 4-4" stroke="#344054" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="rp-covers">What your report covers</p>
+        </div>
+
+        <div class="rp-secs" id="sampleBody"></div>
         <div class="pad-buy"></div>
       </div>
 
       <!-- Same bar as the sell page — the reader who got here is closer to
            buying, so it should not offer less. Only the CTA names the language. -->
       <div class="buybar">
+        <svg class="buy-kundali" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect x="1.4" y="1.4" width="45.2" height="45.2" rx="2" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1.4 1.4 46.6 46.6M46.6 1.4 1.4 46.6M24 1.4 46.6 24 24 46.6 1.4 24Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
         <p class="buy-why">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1.2 9.9 6.1 14.8 8 9.9 9.9 8 14.8 6.1 9.9 1.2 8 6.1 6.1 8 1.2Z" fill="#B54708"/></svg>
           Learn how Rahu is delaying your marriage
@@ -464,7 +502,9 @@
 
     <!-- ===================== R.6b / R.6c · Book opening ===================== -->
     <section class="screen" id="book" data-screen="book">
-      <div class="book-stage">
+      <!-- Tapping anywhere skips to the report: an animation that cannot be
+           skipped is a toll booth the second time she sees it. -->
+      <div class="book-stage" id="bookStage">
         <div class="book" id="bookEl">
           <div class="page" id="bookPage">
             <p class="eyebrow">MADE BY ASTRO HEMALI</p>
@@ -479,17 +519,61 @@
     </section>
 
     <!-- ===================== R.7 · Report · read in app ===================== -->
-    <section class="screen" id="read" data-screen="read">
-      <header class="topnav">
+    <section class="screen rp" id="read" data-screen="read">
+      <div class="rp-arch" aria-hidden="true"></div>
+
+      <header class="rp-head" id="readHead">
         <button class="ic-btn" type="button" data-back aria-label="Back">
           <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <h2 id="readTitle">Marriage Yog report</h2>
         <button class="chip pdf" type="button" data-toast="PDF download is not part of this demo">PDF ↓</button>
       </header>
+
       <div class="scroll" data-scroll>
-        <div class="band"><b>ASTROCHAT</b><span>Made by Astro Hemali</span></div>
-        <div class="read-body" id="readBody"></div>
+        <!-- Same hero as the sample, with the blur taken off. That is the whole
+             reward of paying, so it should be the first thing she lands on. -->
+        <div class="rp-hero">
+          <p class="rp-tag paid" id="readTag">YOUR REPORT</p>
+          <h1 class="rp-title" id="readTitle">Marriage Yog report</h1>
+          <p class="rp-sub">Made by Astro Hemali for Mansi</p>
+
+          <div class="paper">
+            <div class="paper-art">
+              <img src="assets/sketch.jpg" alt="Sketch of your future partner">
+            </div>
+            <div class="paper-foot">
+              <div><small>7TH LORD</small><b>Venus · 9th house</b></div>
+              <i></i>
+              <div><small>YOU MEET</small><b>Mar – Nov 2027</b></div>
+            </div>
+            <span class="paper-fold" aria-hidden="true"></span>
+          </div>
+
+          <button class="rp-share" type="button" data-toast="Sharing is not part of this demo">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.6a6.4 6.4 0 0 0-5.5 9.7L1.7 14.3l3.1-.8A6.4 6.4 0 1 0 8 1.6Z" stroke="#027A48" stroke-width="1.4" stroke-linejoin="round"/><path d="M5.8 5.4c.4-.1.6.1.8.5l.4.9-.5.6c.3.7.9 1.3 1.6 1.6l.6-.5.9.4c.4.2.6.4.5.8-.1.5-.6.8-1.1.7-1.9-.3-3.4-1.8-3.8-3.7-.1-.5.2-1 .6-1.3Z" fill="#027A48"/></svg>
+            Share on WhatsApp
+          </button>
+        </div>
+
+        <div class="rp-secs" id="readBody"></div>
+        <div class="pad-ask"></div>
+      </div>
+
+      <!-- The report answers questions and raises new ones. This bar is where
+           the new ones go, so it is a live composer and not a banner: the
+           placeholder keeps typing the question she is already half-asking. -->
+      <div class="askbar" id="askBar">
+        <div class="ask-top">
+          <span class="av-ring sm"><img src="assets/hemali.png" alt=""><i class="dot"></i></span>
+          <span class="ask-who"><b>Astro Hemali</b><small>Online · she made this report</small></span>
+          <span class="ask-rate"><s>₹20/min</s><em>₹10/min</em></span>
+        </div>
+        <div class="ask-row">
+          <input class="ask-in" id="askIn" type="text" readonly aria-label="Ask Hemali about your report">
+          <button class="ask-send" type="button" data-chat aria-label="Ask Hemali">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9 16 2.5 12.5 16 9.6 11.3 2 9Z" fill="#fff"/></svg>
+          </button>
+        </div>
       </div>
     </section>
 

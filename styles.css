@@ -442,14 +442,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   box-shadow:0 10px 18px rgba(74,24,8,.32),inset 2px 0 5px rgba(0,0,0,.14)}
 /* A long shut beat, the lift, a held glance, then closed again. The point is
    the glance, not the motion. */
-.sell-hero .bkt-face{will-change:transform;
+.sell-hero .bkt-face,.pcard .bkt-face{will-change:transform;
   animation:bktAjar 4.4s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes bktAjar{
   0%,57%   {transform:translateZ(8px) rotateY(0deg)}
   70%,90%  {transform:translateZ(8px) rotateY(-26deg)}
   100%     {transform:translateZ(8px) rotateY(0deg)}}
 @media (prefers-reduced-motion:reduce){
-  .sell-hero .bkt-face{animation:none}}
+  .sell-hero .bkt-face,.pcard .bkt-face{animation:none}}
 
 /* ---------- The closed book, drawn ----------
    Still the fallback for the two reports with no painted cover yet.
@@ -472,7 +472,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The tease: the cover lifts a little off the leaf, hangs there, and falls
    shut again. Hinged on the spine edge, so it reads as a book and not as a
    panel sliding. Long closed beat — the point is the glance, not the motion. */
-.sell-hero .bk3-face{transform-origin:left center;will-change:transform;
+.sell-hero .bk3-face,.pcard .bk3-face{transform-origin:left center;will-change:transform;
   animation:bkTease 4.6s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes bkTease{
   0%,46%   {transform:translateZ(9px) rotateY(0deg)}
@@ -480,8 +480,26 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   94%,100% {transform:translateZ(9px) rotateY(0deg)}
 }
 @media (prefers-reduced-motion:reduce){
-  .sell-hero .bk3-face{animation:none}
+  .sell-hero .bk3-face,.pcard .bk3-face{animation:none}
 }
+
+/* The upsells are the same object at thumbnail size, hinge and all — a flat
+   cover says "another product", a cover that lifts says "another one of these".
+   Offset so the two cards are not nodding in time with each other. */
+.pcard .bkt,.pcard .bk3{width:64px;height:87px;margin-bottom:10px;perspective:420px}
+.pcard + .pcard .bkt-face,.pcard + .pcard .bk3-face{animation-delay:-1.7s}
+/* A thumbnail has a third of the hero's width to say it with, so the cover has
+   to swing nearly twice as far before the gesture reads as opening at all. */
+.pcard .bkt-face{animation-name:bktAjarSm}
+.pcard .bk3-face{animation-name:bkTeaseSm}
+@keyframes bktAjarSm{
+  0%,57%   {transform:translateZ(8px) rotateY(0deg)}
+  70%,90%  {transform:translateZ(8px) rotateY(-48deg)}
+  100%     {transform:translateZ(8px) rotateY(0deg)}}
+@keyframes bkTeaseSm{
+  0%,46%   {transform:translateZ(9px) rotateY(0deg)}
+  62%,78%  {transform:translateZ(9px) rotateY(-52deg)}
+  94%,100% {transform:translateZ(9px) rotateY(0deg)}}
 /* Pivot on the left edge, swing into the ZY plane, then sit half the depth
    back so the board is centred on the cover rather than hanging off it. */
 .bk3-spine{position:absolute;top:0;left:0;width:18px;height:100%;
@@ -892,51 +910,132 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .price small i{font-style:normal;font:700 11px/15px var(--sans);padding:2px 6px;
   border-radius:5px;background:#ECFDF3;color:#067647}
 
-/* ---------- Brand band (sample + read) ---------- */
-.band{background:#7A2E0E;display:flex;align-items:center;justify-content:space-between;
-  padding:10px 16px;font:600 12px/18px var(--sans);color:#fff}
-.band span{font-weight:400;color:#FCE4D8}
+/* ===========================================================================
+   The report reader — sample (R.3) and bought (R.7) are one shell
+   The arch is painted once, pinned, and never moves. The report scrolls over
+   it as separate edge-to-edge sheets of paper with gaps between them, so the
+   painting shows through the seams and the page reads as pages on a wall.
+   =========================================================================== */
+.rp{background:#FBEFE8}
+.rp-arch{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:#FBEFE8 url(assets/arch.png) top center/100% auto no-repeat}
+.rp .scroll{position:relative;z-index:1}
 
-/* ---------- R.3 sample body ---------- */
-.sample-body{background:var(--g50);padding:20px 16px 24px;display:flex;flex-direction:column;gap:16px}
-.s-cover{background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;
-  align-items:center;gap:6px;text-align:center}
-.s-tag{background:var(--w100);color:var(--w700);border-radius:10px;padding:3px 8px;
-  font:600 12px/18px var(--sans)}
-.s-cover h2{margin:0;font:700 20px/30px var(--sans);color:var(--g700)}
-.s-cover .ssub{margin:0;font:400 12px/18px var(--sans);color:var(--g600)}
-.s-cover .sname{margin:0;font:600 14px/20px var(--sans);color:var(--w700)}
+/* Transparent on the arch; a white surface only once prose is underneath. */
+.rp-head{position:absolute;top:0;left:0;right:0;z-index:14;flex:none;
+  display:flex;align-items:center;gap:10px;
+  padding:calc(var(--sbh) + 8px) 16px 10px;
+  background:transparent;transition:background .2s ease,box-shadow .2s ease}
+.rp-head > :last-child{margin-left:auto}
+.rp-head.solid{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
+  box-shadow:0 1px 0 var(--g200)}
+
+.rp-hero{padding:calc(var(--sbh) + 52px) 16px 18px;
+  display:flex;flex-direction:column;align-items:center;text-align:center}
+.rp-tag{margin:0;font:700 10.5px/15px var(--sans);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--w700)}
+.rp-tag.paid{color:var(--s700)}
+.rp-title{margin:5px 0 0;font:700 24px/31px var(--sans);color:var(--g900)}
+.rp-sub{margin:5px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
+
+/* The sketch, as a card of paper with a turned corner. On the sample it is
+   blurred — it is the one thing ₹49 actually buys, so it is the hero AND the
+   thing held back. */
+.paper{position:relative;width:100%;margin-top:16px;background:#fff;border-radius:14px;
+  padding:10px;box-shadow:0 16px 34px -14px rgba(74,24,8,.38),0 0 0 1px rgba(74,24,8,.07)}
+.paper-art{position:relative;border-radius:10px;overflow:hidden;background:var(--g100)}
+.paper-art img{width:100%;height:auto}
+.paper.preview .paper-art img{filter:blur(8px) saturate(.88);transform:scale(1.09)}
+.pv-badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:rgba(255,255,255,.92);border-radius:999px;padding:6px 15px;
+  font:700 11px/15px var(--sans);letter-spacing:.16em;color:var(--w700);
+  box-shadow:0 4px 12px -4px rgba(74,24,8,.3)}
+.paper-foot{display:flex;align-items:center;gap:12px;padding:12px 4px 2px;text-align:left}
+.paper-foot > div{flex:1;min-width:0}
+.paper-foot i{flex:none;width:1px;height:30px;background:var(--g200)}
+.paper-foot small{display:block;font:600 9.5px/14px var(--sans);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--g500)}
+.paper-foot b{display:block;font:600 13px/19px var(--sans);color:var(--g800)}
+.paper-fold{position:absolute;right:0;bottom:0;width:26px;height:26px;
+  border-bottom-right-radius:14px;
+  background:linear-gradient(225deg,#F1DED3 0 52%,transparent 52%)}
+
+.rp-lang{margin-top:16px;display:inline-flex;align-items:center;gap:6px;
+  border:1px solid rgba(74,24,8,.18);background:rgba(255,255,255,.88);
+  border-radius:999px;padding:8px 15px;backdrop-filter:blur(6px);
+  font:600 13px/18px var(--sans);color:var(--g700)}
+.rp-lang span{color:var(--brand-dk)}
+.rp-share{margin-top:16px;display:inline-flex;align-items:center;gap:7px;
+  border:1px solid #ABEFC6;background:var(--s50);border-radius:999px;padding:9px 16px;
+  font:600 13px/18px var(--sans);color:var(--s700)}
+.rp-covers{margin:18px 0 0;font:700 10.5px/15px var(--sans);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--w700)}
+
+/* Edge to edge, with a gap: every direct child of the body becomes one sheet.
+   Specificity has to beat the report blocks' own card rules further down, so
+   these are written under .rp rather than relying on source order. */
+.rp-secs{display:flex;flex-direction:column;gap:12px}
+.rp .rp-secs > *{margin:0;border-radius:0;
+  box-shadow:0 8px 20px -14px rgba(74,24,8,.34)}
+/* Each block keeps its own padding — several of them gutter their children
+   instead, and forcing one value here would double it. */
+.rp .rp-secs > .rs,
+.rp .rp-secs > .r-sec,
+.rp .rp-secs > .r-scores,
+.rp .rp-secs > .r-card,
+.rp .rp-secs > .accent,
+.rp .rp-secs > .carousel-wrap{background:#fff}
+.rp .rp-secs > .rs{padding:18px 16px}
+.rp .rp-secs > .carousel-wrap{padding:16px 0 18px}
+.rp .rp-secs > .carousel-wrap .lbl{padding:0 16px 12px}
+.rp .rp-secs > .upsell{border-left:0;border-right:0}
+.rs-h{margin:0 0 10px;font:700 10.5px/15px var(--sans);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--w700)}
+.rs-p{margin:0;font:400 16px/25px var(--sans);color:var(--g700)}
+.rs-scores{display:flex;gap:10px}
+.rs-scores div{flex:1;border:1px solid var(--g200);border-radius:12px;padding:13px 0;text-align:center}
+.rs-scores b{display:block;font:700 18px/28px var(--sans);color:var(--w700)}
+.rs-scores small{display:block;margin-top:2px;font:400 12px/18px var(--sans);color:var(--g600)}
+.rs-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.rs-list li{position:relative;padding-left:18px;font:400 16px/24px var(--sans);color:var(--g700)}
+.rs-list li::before{content:"";position:absolute;left:0;top:8px;
+  width:8px;height:8px;border-radius:50%;background:var(--w500)}
+.rs-note{margin:14px 0 0;font:400 12px/18px var(--sans);color:var(--g500)}
+
+/* Devanagari needs a touch more leading than Latin at the same size. */
+.dev,.dev *{font-family:var(--dev)}
+.dev .accent .at p,.dev .rs-p,.dev .rs-list li{line-height:26px}
+
 .accent{background:var(--w25);border-radius:12px;display:flex;gap:12px;overflow:hidden}
 .accent .bar{width:3px;background:var(--w500);flex:none}
 .accent .at{flex:1;padding:14px 14px 14px 0;display:flex;flex-direction:column;gap:6px}
 .accent .at b{font:600 12px/18px var(--sans);color:var(--w700)}
 .accent .at p{margin:0;font:400 16px/24px var(--sans);color:var(--g700)}
-.s-scores{display:flex;gap:8px}
-.s-scores div{flex:1;background:#fff;border:1px solid var(--g200);border-radius:12px;
-  padding:14px 0;text-align:center}
-.s-scores b{display:block;font:700 18px/28px var(--sans);color:var(--w700)}
-.s-scores small{display:block;font:400 12px/18px var(--sans);color:var(--g600);margin-top:2px}
-.s-covers{background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.s-covers .clbl{font:600 12px/18px var(--sans);color:var(--w700)}
-.s-covers .item{display:flex;gap:10px;align-items:center}
-.s-covers .item::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--w500)}
-.s-covers .item p{margin:0;font:400 16px/24px var(--sans);color:var(--g700)}
-.s-note{margin:0;font:400 12px/18px var(--sans);color:var(--g600)}
-/* Devanagari needs a touch more leading than Latin at the same size. */
-.dev,.dev *{font-family:var(--dev)}
-.dev .accent .at p,.dev .s-covers .item p{line-height:26px}
+/* Inside the reader the accent is already its own sheet, so it drops the card. */
+.rp .rp-secs > .accent .at{padding:18px 16px 18px 0}
+
+/* Ask Hemali — a live composer pinned under the report. */
+.pad-ask{height:126px}
+.askbar{flex:none;position:relative;z-index:12;
+  padding:11px 14px calc(12px + env(safe-area-inset-bottom,0px));
+  background:#fff;border-top:1px solid var(--g200);
+  box-shadow:0 -8px 24px -10px rgba(74,24,8,.26)}
+.ask-top{display:flex;align-items:center;gap:9px}
+.ask-who{flex:1;min-width:0}
+.ask-who b{display:block;font:600 13px/18px var(--sans);color:var(--g900)}
+.ask-who small{display:block;font:400 11px/16px var(--sans);color:var(--s700)}
+.ask-rate{flex:none;display:flex;align-items:center;gap:6px}
+.ask-rate s{font:400 12px/16px var(--sans);color:var(--g400)}
+.ask-rate em{font-style:normal;font:700 13px/18px var(--sans);color:var(--brand-dk)}
+.ask-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.ask-in{flex:1;min-width:0;height:42px;border:1px solid var(--g300);border-radius:999px;
+  padding:0 15px;background:var(--g50);font:400 14px/20px var(--sans);color:var(--g800)}
+.ask-in::placeholder{color:var(--g500)}
+.ask-in:focus{outline:2px solid var(--brand50);border-color:var(--brand)}
+.ask-send{flex:none;width:42px;height:42px;border:0;border-radius:50%;background:var(--brand);
+  display:grid;place-items:center}
 
 /* ---------- R.7 read-in-app report ---------- */
-.read-body{background:var(--g50);padding:16px 16px 40px;display:flex;flex-direction:column;gap:16px}
-.r-cover{background:#fff;border-radius:12px;padding:28px 16px;text-align:center}
-.r-cover .eyebrow{letter-spacing:.06em}
-.r-cover h2{margin:8px 0 0;font:700 24px/30px var(--sans);color:var(--g700)}
-.r-cover .rfor{margin:8px 0 0;font:600 16px/20px var(--sans);color:var(--brand)}
-.r-cover .rmeta{margin:8px 0 0;font:400 12px/18px var(--sans);color:var(--g500)}
-/* The report's own colourway carried onto its title page. */
-.r-cover.rc-art{position:relative;overflow:hidden;padding-top:34px}
-.r-cover.rc-art::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;
-  background:linear-gradient(90deg,var(--cva),var(--cvb))}
 .r-card{background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:16px}
 /* Ring dials, after Melooha: the arc carries the degree and the word under the
    label carries the meaning, so no raw number is ever shown. */
@@ -1142,6 +1241,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .book .cover img{width:100%;height:100%;object-fit:contain}
 .book.open .cover{transform:rotateY(-160deg)}
 .book-cap{margin:0;font:600 15px/22px var(--sans);color:var(--brand);transition:opacity .3s ease}
+/* With painted artwork the cover fills its card edge to edge and the page
+   behind it is the painted spread, so what swings open is the real book. */
+.book.art .cover img{object-fit:cover;border-radius:3px 7px 7px 3px}
+.book.art .page{background:#FBF6EC right center/auto 104% no-repeat;padding:0}
+.book.art .page > *{display:none}
+.book-stage{cursor:pointer}
 
 /* ---------- Scrim + sheets ---------- */
 .scrim{position:absolute;inset:0;z-index:70;background:rgba(16,24,40,.45);opacity:0;transition:opacity .22s ease}

@@ -276,6 +276,10 @@ function show(id, mode) {
   hidePush();
   var sc = $('[data-scroll]', next);
   if (sc) sc.scrollTop = 0;
+  // The scroll went back to the top, so the header has to go back to glass —
+  // it does not fire a scroll event for a programmatic reset.
+  var rh = $('.rp-head', next);
+  if (rh) rh.classList.remove('solid');
   onEnter(id);
 }
 
@@ -293,7 +297,7 @@ function back() {
 }
 
 function onEnter(id) {
-  if (id === 'read') animateBars();
+  if (id === 'read') { animateBars(); startAsk(); } else { stopAsk(); }
   if (id === 'timeline' && !state.paid) return;
 }
 
@@ -460,8 +464,15 @@ function langLabel(id) {
   return l.native || l.label;
 }
 
+/* The sample is only written in two voices, and a nine-row list promised seven
+   it could not keep. English and Hinglish are also the two that actually split
+   her audience — anything else is a translation request, not a reading choice. */
+var READ_LANGS = ['en', 'hinglish'];
+
 function renderLangList() {
-  $('#langList').innerHTML = LANGS.map(function (l) {
+  $('#langList').innerHTML = LANGS.filter(function (l) {
+    return READ_LANGS.indexOf(l.id) > -1;
+  }).map(function (l) {
     var name = l.native ? l.label + ' · ' + l.native : l.label;
     return '<button type="button" data-lang="' + l.id + '"' +
            (l.id === state.lang ? ' class="on"' : '') + '>' +
@@ -502,31 +513,34 @@ function copyFor(id) {
   };
 }
 
+/* One section of the reader: a full-width band of paper laid on the arch, with
+   a gap above and below so the painting shows through the seams. */
+function rsec(label, body) {
+  return '<section class="rs">' +
+    (label ? '<h3 class="rs-h">' + label + '</h3>' : '') + body + '</section>';
+}
+
 function renderSample() {
   var c = copyFor(state.lang);
   var sec = $('#sample');
 
   sec.classList.toggle('dev', c.dev);
   $('#langChipLabel').textContent = c.chip;
-  $('#sampleBandSub').textContent = c.bandSub;
-  $('[data-i18n="sampleTitle"]', sec).textContent = c.navTitle;
+  $('#sampleTag').textContent = c.tag;
+  $('#sampleTitle').textContent = c.title;
+  $('#sampleSub').textContent = c.subtitle;
   $('#buyInLang').textContent = c.buy;
 
   $('#sampleBody').innerHTML =
-    '<div class="s-cover">' +
-      '<span class="s-tag">' + c.tag + '</span>' +
-      '<h2>' + c.title + '</h2>' +
-      '<p class="ssub">' + c.subtitle + '</p>' +
-      '<p class="sname">' + c.name + '</p>' +
-    '</div>' +
-    accent(c.bpLabel, c.bpText) +
-    '<div class="s-scores">' + c.scores.map(function (s) {
+    rsec(c.bpLabel, '<p class="rs-p">' + c.bpText + '</p>') +
+    rsec(null, '<div class="rs-scores">' + c.scores.map(function (s) {
       return '<div><b>' + s.v + '</b><small>' + s.l + '</small></div>';
-    }).join('') + '</div>' +
-    '<div class="s-covers"><span class="clbl">' + c.coversLabel + '</span>' +
-      c.covers.map(function (t) { return '<div class="item"><p>' + t + '</p></div>'; }).join('') +
-    '</div>' +
-    '<p class="s-note">' + c.footnote + '</p>';
+    }).join('') + '</div>') +
+    rsec(c.coversLabel,
+      '<ul class="rs-list">' +
+        c.covers.map(function (t) { return '<li>' + t + '</li>'; }).join('') +
+      '</ul>' +
+      '<p class="rs-note">' + c.footnote + '</p>');
 }
 
 function accent(label, text) {
@@ -614,7 +628,7 @@ function renderRead() {
         '<div class="carousel">' +
           REPORTS.filter(function (x) { return x.id !== state.pick; }).map(function (x) {
             return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
-              coverArt(x, 'cv-sm') +
+              book3d(x) +
               '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
               '<span class="pc-pr"><em>₹49</em><s>₹499</s></span>' +
               '<span class="pc-btn">Read the full report \u00b7 \u20b949</span></button>';
@@ -722,17 +736,80 @@ function hideReadyPush() {
 function openBook() {
   hideReadyPush();
   go('book', 'fade');
-  var bk = $('#bookEl'), cap = $('#bookCap');
+  var bk = $('#bookEl'), cap = $('#bookCap'), r = reportById(state.pick);
+  // Where the painted cover exists, the thing that swings open is the real
+  // cover, onto the painted spread — not a drawing of a book.
+  var img = $('#bookCover img'), pg = $('#bookPage');
+  bk.classList.toggle('art', !!r.art);
+  img.src = r.art ? r.art.closed : 'assets/book.svg';
+  pg.style.backgroundImage = r.art ? 'url(' + r.art.open + ')' : '';
   bk.classList.remove('open');
   cap.textContent = 'Your report is ready';
   later(function () {
     bk.classList.add('open');
     cap.textContent = 'Opening your report…';
   }, 450);
-  later(function () {
-    state.stack = [state.entry];      // the report is now "read", so back lands on Today
-    show('read', 'fade');
-  }, 2000);
+  later(enterRead, 1800);
+}
+
+/* The opening is a curtain, not a toll booth: the second time she sees it a tap
+   takes her straight in. */
+function enterRead() {
+  if (state.screen !== 'book') return;
+  clearTimers();
+  state.stack = [state.entry];        // the report is now "read", so back lands on Today
+  show('read', 'fade');
+}
+
+/* ---------------------------------------------------------------- the reader's composer
+   The report answers what she asked and raises what she did not. This bar is
+   where those go, so it types the open question for her — a live composer reads
+   as the next line of the report, where a banner reads as an ad. */
+var ASKS = {
+  partner: [
+    'Will I recognise him when we meet?',
+    'Why does my chart say north-west?',
+    'What should I avoid in May 2027?'
+  ],
+  marriage: [
+    'Is 2027 or 2028 better for the wedding?',
+    'How do I handle my in-laws slowly warming?',
+    'Which remedy works for Saturn here?'
+  ],
+  career: [
+    'Should I take the switch in March?',
+    'How do I ask for the raise in this window?',
+    'Is my own setup written in my chart?'
+  ]
+};
+
+var askT = null, askN = 0;
+function stopAsk() { clearTimeout(askT); askT = null; }
+
+function startAsk() {
+  stopAsk();
+  var el = $('#askIn');
+  if (!el) return;
+  var list = ASKS[state.pick] || ASKS.partner;
+  var msg = list[askN % list.length], i = 0;
+  // A sentence appearing letter by letter is motion; reduced motion gets the
+  // whole question at once and no loop.
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    el.placeholder = msg;
+    return;
+  }
+  el.placeholder = '';
+  function type() {
+    el.placeholder = msg.slice(0, ++i);
+    askT = setTimeout(i < msg.length ? type : erase, i < msg.length ? 36 : 1900);
+  }
+  function erase() {
+    el.placeholder = msg.slice(0, --i);
+    if (i > 0) { askT = setTimeout(erase, 14); return; }
+    askN++;
+    askT = setTimeout(startAsk, 260);
+  }
+  type();
 }
 
 /* ---------------------------------------------------------------- payment */
@@ -1451,15 +1528,10 @@ function careerBody(c) {
 /* One body, two charts. `mode` is 'sample' for the free preview (the demo
    chart, whole report, nothing withheld) and 'her' once she has paid. */
 function reportBody(id, mode) {
-  var r = reportById(id), ch = CHARTS[mode], c = ch[id];
-  return '<div class="r-cover rc-art" style="--cva:' + r.cover.a + ';--cvb:' + r.cover.b + '">' +
-      coverArt(r, 'cv-lg') +
-      '<p class="eyebrow">MADE BY ASTRO HEMALI</p>' +
-      '<h2>' + esc(r.t) + '</h2>' +
-      '<p class="rfor">For ' + esc(ch.who) + '</p>' +
-      '<p class="rmeta">' + esc(ch.meta) + '</p>' +
-    '</div>' +
-    accent('THE BIG PICTURE', esc(c.big)) +
+  var ch = CHARTS[mode], c = ch[id];
+  // No title page: the reader's own hero already names the report and who it
+  // was made for, and two covers in a row is a door opening onto a door.
+  return accent('THE BIG PICTURE', esc(c.big)) +
     '<div class="r-scores"><p class="dlbl">CHART AT A GLANCE</p>' +
       c.dials.map(function (d) { return dial(d[0], d[1], d[2], d[3]); }).join('') +
     '</div>' +
@@ -1493,7 +1565,7 @@ function renderReport() {
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
     .map(function (x) {
       return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
-        coverArt(x, 'cv-sm') +
+        book3d(x) +
         '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
         '<span class="pc-pr"><em>\u20b949</em><s>\u20b9499</s></span>' +
         '<span class="pc-btn">Read the full report \u00b7 \u20b949</span></button>';
@@ -1658,7 +1730,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-ask]');
   if (!t) return;
 
   // PM track: picking one of the three reports opens it on the report page.
@@ -1892,6 +1964,18 @@ $$('.screen').forEach(function (s) {
   if (!head || !sc) return;
   sc.addEventListener('scroll', function () {
     head.classList.toggle('scrolled', sc.scrollTop > 40);
+  }, { passive: true });
+});
+
+$('#bookStage').addEventListener('click', enterRead);
+
+/* The two report readers do the same thing: the header starts transparent on
+   the painted arch and only takes a white surface once prose is under it. */
+$$('.rp').forEach(function (s) {
+  var head = $('.rp-head', s), sc = $('[data-scroll]', s);
+  if (!head || !sc) return;
+  sc.addEventListener('scroll', function () {
+    head.classList.toggle('solid', sc.scrollTop > 24);
   }, { passive: true });
 });
 
