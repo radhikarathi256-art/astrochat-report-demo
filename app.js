@@ -744,7 +744,7 @@ function pointers(r, n) {
   var top = r.learn.slice(0, n), rest = r.learn.length - top.length;
   return '<ul class="pts">' +
     top.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
-    (rest > 0 ? '<li class="pts-more">+' + rest + ' aur sawaalon ke jawab</li>' : '') +
+    (rest > 0 ? '<li class="pts-more">+' + rest + ' more questions answered</li>' : '') +
   '</ul>';
 }
 
@@ -839,7 +839,7 @@ function sellCard(r) {
         '<b class="sell-t">' + esc(r.t) + '</b>' +
         '<span class="sell-stats">' +
           '<em><b>' + r.rating + '</b><i>★</i> · ' + r.pages + ' pages</em>' +
-          '<em><b>' + inr(r.sold) + '</b> padh chuke</em>' +
+          '<em><b>' + inr(r.sold) + '</b> readers</em>' +
         '</span>' +
       '</span>' +
     '</span>' +
@@ -860,7 +860,7 @@ function offer3Card() {
     fomoStrip() +
     sellCard(r) +
     '<div class="of3-in">' +
-      '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
+      '<p class="pts-h">Your report answers all of this</p>' +
       pointers(r, 3) +
       // The price sits with the pointers, not off on its own: the number only
       // means anything next to the list it is buying.
@@ -868,7 +868,7 @@ function offer3Card() {
       // The sample lives inside the report page, so the button has to promise
       // the read, not a checkout.
       '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">' +
-        'Read the full sample · yours for ₹49</button>' +
+        'Read my answer · ₹49</button>' +
       '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
         (dayData().lastAsk
           ? 'This will not appear here after today'
@@ -956,24 +956,24 @@ function renderHistCard() {
   $('#tlChapCard').innerHTML =
     '<p class="eyebrow">From Astro Hemali</p>' +
     sellCard(hr) +
-    '<p class="pts-h">Yeh report in sab ka jawab degi</p>' +
+    '<p class="pts-h">Your report answers all of this</p>' +
     pointers(hr, 3) +
     priceRow() +
     fomoStrip() +
     '<div class="rep-acts">' +
       '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">' +
-        'Read the full sample · yours for ₹49</button>' +
+        'Read my answer · ₹49</button>' +
     '</div>';
 }
 
 /* Tomorrow's reason to return: the free chat and the next coin. */
 function remindCard() {
   if (state.reminded) {
-    return '<div class="rm-card done"><p>🔔 Done. Kal ki free chat ready hote hi aapko bata denge.</p></div>';
+    return '<div class="rm-card done"><p>🔔 Done. We will tell you the moment tomorrow\'s free chat is ready.</p></div>';
   }
   return '<div class="rm-card">' +
-    '<p>Kal phir <b>2 minute free chat</b> milegi, aur check-in par ₹11. Yaad dila dein?</p>' +
-    '<button class="btn sm primary" type="button" data-remind>🔔 Haan, yaad dilaiye</button>' +
+    '<p>Tomorrow you get <b>2 minutes free chat</b> again, and ₹11 on the check-in. Shall we remind you?</p>' +
+    '<button class="btn sm primary" type="button" data-remind>🔔 Yes, remind me</button>' +
   '</div>';
 }
 
@@ -1078,7 +1078,7 @@ function renderPicker() {
       '<span class="pk-t">' +
         '<b>' + esc(r.t) + '</b>' +
         '<small>' + esc(r.s) + '</small>' +
-        '<span class="pk-meta"><i class="pk-n">' + r.learn.length + ' sawaalon ke jawab</i>' +
+        '<span class="pk-meta"><i class="pk-n">' + r.learn.length + ' questions answered</i>' +
           r.pages + ' pages</span>' +
       '</span>' +
       '<em class="pk-chev" aria-hidden="true">›</em>' +
@@ -1680,7 +1680,7 @@ document.addEventListener('click', function (e) {
     closeSheet();
     state.reminded = true;
     renderChat();
-    toast('Reminder on — kal ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + free chat ready', 'success');
+    toast('Reminder on — tomorrow ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + free chat ready', 'success');
     return;
   }
   if (t.id === 'notifNo') { $('#notifDlg').hidden = true; closeSheet(); return; }
