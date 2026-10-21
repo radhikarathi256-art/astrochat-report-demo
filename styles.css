@@ -10,7 +10,7 @@
   --s700:#027A48; --s50:#ECFDF3;
   --purple:#6941C6; --purple50:#F4EBFF;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --serif:'Cormorant Infant',Georgia,serif;
+  --serif:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; /* display face = Inter, no serif */
   --dev:'Noto Sans Devanagari','Inter',sans-serif;
   --sbh:26px;            /* status bar height */
 }
@@ -132,11 +132,14 @@ img{display:block}
   font:500 12px/16px var(--sans);color:var(--g500);padding:2px 0}
 .bnav button.on{color:var(--brand);font-weight:600}
 .bnav svg{display:block}
-/* The morning's free chapter waits in History — the badge counts it. */
-.bnav .ndot{position:absolute;top:-4px;left:calc(50% + 4px);min-width:17px;height:17px;
-  padding:0 4px;border-radius:9px;background:#F04438;border:1.5px solid #fff;
-  display:flex;align-items:center;justify-content:center;
-  font:700 10px/1 var(--sans);font-style:normal;color:#fff}
+/* The morning's free chapter waits in History — an unread dot, not a count.
+   A "1" invites arithmetic; a dot just says something is in there. */
+.bnav .ndot{position:absolute;top:-2px;left:calc(50% + 6px);width:9px;height:9px;
+  border-radius:50%;background:#D32F2F;border:1.5px solid #fff}
+/* Same dot on the chat-history icon in the header, so both doors are lit. */
+.ic-btn{position:relative}
+.ic-btn .ndot{position:absolute;top:-1px;right:-1px;width:9px;height:9px;
+  border-radius:50%;background:#D32F2F;border:1.5px solid #fff}
 
 /* ---------- Buttons ---------- */
 .btn{height:48px;border-radius:12px;border:1px solid transparent;font:600 16px/24px var(--sans);
@@ -429,6 +432,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:linear-gradient(145deg,var(--cva) 0%,var(--cvb) 100%);
   box-shadow:0 14px 20px rgba(74,24,8,.38),inset 2px 0 4px rgba(0,0,0,.16)}
 .bk3-art{position:absolute;inset:0;width:100%;height:100%}
+.bk3-leaf{position:absolute;inset:0;border-radius:2px 5px 5px 2px;
+  transform:translateZ(7px);
+  background:linear-gradient(100deg,#C8B8A6 0 6%,#F7F1E8 22%,#FFFDF8 100%);
+  box-shadow:inset 3px 0 6px rgba(0,0,0,.14)}
+/* The tease: the cover lifts a little off the leaf, hangs there, and falls
+   shut again. Hinged on the spine edge, so it reads as a book and not as a
+   panel sliding. Long closed beat — the point is the glance, not the motion. */
+.sell-hero .bk3-face{transform-origin:left center;will-change:transform;
+  animation:bkTease 4.6s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes bkTease{
+  0%,46%   {transform:translateZ(9px) rotateY(0deg)}
+  62%,78%  {transform:translateZ(9px) rotateY(-28deg)}
+  94%,100% {transform:translateZ(9px) rotateY(0deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .sell-hero .bk3-face{animation:none}
+}
 /* Pivot on the left edge, swing into the ZY plane, then sit half the depth
    back so the board is centred on the cover rather than hanging off it. */
 .bk3-spine{position:absolute;top:0;left:0;width:18px;height:100%;
