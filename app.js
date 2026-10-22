@@ -1050,10 +1050,15 @@ function book3d(r) {
   if (r.art) {
     return '<span class="bkt" aria-hidden="true">' +
       '<span class="bkt-in">' +
-        // The spread sits under the cover, so when the cover lifts there is
-        // painted page in the gap rather than a hole.
+        // The right-hand page of the spread, sitting under the cover.
         '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
-        '<span class="bkt-face" style="background-image:url(' + r.art.closed + ')"></span>' +
+        // The cover and the first leaf turn together: painted board on the
+        // front, the spread's left-hand page on the back, so when it swings
+        // the full 180 the book is lying open flat rather than ajar.
+        '<span class="bkt-cov">' +
+          '<span class="bkt-face" style="background-image:url(' + r.art.closed + ')"></span>' +
+          '<span class="bkt-back" style="background-image:url(' + r.art.open + ')"></span>' +
+        '</span>' +
       '</span>' +
     '</span>';
   }
@@ -1112,8 +1117,13 @@ function offer3Card() {
     // Stands proud of the top-right corner and hinges on its spine, so the
     // card has one thing moving and it is the thing being sold.
     '<span class="of3-bkw" aria-hidden="true">' +
-      '<span class="of3-leaf"></span>' +
-      '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+      '<span class="of3-leaf"' +
+        (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+      '<span class="of3-cov">' +
+        '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+        '<span class="of3-back"' +
+          (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+      '</span>' +
     '</span>' +
     '<div class="of3-pts">' + pointers(r, 3) + '</div>' +
     '<div class="of3-foot">' +
@@ -1146,12 +1156,17 @@ function histCard(r) {
         // Shut, with its page block showing on the right — the same object the
         // chat offer sells, at rest.
         '<span class="hw-bkw" aria-hidden="true">' +
-          '<span class="hw-leaf"></span>' +
-          (r.art
-            ? '<img class="hw-bk" src="' + r.art.closed + '" alt="">'
-            // No painted cover yet: the drawn one stands in, so the hinge
-            // never swings an empty frame over the leaf.
-            : drawnFace(r, 'hw-bk bk3-face')) +
+          '<span class="hw-leaf"' +
+            (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+          '<span class="hw-cov">' +
+            (r.art
+              ? '<img class="hw-bk" src="' + r.art.closed + '" alt="">'
+              // No painted cover yet: the drawn one stands in, so the hinge
+              // never swings an empty frame over the leaf.
+              : drawnFace(r, 'hw-bk bk3-face')) +
+            '<span class="hw-back"' +
+              (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+          '</span>' +
         '</span>' +
       '</div>' +
       '<button class="hw-go" type="button" data-pick="' + r.id + '">Learn More</button>' +
