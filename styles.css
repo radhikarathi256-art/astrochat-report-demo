@@ -462,19 +462,35 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    with the page edges showing down the right side. */
 .bkt,.bk3{position:relative;z-index:2;flex:none;display:block;
   width:86px;height:114px;background:none;box-shadow:none}
-/* The page block — the one detail that makes a flat rectangle read as paper. */
+/* The page block — the one detail that makes a flat rectangle read as paper.
+   Hardbound, so the boards are bigger than the text block: the block is inset
+   4px top and bottom and the cover overhangs it, which is the square a case
+   binding has and a paperback does not. The fine repeating stripe is stacked
+   leaves; without it the block is a beige bar. */
 .bkt::after,.bk3::after{content:'';position:absolute;z-index:0;
-  right:-4px;top:3px;bottom:3px;width:7px;border-radius:0 3px 3px 0;
-  background:linear-gradient(90deg,var(--pap-lt) 0,var(--pap) 36%,var(--pap-dk) 60%,var(--pap) 100%);
+  right:-5px;top:4px;bottom:4px;width:8px;border-radius:0 2px 2px 0;
+  background:
+    repeating-linear-gradient(90deg,rgba(74,24,8,.1) 0 .5px,rgba(74,24,8,0) .5px 2px),
+    linear-gradient(90deg,var(--pap-lt) 0,var(--pap) 36%,var(--pap-dk) 60%,var(--pap) 100%);
   box-shadow:0 8px 14px -6px rgba(74,24,8,.3)}
 .bkt::before,.bk3::before{content:none}
 .bkt-in,.bk3-in{position:absolute;inset:0;z-index:1}
 /* The cover is wrapped so it can carry a back face; everywhere but the report
    hero it is an inert pass-through and the book stays shut. */
 .bkt-cov{position:absolute;inset:0;z-index:1}
+/* A case-bound board, not a card: squared corners rather than a 6px round, a
+   dark line along the bottom and fore-edge for the thickness of the board
+   itself, a thin highlight along the top where the light catches that edge,
+   and the cast shadow tightened so the book sits on the page instead of
+   floating over it. */
 .bkt-face,.bk3-face{position:absolute;inset:0;overflow:hidden;
-  border-radius:2px 6px 6px 2px;
-  box-shadow:0 10px 20px -8px rgba(74,24,8,.34)}
+  border-radius:1px 3px 3px 1px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset -1px 0 0 rgba(74,24,8,.3),
+    inset 0 -2px 0 rgba(74,24,8,.26),
+    0 1px 1px rgba(74,24,8,.4),
+    0 10px 18px -8px rgba(74,24,8,.42)}
 .bkt-face{background:center/cover no-repeat}
 /* The wash, for the reports with no painted cover yet: two soft blooms in the
    report's own colourway over a pale ground, the way a wet brush leaves it. */
@@ -483,10 +499,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   radial-gradient(50% 29% at 75% 71%,var(--cvb) 0,rgba(255,255,255,0) 72%),
   radial-gradient(44% 25% at 62% 41%,var(--cvi) 0,rgba(255,255,255,0) 76%),
   linear-gradient(160deg,#FFFCF8 0,#F7F0E7 100%)}
-/* The spine edge: a damp band of the darker wash, not a 3D board. */
+/* The spine and the groove beside it. A case binding has a rounded spine that
+   turns away from the light, then a hinge where the board is pulled in: dark,
+   a lighter ridge, a dark line, then the flat of the board. That sequence is
+   the whole difference between a hardback and a printed rectangle. */
 .bkt-face::before,.bk3-face::before{content:'';position:absolute;
-  left:0;top:0;bottom:0;width:6px;
-  background:linear-gradient(90deg,rgba(74,24,8,.22) 0,rgba(74,24,8,0) 100%)}
+  left:0;top:0;bottom:0;width:11px;
+  background:linear-gradient(90deg,
+    rgba(74,24,8,.44) 0,
+    rgba(74,24,8,.2) 34%,
+    rgba(255,255,255,.2) 56%,
+    rgba(74,24,8,.3) 72%,
+    rgba(74,24,8,0) 100%)}
 .bk3-art{position:absolute;inset:0;width:100%;height:100%;opacity:.74}
 .bkt-leaf,.bkt-back,.bk3-leaf,.bk3-spine{display:none}
 /* ---- the rendered book ----
@@ -816,6 +840,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .cv-lg{--cw:104px;--ch:138px;margin:0 auto 16px;border-radius:3px 8px 8px 3px}
 .ex-tap .cv{--cw:34px;--ch:45px}
 .rep-top .cv{--cw:44px;--ch:56px}
+/* The book on the timeline card is the same object as everywhere else, just at
+   the old thumbnail's size. Nothing here moves, so the rendered book stands. */
+.rep-top .bkt,.rep-top .bk3{width:44px;height:56px}
 
 /* Picker screen */
 .pk-lead{margin:14px 16px 0;font:400 14px/21px var(--sans);color:var(--g600)}
@@ -1019,17 +1046,31 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- R.2 Report page ---------- */
 /* The hero photo fades into white, so the card below it has no visible seam. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
-  padding:calc(var(--sbh) + 59px) 12px 28px;
+  /* 104, not 59: the new clip is a much squarer frame than the old one, so
+     object-fit has almost no vertical slack left to push the couple up with.
+     The headroom has to come from the book starting lower instead — which is
+     the same requirement either way, that both faces are clear of the boards
+     rather than half behind them. */
+  padding:calc(var(--sbh) + 104px) 12px 28px;
   border-radius:0 0 24px 24px;overflow:hidden;background:var(--rose)}
-/* The couple, framed so both heads clear the book entirely. The 720x1280 source
-   is scaled to 693 tall at this width and the crop window is only 415, so where
-   that window sits is the whole composition: too low and the book's top edge
-   cuts through her head, too high and the top of his is off the frame. 54% is
-   the middle of the band that holds through the whole loop — they turn as it
-   plays, and the heads move with them.
+/* The couple, framed so both heads clear the book entirely. The source is the
+   Figma clip with its letterboxing cut away and its audio track removed from
+   the file, 540x636 — a far squarer frame than the old one, so there is only
+   about 45px of slack under object-fit and 100% spends all of it pushing the
+   couple up. The rest of the headroom comes from the hero's padding above.
    .r2-hero already paints --rose, so this needs no ground of its own. */
 .r2-vid{position:absolute;inset:0;z-index:0;width:100%;height:100%;
-  object-fit:cover;object-position:50% 54%;pointer-events:none}
+  object-fit:cover;object-position:50% 100%;pointer-events:none}
+/* Marriage and Career are painted stills, not film. The image is set on
+   .r2-hero itself by renderReport; this only has to clear the things that were
+   drawn for the couple — the rose ground, the clip over it, and the rose wash
+   that lifted the middle of that frame. The white fade at the bottom stays,
+   because that is what joins the hero to the card. Anchored to the top so the
+   figures sit above the book rather than behind it. */
+.r2-hero.has-bg{background-color:#fff;background-size:cover;
+  background-position:50% 8%;background-repeat:no-repeat}
+.r2-hero.has-bg .r2-vid{display:none}
+.r2-hero.has-bg::after{content:none}
 /* The wash over the video is what keeps the cover legible: the rose lifted
    through the middle of the frame, so the artwork sits on a settled ground
    rather than on top of a moving picture. Same stacking level as the video and
@@ -1346,9 +1387,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp{background:#F6EEF0}
 /* Pulled up to sit right under the status bar: at 48px the crown of the arch
    was below the header and the page read as a band of pink, not an arch. */
-.rp-arch{position:absolute;top:calc(var(--sbh) + 8px);left:0;right:0;height:660px;
+/* Run to the bottom of the screen and dissolve on the way, instead of stopping
+   at the PNG's own edge. The painting used to end in a hard horizontal line a
+   little above the ask bar, which read as a crop rather than a backdrop; now
+   the last stretch fades into the ground and the bar sits on top of a wash with
+   no edge to notice. */
+.rp-arch{position:absolute;top:calc(var(--sbh) + 8px);left:0;right:0;bottom:0;
   z-index:0;pointer-events:none;
-  background:url(assets/arch.png) top center/100% auto no-repeat}
+  background:url(assets/arch.png) top center/100% auto no-repeat;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 58%,rgba(0,0,0,0) 86%);
+          mask-image:linear-gradient(180deg,#000 0,#000 58%,rgba(0,0,0,0) 86%)}
 /* The PNG is a candy pink. It is recoloured here to a muted dusty rose — warm
    enough to be the orange button's family, desaturated enough to stay a
    backdrop, and darkest directly behind the sketch so a cream card lifts off
@@ -1357,7 +1405,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    somewhere unrelated. Multiply keeps the columns and vines readable as tone,
    so the stops here are a shade lighter than the colour that lands. */
 .rp-arch::after{content:"";position:absolute;inset:0;mix-blend-mode:multiply;
-  background:radial-gradient(78% 52% at 50% 36%,#8A6069 0,#A9808A 48%,#C9A6AC 100%);
+  /* No grey in any of the three stops. The old middle was a mauve with the
+     saturation taken out of it, which under multiply turned the whole arch
+     slightly dirty; these are all on the rose-to-peach line, so the painting
+     stays warm however deep it goes. */
+  background:radial-gradient(78% 52% at 50% 36%,#C0677A 0,#DD9A9B 48%,#F3C8C2 100%);
   -webkit-mask:url(assets/arch.png) top center/100% auto no-repeat;
           mask:url(assets/arch.png) top center/100% auto no-repeat}
 .rp .scroll{position:relative;z-index:1}
@@ -1648,17 +1700,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .askbar .av-ring{flex:none;width:50px;height:50px;border-width:2px}
 .ask-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .ask-who b{font:600 16px/24px var(--sans);color:var(--g800)}
-/* Her rate, under her name — the struck full price then today's, which is the
-   whole argument for tapping Buy Chat. */
-.ask-rate{display:flex;align-items:center;gap:6px}
-.ask-rate s{font:400 12px/18px var(--sans);color:var(--g400)}
-.ask-rate em{font-style:normal;font:400 14px/19px var(--sans);color:var(--s700)}
-.ask-buy{flex:none;height:44px;padding:0 12px;border:1px solid var(--brand);border-radius:12px;
-  background:var(--brand);font:400 16px/24px var(--sans);color:#fff;white-space:nowrap;cursor:pointer}
-.ask-buy:active{background:var(--brand-dk);border-color:var(--brand-dk)}
-/* Full width now that the send button has become Buy Chat — the placeholder
-   types a whole question across it, so it needs the room. */
-.ask-in{width:100%;height:44px;border:0;border-radius:12px;
+/* What she gets for tapping, said under her name: not a feature, a wait time. */
+.ask-sub{font:400 13px/18px var(--sans);color:var(--s700)}
+/* The rate now holds the corner the Buy Chat button had — struck full price,
+   then today's. Right-aligned and stacked, so the two prices read down from
+   the edge rather than running back into her name. */
+.ask-rate{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:0}
+.ask-rate s{font:400 12px/16px var(--sans);color:var(--g400)}
+.ask-rate em{font-style:normal;font:600 16px/22px var(--sans);color:var(--s700)}
+/* Input and send on one line. The input takes whatever is left, so the
+   placeholder still has most of the bar to type its question across. */
+.ask-row{display:flex;align-items:center;gap:8px}
+.ask-send{flex:none;width:44px;height:44px;display:grid;place-items:center;
+  border:0;border-radius:12px;background:var(--brand);color:#fff;cursor:pointer}
+.ask-send:active{background:var(--brand-dk)}
+.ask-in{flex:1;min-width:0;width:auto;height:44px;border:0;border-radius:12px;
   padding:0 14px;background:var(--g100);font:400 16px/24px var(--sans);color:var(--g800)}
 .ask-in::placeholder{color:var(--g400)}
 .ask-in:focus{outline:2px solid var(--brand50)}
@@ -1861,9 +1917,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .notify{margin-top:14px;background:var(--w50);border-radius:10px;padding:10px 12px;
   font:500 13px/18px var(--sans);color:var(--w700)}
 .rep-acts{display:flex;align-items:center;gap:10px;margin-top:14px}
-.rep-acts .btn{height:44px;font-size:15px}
+/* Both halves of the row, equally. Share was sized to its own word, which left
+   a short button next to a long one and read as an accident rather than a
+   choice. */
+.rep-acts .btn{flex:1 1 0;min-width:0;width:auto;height:44px;font-size:15px;padding:0 12px}
 .rep-acts .of3-price{flex:none}
-.rep-acts .btn.outline{width:auto;padding:0 20px}
 
 /* ---------- R.6b/c Book opening ---------- */
 #book{background:var(--w25)}

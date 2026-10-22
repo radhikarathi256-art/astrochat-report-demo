@@ -83,7 +83,12 @@ var REPORTS = [
     id: 'marriage', t: 'Marriage Report', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
     why: 'Learn how Mars in your chart is holding the talks back',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
-    art: { closed: 'assets/cover-marriage.jpg', open: 'assets/spread-marriage.jpg' },
+    // Figma 3258:6840 for the spread, 3330:6840 for the hero ground.
+    art: {
+      closed: 'assets/cover-marriage.jpg',
+      open: 'assets/spread-marriage.png?v=1',
+      hero: 'assets/bg-marriage.jpg?v=1'
+    },
     chips: ['36 guna match', 'Dosha check'],
     revs: [
       { s: 5, n: 'Anjali D., Surat',  q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
@@ -111,7 +116,12 @@ var REPORTS = [
     id: 'career', t: 'Career & Job', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
     why: 'Learn how Saturn is slowing down your next move',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
-    art: { closed: 'assets/cover-career.jpg', open: 'assets/spread-career.jpg' },
+    // Figma 3325:6840 cover, 3328:6840 spread, 3330:6864 hero ground.
+    art: {
+      closed: 'assets/cover-career.jpg?v=1',
+      open: 'assets/spread-career.png?v=1',
+      hero: 'assets/bg-career.jpg?v=1'
+    },
     chips: ['Switch timing', 'Raise window'],
     revs: [
       { s: 5, n: 'Shruti B., Pune',   q: 'It named March as the switch month. I got the offer on the 11th of March.' },
@@ -718,13 +728,11 @@ function renderRead() {
           REPORTS.filter(function (x) { return x.id !== state.pick; })
             .map(upsellCard).join('') +
         '</div>' +
-      '</div>' +
-      // One line, not a paragraph. Hemali is already sitting in the ask bar at
-      // the bottom of this screen with her rate on show, so re-arguing the case
-      // here only put a wall of text between the reader and the tap.
-      '<div class="upsell">' +
-        '<button class="btn primary" type="button" data-chat>Continue with Astro Hemali</button>' +
       '</div>';
+  // No "Continue with Astro Hemali" button under it: the ask bar is pinned to
+  // the bottom of this same screen with her face, her rate and a composer in
+  // it, so a second button for the identical action only competed with the one
+  // that is always on screen.
 }
 
 /* ---------------------------------------------------------------- buy sheet */
@@ -835,21 +843,27 @@ function enterRead() {
    The report answers what she asked and raises what she did not. This bar is
    where those go, so it types the open question for her — a live composer reads
    as the next line of the report, where a banner reads as an ad. */
+/* Every question names something the report just told her. A general question
+   could have been asked before she paid; one that quotes her own report only
+   exists because she read it, which is the whole reason this bar is here. */
 var ASKS = {
   partner: [
-    'Will I recognise him when we meet?',
-    'Why does my chart say north-west?',
-    'What should I avoid in May 2027?'
+    'My report says north-west — how far is that?',
+    'The image in my report, is that how he looks?',
+    'Chapter 3 says Rahu is blocking it. For how long?',
+    'My report gives a 2027 window. Can I move it?'
   ],
   marriage: [
-    'Is 2027 or 2028 better for the wedding?',
-    'How do I handle my in-laws slowly warming?',
-    'Which remedy works for Saturn here?'
+    'My report says low Manglik — does that need a remedy?',
+    '28 of 36 gunas in my report. Is that enough?',
+    'My report puts the window in late 2027. Why then?',
+    'The in-laws chapter says six months. Six months of what?'
   ],
   career: [
-    'Should I take the switch in March?',
-    'How do I ask for the raise in this window?',
-    'Is my own setup written in my chart?'
+    'My report says March for the switch. Which week?',
+    'It says my work is invisible, not weak. How do I fix that?',
+    'My report says job, not business, this year. Why?',
+    'Saturn on my tenth lord — is that the slow year it means?'
   ]
 };
 
@@ -967,7 +981,10 @@ function paintBought() {
   $('#buyTitle').textContent  = 'Your ' + t;
   $('#r2Title').textContent   = r.tl || 'Your ' + t;
   $('#pushReadyTitle').textContent = 'Your ' + t + ' is ready';
-  $('#repTitle').textContent  = t;
+  // The timeline card is the one surface with room for the report's full name,
+  // and it is the card she taps to read — so it says the whole thing.
+  $('#repTitle').textContent  = r.t2 || 'Your ' + t;
+  $('#repThumb').innerHTML    = book3d(r);
   $('#bookTitle').textContent = t;
 }
 
@@ -1358,20 +1375,14 @@ function renderDayToday() {
     return;
   }
 
-  // Bought: both of Today's surfaces retire into the read.
-  $('#expertSlot').hidden = false;
+  // Bought: the expert card goes back to being only the expert. The report she
+  // owns already has a row of its own in Personalised Guidance, with the same
+  // title, the same Ready pill and the same destination — two of them on one
+  // screen was the same tap offered twice.
+  $('#expertSlot').hidden = true;
+  $('#expertSlot').innerHTML = '';
   $('#guideSlot').hidden  = false;
   renderGuideTile();
-  $('#expertSlot').innerHTML =
-    '<div class="ex-tap" data-go="read" role="button" tabindex="0">' +
-      coverArt(reportById(state.pick), 'cv-sm') +
-      '<span class="ex-t">' +
-        '<b>' + esc(boughtTitle()) + '</b>' +
-        '<span class="ex-sub">Full report open \u2713 \u00b7 ask for remedies</span>' +
-      '</span>' +
-      '<i class="ex-pill">Ready</i>' +
-      '<span class="ex-chev" aria-hidden="true">\u203a</span>' +
-    '</div>';
 }
 
 /* The report as one tile among her guidance — same object as the tarot and
@@ -1442,6 +1453,12 @@ function renderReport() {
   // The hero is the closed cover of the report she is looking at — the same
   // object the chat bubble and the upsells show, just larger.
   $('#r2Book').innerHTML = book3d(r);
+  // Partner's hero moves; the other two are painted stills out of the same
+  // board. `has-bg` is what stops the couple's clip and its rose wash from
+  // showing through a ground that is neither pink nor about a couple.
+  var hero = $('#r2Hero');
+  hero.classList.toggle('has-bg', !!(r.art && r.art.hero));
+  hero.style.backgroundImage = r.art && r.art.hero ? 'url(' + r.art.hero + ')' : '';
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);

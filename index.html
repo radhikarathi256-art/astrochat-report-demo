@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610222346">
+<link rel="manifest" href="manifest.webmanifest?v=202610230001">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610222346">
-<link rel="stylesheet" href="mobile.css?v=202610222346">
+<link rel="stylesheet" href="styles.css?v=202610230001">
+<link rel="stylesheet" href="mobile.css?v=202610230001">
 </head>
 <body>
 
@@ -254,7 +254,10 @@
         </header>
 
         <!-- Full-bleed hero: photo fading to white, with the nav floating on top. -->
-        <div class="r2-hero">
+        <div class="r2-hero" id="r2Hero">
+          <!-- Only Partner has a filmed hero. Marriage and Career get a painted
+               ground instead, set on this element by renderReport, which also
+               adds .has-bg to take the video and the rose wash out. -->
           <!-- Video, not the old 8.7MB gif: a quarter of the weight for a far
                longer, smoother loop. The audio track is stripped from the file
                itself, so `muted` is belt-and-braces — nothing can ever play.
@@ -265,7 +268,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610222346" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610230001" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -556,7 +559,9 @@
             <time id="tlReportTime">10:42 AM</time>
             <div class="card tl-card">
               <div class="rep-top">
-                <img src="assets/book.svg" alt="">
+                <!-- The report's own book, painted in by paintBought — the
+                     generic book.svg named no report and sold none. -->
+                <span id="repThumb"></span>
                 <div>
                   <p class="eyebrow">Made by Astro Hemali for you</p>
                   <b id="repTitle">Marriage Yog report</b>
@@ -575,7 +580,7 @@
 
               <div class="rep-acts" id="repActs" hidden>
                 <button class="btn outline" type="button" data-toast="Sharing is not part of this demo">Share</button>
-                <button class="btn primary grow" type="button" data-go="book">Read report</button>
+                <button class="btn primary" type="button" data-go="book">Read Report</button>
               </div>
             </div>
           </div>
@@ -696,20 +701,28 @@
       <!-- The report answers questions and raises new ones. This bar is where
            the new ones go, so it is a live composer and not a banner: the
            placeholder keeps typing the question she is already half-asking. -->
-      <!-- Figma 3155:12885 "Ask Hemali bar": the rate moves under her name and
-           the round send button becomes a named Buy Chat, so the price and the
-           thing it buys sit on the same line. The input then has the full
-           width to type its question across. -->
+      <!-- Figma 3155:12885 "Ask Hemali bar". The named Buy Chat is gone: she
+           has just paid once, and a second price with a button on it reads as
+           another till. The rate takes that corner instead — struck, then
+           today's — and under her name sits the thing she actually wants to
+           know, which is that the reply comes now. The ask itself is a
+           composer: input with its send beside it, so the row looks like
+           somewhere to type rather than somewhere to buy. -->
       <div class="askbar" id="askBar">
         <div class="ask-top">
           <span class="av-ring"><img src="assets/hemali.png" alt=""><i class="dot"></i></span>
           <span class="ask-who">
             <b>Astro Hemali</b>
-            <span class="ask-rate"><s>₹20/min</s><em>₹10/min</em></span>
+            <small class="ask-sub">Replies instantly</small>
           </span>
-          <button class="ask-buy" type="button" data-chat>Buy Chat</button>
+          <span class="ask-rate"><s>₹20/min</s><em>₹10/min</em></span>
         </div>
-        <input class="ask-in" id="askIn" type="text" readonly aria-label="Ask Hemali about your report">
+        <div class="ask-row">
+          <input class="ask-in" id="askIn" type="text" readonly aria-label="Ask Hemali about your report">
+          <button class="ask-send" type="button" data-chat aria-label="Ask Hemali">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10h13m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -851,8 +864,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610222346"></script>
-<script src="app.js?v=202610222346"></script>
-<script src="mobile.js?v=202610222346"></script>
+<script src="data.js?v=202610230001"></script>
+<script src="app.js?v=202610230001"></script>
+<script src="mobile.js?v=202610230001"></script>
 </body>
 </html>
