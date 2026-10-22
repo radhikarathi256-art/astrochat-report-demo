@@ -26,6 +26,9 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
 var REPORTS = [
   {
     id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet — and what is holding it up', pages: 38, rating: '4.7', sold: 128880,
+    // `t2` is the long name, used where the card has room for two lines and the
+    // book is sitting right next to it — it has to match the cover she can see.
+    t2: 'Your Future Partner Prediction Report',
     why: 'Learn how Rahu is blocking you from meeting him',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // The only report with painted artwork so far. Where it exists the book is
@@ -402,9 +405,10 @@ var CHECK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none">' +
 function renderLadder() {
   var cols = DAYS.map(function (day, i) {
     var done = i < state.claimed;
-    // The first uncollected day is today: Figma gives it a brand ring on the
-    // rail and a brand label, so the strip says where you are without a legend.
-    var cls = 'col' + (done ? ' done' : i === state.claimed ? ' today' : '') +
+    // Today is today whether or not she has collected it — Figma 2640:12298
+    // keeps the brand ring and label on day 1 in the answered state, so the
+    // strip says where she is rather than what is next.
+    var cls = 'col' + (done ? ' done' : '') + (i === state.day - 1 ? ' today' : '') +
       (i === DAYS.length - 1 ? ' goal' : '');
     return '<div class="' + cls + '">' +
              '<span class="ic"><span class="coin' + (done ? ' got' : '') + '" style="width:' +
@@ -421,7 +425,9 @@ function renderLadder() {
   // but not the seven coins. On the morning someone arrives, a full streak laid
   // out ahead of them reads as a chore list rather than a reward. The sheets in
   // the reward flow still show it, because there the strip is the subject.
-  $('#todayLadder').hidden = state.day === 1;
+  // ...until she answers: Figma 2640:12298 puts the strip back in the answered
+  // state, where it is a receipt for day 1 rather than a list of six chores.
+  $('#todayLadder').hidden = state.day === 1 && !state.answered;
 }
 
 /* ---------------------------------------------------------------- content: bottom nav */
@@ -1021,8 +1027,23 @@ function inr(n) {
 /* A closed book, turned so its spine faces her and carries the title the way a
    real one does. The open book was the wrong object to show: an open book is
    something already being read, and nothing about it says "not yours yet". */
-function book3d(r) {
+/* The drawn cover's face, for the reports with no painted artwork yet: the
+   wash is the element's own background, the motif and its stars ride on top.
+   Shared by the standing book and the History card's hinged one. */
+function drawnFace(r, cls) {
   var c = r.cover;
+  return '<span class="' + cls + '"' +
+    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+    '<svg class="bk3-art" viewBox="0 0 40 52">' +
+      '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
+      '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
+      '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
+      '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
+    '</svg>' +
+  '</span>';
+}
+
+function book3d(r) {
   // Where the painted cover and its spread exist, show those instead: the art
   // is the argument, and a drawing of a book cannot make it.
   if (r.art) {
@@ -1035,21 +1056,13 @@ function book3d(r) {
       '</span>' +
     '</span>';
   }
-  return '<span class="bk3" aria-hidden="true"' +
-    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+  return '<span class="bk3" aria-hidden="true">' +
     '<span class="bk3-in">' +
       '<span class="bk3-spine"><em>' + esc(r.t) + '</em></span>' +
       // The leaf sits a hair behind the cover so that when the cover swings
       // open on the tease loop there is paper underneath, not a hole.
       '<span class="bk3-leaf"></span>' +
-      '<span class="bk3-face">' +
-        '<svg class="bk3-art" viewBox="0 0 40 52">' +
-          '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
-          '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
-          '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
-          '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
-        '</svg>' +
-      '</span>' +
+      drawnFace(r, 'bk3-face') +
     '</span>' +
   '</span>';
 }
@@ -1113,12 +1126,13 @@ function offer3Card() {
    shrunk down, but a message from Hemali: her face, her rate, and the pitch
    in a peach bubble with the book leaning out of it. */
 function histCard(r) {
+  // The rate pills are off in 3111:201206 — this card sells the report, and a
+  // per-minute price next to her name sells the chat instead.
   return '<div class="hw">' +
     '<div class="hw-top">' +
       '<span class="hw-av"><img src="assets/hemali.png" alt=""><i></i></span>' +
       '<span class="hw-who">' +
-        '<span class="hw-line"><b>Astro Hemali</b>' +
-          '<s>₹20/min</s><em>₹10/min</em></span>' +
+        '<span class="hw-line"><b>Astro Hemali</b></span>' +
         '<small>Made from your birth chart</small>' +
       '</span>' +
     '</div>' +
@@ -1128,7 +1142,16 @@ function histCard(r) {
           '<b>Mansi, ' + esc(r.t2 || r.t) + '</b>' +
           '<small>' + r.learn.length + ' questions answered</small>' +
         '</span>' +
-        '<img class="hw-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+        // Hinged on its spine over a page leaf, so the one thing moving on the
+        // card is the thing being sold — the same object as the chat offer's.
+        '<span class="hw-bkw" aria-hidden="true">' +
+          '<span class="hw-leaf"></span>' +
+          (r.art
+            ? '<img class="hw-bk" src="' + r.art.closed + '" alt="">'
+            // No painted cover yet: the drawn one stands in, so the hinge
+            // never swings an empty frame over the leaf.
+            : drawnFace(r, 'hw-bk bk3-face')) +
+        '</span>' +
       '</div>' +
       '<button class="hw-go" type="button" data-pick="' + r.id + '">Learn More</button>' +
     '</div>' +
@@ -1741,6 +1764,11 @@ function renderTpTabs() {
     if (!tabs.length) tabs.push(
       { id: 'today',   l: 'Today \u00b7 nothing asks' },
       { id: 'chat',    l: 'Chat \u00b7 nothing asks' });
+    // The states that only exist after she answers the check-in are awkward to
+    // reach by hand, so these chips answer for her and park the phone there.
+    tabs.push({ id: 'reward', l: 'Daily reward \u00b7 answered' });
+    if (repToastDays()) tabs.push({ id: 'toast', l: 'Toast \u00b7 Hemali\u2019s knock' });
+    if (state.day === 1) tabs.push({ id: 'counter', l: 'Counter \u00b7 header + History' });
   }
 
   var wrap = document.createElement('div');
@@ -1755,6 +1783,18 @@ function renderTpTabs() {
     }).join('') + '</div>';
   host.classList.add('has-tp');
   host.insertAdjacentElement('afterend', wrap);
+}
+
+/* Answering flips the card to the replied state — the moment Hemali gets a
+   bubble and the report moves into it — and pays the day's reward. Idempotent,
+   because the demo chips can call it on a day she has already answered. */
+function answerCheckin() {
+  if (state.answered) return;
+  state.answered = true;
+  state.wallet += REWARD[state.day];
+  paintWallet();
+  renderDayToday();
+  renderChat();
 }
 
 /* Picking a day rewinds the whole demo to that morning: day 1 starts in the
@@ -1891,14 +1931,8 @@ document.addEventListener('click', function (e) {
     return;
   }
 
-  // Answering flips the card to the replied state — the moment Hemali gets a
-  // bubble and the report moves into it — and pays the day's reward.
   if (t.hasAttribute('data-mood')) {
-    state.answered = true;
-    state.wallet += REWARD[state.day];
-    paintWallet();
-    renderDayToday();
-    renderChat();
+    answerCheckin();
     // Queued, not shown: the reward sheet is about to cover the page.
     if (repToastDays() && !state.repToastSeen && !state.paid) state.repToastPending = true;
     openRewardSheet();
@@ -1996,6 +2030,35 @@ document.addEventListener('click', function (e) {
     } else if (tp === 'push') {
       if (state.screen === 'chat') show(state.entry, 'fade');
       showPush();
+    } else if (tp === 'reward' || tp === 'toast') {
+      // Answer on her behalf — the reward sheet is skipped, because the chip is
+      // asking for the state the sheet leaves behind, not the sheet itself.
+      answerCheckin();
+      state.stack = [];
+      show(state.entry, 'fade');
+      var cc = $('#answeredCard');
+      if (cc) later(function () { cc.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
+      if (tp === 'toast') {
+        state.repToastSeen = false;
+        later(showRepToast, 700);
+      }
+    } else if (tp === 'counter') {
+      // The counter is already live on day 1; the chip just puts both doors
+      // that carry it back on screen and blinks them.
+      state.histDot = true;
+      renderNav();
+      state.stack = [];
+      hideRepToast();
+      show(state.entry, 'fade');
+      // show() only resets the scroll when the screen actually changes, and the
+      // header counter has to be in frame for the blink to mean anything.
+      var tsc2 = $('#today-a [data-scroll]');
+      if (tsc2) tsc2.scrollTop = 0;
+      later(function () {
+        $$('.ncount').forEach(function (n) {
+          n.classList.remove('lit'); void n.offsetHeight; n.classList.add('lit');
+        });
+      }, 360);
     } else {
       state.stack = [];
       show(state.entry, 'fade');

@@ -141,6 +141,10 @@ img{display:block}
 /* Same counter on the chat-history icon in the header, so both doors are lit. */
 .ic-btn{position:relative}
 .ic-btn .ncount{top:-4px;right:-5px}
+/* The Counter chip blinks both counters, since on day 1 they are already on
+   screen and a PM would otherwise not know what the chip changed. */
+.ncount.lit{animation:ncpulse .5s ease 3}
+@keyframes ncpulse{50%{transform:scale(1.45);box-shadow:0 0 0 4px rgba(180,35,24,.22)}}
 
 /* ---------- Buttons ---------- */
 .btn{height:48px;border-radius:12px;border:1px solid transparent;font:600 16px/24px var(--sans);
@@ -218,17 +222,24 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rh-t{margin:0;flex:1;min-width:0;font-size:16px;line-height:24px;font-weight:600;color:var(--g700)}
 .rh-t .amt{font-weight:700;color:var(--s700)}
 .merged .q{margin:0;font:500 14px/20px var(--sans);color:var(--g900)}
+/* Figma 3144:202274 — the mood comes back as her own chat bubble, so the card
+   reads as a two-line conversation rather than a form she filled in. */
 .mood-row{display:flex;justify-content:flex-end;margin:0}
-.mood-chip{background:#FCE4D8;border-radius:12px 12px 2px 12px;padding:8px 14px;
-  font:500 14px/20px var(--sans);color:var(--w900)}
-/* The bubble is tall once it carries the offer, so the avatar anchors its top
-   and the tail moves to the top-left corner to meet it. */
-.reply-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
-.reply-row .av{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 22%;flex:none}
-.bubble{flex:1;min-width:0;background:#fff;border:1px solid var(--g200);
-  border-radius:2px 12px 12px 12px;padding:12px 14px}
-.bubble b{display:block;font:600 13px/18px var(--sans);color:#B42318;margin-bottom:4px}
-.bubble p{margin:0;font:400 14px/22px var(--sans);color:var(--g700)}
+.mood-chip{background:var(--brand50);border:1px solid #FAD2C4;
+  border-radius:18px 18px 4px 18px;padding:10px 14px;
+  font:400 14px/20px var(--sans);color:var(--g700)}
+/* Hemali's bubble is bottom-aligned to her avatar, tail in the bottom-left. */
+.reply-row{display:flex;align-items:flex-end;gap:8px}
+.reply-row .av{width:28px;height:28px;border-radius:50%;object-fit:cover;object-position:50% 22%;flex:none}
+.bubble{flex:1;min-width:0;background:#fff;border:1px solid var(--g300);
+  border-radius:18px 18px 18px 4px;padding:10px 14px}
+.bubble b{display:block;font:600 12px/18px var(--sans);color:#890300;margin-bottom:4px}
+.bubble p{margin:0;font:400 14px/20px var(--sans);color:var(--g700)}
+/* Answered: the amount is already banked, so it drops the green and the
+   question steps back to Gray/600. */
+#answeredCard .q{color:var(--g600)}
+#answeredCard .amt{color:var(--g700)}
+#answeredCard .btn{height:42px}
 
 /* ---------- The report cover ----------
    The artwork from the visual-identity file (watercolour hearts), framed as a
@@ -550,8 +561,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .hw-who{flex:1;min-width:0}
 .hw-line{display:flex;align-items:baseline;gap:6px}
 .hw-line b{font:600 16px/22px var(--sans);color:var(--g700)}
-.hw-line s{font:400 11.5px/16px var(--sans);color:var(--g400)}
-.hw-line em{font:600 13.4px/18px var(--sans);font-style:normal;color:#027A48}
 .hw-who small{display:block;margin-top:1px;font:400 12px/18px var(--sans);
   color:var(--g600)}
 /* The notch makes it her message rather than a panel that happens to sit below
@@ -560,18 +569,44 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:#FDF0EB}
 .hw-bub::before{content:'';position:absolute;left:14px;top:-13px;width:15px;height:14px;
   background:#FDF0EB;clip-path:polygon(0 100%,100% 100%,100% 0)}
-.hw-row{position:relative;display:flex;align-items:flex-start;gap:10px}
-.hw-tx{flex:1;min-width:0;padding-top:2px}
-.hw-tx b{display:block;font:600 14px/20px var(--sans);color:var(--g700)}
+.hw-row{position:relative;display:flex;align-items:center;gap:12px}
+.hw-tx{flex:1;min-width:0}
+/* 206px is the frame's own measure — it is what breaks the title onto two
+   lines and keeps it clear of the book. */
+.hw-tx b{display:block;max-width:206px;font:600 14px/20px var(--sans);
+  color:var(--g700)}
 .hw-tx small{display:block;margin-top:2px;font:400 12px/18px var(--sans);
   color:var(--g600)}
-/* Leans out of the bubble by 15px — the one thing on the card that breaks its
-   own frame, which is why the eye lands there first. */
-.hw-bk{flex:none;width:67px;height:89px;margin-top:-15px;object-fit:cover;
-  border-radius:2px 5px 5px 2px;box-shadow:-5px 8px 16px -7px rgba(74,24,8,.45)}
-.hw-go{display:block;width:100%;height:36px;margin-top:10px;border:0;
+/* Leans 15px out of the bubble's top edge — the one thing on the card that
+   breaks its own frame, which is why the eye lands there first. The hinge:
+   perspective on the wrapper, the cover pivoting on its spine over a page
+   leaf, so the gap shows paper instead of a hole. */
+.hw-bkw{position:absolute;right:-3px;top:-27px;width:67px;height:89px;
+  perspective:400px}
+.hw-leaf{position:absolute;inset:0;border-radius:2px 5px 5px 2px;
+  background:linear-gradient(100deg,#C8B8A6 0 5%,#F7F1E8 20%,#FFFDF8 100%);
+  box-shadow:inset 2px 0 5px rgba(0,0,0,.12)}
+.hw-bk{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  border-radius:2px 5px 5px 2px;transform-origin:left center;
+  box-shadow:-5px 8px 16px -7px rgba(74,24,8,.45);
+  animation:hwTease 6s cubic-bezier(.33,1,.68,1) infinite}
+/* Ajar is the rest state, so that beat is the long one; it falls almost shut
+   between loops rather than fully closing, which keeps the gap readable at
+   67px. The angles are steeper than the chat offer's because this book is
+   two-thirds its width and -30deg there does not read as open here. */
+@keyframes hwTease{
+  0%,20%   {transform:rotateY(-7deg)}
+  36%      {transform:rotateY(-45deg)}
+  44%,86%  {transform:rotateY(-38deg)}
+  98%,100% {transform:rotateY(-7deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .hw-bk{animation:none;transform:rotateY(-38deg)}
+}
+.hw-go{display:block;width:100%;height:38px;margin-top:10px;border:0;
   border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;
-  font:600 14px/20px var(--sans)}
+  font:600 14px/20px var(--sans);
+  box-shadow:0 1px 2px rgba(16,24,40,.05)}
 
 /* Day 4 says it is the last ask in words, never in colour — escalating the
    pixels is how you teach people to stop looking. */
