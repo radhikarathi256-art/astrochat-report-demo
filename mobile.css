@@ -13,6 +13,17 @@
      actual fix; nothing here needs to compensate for anything. */
   html,body{overscroll-behavior:none}
   body{background:#FBE4D7}
+  /* Every bottom bar, sticky button and sheet pads itself by
+     calc(own padding + var(--sab)), and --sab defaults to
+     env(safe-area-inset-bottom) — 34px on a notched iPhone, stacked on top of
+     padding the bar already had. That stack is a second, separate gap from the
+     short-window one: the bar's background does reach the bottom edge, but its
+     contents float 42px above it, which reads as the nav not sitting on the
+     screen. Zeroed here so the bar's own padding is the only clearance; the
+     home indicator is a translucent overlay and does not need reserving in a
+     demo. One variable moves the nav, the buy bar, the ask bar, the drawer and
+     both sheets together. */
+  :root{--sab:0px}
   /* Only the docked copy is hidden — the drawer hosts the same live node. */
   body>.switcher{display:none!important}
   .sbar{display:none!important}
