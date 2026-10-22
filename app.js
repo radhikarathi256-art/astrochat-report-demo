@@ -1191,6 +1191,8 @@ function histCard(r) {
    which put Hemali's face and name on the card twice and ran it to 383px. */
 function exTicket(r) {
   return '<button class="ex-tkt" type="button" data-pick="' + r.id + '">' +
+    '<i class="tk-n tk-l" aria-hidden="true"></i>' +
+    '<i class="tk-n tk-r" aria-hidden="true"></i>' +
     (r.art
       ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
       : drawnFace(r, 'tk-bk bk3-face')) +
@@ -1561,8 +1563,10 @@ function restart() {
   state.repToastSeen = false;
   state.repToastPending = false;
   hideRepToast();
-  state.pick = dayData().lead || 'partner';
-  state.histDot = true;
+  state.pick = 'partner';
+  // The counter is day 1 only — that is the morning the chapter lands in
+  // History. After that the badge has nothing new to count.
+  state.histDot = state.day === 1;
   state.stack = [];
   renderNav();
   $('#notifDlg').hidden = true;
@@ -1956,7 +1960,11 @@ if (linked) {
     b.classList.toggle('on', +b.getAttribute('data-day') === state.day);
   });
 }
-state.pick = dayData().lead || 'partner';
+state.pick = 'partner';
+// Same rule as setDay(): the counter belongs to day 1 only. Deep links skip
+// setDay entirely, so without this the badge boots on for every day.
+state.histDot = state.day === 1;
+renderNav();
 state.wallet = WALLET_AT[state.day];
 paintWallet();
 paintBought();
