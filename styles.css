@@ -1170,7 +1170,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The card hangs 20px into this block, so 24px of padding left almost nothing
    between the stats row and "About this report". This is the first breath after
    the hero and it has to read as one. */
-.r2-card + .r2-block{padding-top:48px}
+.r2-card + .r2-block{padding-top:48px;position:relative}
+/* A hairline between the rating row and "About this report". Everything in the
+   card is centred and everything below it is ranged left, and with nothing
+   marking the change the left edge looked like the centred block had slipped
+   off its axis. The rule makes the two read as two blocks rather than one
+   badly aligned one. Positioned 28px down because the card hangs 20px into
+   this section — measured off the live page, that puts it 8px clear of the
+   card's bottom edge and 20px above the heading. */
+.r2-card + .r2-block::before{content:'';position:absolute;left:16px;right:16px;
+  top:28px;height:1px;background:var(--g200)}
 /* The upsells are a different kind of thing from the sections above them — a
    rule there reads as "one more section", which is the wrong promise. */
 #r2Also{border-top:0;padding-top:8px}
@@ -1391,8 +1400,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    under the foot is what holds it off the last value — it was sitting on the
    final character of "Mar – Nov 2027". 12px on the right does the same job
    horizontally. */
-.paper-foot{display:flex;align-items:flex-start;gap:14px;
-  padding:13px 12px 26px 0;border-top:1px solid #D1C2B2;text-align:left}
+/* No side padding, and the two cells pushed to the edges. It used to carry
+   padding-right:12 with the cells packed left, so the caption sat 12px inside
+   the sketch on the right and flush with it on the left, and the rule above it
+   stopped short of the sketch's right edge — the whole caption read as having
+   slipped left off the photo. Now the rule spans the sketch exactly and the two
+   cells sit centred under it — centred rather than spread to the edges because
+   the two captions are different lengths, and spreading them put the hairline
+   between them well off the middle. */
+.paper-foot{display:flex;align-items:flex-start;justify-content:center;gap:16px;
+  padding:13px 0 26px;border-top:1px solid #D1C2B2;text-align:left}
 .paper-foot > div{flex:0 1 auto;min-width:0}
 .paper-foot i{flex:none;width:1px;height:34px;background:#D1C2B2;opacity:.7}
 .paper-foot small{display:block;white-space:nowrap;

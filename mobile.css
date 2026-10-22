@@ -12,7 +12,10 @@
      above the home indicator. index.html links the manifest now, which is the
      actual fix; nothing here needs to compensate for anything. */
   html,body{overscroll-behavior:none}
-  body{background:#FBE4D7}
+  /* The pre-JS ground, replaced inline by tint() on the first frame. White, not
+     the peach: every bottom bar in the app is white, so white is the colour that
+     disappears under the nav if the box ever comes up short. */
+  body{background:#fff}
   /* Every bottom bar, sticky button and sheet pads itself by
      calc(own padding + var(--sab)), and --sab defaults to
      env(safe-area-inset-bottom) — 34px on a notched iPhone, stacked on top of
@@ -31,14 +34,22 @@
   .phone{
     /* width:100%, not auto: the desktop rule centres the frame in a grid stage,
        and every child of .phone is absolutely positioned, so an auto width has
-       no in-flow content to measure and collapses the whole app to 0. */
+       no in-flow content to measure and collapses the whole app to 0.
+       !important on the heights because the desktop rule sets a max-height and a
+       fixed height on the same element, and this is the build that has to win:
+       astrochat-daily-reward, which sits flush on her phone, writes them the
+       same way. */
     position:relative;
-    width:100%;max-width:none;height:100dvh;min-height:100dvh;max-height:none;
+    width:100%;max-width:none;max-height:none;
+    height:100dvh!important;min-height:100dvh!important;
     border-radius:0;box-shadow:none;
     /* .phone is the whole viewport here, so plain white would cover body —
-       including the safe-area strip. Paint white only below the inset. */
+       including the safe-area strip. The strip gets the live top colour that
+       mobile.js writes into --topc; white starts below the inset. Painting the
+       strip here rather than on body is what frees body to carry the bottom
+       bar's colour instead, so nothing cream or white can show under the nav. */
     background:transparent;
-    background-image:linear-gradient(to bottom,transparent var(--sbh),#fff var(--sbh));
+    background-image:linear-gradient(to bottom,var(--topc,#fff) var(--sbh),#fff var(--sbh));
     /* The real notch inset replaces the fake status bar's height. */
     --sbh:env(safe-area-inset-top,0px);
   }

@@ -95,11 +95,23 @@
     var bar = bars[bars.length - 1];
     return (bar && hex(getComputedStyle(bar).backgroundColor)) || '#FFFFFF';
   }
+  /* <html> and <body> are both painted in the foot colour, and the top colour
+     goes on .phone instead, as the first stop of the gradient it already paints
+     in the safe-area strip.
+     Body used to take the top colour, and body is the box that actually shows
+     under a short .phone — so every time 100dvh resolved shorter than the real
+     window, the band under the bottom bar came out in the colour of the top of
+     the screen: cream under the Today nav, white under the report's. That band
+     is the "gap" the nav never seemed to close. Now whatever is behind the app
+     is the bar's own colour, so a short box is invisible rather than a stripe,
+     and the strip at the top is painted by the element that owns it. */
   function tint() {
-    var c = topColour();
+    var c = topColour(), f = footColour();
     tc.setAttribute('content', c);
-    document.documentElement.style.background = footColour();
-    document.body.style.background = c;
+    document.documentElement.style.background = f;
+    document.body.style.background = f;
+    var ph = document.getElementById('phone');
+    if (ph) ph.style.setProperty('--topc', c);
   }
   document.querySelectorAll('.screen').forEach(function (s) {
     var sc = s.querySelector('[data-scroll]');
