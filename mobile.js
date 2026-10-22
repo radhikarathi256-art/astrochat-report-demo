@@ -22,8 +22,24 @@
      has to stay the height of the screen so the bottom bars stay on the bottom
      of it. orientationchange is read late because iOS reports the pre-rotation
      height if asked while the rotation is still running. */
+  /* A parked probe whose height is the home-indicator inset, so env() can be
+     read as a number instead of trusted blind. */
+  var probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;left:-9999px;bottom:0;width:0;visibility:hidden;' +
+                        'height:env(safe-area-inset-bottom,0px)';
   function lockVH() {
-    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
+    var vh = window.innerHeight, de = document.documentElement;
+    de.style.setProperty('--appvh', vh + 'px');
+    if (!probe.parentNode) document.body.appendChild(probe);
+    /* iOS hands a home-screen app a box that runs under the status bar but
+       stops above the home indicator. env(safe-area-inset-bottom) still
+       reports the full inset, so every bar that pads itself with it pays for
+       a strip the box has already given up — that is the dead space under the
+       nav, the sticky buttons and the sheets, with the OS's own strip showing
+       below it. When the box is short, nobody pays. Portrait only: a landscape
+       device is legitimately shorter than screen.height. */
+    var shortBox = window.innerWidth < vh && screen.height - vh > 8;
+    de.style.setProperty('--sab', (shortBox ? 0 : probe.offsetHeight) + 'px');
   }
   lockVH();
   window.addEventListener('resize', lockVH);
@@ -85,10 +101,22 @@
     // home-screen app looks like the app starting below the status bar.
     return hex(getComputedStyle(scr).backgroundColor) || '#FFFFFF';
   }
+  /* The colour at the foot of the screen. <html> is painted in this rather than
+     in the top colour, because <html> is only ever visible where the body box
+     falls short — which is under the bottom bar. Giving it that bar's own
+     colour means a short box is invisible instead of a peach band, so the
+     layout no longer has to be perfect for the screen to look right. */
+  function footColour() {
+    var scr = document.querySelector('.screen.on');
+    if (!scr) return '#FFFFFF';
+    var bars = scr.querySelectorAll('.bnav,.buybar,.askbar,.rp-buy');
+    var bar = bars[bars.length - 1];
+    return (bar && hex(getComputedStyle(bar).backgroundColor)) || '#FFFFFF';
+  }
   function tint() {
     var c = topColour();
     tc.setAttribute('content', c);
-    document.documentElement.style.background = c;
+    document.documentElement.style.background = footColour();
     document.body.style.background = c;
   }
   document.querySelectorAll('.screen').forEach(function (s) {
