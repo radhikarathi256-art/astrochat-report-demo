@@ -22,24 +22,16 @@
      has to stay the height of the screen so the bottom bars stay on the bottom
      of it. orientationchange is read late because iOS reports the pre-rotation
      height if asked while the rotation is still running. */
-  /* A parked probe whose height is the home-indicator inset, so env() can be
-     read as a number instead of trusted blind. */
-  var probe = document.createElement('div');
-  probe.style.cssText = 'position:fixed;left:-9999px;bottom:0;width:0;visibility:hidden;' +
-                        'height:env(safe-area-inset-bottom,0px)';
+  /* --sab is NOT written here. It used to be: a probe measured
+     env(safe-area-inset-bottom) and wrote the result inline on <html>, which
+     beats mobile.css's `:root{--sab:0px}` because an inline style always wins.
+     In Safari the guard happened to zero it, so it looked fixed — but a
+     home-screen app gets innerHeight === screen.height, the guard went false,
+     and every bottom bar went back to paying 34px. That was the gap under the
+     nav that survived three rounds of "it's still there". The inset belongs to
+     the OS strip the bars sit under; CSS owns the number now. */
   function lockVH() {
-    var vh = window.innerHeight, de = document.documentElement;
-    de.style.setProperty('--appvh', vh + 'px');
-    if (!probe.parentNode) document.body.appendChild(probe);
-    /* iOS hands a home-screen app a box that runs under the status bar but
-       stops above the home indicator. env(safe-area-inset-bottom) still
-       reports the full inset, so every bar that pads itself with it pays for
-       a strip the box has already given up — that is the dead space under the
-       nav, the sticky buttons and the sheets, with the OS's own strip showing
-       below it. When the box is short, nobody pays. Portrait only: a landscape
-       device is legitimately shorter than screen.height. */
-    var shortBox = window.innerWidth < vh && screen.height - vh > 8;
-    de.style.setProperty('--sab', (shortBox ? 0 : probe.offsetHeight) + 'px');
+    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
   }
   lockVH();
   window.addEventListener('resize', lockVH);
