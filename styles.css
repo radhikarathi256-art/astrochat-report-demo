@@ -1359,10 +1359,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:linear-gradient(225deg,#E6D0AA 0 50%,transparent 50%);
   filter:drop-shadow(-2px -2px 3px rgba(230,196,188,.9))}
 
-/* Cellotape over the top corners — the thing that says this print was stuck to
-   the wall by hand. Milky rather than clear so it is visible over both the
-   sketch and the arch, with the ends faded out by a mask because cut tape has
-   no crisp edge. The highlight line is the shine along the middle of the strip. */
+/* Cellotape — the thing that says this print was stuck to the wall by hand.
+   Milky rather than clear so it is visible over both the sketch and the arch,
+   with the ends faded out by a mask because cut tape has no crisp edge. The
+   highlight line is the shine along the middle of the strip. */
 .paper .tape{position:absolute;z-index:3;top:12px;width:90px;height:26px;
   background:
     linear-gradient(180deg,rgba(255,252,246,.52) 0,rgba(255,255,255,.82) 44%,
@@ -1370,13 +1370,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   box-shadow:0 1px 3px rgba(115,64,56,.26);
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7px,#000 calc(100% - 7px),transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 7px,#000 calc(100% - 7px),transparent 100%)}
-.paper .tape.l{left:-22px;transform:rotate(-41deg)}
-.paper .tape.r{right:-22px;transform:rotate(41deg)}
-/* A third strip across the top edge, half on the sheet and half on the wall.
-   The two corner pieces alone leave the long side of the note unpinned, which
-   is the one place a real taped-up print always has a strip. Barely off square:
-   tape stuck up by hand is never straight, but along the top edge more than a
-   couple of degrees reads as a mistake rather than as a hand. */
+/* One strip, across the top edge, half on the sheet and half on the wall. The
+   two corner pieces that used to flank it made the note look parcelled up;
+   a single piece is what someone actually does. Barely off square: tape stuck
+   up by hand is never straight, but along the top edge more than a couple of
+   degrees reads as a mistake rather than as a hand. */
 .paper .tape.t{left:50%;top:-13px;width:104px;
   transform:translateX(-50%) rotate(-2.5deg)}
 
