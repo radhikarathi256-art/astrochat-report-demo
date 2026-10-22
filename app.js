@@ -1523,7 +1523,7 @@ function renderTpTabs() {
   wrap.innerHTML =
     '<p class="tp-note">Touchpoints — ' +
       (state.paid ? 'report bought · every surface is the follow-up'
-        : pmQuiet() ? 'nudging has stopped — the report only sits in her guidance'
+        : pmQuiet() ? 'nudging has stopped, the report only sits in her guidance'
         : 'one report a day · ₹49, sample on a demo chart') + '</p>' +
     '<div class="tp-tabs">' + tabs.map(function (t) {
       return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
