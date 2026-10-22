@@ -53,7 +53,9 @@
     var sc = scr.querySelector('[data-scroll]');
     if (sc && sc.scrollTop > 40) return '#FFFFFF';
     if (scr.querySelector('.head.hero-head')) return '#FBE4D7';
-    if (scr.querySelector('.r2-hero')) return '#F6DED6';
+    // Matches --rose-lo, the darker end of the hero's gradient, which is what
+    // sits directly under the status bar.
+    if (scr.querySelector('.r2-hero')) return '#E6C7C8';
     return '#FFFFFF';
   }
   function tint() {

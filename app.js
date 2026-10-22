@@ -638,28 +638,32 @@ function rsEvidence(s) {
    the motif on top is what tells them apart. They are drawn in the grey ramp,
    not in pink: the only colour the reader should carry is the painted artwork,
    and a pink motif beside it read as a second, competing brand. */
+/* Back in pink. In grey the decorations read as chrome — a footer, a divider,
+   something structural — when the whole point of them is that the report is a
+   warm, hand-made object. `--dec1`/`--dec2` are the pale and deep tones, so
+   there is one place to tune all fourteen. */
 var DECOR = {
-  hearts: '<path d="M262 36c0-8 6-13 12-13s11 5 11 11-9 14-14 18c-5-4-9-10-9-16Z" fill="var(--g200)"/><path d="M279 24c0-10 8-16 15-16s14 6 14 14-11 18-17 23c-7-5-12-13-12-21Z" fill="var(--g300)"/>',
-  leaf:   '<path d="M268 48c0-18 14-32 32-32 0 18-14 32-32 32Z" fill="var(--g300)"/><path d="M300 48V22" stroke="var(--g200)" stroke-width="2"/>',
-  pin:    '<path d="M288 10c9 0 16 7 16 16 0 12-16 26-16 26s-16-14-16-26c0-9 7-16 16-16Z" fill="var(--g300)"/><circle cx="288" cy="26" r="6" fill="#fff"/>',
-  orbit:  '<circle cx="288" cy="32" r="16" fill="var(--g200)"/><ellipse cx="288" cy="32" rx="30" ry="11" fill="none" stroke="var(--g300)" stroke-width="2"/>',
-  moon:   '<path d="M298 12a22 22 0 1 0 0 42 26 26 0 0 1 0-42Z" fill="var(--g300)"/>',
-  lights: '<path d="M258 16h62" stroke="var(--g200)" stroke-width="2"/><circle cx="268" cy="26" r="7" fill="var(--g300)"/><circle cx="288" cy="30" r="7" fill="var(--g200)"/><circle cx="308" cy="26" r="7" fill="var(--g300)"/>',
-  cups:   '<path d="M270 18h36l-5 22h-26Z" fill="var(--g300)"/><path d="M282 40h12v12h-12Z" fill="var(--g200)"/>',
-  rings:  '<circle cx="280" cy="32" r="14" fill="none" stroke="var(--g300)" stroke-width="4"/><circle cx="300" cy="32" r="14" fill="none" stroke="var(--g200)" stroke-width="4"/>',
-  house:  '<path d="M288 12l24 18v24h-48V30Z" fill="var(--g200)"/><path d="M280 54V40h16v14" fill="var(--g300)"/>',
-  lamp:   '<path d="M266 44c0-8 10-12 22-12s22 4 22 12-10 10-22 10-22-2-22-10Z" fill="var(--g200)"/><path d="M288 32c0-10 8-14 8-20-10 3-16 10-16 20Z" fill="var(--g300)"/>',
-  plant:  '<path d="M288 54V24" stroke="var(--g300)" stroke-width="3"/><path d="M288 34c-12 0-18-8-18-16 12 0 18 7 18 16Zm0-4c12 0 18-8 18-16-12 0-18 7-18 16Z" fill="var(--g200)"/>',
-  lotus:  '<path d="M288 14c7 8 7 22 0 32-7-10-7-24 0-32Z" fill="var(--g300)"/><path d="M288 46c-10 0-20-6-24-14 11-3 20 3 24 14Zm0 0c10 0 20-6 24-14-11-3-20 3-24 14Z" fill="var(--g200)"/>',
-  mala:   '<circle cx="288" cy="32" r="18" fill="none" stroke="var(--g200)" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="288" cy="52" r="5" fill="var(--g300)"/>',
-  stars:  '<path d="M288 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z" fill="var(--g300)"/><circle cx="262" cy="24" r="3" fill="var(--g200)"/><circle cx="314" cy="40" r="4" fill="var(--g200)"/>'
+  hearts: '<path d="M262 36c0-8 6-13 12-13s11 5 11 11-9 14-14 18c-5-4-9-10-9-16Z" fill="var(--dec1)"/><path d="M279 24c0-10 8-16 15-16s14 6 14 14-11 18-17 23c-7-5-12-13-12-21Z" fill="var(--dec2)"/>',
+  leaf:   '<path d="M268 48c0-18 14-32 32-32 0 18-14 32-32 32Z" fill="var(--dec2)"/><path d="M300 48V22" stroke="var(--dec1)" stroke-width="2"/>',
+  pin:    '<path d="M288 10c9 0 16 7 16 16 0 12-16 26-16 26s-16-14-16-26c0-9 7-16 16-16Z" fill="var(--dec2)"/><circle cx="288" cy="26" r="6" fill="#fff"/>',
+  orbit:  '<circle cx="288" cy="32" r="16" fill="var(--dec1)"/><ellipse cx="288" cy="32" rx="30" ry="11" fill="none" stroke="var(--dec2)" stroke-width="2"/>',
+  moon:   '<path d="M298 12a22 22 0 1 0 0 42 26 26 0 0 1 0-42Z" fill="var(--dec2)"/>',
+  lights: '<path d="M258 16h62" stroke="var(--dec1)" stroke-width="2"/><circle cx="268" cy="26" r="7" fill="var(--dec2)"/><circle cx="288" cy="30" r="7" fill="var(--dec1)"/><circle cx="308" cy="26" r="7" fill="var(--dec2)"/>',
+  cups:   '<path d="M270 18h36l-5 22h-26Z" fill="var(--dec2)"/><path d="M282 40h12v12h-12Z" fill="var(--dec1)"/>',
+  rings:  '<circle cx="280" cy="32" r="14" fill="none" stroke="var(--dec2)" stroke-width="4"/><circle cx="300" cy="32" r="14" fill="none" stroke="var(--dec1)" stroke-width="4"/>',
+  house:  '<path d="M288 12l24 18v24h-48V30Z" fill="var(--dec1)"/><path d="M280 54V40h16v14" fill="var(--dec2)"/>',
+  lamp:   '<path d="M266 44c0-8 10-12 22-12s22 4 22 12-10 10-22 10-22-2-22-10Z" fill="var(--dec1)"/><path d="M288 32c0-10 8-14 8-20-10 3-16 10-16 20Z" fill="var(--dec2)"/>',
+  plant:  '<path d="M288 54V24" stroke="var(--dec2)" stroke-width="3"/><path d="M288 34c-12 0-18-8-18-16 12 0 18 7 18 16Zm0-4c12 0 18-8 18-16-12 0-18 7-18 16Z" fill="var(--dec1)"/>',
+  lotus:  '<path d="M288 14c7 8 7 22 0 32-7-10-7-24 0-32Z" fill="var(--dec2)"/><path d="M288 46c-10 0-20-6-24-14 11-3 20 3 24 14Zm0 0c10 0 20-6 24-14-11-3-20 3-24 14Z" fill="var(--dec1)"/>',
+  mala:   '<circle cx="288" cy="32" r="18" fill="none" stroke="var(--dec1)" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="288" cy="52" r="5" fill="var(--dec2)"/>',
+  stars:  '<path d="M288 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z" fill="var(--dec2)"/><circle cx="262" cy="24" r="3" fill="var(--dec1)"/><circle cx="314" cy="40" r="4" fill="var(--dec1)"/>'
 };
 
 function rsDecor(k) {
   return '<div class="rs-dec" aria-hidden="true">' +
     '<svg viewBox="0 0 360 96" preserveAspectRatio="none">' +
-      '<path d="M0 56c60-18 120-18 180 0s120 18 180 0v40H0Z" fill="var(--g100)"/>' +
-      '<path d="M0 73c70-14 140-14 210 0s100 10 150 0v23H0Z" fill="var(--g200)"/>' +
+      '<path d="M0 56c60-18 120-18 180 0s120 18 180 0v40H0Z" fill="var(--decw1)"/>' +
+      '<path d="M0 73c70-14 140-14 210 0s100 10 150 0v23H0Z" fill="var(--decw2)"/>' +
     '</svg>' +
     '<svg class="rs-dec-m" viewBox="0 0 360 96">' + (DECOR[k] || '') + '</svg>' +
   '</div>';

@@ -9,6 +9,13 @@
   --w900:#7A2E0E; --w700:#B54708; --w500:#F79009; --w100:#FEF0C7; --w50:#FFFAEB; --w25:#FFFCF5;
   --s700:#027A48; --s50:#ECFDF3;
   --purple:#6941C6; --purple50:#F4EBFF;
+  /* The report's own pinks. `dec1/dec2` are the motifs, pale then deep;
+     `decw1/decw2` are the two waves they sit on. */
+  --dec1:#FCCEEE; --dec2:#FAA7E0; --decw1:#FEF6FB; --decw2:#FDF2FA;
+  /* The sell page's ground: a muted dusty rose rather than the pale peach it
+     was. The book is the brightest thing on that screen and it needs the page
+     to sit back behind it. */
+  --rose:#EDD4D4; --rose-lo:#E6C7C8;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --serif:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; /* display face = Inter, no serif */
   /* The one face the boards genuinely set: 3077:159492 "Your Journey" is
@@ -980,15 +987,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The hero photo fades into white, so the card below it has no visible seam. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
   padding:calc(var(--sbh) + 59px) 12px 28px;
-  border-radius:0 0 24px 24px;overflow:hidden;background:#FCEFE9}
+  border-radius:0 0 24px 24px;overflow:hidden;background:var(--rose)}
 /* The couple GIF, framed high so the loop plays above the book rather than
-   behind it. The wash on top of it is what keeps the spread legible: white
-   lifted through the middle of the frame, so the artwork sits on light rather
-   than on top of a moving photograph. */
+   behind it. The wash on top of it is what keeps the spread legible: the rose
+   lifted through the middle of the frame, so the artwork sits on a settled
+   ground rather than on top of a moving photograph. */
 .r2-hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(64% 40% at 50% 62%,rgba(253,246,242,.88) 0,rgba(253,246,242,0) 70%),
-    #FCEFE9 url(assets/r2-hero.gif) center 40%/cover no-repeat}
+    radial-gradient(64% 40% at 50% 62%,rgba(237,212,212,.9) 0,rgba(237,212,212,0) 70%),
+    linear-gradient(180deg,rgba(230,199,200,.55) 0,rgba(230,199,200,0) 46%),
+    var(--rose) url(assets/r2-hero.gif) center 40%/cover no-repeat}
 /* The wash used to start at 30% and take most of the couple with it. It now
    only softens the last fifth, where the hero meets the white page. */
 .r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
