@@ -702,15 +702,18 @@ function renderRead() {
       // reports, then the chat where the questions it raised get spent.
       '<div class="carousel-wrap">' +
         '<p class="lbl">MORE ON YOUR CHART</p>' +
-        '<div class="carousel">' +
+        // Two cards, so they split the row the way the sell page's do rather
+        // than sitting at a fixed width with nothing to scroll to.
+        '<div class="carousel fill">' +
           REPORTS.filter(function (x) { return x.id !== state.pick; })
             .map(upsellCard).join('') +
         '</div>' +
       '</div>' +
+      // One line, not a paragraph. Hemali is already sitting in the ask bar at
+      // the bottom of this screen with her rate on show, so re-arguing the case
+      // here only put a wall of text between the reader and the tap.
       '<div class="upsell">' +
-        '<b>Finished reading?</b>' +
-        '<p>Hemali is online now. If any part of the report needs explaining, or you want the <b>remedies</b> for your own chart, ask her directly.</p>' +
-        '<button class="btn primary" type="button" data-chat>Chat with Hemali — ask for remedies</button>' +
+        '<button class="btn primary" type="button" data-chat>Continue with Astro Hemali</button>' +
       '</div>';
 }
 
@@ -1361,9 +1364,13 @@ function renderDayToday() {
 /* The report as one tile among her guidance — same object as the tarot and
    prediction tiles. */
 function renderGuideTile() {
+  // Personalised Guidance is always two tasks. From day 2 the first of them is
+  // the report; on day 1, which carries no report anywhere, kundli matching
+  // stands in so the section is never a single lonely tile.
+  var report = state.paid || state.day > 1;
+  $('#guideAlt').hidden = report;
+  $('#guideSlot').hidden = !report;
   if (!state.paid) {
-    // Day 1 is the chat's day: Today carries no report at all, so there is
-    // nothing to put in this slot.
     // Clearing as well as hiding: switching back from a later day would
     // otherwise leave that day's tile sitting in the DOM.
     if (state.day === 1) { $('#guideSlot').hidden = true; $('#guideSlot').innerHTML = ''; return; }

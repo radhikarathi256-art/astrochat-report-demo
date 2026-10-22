@@ -953,6 +953,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:12px;display:flex;align-items:center;gap:12px;min-height:84px}
 .tile:active{background:var(--g50)}
 .tile img,.tile .ti{flex:none;width:56px;height:56px;object-fit:contain;margin:0}
+/* The kundli square, drawn rather than painted — a flat chart on the brand
+   tint, so it sits beside the tarot photo without pretending to be one. */
+.ti-kundli{display:grid;place-items:center;border-radius:14px;
+  background:var(--brand50);color:var(--brand)}
+.ti-kundli svg{width:30px;height:30px}
 /* The icon slot in a tile is 56 square, so the book stands exactly 56 tall —
    the hero's 86x114 was leaking in here and bursting the row. */
 .tile .bkt,.tile .bk3{width:42px;height:56px;margin:0 7px}
@@ -1111,10 +1116,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The upsells are a different kind of thing from the sections above them — a
    rule there reads as "one more section", which is the wrong promise. */
 #r2Also{border-top:0;padding-top:8px}
-/* Two cards, so they split the row rather than sitting at a fixed 159px with
-   dead space beside them — there is nothing off-screen left to scroll to. */
-#r2AlsoList{overflow-x:visible;margin:0;padding-left:0;padding-right:0}
-#r2AlsoList .pcard{flex:1 1 0;width:auto;min-width:0}
+/* `.carousel.fill` — two cards, so they split the row rather than sitting at a
+   fixed 159px with dead space beside them. Nothing is off-screen, so there is
+   nothing left to scroll to. Used by both upsell strips. */
+.carousel.fill{overflow-x:visible;margin:0;padding-left:0;padding-right:0}
+.carousel.fill .pcard{flex:1 1 0;width:auto;min-width:0}
 .r2-h{display:flex;align-items:baseline;margin:0 0 4px;
   font:600 20px/28px var(--sans);color:var(--g900)}
 
@@ -1319,7 +1325,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:400 14px/20px var(--sans);color:var(--g700);
   box-shadow:0 6px 16px -10px rgba(74,24,8,.4)}
 .rp-share{gap:10px}
-.rp-share i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--s500)}
+/* WhatsApp's own glyph in WhatsApp's own green. A plain green disc named the
+   channel in words only; the mark is what makes the button recognisable before
+   the label is read. */
+.rp-share i{flex:none;display:flex;width:20px;height:20px;color:#25D366}
+.rp-share i svg{width:100%;height:100%}
 
 /* Rule, label, rule — a chapter break, not a shouted eyebrow. */
 .rp-covers{display:flex;align-items:center;justify-content:center;gap:12px;
@@ -1479,24 +1489,29 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* Ask Hemali — a live composer pinned under the report. */
 .pad-ask{height:126px}
-.askbar{flex:none;position:relative;z-index:12;
-  padding:11px 14px calc(12px + env(safe-area-inset-bottom,0px));
+/* Board padding: 8 top, 16 each side, 24 bottom, 8 between the two rows. */
+.askbar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:8px;
+  padding:8px 16px calc(24px + env(safe-area-inset-bottom,0px));
   background:#fff;border-top:1px solid var(--g200);
   box-shadow:0 -8px 24px -10px rgba(74,24,8,.26)}
-.ask-top{display:flex;align-items:center;gap:9px}
-.ask-who{flex:1;min-width:0}
-.ask-who b{display:block;font:600 13px/18px var(--sans);color:var(--g900)}
-.ask-who small{display:block;font:400 11px/16px var(--sans);color:var(--s700)}
-.ask-rate{flex:none;display:flex;align-items:center;gap:6px}
-.ask-rate s{font:400 12px/16px var(--sans);color:var(--g400)}
-.ask-rate em{font-style:normal;font:700 13px/18px var(--sans);color:var(--brand-dk)}
-.ask-row{display:flex;align-items:center;gap:8px;margin-top:10px}
-.ask-in{flex:1;min-width:0;height:42px;border:1px solid var(--g300);border-radius:999px;
-  padding:0 15px;background:var(--g50);font:400 14px/20px var(--sans);color:var(--g800)}
-.ask-in::placeholder{color:var(--g500)}
-.ask-in:focus{outline:2px solid var(--brand50);border-color:var(--brand)}
-.ask-send{flex:none;width:42px;height:42px;border:0;border-radius:50%;background:var(--brand);
-  display:grid;place-items:center}
+.ask-top{display:flex;align-items:center;gap:12px}
+.askbar .av-ring{flex:none;width:50px;height:50px;border-width:2px}
+.ask-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ask-who b{font:600 16px/24px var(--sans);color:var(--g800)}
+/* Her rate, under her name — the struck full price then today's, which is the
+   whole argument for tapping Buy Chat. */
+.ask-rate{display:flex;align-items:center;gap:6px}
+.ask-rate s{font:400 12px/18px var(--sans);color:var(--g400)}
+.ask-rate em{font-style:normal;font:400 14px/19px var(--sans);color:var(--s700)}
+.ask-buy{flex:none;height:44px;padding:0 12px;border:1px solid var(--brand);border-radius:12px;
+  background:var(--brand);font:400 16px/24px var(--sans);color:#fff;white-space:nowrap;cursor:pointer}
+.ask-buy:active{background:var(--brand-dk);border-color:var(--brand-dk)}
+/* Full width now that the send button has become Buy Chat — the placeholder
+   types a whole question across it, so it needs the room. */
+.ask-in{width:100%;height:44px;border:0;border-radius:12px;
+  padding:0 14px;background:var(--g100);font:400 16px/24px var(--sans);color:var(--g800)}
+.ask-in::placeholder{color:var(--g400)}
+.ask-in:focus{outline:2px solid var(--brand50)}
 
 /* ---------- R.7 read-in-app report ---------- */
 .r-card{background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:16px}
@@ -1529,10 +1544,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .win h4{margin:10px 0 0;font:700 20px/28px var(--sans);color:var(--g900)}
 .win h4.sm{font-size:18px;line-height:24px}
 .win p{margin:10px 0 0;font:400 16px/24px var(--sans);color:var(--g600)}
-.upsell{background:var(--brand50);border:1px solid #F6D9CB;border-radius:12px;padding:16px}
-.upsell b{display:block;font:600 16px/20px var(--sans);color:var(--g900)}
-.upsell p{margin:4px 0 12px;font:400 12px/18px var(--sans);color:var(--g600)}
-.upsell .btn{height:40px;font-size:14px}
+/* The closing door out of the report. It is one button now, so it needs no box
+   around it — a tinted panel holding a single CTA was framing thin air. */
+.upsell{padding:4px 0 8px}
+.upsell .btn{height:48px;font-size:16px}
 .bars{padding:0 16px;margin-top:14px}
 .bars .blbl{margin:0 0 12px;font:600 12px/18px var(--sans);letter-spacing:.04em;color:var(--g500)}
 .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
