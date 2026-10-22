@@ -153,21 +153,25 @@
              check-in is the day's one job, and Hemali's reply (with the report
              inside it) is what answering buys. Titles render per day. -->
         <div class="merged unanswered" id="checkinCard" hidden>
-          <span class="ci-coins" aria-hidden="true">🪙</span>
-          <h3 class="rh-t" id="checkinTitle">Day 1 · Answer to get <span class="amt">₹9</span> in your wallet</h3>
-          <p class="q">How are you feeling about this relationship today?</p>
-          <div class="mood-row pick">
-            <button class="mood-chip" type="button" data-mood>🙂 Good</button>
-            <button class="mood-chip" type="button" data-mood>😐 Okay</button>
-            <button class="mood-chip" type="button" data-mood>🙁 Worried</button>
+          <div class="ci-top">
+            <h3 class="rh-t" id="checkinTitle">Day 1 · Answer to get<br><span class="amt">₹9</span> in your wallet</h3>
+            <!-- Figma 2679:10696 — the coin stack sits in a 48x48 slot, bottom-aligned
+                 to the title row, so it reads as the reward not as a decoration. -->
+            <span class="ci-coins" aria-hidden="true"><svg width="32" height="23" viewBox="0 0 32 23" fill="none"><ellipse cx="16" cy="19" rx="15" ry="4" fill="#F79009"/><ellipse cx="16" cy="17" rx="15" ry="4" fill="#FEC84B"/><ellipse cx="16" cy="12.5" rx="15" ry="4" fill="#F79009"/><ellipse cx="16" cy="10.5" rx="15" ry="4" fill="#FEC84B"/><ellipse cx="16" cy="6.5" rx="15" ry="4" fill="#F79009"/><ellipse cx="16" cy="4.5" rx="15" ry="4" fill="#FEC84B"/></svg></span>
           </div>
-          <p class="social"><span class="faces"><i></i><i></i><i></i></span><b>1 Lakh+</b> users earned rewards</p>
+          <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
+          <div class="mood-row pick">
+            <button class="mood-chip" type="button" data-mood><svg class="mi" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.25" stroke="#12B76A" stroke-width="1.5"/><circle cx="7.3" cy="8.2" r="1" fill="#12B76A"/><circle cx="12.7" cy="8.2" r="1" fill="#12B76A"/><path d="M6.6 12.2c.9 1.1 2 1.6 3.4 1.6s2.5-.5 3.4-1.6" stroke="#12B76A" stroke-width="1.5" stroke-linecap="round"/></svg>Achha</button>
+            <button class="mood-chip" type="button" data-mood><svg class="mi" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.25" stroke="#F79009" stroke-width="1.5"/><circle cx="7.3" cy="8.2" r="1" fill="#F79009"/><circle cx="12.7" cy="8.2" r="1" fill="#F79009"/><path d="M6.8 13h6.4" stroke="#F79009" stroke-width="1.5" stroke-linecap="round"/></svg>Okay</button>
+            <button class="mood-chip" type="button" data-mood><svg class="mi" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.25" stroke="#F04438" stroke-width="1.5"/><circle cx="7.3" cy="8.2" r="1" fill="#F04438"/><circle cx="12.7" cy="8.2" r="1" fill="#F04438"/><path d="M6.6 13.9c.9-1.1 2-1.6 3.4-1.6s2.5.5 3.4 1.6" stroke="#F04438" stroke-width="1.5" stroke-linecap="round"/></svg>Pareshan</button>
+          </div>
+          <p class="social"><span class="faces"><i style="background-image:url(assets/av1.jpg)"></i><i style="background-image:url(assets/av2.jpg)"></i><i style="background-image:url(assets/av3.jpg)"></i></span><span><b>1 Lakh+</b> users earned rewards</span></p>
         </div>
 
         <div class="merged" id="answeredCard">
           <h3 class="rh-t" id="answeredTitle">Day 1 · <span class="amt">₹9</span> added to your wallet</h3>
-          <p class="q">How are you feeling about this relationship today?</p>
-          <div class="mood-row"><span class="mood-chip">Worried</span></div>
+          <p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>
+          <div class="mood-row"><span class="mood-chip">Pareshan</span></div>
 
           <div class="reply-row">
             <img class="av" src="assets/hemali.png" alt="Astro Hemali">
@@ -561,28 +565,34 @@
   <!-- Day 1 · Daily reward intro. Fires once she scrolls past the free-chat
        section, per the daily reward board. It is the first thing competing with
        the report for the same scroll, which is the point of showing it here. -->
-  <div class="sheet" id="sheet-intro" aria-hidden="true">
-    <div class="grab"></div>
-    <div class="intro-coin" aria-hidden="true"><span>₹</span></div>
-    <h3 class="intro-h">Answer &amp; Earn every day!</h3>
-    <p class="sheet-sub intro-sub">Answer today's question to earn.</p>
+  <div class="sheet reward-sheet" id="sheet-intro" aria-hidden="true">
+    <div class="sh-art" aria-hidden="true"><span class="coin-lg"><i class="cf"></i><i class="cr"></i><b>₹</b></span></div>
+    <div class="sh-txt">
+      <h3 class="intro-h">Answer &amp; Earn every day!</h3>
+      <p class="sheet-sub intro-sub">Answer today's question to earn.</p>
+    </div>
     <div class="ladder-wrap" data-ladder></div>
-    <button class="btn primary" type="button" id="answerNow">Answer now</button>
-    <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
+    <div class="sh-acts">
+      <button class="btn primary" type="button" id="answerNow">Answer now</button>
+      <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
+    </div>
   </div>
 
   <!-- Daily reward · after answering. Per the board's J1: the coin, the ladder
        with today claimed, and tomorrow's amount as the comeback reason. Body is
        rendered per day — on day 3 the wallet crosses ₹49 and this sheet becomes
        the report close instead of a comeback ask. -->
-  <div class="sheet" id="sheet-reward" aria-hidden="true">
-    <div class="grab"></div>
-    <div class="intro-coin" aria-hidden="true"><span>₹</span></div>
-    <h3 class="intro-h" id="rewardTitle">₹9 added to your wallet!</h3>
-    <p class="sheet-sub intro-sub" id="rewardSub">Come back tomorrow — ₹11 waiting.</p>
+  <div class="sheet reward-sheet" id="sheet-reward" aria-hidden="true">
+    <div class="sh-art" aria-hidden="true"><span class="coin-lg"><i class="cf"></i><i class="cr"></i><b>₹</b></span></div>
+    <div class="sh-txt">
+      <h3 class="intro-h" id="rewardTitle">₹9 added to your wallet!</h3>
+      <p class="sheet-sub intro-sub" id="rewardSub">Come back tomorrow — ₹11 waiting.</p>
+    </div>
     <div class="ladder-wrap" data-ladder></div>
-    <button class="btn primary" type="button" id="rewardCta">Remind me for tomorrow</button>
-    <button class="btn text" type="button" data-close-sheet>Done</button>
+    <div class="sh-acts">
+      <button class="btn primary" type="button" id="rewardCta">Remind me for tomorrow</button>
+      <button class="btn text" type="button" data-close-sheet>Done</button>
+    </div>
   </div>
 
   <!-- Chapter reader: a full ebook page — paper ground, chart figures in the
@@ -659,13 +669,9 @@
       <span><b>Sell report from Today</b><span>AstroChat · Hackfest 2026</span></span>
       <button class="dr-x" type="button" id="drClose" aria-label="Close menu">✕</button>
     </div>
-    <div class="dr-body">
-      <p class="dr-lbl">Entry point</p>
-      <div class="dr-flows" id="drFlows"></div>
-      <p class="dr-lbl">Controls</p>
-      <div class="dr-ctl"><button type="button" id="drRestart">Restart demo</button>
-        <a href="variations.html">20 attachment variations</a></div>
-    </div>
+    <!-- The switcher itself is moved in here by mobile.js, so the drawer drives
+         the same live buttons (days + touchpoint chips) the desktop dock does. -->
+    <div class="dr-body" id="drBody"></div>
   </aside>
 
 </div><!-- /.phone -->

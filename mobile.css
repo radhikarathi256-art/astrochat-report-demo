@@ -8,11 +8,16 @@
      the page paints there, and Safari samples the body background for its own
      chrome. Both start peach and are flipped to white by mobile.js on scroll. */
   html,body{background:#FBE4D7;overscroll-behavior:none}
-  .switcher{display:none!important}
+  /* Only the docked copy is hidden — the drawer hosts the same live node. */
+  body>.switcher{display:none!important}
   .sbar{display:none!important}
   .stage{height:100dvh;padding:0;display:block}
   .phone{
-    width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none;
+    /* fixed + inset:0, not height:100dvh. iOS Safari does not always re-resolve
+       dvh when the toolbars collapse, which left the bottom nav floating with a
+       band of page under it; a fixed box is pinned to the visible viewport. */
+    position:fixed;inset:0;
+    width:auto;height:auto;max-height:none;border-radius:0;box-shadow:none;
     /* .phone is the whole viewport here, so plain white would cover html/body —
        including the safe-area strip. Paint white only below the inset. */
     background:transparent;
@@ -40,21 +45,8 @@
 .dr-head b{display:block;font:600 16px/24px var(--sans);color:var(--g900)}
 .dr-head span{font:400 12px/18px var(--sans);color:var(--g500)}
 .dr-x{border:0;background:none;font-size:18px;color:var(--g600);width:36px;height:36px;border-radius:10px}
-.dr-body{flex:1;overflow-y:auto;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px))}
-.dr-lbl{margin:16px 0 8px;font:600 12px/18px var(--sans);letter-spacing:.04em;
-  text-transform:uppercase;color:var(--g400)}
-.dr-flows{display:flex;flex-direction:column;gap:6px}
-.dr-flows button{text-align:left;border:1px solid var(--g200);background:#fff;border-radius:12px;
-  padding:10px 12px;display:flex;gap:10px;align-items:flex-start;font-family:inherit;width:100%}
-.dr-flows button .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--g100);
-  color:var(--g600);font:600 12px/22px var(--sans);text-align:center;margin-top:1px}
-.dr-flows button b{display:block;font:600 14px/20px var(--sans);color:var(--g700)}
-.dr-flows button small{display:block;font:400 12px/18px var(--sans);color:var(--g500);margin-top:2px}
-.dr-flows button.on{border-color:var(--brand);background:var(--brand50)}
-.dr-flows button.on .n{background:var(--brand);color:#fff}
-.dr-ctl{display:flex;flex-direction:column;gap:8px}
-.dr-ctl>button{height:44px;border-radius:12px;border:1px solid var(--brand);background:#fff;
-  font:600 14px/20px var(--sans);color:var(--brand)}
-.dr-ctl>a{display:flex;align-items:center;justify-content:center;height:44px;border-radius:12px;
-  border:1px solid var(--g200);font:600 14px/20px var(--sans);color:var(--g600);text-decoration:none}
+.dr-body{flex:1;overflow-y:auto;padding:4px 12px calc(20px + env(safe-area-inset-bottom,0px))}
+/* The drawer is already a panel, so the switcher drops its own card chrome. */
+.dr-body .switcher{position:static;width:auto;max-width:none;margin:0;
+  border:0;border-radius:0;box-shadow:none;padding:12px 4px}
 @media (prefers-reduced-motion:reduce){.drawer,.dscrim{transition:none}}

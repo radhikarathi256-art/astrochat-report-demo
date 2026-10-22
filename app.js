@@ -391,7 +391,7 @@ var DAYS = [
   { d: 'Day 4', v: 15 },
   { d: 'Day 5', v: 17 },
   { d: 'Day 6', v: 19 },
-  { d: 'Day 7', v: 51 }
+  { d: 'Day 7', v: 21 }
 ];
 /* Sizes and lifts match the daily-reward prototype. */
 var COIN_SIZE = [26, 28, 30, 30, 33, 38, 46];
@@ -402,7 +402,10 @@ var CHECK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none">' +
 function renderLadder() {
   var cols = DAYS.map(function (day, i) {
     var done = i < state.claimed;
-    var cls = 'col' + (done ? ' done' : '') + (i === DAYS.length - 1 ? ' goal' : '');
+    // The first uncollected day is today: Figma gives it a brand ring on the
+    // rail and a brand label, so the strip says where you are without a legend.
+    var cls = 'col' + (done ? ' done' : i === state.claimed ? ' today' : '') +
+      (i === DAYS.length - 1 ? ' goal' : '');
     return '<div class="' + cls + '">' +
              '<span class="ic"><span class="coin' + (done ? ' got' : '') + '" style="width:' +
                COIN_SIZE[i] + 'px;height:' + COIN_SIZE[i] + 'px;margin-bottom:' + COIN_LIFT[i] + 'px">' +
@@ -1084,19 +1087,23 @@ function offer3Card() {
   return '<div class="of3">' +
     '<div class="of3-head">' +
       '<div class="of3-ttl">' + esc(r.t2 || r.t) + '</div>' +
+      // The green dot is switched off in the frame, and rightly so: it says
+      // "live" next to a rating, which is the one thing a rating is not.
       '<div class="of3-badge">' +
-        '<i class="of3-dot"></i>' +
         '<b>' + r.rating + '</b><i class="of3-star">\u2605</i>' +
         '<i class="of3-sep"></i>' +
         '<b>' + inr(r.sold) + ' readers</b>' +
       '</div>' +
     '</div>' +
-    // Sits across the banner's bottom edge, half on the paint and half off it.
-    '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+    // Stands proud of the top-right corner and hinges on its spine, so the
+    // card has one thing moving and it is the thing being sold.
+    '<span class="of3-bkw" aria-hidden="true">' +
+      '<span class="of3-leaf"></span>' +
+      '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+    '</span>' +
     '<div class="of3-pts">' + pointers(r, 3) + '</div>' +
     '<div class="of3-foot">' +
       '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
-      '<em class="of3-terms">one-time · yours forever</em>' +
       '<button class="of3-go" type="button" data-pick="' + r.id + '">Buy Now</button>' +
     '</div>' +
   '</div>';
@@ -1224,8 +1231,10 @@ function renderDayToday() {
   $('#countdownLine').innerHTML = dayData().countdown;
   $('#checkinCard').hidden  = state.answered;
   $('#answeredCard').hidden = !state.answered;
+  // Two lines by hand, as in Figma: the break keeps "wallet" clear of the
+  // coin stack parked in the title row's top-right corner.
   $('#checkinTitle').innerHTML =
-    'Day ' + day + ' · Answer to get <span class="amt">₹' + r + '</span> in your wallet';
+    'Day ' + day + ' · Answer to get<br><span class="amt">₹' + r + '</span> in your wallet';
   $('#answeredTitle').innerHTML =
     'Day ' + day + ' · <span class="amt">₹' + r + '</span> added to your wallet';
   // The ladder has to agree with the card: today is not collected until she answers.

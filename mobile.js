@@ -2,31 +2,24 @@
    demo's entry points, and the status-bar strip follows the page. */
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var FLOWS = [
-    ['a', 'A · Reply + report', 'R.1 — attachment under Hemali\u2019s answer'],
-    ['b', 'B · Expert card',    'R.1b — inside the astrologer card'],
-    ['c', 'C · Guidance tile',  'R.1c — personalised guidance']
-  ];
   var drawer = $('drawer'), scrim = $('dscrim');
 
-  function current() {
-    var on = document.querySelector('.switcher [data-entry].on');
-    return on ? on.getAttribute('data-entry') : 'a';
+  /* One switcher, two homes. Moving the live node keeps app.js's delegated
+     handlers and renderTpTabs() working — a copy would go stale the moment the
+     touchpoint chips re-rendered. */
+  var sw = $('switcher'), drBody = $('drBody'), stage = document.querySelector('.stage');
+  function placeSwitcher() {
+    var want = window.innerWidth <= 600 ? drBody : document.body;
+    if (sw.parentNode === want) return;
+    if (want === drBody) drBody.appendChild(sw);
+    else document.body.insertBefore(sw, stage);
   }
-
-  function render() {
-    var cur = current();
-    $('drFlows').innerHTML = FLOWS.map(function (f, i) {
-      return '<button type="button" data-dr-entry="' + f[0] + '"' +
-        (f[0] === cur ? ' class="on"' : '') + '>' +
-        '<span class="n">' + (i + 1) + '</span>' +
-        '<span><b>' + f[1] + '</b><small>' + f[2] + '</small></span></button>';
-    }).join('');
-  }
+  placeSwitcher();
+  window.addEventListener('resize', placeSwitcher);
 
   // A forced reflow, not rAF: browsers throttle rAF when the tab is not
   // painting, and the open class would then never land.
-  function open()  { render(); scrim.hidden = false;
+  function open()  { scrim.hidden = false;
     void scrim.offsetHeight;
     scrim.classList.add('on'); drawer.classList.add('on');
     drawer.setAttribute('aria-hidden', 'false'); }
@@ -43,17 +36,11 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && drawer.classList.contains('on')) close();
   });
+  // Picking a day, a touchpoint or Restart has done its job — get out of the way
+  // so the surface it jumped to is actually visible. app.js's own document-level
+  // handler still runs, so nothing here has to re-implement the switch.
   drawer.addEventListener('click', function (e) {
-    e.stopPropagation();
-    var f = e.target.closest('[data-dr-entry]');
-    if (f) {
-      // Re-use the switcher's own button so app.js does the entry switch + restart.
-      var btn = document.querySelector('.switcher [data-entry="' + f.getAttribute('data-dr-entry') + '"]');
-      close();
-      setTimeout(function () { btn.click(); }, 200);
-      return;
-    }
-    if (e.target.id === 'drRestart') { close(); setTimeout(function () { $('restart').click(); }, 200); }
+    if (e.target.closest('[data-day],[data-tp],#restart,.sw-link')) close();
   });
 
   /* The status-bar strip takes its colour from whatever is at the top of the
