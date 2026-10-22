@@ -4,14 +4,16 @@
    =========================================================================== */
 
 @media (max-width:600px){
-  /* Same shape as astrochat-daily-reward, which is the build that sits right on
-     her phone: the page stays in normal flow and .phone is simply 100dvh. The
-     fixed, inset:0, --appvh-measured body that used to be here was an attempt to
-     out-measure a short window — but the window was short because the app had no
-     manifest, so iOS ran it on the legacy apple-* path and stopped the viewport
-     above the home indicator. index.html links the manifest now, which is the
-     actual fix; nothing here needs to compensate for anything. */
-  html,body{overscroll-behavior:none}
+  /* No height unit anywhere in the shell. 100dvh was the gap: a saved web app
+     resolves it against the *large* viewport, so the box came up short of the
+     window and body showed through under the nav — cream or white depending on
+     which stylesheet won. In Safari proper the same unit changes value as the
+     URL bar slides, which is the gap she saw below the address bar.
+     position:fixed + inset:0 is not a measurement, it IS the viewport box: the
+     shell is pinned to all four edges and resizes with the window with no JS and
+     no unit to be wrong about. Everything inside was already absolutely
+     positioned off .phone, so nothing below it has to change. */
+  html,body{height:100%;overscroll-behavior:none}
   /* The pre-JS ground, replaced inline by tint() on the first frame. White, not
      the peach: every bottom bar in the app is white, so white is the colour that
      disappears under the nav if the box ever comes up short. */
@@ -30,18 +32,17 @@
   /* Only the docked copy is hidden — the drawer hosts the same live node. */
   body>.switcher{display:none!important}
   .sbar{display:none!important}
-  .stage{height:100dvh;min-height:100dvh;padding:0;display:block}
+  /* The stage is the window. Fixed to all four edges, so there is no page to
+     scroll behind it and no body background left showing anywhere. */
+  .stage{position:fixed;inset:0;height:auto!important;min-height:0!important;
+    padding:0;display:block}
   .phone{
-    /* width:100%, not auto: the desktop rule centres the frame in a grid stage,
-       and every child of .phone is absolutely positioned, so an auto width has
-       no in-flow content to measure and collapses the whole app to 0.
-       !important on the heights because the desktop rule sets a max-height and a
-       fixed height on the same element, and this is the build that has to win:
-       astrochat-daily-reward, which sits flush on her phone, writes them the
-       same way. */
-    position:relative;
-    width:100%;max-width:none;max-height:none;
-    height:100dvh!important;min-height:100dvh!important;
+    /* Filled to the stage the same way, by edges rather than by height. The
+       !important is for the desktop rule above, which sets a fixed height and a
+       max-height on this same element. */
+    position:absolute;inset:0;
+    width:auto;max-width:none;max-height:none!important;
+    height:auto!important;min-height:0!important;
     border-radius:0;box-shadow:none;
     /* .phone is the whole viewport here, so plain white would cover body —
        including the safe-area strip. The strip gets the live top colour that
