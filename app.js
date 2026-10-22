@@ -25,7 +25,7 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    - `sample`: the whole report on the demo chart, for the free preview. */
 var REPORTS = [
   {
-    id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet — and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
+    id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet, and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
     // `t2` is the long name, used where the card has room for two lines and the
     // book is sitting right next to it — it has to match the cover she can see.
     t2: 'Your Future Partner Prediction Report',
@@ -59,12 +59,12 @@ var REPORTS = [
       'What your first meeting looks like',
       'When real love arrives in this life',
       'What is blocking that person from reaching you now',
-      'Love or arranged — what the chart says',
+      'Love or arranged, what the chart says',
       'The kind of wrong people you keep attracting',
       'What to do each day so that person comes closer'
     ],
     ask: [
-      { q: 'Where will I meet them?',        a: 'Your navamsa points to one direction — an introduction through work or study, not alone in some unknown place. It comes through people who already know you.' },
+      { q: 'Where will I meet them?',        a: 'Your navamsa points to one direction. An introduction through work or study, not alone in some unknown place. It comes through people who already know you.' },
       { q: 'What is the remedy for Rahu?',   a: 'Pray to Durga on Wednesdays and feed one person. And for three weeks, make no new promise about the thing that is stuck.' },
       { q: 'Why do wrong people turn up?',   a: 'Rahu shows whatever is available instantly. Any relationship that moves very fast in the first week is your pattern. Wait three weeks and the pattern breaks.' }
     ]
@@ -82,19 +82,19 @@ var REPORTS = [
       { s: 5, n: 'Isha G., Lucknow',  q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
     ],
     learn: [
-      'Am I Manglik or not — and how strongly',
+      'Am I Manglik or not, and how strongly',
       'When the marriage happens, and the best window for it',
       'A full reading of your house of marriage',
       'The kind of life partner written in your chart',
       'Whether your in-laws will stand by you',
       'Whether money changes after marriage',
-      'How many of the 36 gunas match — full compatibility',
+      'How many of the 36 gunas match, full compatibility',
       'Which doshas you have, and the right remedies'
     ],
     ask: [
-      { q: 'How serious is the Manglik?',    a: 'Mars is in your chart but weakly placed — this is called a low Manglik. With a partner whose chart is similar, it settles on its own.' },
+      { q: 'How serious is the Manglik?',    a: 'Mars is in your chart but weakly placed. This is called a low Manglik. With a partner whose chart is similar, it settles on its own.' },
       { q: 'Which is the best month?',       a: 'When Jupiter looks at your seventh house. In that window talks move forward and the family agrees too.' },
-      { q: 'What will the in-laws be like?', a: 'The lord of your fourth house is well placed — the home stays calm. The first six months ask for some adjustment, then it steadies.' }
+      { q: 'What will the in-laws be like?', a: 'The lord of your fourth house is well placed, so the home stays calm. The first six months ask for some adjustment, then it steadies.' }
     ]
   },
   {
@@ -112,7 +112,7 @@ var REPORTS = [
     learn: [
       'The one big career theme of the next three months',
       'The best dates to ask for a raise or pitch an idea',
-      'Business or a job — what the chart says',
+      'Business or a job, what the chart says',
       'What your boss actually thinks about you',
       'What to change at work, and how to make your work visible',
       'The right month for a job switch',
@@ -120,9 +120,9 @@ var REPORTS = [
       'Colours, directions and mantras for success at work'
     ],
     ask: [
-      { q: 'When should I change jobs?',     a: 'When Jupiter looks at your tenth house. In that window the offers are better and talks close — before it, only talk, do not switch.' },
-      { q: 'What does my boss think?',       a: 'The Sun is fine but Saturn is watching — he trusts the work, not the show. So he knows your work, he just does not remember it.' },
-      { q: 'Will I get a raise?',            a: 'Your tenth lord is exalted, so yes — but only if you ask, not on its own. Ask on the dates named in the report.' }
+      { q: 'When should I change jobs?',     a: 'When Jupiter looks at your tenth house. In that window the offers are better and talks close. Before it, only talk, do not switch.' },
+      { q: 'What does my boss think?',       a: 'The Sun is fine but Saturn is watching. He trusts the work, not the show. So he knows your work, he just does not remember it.' },
+      { q: 'Will I get a raise?',            a: 'Your tenth lord is exalted, so yes, but only if you ask, not on its own. Ask on the dates named in the report.' }
     ]
   }
 ];
@@ -142,12 +142,12 @@ var PM_JOURNEY = {
     msgs: [
       { who: 'sys',    text: 'Astrologer has joined to guide you' },
       { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
-      { who: 'hemali', text: 'Mansi, I have read your chart. Rahu sits in your seventh house — that is why things stop just as they start to work out.' },
+      { who: 'hemali', text: 'Mansi, I have read your chart. Rahu sits in your seventh house. That is why things stop just as they start to work out.' },
       { who: 'hemali', text: 'Do not worry, there is a remedy for it.' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
       { who: 'gap',    text: '15 minutes later' },
-      { who: 'hemali', text: 'Mansi, I have written a full report on your seventh house — the Rahu block, the timing, what your partner will be like and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.' },
+      { who: 'hemali', text: 'Mansi, I have written a full report on your seventh house covering the Rahu block, the timing, what your partner will be like and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.' },
       { who: 'offer3' }
     ],
     today: { eyebrow: '', note: '' },
@@ -155,7 +155,7 @@ var PM_JOURNEY = {
     /* A notification that names her own house and opens that one preview beats
        a storefront ad that makes her choose again on the other side of the tap. */
     lead: 'partner',
-    push: 'Mansi, Rahu is in your seventh house — the Partner Prediction report is ₹49 today instead of ₹499 📖'
+    push: 'Mansi, Rahu is in your seventh house. The Partner Prediction report is ₹49 today instead of ₹499 📖'
   },
   /* `lead` is the one report each day actually suggests. Day 1 and 2 lead with
      the house she asked about; if that has not landed in two days the
@@ -180,7 +180,7 @@ var PM_JOURNEY = {
     lead: 'career',
     surf: { chat: true, today: false, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi, I noticed one more thing in your chart — Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.' },
+      { who: 'hemali', text: 'Mansi, I noticed one more thing in your chart. Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.' },
       { who: 'offer3' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
@@ -196,7 +196,7 @@ var PM_JOURNEY = {
     lastAsk: true,
     surf: { chat: false, today: false, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi, one thing was left — there is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.' },
+      { who: 'hemali', text: 'Mansi, one thing was left. There is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.' },
       { who: 'offer3' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
@@ -211,7 +211,7 @@ var PM_JOURNEY = {
     quiet: true,
     surf: { chat: false, today: false, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi, tell me — what would you like to ask today?' },
+      { who: 'hemali', text: 'Mansi, tell me, what would you like to ask today?' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
     today: { eyebrow: '', note: '' },
@@ -1259,7 +1259,7 @@ function typing(done) {
 function segueCard() {
   var r = reportById(state.pick);
   return '<div class="c-b hemali"><p>Mansi, your <b>' + esc(r.t) +
-      '</b> report is open. If any part needs explaining, or you want the remedies — ask me right here.</p>' +
+      '</b> report is open. If any part needs explaining, or you want the remedies, ask me right here.</p>' +
       '<time>02:41 PM</time></div>' +
     '<div class="sg" id="sgChips">' +
       '<p class="sg-h">Ask beyond the report</p>' +
@@ -1466,7 +1466,7 @@ function openRewardSheet() {
       '. Come back tomorrow for ₹' + REWARD[state.day + 1] + ' more.';
     $('#rewardCta').textContent = 'Remind me for tomorrow';
   } else {
-    $('#rewardSub').textContent = 'One more thing — the ₹49 price on the report ends tonight. Back to ₹499 tomorrow.';
+    $('#rewardSub').textContent = 'One more thing. The ₹49 price on the report ends tonight. Back to ₹499 tomorrow.';
     $('#rewardCta').textContent = 'Unlock full report · ₹49';
   }
   openSheet('reward');
@@ -1537,7 +1537,7 @@ function renderTpTabs() {
   var wrap = document.createElement('div');
   wrap.className = 'tp-wrap';
   wrap.innerHTML =
-    '<p class="tp-note">Touchpoints — ' +
+    '<p class="tp-note">Touchpoints: ' +
       (state.paid ? 'report bought · every surface is the follow-up'
         : pmQuiet() ? 'nudging has stopped, the report only sits in her guidance'
         : 'one report a day · ₹49, sample on a demo chart') + '</p>' +
@@ -1742,7 +1742,7 @@ document.addEventListener('click', function (e) {
     closeSheet();
     state.reminded = true;
     renderChat();
-    toast('Reminder on — tomorrow ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + free chat ready', 'success');
+    toast('Reminder on, tomorrow ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + free chat ready', 'success');
     return;
   }
   if (t.id === 'notifNo') { $('#notifDlg').hidden = true; closeSheet(); return; }
