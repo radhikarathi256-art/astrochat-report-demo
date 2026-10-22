@@ -31,8 +31,8 @@ var REPORTS = [
     t2: 'Your Future Partner Prediction Report',
     why: 'Learn how Rahu is blocking you from meeting him',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
-    // The only report with painted artwork so far. Where it exists the book is
-    // the real thing opening; the other two still fall back to the drawing.
+    // All three are painted now, to the same brief: one bold motif on pale
+    // watercolour paper, and a flat spread with the chart on the left page.
     art: { closed: 'assets/cover-partner.jpg', open: 'assets/spread-partner.jpg' },
     // What is in the box, as chips — the one thing unique to this report first.
     chips: ['Partner image', 'Birth chart analysis'],
@@ -67,6 +67,7 @@ var REPORTS = [
     id: 'marriage', t: 'Marriage Report', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
     why: 'Learn how Mars in your chart is holding the talks back',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
+    art: { closed: 'assets/cover-marriage.jpg', open: 'assets/spread-marriage.jpg' },
     chips: ['36 guna match', 'Dosha check'],
     revs: [
       { s: 5, n: 'Anjali D., Surat',  q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
@@ -94,6 +95,7 @@ var REPORTS = [
     id: 'career', t: 'Career & Job', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
     why: 'Learn how Saturn is slowing down your next move',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
+    art: { closed: 'assets/cover-career.jpg', open: 'assets/spread-career.jpg' },
     chips: ['Switch timing', 'Raise window'],
     revs: [
       { s: 5, n: 'Shruti B., Pune',   q: 'It named March as the switch month. I got the offer on the 11th of March.' },
@@ -997,6 +999,12 @@ var MOTIFS = {
    the chat bubble's thumbnail and the picker's row. */
 function coverArt(r, cls) {
   var c = r.cover;
+  // All three reports are painted now, so the drawn motif is only a fallback.
+  if (r.art) {
+    return '<span class="cv cv-art-on' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' +
+      '<img src="' + r.art.closed + '" alt="">' +
+    '</span>';
+  }
   return '<span class="cv' + (cls ? ' ' + cls : '') + '" aria-hidden="true"' +
     ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
     '<svg class="cv-art" viewBox="0 0 40 52">' +
@@ -1099,7 +1107,9 @@ function offer3Card() {
   // the follow-up, and two follow-ups in a row is one too many.
   if (state.paid) return '';
   var r = leadReport();
-  return '<div class="of3">' +
+  // The whole card is the link to the detail page; only Buy Now jumps the
+  // queue straight to payment.
+  return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '">' +
     '<div class="of3-head">' +
       '<div class="of3-ttl">' + esc(r.t2 || r.t) + '</div>' +
       // The green dot is switched off in the frame, and rightly so: it says
@@ -1124,7 +1134,7 @@ function offer3Card() {
     '<div class="of3-pts">' + pointers(r, 3) + '</div>' +
     '<div class="of3-foot">' +
       '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
-      '<button class="of3-go" type="button" data-pick="' + r.id + '">Buy Now</button>' +
+      '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>' +
     '</div>' +
   '</div>';
 }
@@ -1135,7 +1145,7 @@ function offer3Card() {
 function histCard(r) {
   // The rate pills are off in 3111:201206 — this card sells the report, and a
   // per-minute price next to her name sells the chat instead.
-  return '<div class="hw">' +
+  return '<div class="hw" role="button" tabindex="0" data-pick="' + r.id + '">' +
     '<div class="hw-top">' +
       '<span class="hw-av"><img src="assets/hemali.png" alt=""><i></i></span>' +
       '<span class="hw-who">' +
@@ -1303,8 +1313,11 @@ function renderDayToday() {
   var sf = pmSurf();
   if (!state.paid) {
     $('#expertSlot').hidden = !sf.today;
-    $('#guideSlot').hidden  = !sf.guide;
-    if (sf.guide) renderGuideTile(); else $('#guideSlot').innerHTML = '';
+    // The guidance tile is the one permanent surface: it is a tile among tiles,
+    // not a nudge, so it stays put all five days while the louder cards come
+    // and go.
+    $('#guideSlot').hidden = false;
+    renderGuideTile();
     // Hiding the slot is not enough — yesterday's countdown would survive in
     // the DOM and reappear the moment anything unhid it.
     if (!sf.today) { $('#expertSlot').innerHTML = ''; return; }
@@ -1334,21 +1347,25 @@ function renderGuideTile() {
   if (!state.paid) {
     // The guidance tile is the quieter of Today's two surfaces, so it carries
     // the other two reports — the expert card above it already leads with one.
+    // No price chip: the tarot and prediction tiles carry a title, a line and a
+    // chevron, and this is the same object. An empty <span class="bk3"> was
+    // drawing a bare page block at the hero's 86x114 — hence the broken look.
     $('#guideSlot').innerHTML =
       '<button class="tile" type="button" data-go="picker">' +
-        '<span class="bk3" aria-hidden="true"></span>' +
-        '<span class="tt"><b>2 more reports on your chart</b><small>' +
+        book3d(REPORTS.filter(function (x) { return x.id !== leadReport().id; })[0]) +
+        // Short enough not to ellipsise at tile width; the sub-line is already
+        // naming both reports.
+        '<span class="tt"><b>2 more reports</b><small>' +
           esc(REPORTS.filter(function (x) { return x.id !== leadReport().id; })
                      .map(function (x) { return x.t; }).join(' \u00b7 ')) +
         '</small></span>' +
-        '<i class="tag green">\u20b949</i>' +
         '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
     return;
   }
   $('#guideSlot').innerHTML =
     '<button class="tile" type="button" data-go="read">' +
-      '<span class="bk3" aria-hidden="true"></span>' +
+      book3d(reportById(state.pick)) +
       '<span class="tt"><b>' + esc(boughtTitle()) + '</b>' +
         '<small>Full report open \u2713 \u2014 ask Hemali for the remedies</small></span>' +
       '<i class="tag green">Ready</i>' +
@@ -1586,8 +1603,18 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,[data-amt],#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,[data-amt],#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
   if (!t) return;
+
+  // Buy Now skips the detail page. It sits inside a [data-pick] card, and
+  // closest() stops at whichever matches first — the button — so this has to
+  // be tested before the pick branch below.
+  if (t.hasAttribute('data-buy')) {
+    state.pick = t.getAttribute('data-buy');
+    renderReport();
+    openPay();
+    return;
+  }
 
   // PM track: picking one of the three reports opens it on the report page.
   if (t.hasAttribute('data-pick')) {
