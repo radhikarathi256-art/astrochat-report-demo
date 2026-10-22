@@ -882,18 +882,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .expert-meta strong{font-weight:600;color:var(--s700)}
 .expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
 /* Figma 3203:205266 — the report as a ticket stub torn off the bottom of the
-   expert card. Negative margins take the row out to the white card's own edge
-   so the notches can bite into it; the dashed rule stays inset 12px. */
+   expert card. The perforation is the dashed rule and nothing else: the notch
+   circles only read as a tear when the colour behind the card shows through
+   them, and here the row sits inside the white card, so they came out as two
+   purple dots printed on white. */
 .ex-tkt{position:relative;display:flex;align-items:center;gap:12px;width:auto;
   margin:8px -12px -8px;padding:8px 12px 6px;border:0;border-top:1px dashed var(--g300);
   border-radius:0 0 12px 12px;background:#fff;text-align:left}
 .ex-tkt:active{background:var(--g50)}
-/* Half a 12px circle, centred on the perforation, filled with the shell's
-   bottom purple — the same trick a cinema ticket uses to say "tear here". */
-.tk-n{position:absolute;top:-6px;width:12px;height:12px;border-radius:50%;
-  background:#4A3460}
-.tk-l{left:-6px}
-.tk-r{right:-6px}
 .tk-bk{flex:none;width:31px;height:41px;object-fit:cover;border-radius:2px;
   box-shadow:0 1px 3px rgba(16,24,40,.18)}
 .tk-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}

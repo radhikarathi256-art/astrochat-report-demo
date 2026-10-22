@@ -1186,8 +1186,6 @@ function histCard(r) {
    which put Hemali's face and name on the card twice and ran it to 383px. */
 function exTicket(r) {
   return '<button class="ex-tkt" type="button" data-pick="' + r.id + '">' +
-    '<i class="tk-n tk-l" aria-hidden="true"></i>' +
-    '<i class="tk-n tk-r" aria-hidden="true"></i>' +
     (r.art
       ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
       : drawnFace(r, 'tk-bk bk3-face')) +
@@ -1505,9 +1503,8 @@ function renderTpTabs() {
     if (!tabs.length) tabs.push(
       { id: 'today',   l: 'Today \u00b7 nothing asks' },
       { id: 'chat',    l: 'Chat \u00b7 nothing asks' });
-    // The states that only exist after she answers the check-in are awkward to
-    // reach by hand, so these chips answer for her and park the phone there.
-    tabs.push({ id: 'reward', l: 'Daily reward \u00b7 answered' });
+    // No "Daily reward · answered" chip: the check-in card is right there on
+    // Today and answering it by hand is the honest way to see that state.
     if (repToastDays()) tabs.push({ id: 'toast', l: 'Toast \u00b7 Hemali\u2019s knock' });
     if (state.day === 1) tabs.push({ id: 'counter', l: 'Counter \u00b7 header + History' });
   }
