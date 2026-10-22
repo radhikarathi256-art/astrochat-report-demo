@@ -26,7 +26,7 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
 var REPORTS = [
   {
     id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet — and what is holding it up', pages: 38, rating: '4.7', sold: 128880,
-    why: 'Rahu sits in your seventh house — the thing you asked about',
+    why: 'Learn how Rahu is blocking you from meeting him',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // The only report with painted artwork so far. Where it exists the book is
     // the real thing opening; the other two still fall back to the drawing.
@@ -60,7 +60,7 @@ var REPORTS = [
   },
   {
     id: 'marriage', t: 'Marriage Report', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
-    why: 'Along with Rahu in the seventh house, there is a Mars question too',
+    why: 'Learn how Mars in your chart is holding the talks back',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     chips: ['36 guna match', 'Dosha check'],
     revs: [
@@ -86,7 +86,7 @@ var REPORTS = [
   },
   {
     id: 'career', t: 'Career & Job', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
-    why: 'Your tenth lord is exalted, but Saturn is watching it',
+    why: 'Learn how Saturn is slowing down your next move',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     chips: ['Switch timing', 'Raise window'],
     revs: [
@@ -414,6 +414,11 @@ function renderLadder() {
 
   var html = '<div class="ladder" style="--f:' + (Math.max(state.claimed - 1, 0) / 6) + '">' + cols + '</div>';
   $$('[data-ladder]').forEach(function (el) { el.innerHTML = html; });
+  // Day 1 keeps the Daily reward block — the check-in is the day's one job —
+  // but not the seven coins. On the morning someone arrives, a full streak laid
+  // out ahead of them reads as a chore list rather than a reward. The sheets in
+  // the reward flow still show it, because there the strip is the subject.
+  $('#todayLadder').hidden = state.day === 1;
 }
 
 /* ---------------------------------------------------------------- content: bottom nav */
@@ -436,17 +441,20 @@ function renderNav() {
     el.innerHTML = NAV.map(function (n) {
       return '<button type="button" class="' + (n.id === active ? 'on' : '') + '"' +
              ' data-nav="' + n.id + '">' + NAV_ICONS[n.id] +
-             (n.id === 'timeline' && state.histDot ? '<i class="ndot"></i>' : '') +
+             // The board uses a counter, not a dot: a number says how much is
+             // waiting, which is the only part a dot cannot say.
+             (n.id === 'timeline' && state.histDot ? '<i class="ncount">1</i>' : '') +
              '<span>' + n.label + '</span></button>';
     }).join('');
   });
   // The chapter is reachable from two doors — the History tab and the chat
-  // history icon in the header. Both carry the same unread dot.
+  // history icon in the header. Both carry the same counter.
   $$('.ic-btn[data-chat]').forEach(function (b) {
-    var d = b.querySelector('.ndot');
+    var d = b.querySelector('.ncount');
     if (state.histDot && !d) {
       d = document.createElement('i');
-      d.className = 'ndot';
+      d.className = 'ncount';
+      d.textContent = '1';
       b.appendChild(d);
     } else if (!state.histDot && d) {
       d.remove();
@@ -520,23 +528,138 @@ function rsec(label, body) {
     (label ? '<h3 class="rs-h">' + label + '</h3>' : '') + body + '</section>';
 }
 
+/* The evidence block at the foot of each section. One branch per `k` on the
+   board — the kind is what makes a section feel written rather than templated,
+   so they are not collapsed into a single list renderer. */
+function rsEvidence(s) {
+  var i;
+  if (s.k === 'bars') {
+    return '<div class="rs-card"><p class="rs-cl">' + esc(s.label) + '</p>' +
+      s.rows.map(function (r) {
+        return '<div class="rs-bar"><span>' + esc(r[0]) + '</span>' +
+          '<i><b style="width:' + (r[1] * 10) + '%"></b></i>' +
+          '<em>' + r[1] + '</em></div>';
+      }).join('') + '</div>';
+  }
+  if (s.k === 'tiles') {
+    return '<div class="rs-tiles">' + s.rows.map(function (r) {
+      return '<div><small>' + esc(r[0]) + '</small><b>' + esc(r[1]) + '</b></div>';
+    }).join('') + '</div>';
+  }
+  if (s.k === 'rows') {
+    return '<div class="rs-rows">' + s.rows.map(function (r) {
+      return '<div><small>' + esc(r[0]) + '</small><b>' + esc(r[1]) + '</b></div>';
+    }).join('') + '</div>';
+  }
+  if (s.k === 'chance') {
+    return '<div class="rs-card"><p class="rs-cl">' + esc(s.label) + '</p>' +
+      '<div class="rs-chart">' + s.rows.map(function (r) {
+        // The two tall bars are the answer; the rest are there to make them
+        // look like an answer rather than an assertion.
+        var hot = r[1] >= 80;
+        return '<div' + (hot ? ' class="hot"' : '') + '>' +
+          '<i style="height:' + r[1] + '%"></i><small>' + esc(r[0]) + '</small></div>';
+      }).join('') + '</div>' +
+      '<div class="rs-win"><small>' + esc(s.winLabel) + '</small><b>' + esc(s.win) + '</b></div>' +
+    '</div>';
+  }
+  if (s.k === 'split') {
+    return '<div class="rs-card tight">' +
+      '<i class="rs-split"><b style="width:' + s.pct + '%"></b></i>' +
+      '<p class="rs-sl"><span>' + esc(s.rows[0][0]) + '</span><em>' + esc(s.rows[0][1]) + '</em></p>' +
+    '</div>';
+  }
+  if (s.k === 'tags') {
+    return s.rows.map(function (r) {
+      return '<div class="rs-tag"><p><b>' + esc(r[0]) + '</b><i>' + esc(r[1]) + '</i></p>' +
+        '<small>' + esc(r[2]) + '</small></div>';
+    }).join('');
+  }
+  if (s.k === 'tips') {
+    return '<div class="rs-tips">' + s.rows.map(function (r, n) {
+      return '<div><i>' + (n + 1) + '</i><span><b>' + esc(r[0]) + '</b><small>' +
+        esc(r[1]) + '</small></span></div>';
+    }).join('') + '</div>';
+  }
+  if (s.k === 'kundali') {
+    // North Indian square: the diamond and the two diagonals, with the twelve
+    // house labels dropped at the anchor points the board uses.
+    var pos = [
+      [50, 19], [32, 7], [13, 25], [32, 44], [13, 68], [32, 87],
+      [50, 76], [68, 87], [87, 68], [68, 44], [87, 25], [68, 7]
+    ];
+    var cells = '';
+    for (i = 0; i < 12; i++) {
+      var occ = s.houses[i + 1];
+      cells += '<span class="kh" style="left:' + pos[i][0] + '%;top:' + pos[i][1] + '%">' +
+        '<em>' + (i + 1) + '</em>' + (occ ? '<b>' + esc(occ) + '</b>' : '') + '</span>';
+    }
+    return '<div class="rs-kun">' +
+      '<div class="kun">' +
+        '<svg viewBox="0 0 240 240" aria-hidden="true">' +
+          '<rect x="1" y="1" width="238" height="238" rx="4" fill="none" stroke="#EAECF0" stroke-width="1.5"/>' +
+          '<path d="M1 1 239 239M239 1 1 239M120 1 239 120 120 239 1 120Z" fill="none" stroke="#EAECF0" stroke-width="1.5" stroke-linejoin="round"/>' +
+        '</svg>' + cells +
+      '</div>' +
+      '<div class="rs-leg">' + s.legend.map(function (l) {
+        return '<div><i></i><span><b>' + esc(l[0]) + '</b><small>' + esc(l[1]) + '</small></span></div>';
+      }).join('') + '</div>' +
+    '</div>';
+  }
+  return '';
+}
+
+/* Every section ends on the same two hills so the bands read as one landscape;
+   the motif on top is what tells them apart. */
+var DECOR = {
+  hearts: '<path d="M262 36c0-8 6-13 12-13s11 5 11 11-9 14-14 18c-5-4-9-10-9-16Z" fill="#FCCEEE"/><path d="M279 24c0-10 8-16 15-16s14 6 14 14-11 18-17 23c-7-5-12-13-12-21Z" fill="#FAA7E0"/>',
+  leaf:   '<path d="M268 48c0-18 14-32 32-32 0 18-14 32-32 32Z" fill="#FAA7E0"/><path d="M300 48V22" stroke="#FCCEEE" stroke-width="2"/>',
+  pin:    '<path d="M288 10c9 0 16 7 16 16 0 12-16 26-16 26s-16-14-16-26c0-9 7-16 16-16Z" fill="#FAA7E0"/><circle cx="288" cy="26" r="6" fill="#FEF6FB"/>',
+  orbit:  '<circle cx="288" cy="32" r="16" fill="#FCCEEE"/><ellipse cx="288" cy="32" rx="30" ry="11" fill="none" stroke="#FAA7E0" stroke-width="2"/>',
+  moon:   '<path d="M298 12a22 22 0 1 0 0 42 26 26 0 0 1 0-42Z" fill="#FAA7E0"/>',
+  lights: '<path d="M258 16h62" stroke="#FCCEEE" stroke-width="2"/><circle cx="268" cy="26" r="7" fill="#FAA7E0"/><circle cx="288" cy="30" r="7" fill="#FCCEEE"/><circle cx="308" cy="26" r="7" fill="#FAA7E0"/>',
+  cups:   '<path d="M270 18h36l-5 22h-26Z" fill="#FAA7E0"/><path d="M282 40h12v12h-12Z" fill="#FCCEEE"/>',
+  rings:  '<circle cx="280" cy="32" r="14" fill="none" stroke="#FAA7E0" stroke-width="4"/><circle cx="300" cy="32" r="14" fill="none" stroke="#FCCEEE" stroke-width="4"/>',
+  house:  '<path d="M288 12l24 18v24h-48V30Z" fill="#FCCEEE"/><path d="M280 54V40h16v14" fill="#FAA7E0"/>',
+  lamp:   '<path d="M266 44c0-8 10-12 22-12s22 4 22 12-10 10-22 10-22-2-22-10Z" fill="#FCCEEE"/><path d="M288 32c0-10 8-14 8-20-10 3-16 10-16 20Z" fill="#FAA7E0"/>',
+  plant:  '<path d="M288 54V24" stroke="#FAA7E0" stroke-width="3"/><path d="M288 34c-12 0-18-8-18-16 12 0 18 7 18 16Zm0-4c12 0 18-8 18-16-12 0-18 7-18 16Z" fill="#FCCEEE"/>',
+  lotus:  '<path d="M288 14c7 8 7 22 0 32-7-10-7-24 0-32Z" fill="#FAA7E0"/><path d="M288 46c-10 0-20-6-24-14 11-3 20 3 24 14Zm0 0c10 0 20-6 24-14-11-3-20 3-24 14Z" fill="#FCCEEE"/>',
+  mala:   '<circle cx="288" cy="32" r="18" fill="none" stroke="#FCCEEE" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="288" cy="52" r="5" fill="#FAA7E0"/>',
+  stars:  '<path d="M288 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z" fill="#FAA7E0"/><circle cx="262" cy="24" r="3" fill="#FCCEEE"/><circle cx="314" cy="40" r="4" fill="#FCCEEE"/>'
+};
+
+function rsDecor(k) {
+  return '<div class="rs-dec" aria-hidden="true">' +
+    '<svg viewBox="0 0 360 96" preserveAspectRatio="none">' +
+      '<path d="M0 56c60-18 120-18 180 0s120 18 180 0v40H0Z" fill="#FEF6FB"/>' +
+      '<path d="M0 73c70-14 140-14 210 0s100 10 150 0v23H0Z" fill="#FDF2FA"/>' +
+    '</svg>' +
+    '<svg class="rs-dec-m" viewBox="0 0 360 96">' + (DECOR[k] || '') + '</svg>' +
+  '</div>';
+}
+
+/* The report body. `locked` draws the chip the board puts on every section the
+   sample does not pay for; the bought copy passes false and the chip goes. */
+function renderSecs(locked) {
+  return RSECS.map(function (s) {
+    return '<section class="rs">' +
+      '<h3 class="rs-h">' + esc(s.e) + '</h3>' +
+      '<p class="rs-t">' + esc(s.h) + '</p>' +
+      (locked && s.lock ? '<p class="rs-lock">' + esc(LOCK_TEXT) + '</p>' : '') +
+      (s.p ? '<p class="rs-p">' + esc(s.p) + '</p>' : '') +
+      rsEvidence(s) +
+      rsDecor(s.dec) +
+    '</section>';
+  }).join('');
+}
+
 function renderSample() {
   var c = copyFor(state.lang);
   var sec = $('#sample');
 
   sec.classList.toggle('dev', c.dev);
   $('#langChipLabel').textContent = 'Read in ' + c.chip;
-
-  $('#sampleBody').innerHTML =
-    rsec(c.bpLabel, '<p class="rs-p">' + c.bpText + '</p>') +
-    rsec(null, '<div class="rs-scores">' + c.scores.map(function (s) {
-      return '<div><b>' + s.v + '</b><small>' + s.l + '</small></div>';
-    }).join('') + '</div>') +
-    rsec(c.coversLabel,
-      '<ul class="rs-list">' +
-        c.covers.map(function (t) { return '<li>' + t + '</li>'; }).join('') +
-      '</ul>' +
-      '<p class="rs-note">' + c.footnote + '</p>');
+  $('#sampleBody').innerHTML = renderSecs(true);
 }
 
 function accent(label, text) {
@@ -875,48 +998,9 @@ function pointers(r, n) {
   '</ul>';
 }
 
-/* Scarcity, stated once per surface and never twice. Day 4 is the last ask in
-   the PM schedule, so it says exactly that; the other days lean on the price
-   expiring tonight, with a clock that actually moves. */
-var FOMO_LEFT = 8 * 3600 + 41 * 60 + 12;
-function pad2(n) { return (n < 10 ? '0' : '') + n; }
-function fomoClock() {
-  return pad2(Math.floor(FOMO_LEFT / 3600)) + ':' +
-         pad2(Math.floor(FOMO_LEFT % 3600 / 60)) + ':' + pad2(FOMO_LEFT % 60);
-}
-setInterval(function () {
-  if (FOMO_LEFT > 0) FOMO_LEFT--;
-  var t = fomoClock();
-  $$('[data-clock]').forEach(function (el) { el.textContent = t; });
-  // Roughly one every seven seconds. Faster and it reads as a slot machine.
-  if (++FOMO_TICK % 7 === 0) {
-    FOMO_BUY++;
-    $$('[data-lasthour]').forEach(function (el) { el.textContent = inr(FOMO_BUY); });
-  }
-}, 1000);
-
-/* Other people, buying it right now. A deadline says "hurry"; a live count says
-   "this is worth hurrying for", which is the harder of the two to fake past.
-   DEMO NUMBER — in the app this has to be read off real orders, or it is a lie
-   that a single screenshot from a quiet hour would expose. */
-var FOMO_BUY = 1162, FOMO_TICK = 0;
-
-function fomoStrip() {
-  // Day 5 is the stop. A countdown on a quiet day is the one thing that would
-  // undo the whole point of the schedule.
-  if (pmQuiet()) return '';
-  var last = dayData().lastAsk;
-  return '<p class="fomo' + (last ? ' last' : '') + '">' +
-    '<i class="fomo-dot" aria-hidden="true"></i>' +
-    '<span>' + (last
-      ? 'Last day — ₹499 from tomorrow'
-      // Short enough to survive the History card, which is 22px narrower than
-      // the chat one and was clipping the verb off the end.
-      : '<b data-lasthour>' + inr(FOMO_BUY) + '</b> bought in the last hour') +
-    '</span>' +
-    '<b data-clock>' + fomoClock() + '</b>' +
-  '</p>';
-}
+/* The countdown and the live-buyer count are gone. A clock under a ₹49 report
+   makes the report look like the thing that needs rescuing, and a number that
+   climbs while you watch is the one element on the page nobody believes. */
 
 /* 49 against 499, and what the 49 buys you forever. Said once per surface,
    directly under the list of questions it pays for. */
@@ -988,34 +1072,58 @@ function sellCard(r) {
   '</button>';
 }
 
-/* The PM brief's offer as it lands in the chat. The card has to do the whole
-   job on its own: what it answers, what it costs, how long that price lasts. */
+/* The PM brief's offer as it lands in the chat, built to the board at
+   3088:160535: a 288-wide bubble, the painted banner carrying the title and
+   the rating, the book standing proud of the top-right corner, then the
+   pointers and one price row. */
 function offer3Card() {
   // Once she owns one, the offer leaves the thread entirely — segueCard() is
   // the follow-up, and two follow-ups in a row is one too many.
   if (state.paid) return '';
   var r = leadReport();
   return '<div class="of3">' +
-    sellCard(r) +
-    '<div class="of3-in">' +
-      '<p class="pts-h">Your report answers all of this</p>' +
-      pointers(r, 3) +
-      // The price sits with the pointers, not off on its own: the number only
-      // means anything next to the list it is buying.
-      priceRow() +
-      // The counter belongs beside the price, where the hesitation is — at the
-      // top of the card it was spent before she knew what it was counting.
-      fomoStrip() +
-      // The sample lives inside the report page, so the button has to promise
-      // the read, not a checkout.
-      '<button class="btn sm primary of3-go" type="button" data-pick="' + r.id + '">' +
-        'Read my answer · ₹49</button>' +
-      '<span class="of3-foot' + (dayData().lastAsk ? ' last' : '') + '">' +
-        (dayData().lastAsk
-          ? 'This will not appear here after today'
-          : '2 more reports on your chart') +
-        '<button class="lnk-btn" type="button" data-go="picker">See all</button>' +
+    '<div class="of3-head">' +
+      '<div class="of3-ttl">' + esc(r.t2 || r.t) + '</div>' +
+      '<div class="of3-badge">' +
+        '<i class="of3-dot"></i>' +
+        '<b>' + r.rating + '</b><i class="of3-star">\u2605</i>' +
+        '<i class="of3-sep"></i>' +
+        '<b>' + inr(r.sold) + ' readers</b>' +
+      '</div>' +
+    '</div>' +
+    // Sits across the banner's bottom edge, half on the paint and half off it.
+    '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+    '<div class="of3-pts">' + pointers(r, 3) + '</div>' +
+    '<div class="of3-foot">' +
+      '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
+      '<em class="of3-terms">one-time · yours forever</em>' +
+      '<button class="of3-go" type="button" data-pick="' + r.id + '">Buy Now</button>' +
+    '</div>' +
+  '</div>';
+}
+
+/* The same offer where History shows it, per 3077:159093 — not the chat card
+   shrunk down, but a message from Hemali: her face, her rate, and the pitch
+   in a peach bubble with the book leaning out of it. */
+function histCard(r) {
+  return '<div class="hw">' +
+    '<div class="hw-top">' +
+      '<span class="hw-av"><img src="assets/hemali.png" alt=""><i></i></span>' +
+      '<span class="hw-who">' +
+        '<span class="hw-line"><b>Astro Hemali</b>' +
+          '<s>₹20/min</s><em>₹10/min</em></span>' +
+        '<small>Made from your birth chart</small>' +
       '</span>' +
+    '</div>' +
+    '<div class="hw-bub">' +
+      '<div class="hw-row">' +
+        '<span class="hw-tx">' +
+          '<b>Mansi, ' + esc(r.t2 || r.t) + '</b>' +
+          '<small>' + r.learn.length + ' questions answered</small>' +
+        '</span>' +
+        '<img class="hw-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+      '</div>' +
+      '<button class="hw-go" type="button" data-pick="' + r.id + '">Learn More</button>' +
     '</div>' +
   '</div>';
 }
@@ -1091,20 +1199,9 @@ function renderHistCard() {
     return;
   }
   if (!show3) return;
-  var hr = leadReport();
-  // Same card as the chat, so History reads as the same offer she already saw
-  // rather than a second, different one.
-  $('#tlChapCard').innerHTML =
-    '<p class="eyebrow">From Astro Hemali</p>' +
-    sellCard(hr) +
-    '<p class="pts-h">Your report answers all of this</p>' +
-    pointers(hr, 3) +
-    priceRow() +
-    fomoStrip() +
-    '<div class="rep-acts">' +
-      '<button class="btn primary grow" type="button" data-pick="' + hr.id + '">' +
-        'Read my answer · ₹49</button>' +
-    '</div>';
+  // The board at 3077:159093 shows this as a message from Hemali, not a second
+  // storefront: her face, her rate, and the pitch in a peach bubble.
+  $('#tlChapCard').innerHTML = histCard(leadReport());
 }
 
 /* Tomorrow's reason to return: the free chat and the next coin. */
@@ -1146,20 +1243,10 @@ function renderDayToday() {
     // Hiding the slot is not enough — yesterday's countdown would survive in
     // the DOM and reappear the moment anything unhid it.
     if (!sf.today) { $('#expertSlot').innerHTML = ''; return; }
-    var lr = leadReport();
-    $('#expertSlot').innerHTML =
-      '<div class="ex-tap" data-pick="' + lr.id + '" role="button" tabindex="0">' +
-        coverArt(lr, 'cv-sm') +
-        '<span class="ex-t">' +
-          '<b>' + esc(lr.t) + '</b>' +
-          '<span class="ex-sub wrap' + (dayData().lastAsk ? ' last' : '') + '">' +
-            (dayData().lastAsk ? 'This will not appear here after today' : esc(lr.learn[0])) +
-          '</span>' +
-        '</span>' +
-        '<i class="ex-pill">₹49<s>₹499</s></i>' +
-        '<span class="ex-chev" aria-hidden="true">\u203a</span>' +
-      '</div>' +
-      fomoStrip();
+    // Today shows the same card History does — one offer, drawn one way, so
+    // the second sighting is a reminder rather than a new pitch. The countdown
+    // strip is gone: a clock under an offer makes the offer feel cheap.
+    $('#expertSlot').innerHTML = histCard(leadReport());
     return;
   }
 
@@ -1225,7 +1312,6 @@ function renderPicker() {
       '<em class="pk-chev" aria-hidden="true">›</em>' +
     '</button>';
   }).join('');
-  $('#pkFomo').innerHTML = fomoStrip();
 }
 
 /* Two pages of the real thing, then the wall. No free chapter on this track —
@@ -1543,6 +1629,9 @@ function renderReport() {
   // The pick has just changed, so every surface that names the report she is
   // buying — this title included — has to be rewritten with it.
   paintBought();
+  // The hero is the closed cover of the report she is looking at — the same
+  // object the chat bubble and the upsells show, just larger.
+  $('#r2Book').innerHTML = book3d(r);
   $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
   $('#r2Chips').innerHTML = r.chips.concat([r.pages + ' pages', 'Shareable', 'Private'])
     .map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('');
@@ -1563,12 +1652,12 @@ function renderReport() {
         book3d(x) +
         '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
         '<span class="pc-pr"><em>\u20b949</em><s>\u20b9499</s></span>' +
-        '<span class="pc-btn">Read the full report \u00b7 \u20b949</span></button>';
+        '<span class="pc-btn">Buy Now</span></button>';
     }).join('');
   $('#r2Why').textContent = r.why;
-  // Nothing is locked, so "Buy now" would be answering a question she has not
-  // asked — what ₹49 buys is this same report recalculated on her chart.
-  $('#r2Cta').textContent = 'Get it on my chart \u00b7 \u20b949';
+  // The board says "Buy Now" and nothing else. The price is already sitting
+  // beside the button, so repeating ₹49 inside it only crowds the line.
+  $('#r2Cta').textContent = 'Buy Now';
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -1635,17 +1724,14 @@ function renderTpTabs() {
     tabs = [];
     if (dayData().push) tabs.push({ id: 'push', l: 'Notification \u00b7 +15 min' });
     if (sf.chat)  tabs.push({ id: 'chat',    l: state.day === 1 ? 'Chat \u00b7 offer at +15 min' : 'Chat \u00b7 offer' });
-    if (sf.hist)  tabs.push({ id: 'history', l: 'History \u00b7 3 reports' });
     if (sf.today) tabs.push({ id: 'today',   l: 'Today \u00b7 expert card' });
     if (sf.guide) tabs.push({ id: 'guide',   l: 'Today \u00b7 personalised' });
-    if (!pmQuiet()) tabs.push({ id: 'picker', l: 'Pick 1 of 3' }, { id: 'report', l: 'Report page \u00b7 \u20b949' });
-    // Day 5: nothing asks, but the shelf in History is still reachable.
+    // History, the picker and the report page are deliberately not listed:
+    // they are destinations, and jumping straight to one skips the only thing
+    // the demo is meant to show — how she gets there.
     if (!tabs.length) tabs.push(
       { id: 'today',   l: 'Today \u00b7 nothing asks' },
-      { id: 'chat',    l: 'Chat \u00b7 nothing asks' },
-      { id: 'history', l: 'History \u00b7 still on the shelf' },
-      { id: 'picker',  l: 'Pick 1 of 3' },
-      { id: 'report',  l: 'Report page' });
+      { id: 'chat',    l: 'Chat \u00b7 nothing asks' });
   }
 
   var wrap = document.createElement('div');
@@ -1960,6 +2046,12 @@ $$('.screen').forEach(function (s) {
   sc.addEventListener('scroll', function () {
     head.classList.toggle('scrolled', sc.scrollTop > 40);
   }, { passive: true });
+});
+
+/* The bought reader wears the sample's header. Cloning it beats a second copy
+   of the same forty lines of SVG, which is how the two drifted apart before. */
+$$('[data-head-clone]').forEach(function (slot) {
+  slot.innerHTML = $('#sampleHead .rp-head-r').innerHTML;
 });
 
 $('#bookStage').addEventListener('click', enterRead);
