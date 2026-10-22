@@ -1841,7 +1841,9 @@ function restart() {
   applyPaidTimeline();
   $('#bookEl').classList.remove('open');
   show(state.entry, 'fade');
-  if (!state.paid && dayData().push) later(showPush, 700);
+  // The notification no longer fires on load. It is a touchpoint, not a page
+  // state, so it belongs to its own chip — otherwise it lands on top of
+  // whatever surface the chips were actually opened to look at.
 }
 
 /* ---------------------------------------------------------------- push note */
@@ -1939,14 +1941,16 @@ document.addEventListener('click', function (e) {
     return;
   }
 
-  // The knock's two buttons. "See" is the same door as the card, so it lands on
-  // the report rather than anywhere new.
+  // The knock is from Hemali, so it opens Hemali — the chat, where the chapter
+  // and the offer already sit. Sending her straight to the report page would
+  // skip the person doing the asking.
   if (t.id === 'repToastSee') {
     hideRepToast();
-    state.pick = leadReport().id;
-    renderReport();
-    $('#report [data-scroll]').scrollTop = 0;
-    if (state.screen !== 'report') go('report');
+    if (state.histDot) { state.histDot = false; renderNav(); }
+    renderChat();
+    if (state.screen !== 'chat') go('chat');
+    var rtc = $('#chat [data-scroll]');
+    if (rtc) requestAnimationFrame(function () { rtc.scrollTop = rtc.scrollHeight; });
     return;
   }
   if (t.id === 'repToastX') { hideRepToast(); return; }
@@ -2182,5 +2186,4 @@ renderTpTabs();
 renderHistCard();
 armIntroSheet();
 applyPaidTimeline();
-if (!state.paid && dayData().push) later(showPush, 700);
 })();
