@@ -515,7 +515,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    title baked into the paint was printing every line twice. */
 /* Full width of the thread, not a 288 column inside a 328 one — this is the
    card the whole message is about, so it gets the room. */
-.of3{position:relative;align-self:stretch;width:100%;cursor:pointer;
+/* The book hangs 12px over the card's top edge, so the thread's own gap is not
+   enough — without this the cover lands on the message above it. */
+.of3{position:relative;align-self:stretch;width:100%;cursor:pointer;margin-top:22px;
   padding:6px 6px 9px;border-radius:20px;background:#fff;
   box-shadow:0 12px 28px -12px rgba(122,46,14,.22),0 0 0 1px rgba(16,24,40,.04)}
 .of3-head{display:flex;flex-direction:column;justify-content:flex-start;gap:7px;
