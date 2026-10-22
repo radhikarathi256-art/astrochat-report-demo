@@ -4,38 +4,26 @@
    =========================================================================== */
 
 @media (max-width:600px){
-  /* The document is locked to the viewport rather than measured against it.
-     `100dvh`, `100%` and even a fixed `inset:0` all went on resolving short of
-     the screen in a home-screen app, which left a band of body colour under the
-     bottom nav. A fixed, overflow-hidden body IS the viewport — bottom:0 is the
-     bottom of the screen by definition, so there is no number to get wrong and
-     nothing outside it that could ever show. */
-  html{height:100%;overflow:hidden}
-  /* Every bottom bar, button and sheet in the app pads itself by `--sab`, which
-     defaults to env(safe-area-inset-bottom) — 34px on a notched iPhone, on top
-     of the padding the bar already has. That stack is what put a band of dead
-     space under the nav, the sticky buttons and the sheets. Zeroed here: the
-     bars sit on the bottom of the screen and their own padding is the only
-     clearance. One variable, so the nav, the buy bar, the ask bar, the drawer
-     and both sheets all move together. */
-  :root{--sab:0px}
-  /* `--appvh` is window.innerHeight, written by mobile.js. inset:0 gives the
-     box; the min-height is the floor under it, because a home-screen app has
-     been seen resolving even a fixed inset:0 body short of the screen and
-     leaving a band of html under the bottom nav. min-height can only ever
-     extend the box, never shrink it, so the measured number cannot regress
-     the CSS one. */
-  body{position:fixed;inset:0;min-height:var(--appvh,0px);overflow:hidden;
-       background:#FBE4D7;overscroll-behavior:none}
+  /* Same shape as astrochat-daily-reward, which is the build that sits right on
+     her phone: the page stays in normal flow and .phone is simply 100dvh. The
+     fixed, inset:0, --appvh-measured body that used to be here was an attempt to
+     out-measure a short window — but the window was short because the app had no
+     manifest, so iOS ran it on the legacy apple-* path and stopped the viewport
+     above the home indicator. index.html links the manifest now, which is the
+     actual fix; nothing here needs to compensate for anything. */
+  html,body{overscroll-behavior:none}
+  body{background:#FBE4D7}
   /* Only the docked copy is hidden — the drawer hosts the same live node. */
   body>.switcher{display:none!important}
   .sbar{display:none!important}
-  .stage{height:100%;padding:0;display:block}
+  .stage{height:100dvh;min-height:100dvh;padding:0;display:block}
   .phone{
-    /* Absolute inside that locked body: it inherits the exact same box, so the
-       app and the screen are the same rectangle. */
-    position:absolute;inset:0;
-    width:auto;height:auto;max-height:none;border-radius:0;box-shadow:none;
+    /* width:100%, not auto: the desktop rule centres the frame in a grid stage,
+       and every child of .phone is absolutely positioned, so an auto width has
+       no in-flow content to measure and collapses the whole app to 0. */
+    position:relative;
+    width:100%;max-width:none;height:100dvh;min-height:100dvh;max-height:none;
+    border-radius:0;box-shadow:none;
     /* .phone is the whole viewport here, so plain white would cover body —
        including the safe-area strip. Paint white only below the inset. */
     background:transparent;

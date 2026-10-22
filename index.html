@@ -10,20 +10,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Report demo">
-<!-- No <link rel="manifest"> on purpose. From iOS 16.4 a home-screen app that
-     has a manifest is driven by the manifest, and iOS then draws its own opaque
-     status bar in theme_color instead of honouring black-translucent — so the
-     app starts under a solid band, env(safe-area-inset-top) comes back 0, and
-     the whole thing reads as short of the top of the screen. Without the link
-     we are back on the apple-* metas, which do give a translucent bar and a
-     genuinely full-height viewport. manifest.webmanifest stays in the repo for
-     reference; nothing loads it. -->
+<!-- The manifest IS linked, matching astrochat-daily-reward, which is the one
+     build that sits correctly on the bottom of her phone. Without it iOS falls
+     back to the legacy apple-* path and hands the app a window that stops above
+     the home indicator, so every bottom bar ends short of the screen and the OS
+     strip shows below it. That is the gap four CSS attempts could not close.
+     The manifest deliberately carries NO theme_color: that key, not the
+     manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
+     and ignore black-translucent. -->
+<link rel="manifest" href="manifest.webmanifest?v=202610221710">
 <link rel="apple-touch-icon" href="assets/book.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610221657">
-<link rel="stylesheet" href="mobile.css?v=202610221657">
+<link rel="stylesheet" href="styles.css?v=202610221710">
+<link rel="stylesheet" href="mobile.css?v=202610221710">
 </head>
 <body>
 
@@ -831,8 +832,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610221657"></script>
-<script src="app.js?v=202610221657"></script>
-<script src="mobile.js?v=202610221657"></script>
+<script src="data.js?v=202610221710"></script>
+<script src="app.js?v=202610221710"></script>
+<script src="mobile.js?v=202610221710"></script>
 </body>
 </html>

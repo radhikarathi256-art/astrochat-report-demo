@@ -22,21 +22,11 @@
      has to stay the height of the screen so the bottom bars stay on the bottom
      of it. orientationchange is read late because iOS reports the pre-rotation
      height if asked while the rotation is still running. */
-  /* --sab is NOT written here. It used to be: a probe measured
-     env(safe-area-inset-bottom) and wrote the result inline on <html>, which
-     beats mobile.css's `:root{--sab:0px}` because an inline style always wins.
-     In Safari the guard happened to zero it, so it looked fixed — but a
-     home-screen app gets innerHeight === screen.height, the guard went false,
-     and every bottom bar went back to paying 34px. That was the gap under the
-     nav that survived three rounds of "it's still there". The inset belongs to
-     the OS strip the bars sit under; CSS owns the number now. */
-  function lockVH() {
-    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
-  }
-  lockVH();
-  window.addEventListener('resize', lockVH);
-  window.addEventListener('pageshow', lockVH);
-  window.addEventListener('orientationchange', function () { setTimeout(lockVH, 150); });
+  /* No viewport measuring here at all. Two rounds of it (--appvh, then a probe
+     that wrote --sab inline on <html> and quietly outranked the stylesheet)
+     were both compensating for a window that iOS made short because the app had
+     no manifest. The manifest is linked now, so 100dvh is the screen and CSS
+     needs no help. */
 
   // A forced reflow, not rAF: browsers throttle rAF when the tab is not
   // painting, and the open class would then never land.
