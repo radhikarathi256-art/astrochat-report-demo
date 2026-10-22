@@ -11,6 +11,14 @@
      bottom of the screen by definition, so there is no number to get wrong and
      nothing outside it that could ever show. */
   html{height:100%;overflow:hidden}
+  /* Every bottom bar, button and sheet in the app pads itself by `--sab`, which
+     defaults to env(safe-area-inset-bottom) — 34px on a notched iPhone, on top
+     of the padding the bar already has. That stack is what put a band of dead
+     space under the nav, the sticky buttons and the sheets. Zeroed here: the
+     bars sit on the bottom of the screen and their own padding is the only
+     clearance. One variable, so the nav, the buy bar, the ask bar, the drawer
+     and both sheets all move together. */
+  :root{--sab:0px}
   /* `--appvh` is window.innerHeight, written by mobile.js. inset:0 gives the
      box; the min-height is the floor under it, because a home-screen app has
      been seen resolving even a fixed inset:0 body short of the screen and
