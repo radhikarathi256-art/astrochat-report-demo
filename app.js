@@ -1142,8 +1142,8 @@ function histCard(r) {
           '<b>Mansi, ' + esc(r.t2 || r.t) + '</b>' +
           '<small>' + r.learn.length + ' questions answered</small>' +
         '</span>' +
-        // Hinged on its spine over a page leaf, so the one thing moving on the
-        // card is the thing being sold — the same object as the chat offer's.
+        // Shut, with its page block showing on the right — the same object the
+        // chat offer sells, at rest.
         '<span class="hw-bkw" aria-hidden="true">' +
           '<span class="hw-leaf"></span>' +
           (r.art
