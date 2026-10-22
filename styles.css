@@ -1053,6 +1053,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Every block below the fold is a titled section with a full-bleed rule above
    it. Tiny grey micro-labels made the whole page read as one undivided wash. */
 .r2-block{padding:24px 16px;border-top:1px solid var(--g200)}
+/* The upsell carousel already reads as its own thing; a rule above it just
+   fenced the page off from it. */
+#r2Also{border-top:0;padding-top:8px}
 /* The upsells are a different kind of thing from the sections above them — a
    rule there reads as "one more section", which is the wrong promise. */
 #r2Also{border-top:0}
