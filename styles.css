@@ -1118,7 +1118,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* Every block below the fold is a titled section with a full-bleed rule above
    it. Tiny grey micro-labels made the whole page read as one undivided wash. */
-.r2-block{padding:24px 16px;border-top:1px solid var(--g200)}
+/* No rules between the blocks. Each one already opens with its own heading on
+   a clear field, so the lines were drawing boxes around things that were
+   plainly separate without them. */
+.r2-block{padding:24px 16px}
 /* The card hangs 20px into this block, so 24px of padding left almost nothing
    between the stats row and "About this report". This is the first breath after
    the hero and it has to read as one. */
