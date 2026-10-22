@@ -1029,8 +1029,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    making the hero taller and shoving the card down. One rise on entry — the
    old hinge was a drawing of a book opening and never showed anything. */
 .r2-bookwrap{position:relative;z-index:5;display:flex;justify-content:center;
-  margin:104px 0 -10px}
+  margin:108px 0 -14px}
 .r2-bookwrap .bkt,.r2-bookwrap .bk3{width:134px;height:178px}
+/* The page block comes off here. It is a 7px strip pinned to the right of the
+   134px box, which is where the fore-edge is while the book is shut — but this
+   is the one place the book lies open, so the box is twice the spread's width
+   and the strip stood on its own in mid-air beside the artwork. */
+.r2-bookwrap .bkt::after{content:none}
 #report.on .r2-bookwrap{animation:bookRise .5s cubic-bezier(.22,.9,.3,1) .12s both}
 @keyframes bookRise{
   0%{opacity:0;transform:translateY(14px) scale(.97)}
