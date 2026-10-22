@@ -1306,32 +1306,38 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Sticky-note corners (3px, not 12px) and two shadows instead of one: a tight
    contact shadow where the paper touches the wall, plus a wide soft one for the
    lift. The single even 30px blur read as a floating card. */
-.paper{position:relative;width:240px;
+.paper{position:relative;width:272px;padding:14px 14px 0;
   background:linear-gradient(168deg,#FCF5EA 0,#F8F0E4 46%,#F2E7D6 100%);
-  border-radius:3px 3px 0 3px;transform:rotate(5.43deg);
+  border-radius:3px 3px 0 3px;transform:rotate(2deg);
   box-shadow:0 1px 2px rgba(115,64,56,.2),0 12px 22px -10px rgba(115,64,56,.3)}
-.paper-art{position:relative;height:236px;overflow:hidden;
-  border-radius:2px 2px 0 0;background:#EFE4D4}
+/* Inset in the sheet, not bled to its edges: a margin of paper all round is
+   what makes this read as a drawing done on the note rather than a photo
+   cropped into a card. */
+.paper-art{position:relative;height:244px;overflow:hidden;
+  border-radius:1px;background:#EFE4D4;
+  box-shadow:inset 0 0 0 1px rgba(115,64,56,.09)}
 .paper-art img{width:100%;height:100%;object-fit:cover;display:block}
 /* Soft enough that the face is still a face — a heavier blur sells nothing,
    because there is nothing left to want. */
 .paper.preview .paper-art img{filter:blur(6px) saturate(.92);transform:scale(1.08)}
 /* Left side, clear of the tape that now crosses the top corner, and squared
    off like the paper it is printed on. */
-.pv-badge{position:absolute;left:12px;top:52px;display:flex;align-items:center;
+.pv-badge{position:absolute;left:26px;top:30px;display:flex;align-items:center;
   height:26px;padding:0 11px;background:#F8F0E4;border-radius:4px;
   font:700 11px/26px var(--sans);letter-spacing:.1em;color:var(--g600)}
-/* Two equal cells, 91.5px each, split by a 36px hairline — the board's own
-   numbers. The cells were sized by their content before, so "Venus · 9th house"
-   stole width from "Mar – Nov 2027" and the rule sat off-centre, which is what
-   made the card look broken rather than printed. */
-.paper-foot{display:flex;align-items:flex-start;gap:12px;height:93px;
-  margin:0 16px;padding-top:13px;border-top:1px solid #D1C2B2;text-align:left}
-.paper-foot > div{flex:1 1 0;min-width:0}
-.paper-foot i{flex:none;width:1px;height:36px;background:#D1C2B2;opacity:.7}
-.paper-foot small{display:block;font:500 12px/18px var(--sans);letter-spacing:.06em;
+/* Every line here is one line. Forcing two equal cells wrapped "YOUR SKETCH"
+   and "Venus · 9th house" onto a second row, which is what made the foot look
+   like a broken table; the cells now hug their own text, so the two halves are
+   deliberately unequal and the hairline sits wherever the words leave it. */
+.paper-foot{display:flex;align-items:flex-start;gap:14px;
+  padding:13px 0 16px;border-top:1px solid #D1C2B2;text-align:left}
+.paper-foot > div{flex:0 1 auto;min-width:0}
+.paper-foot i{flex:none;width:1px;height:34px;background:#D1C2B2;opacity:.7}
+.paper-foot small{display:block;white-space:nowrap;
+  font:500 11px/16px var(--sans);letter-spacing:.08em;
   text-transform:uppercase;color:#A4917E}
-.paper-foot b{display:block;margin-top:2px;font:600 14px/20px var(--sans);color:#3F2D1E}
+.paper-foot b{display:block;white-space:nowrap;margin-top:3px;
+  font:600 13px/19px var(--sans);color:#3F2D1E}
 .paper-fold{position:absolute;right:0;bottom:0;width:26px;height:26px;
   background:linear-gradient(225deg,#E6D0AA 0 50%,transparent 50%);
   filter:drop-shadow(-2px -2px 3px rgba(230,196,188,.9))}
@@ -1340,11 +1346,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the wall by hand. Milky rather than clear so it is visible over both the
    sketch and the arch, with the ends faded out by a mask because cut tape has
    no crisp edge. The highlight line is the shine along the middle of the strip. */
-.paper .tape{position:absolute;z-index:3;top:14px;width:86px;height:25px;
+.paper .tape{position:absolute;z-index:3;top:12px;width:90px;height:26px;
   background:
-    linear-gradient(180deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.5) 42%,
-                    rgba(255,255,255,.14) 52%,rgba(226,214,198,.36) 100%);
-  box-shadow:0 1px 3px rgba(115,64,56,.22);
+    linear-gradient(180deg,rgba(255,252,246,.52) 0,rgba(255,255,255,.82) 44%,
+                    rgba(255,255,255,.44) 54%,rgba(221,208,190,.62) 100%);
+  box-shadow:0 1px 3px rgba(115,64,56,.26);
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7px,#000 calc(100% - 7px),transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 7px,#000 calc(100% - 7px),transparent 100%)}
 .paper .tape.l{left:-22px;transform:rotate(-41deg)}

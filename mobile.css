@@ -4,24 +4,25 @@
    =========================================================================== */
 
 @media (max-width:600px){
-  /* The strip iOS leaves us under a black-translucent status bar shows whatever
-     the page paints there, and Safari samples the body background for its own
-     chrome. Both start peach and are flipped to white by mobile.js on scroll. */
-  /* height:100% as well as the background: without it the document is only as
-     tall as its content, and a home-screen app can be rubber-banded to show a
-     strip of nothing under the fixed .phone. */
-  html,body{height:100%;background:#FBE4D7;overscroll-behavior:none}
+  /* The document is locked to the viewport rather than measured against it.
+     `100dvh`, `100%` and even a fixed `inset:0` all went on resolving short of
+     the screen in a home-screen app, which left a band of body colour under the
+     bottom nav. A fixed, overflow-hidden body IS the viewport — bottom:0 is the
+     bottom of the screen by definition, so there is no number to get wrong and
+     nothing outside it that could ever show. */
+  html{height:100%;overflow:hidden}
+  body{position:fixed;inset:0;overflow:hidden;
+       background:#FBE4D7;overscroll-behavior:none}
   /* Only the docked copy is hidden — the drawer hosts the same live node. */
   body>.switcher{display:none!important}
   .sbar{display:none!important}
-  .stage{height:100dvh;padding:0;display:block}
+  .stage{height:100%;padding:0;display:block}
   .phone{
-    /* fixed + inset:0, not height:100dvh. iOS Safari does not always re-resolve
-       dvh when the toolbars collapse, which left the bottom nav floating with a
-       band of page under it; a fixed box is pinned to the visible viewport. */
-    position:fixed;inset:0;
+    /* Absolute inside that locked body: it inherits the exact same box, so the
+       app and the screen are the same rectangle. */
+    position:absolute;inset:0;
     width:auto;height:auto;max-height:none;border-radius:0;box-shadow:none;
-    /* .phone is the whole viewport here, so plain white would cover html/body —
+    /* .phone is the whole viewport here, so plain white would cover body —
        including the safe-area strip. Paint white only below the inset. */
     background:transparent;
     background-image:linear-gradient(to bottom,transparent var(--sbh),#fff var(--sbh));

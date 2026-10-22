@@ -47,6 +47,15 @@
      active screen: the peach Today hero or the report's photo at rest, white
      once that has scrolled away or on a plain white screen. */
   var tc = $('themeColor');
+  // rgb()/rgba() to hex. Anything transparent comes back null so the caller can
+  // fall back rather than painting the strip black.
+  function hex(v) {
+    var m = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/.exec(v || '');
+    if (!m || (m[4] !== undefined && parseFloat(m[4]) < .5)) return null;
+    return '#' + [m[1], m[2], m[3]].map(function (n) {
+      return ('0' + (+n).toString(16)).slice(-2);
+    }).join('').toUpperCase();
+  }
   function topColour() {
     var scr = document.querySelector('.screen.on');
     if (!scr) return '#FFFFFF';
@@ -56,7 +65,12 @@
     // Matches --rose-lo, the darker end of the hero's gradient, which is what
     // sits directly under the status bar.
     if (scr.querySelector('.r2-hero')) return '#E6C7C8';
-    return '#FFFFFF';
+    // Everything else reads its own ground off the element. The two screens
+    // above are the only ones whose top is painted by a child rather than by
+    // the screen itself; hard-coding the rest is what left the report screens
+    // white at the top while the page under them was pink, which on a
+    // home-screen app looks like the app starting below the status bar.
+    return hex(getComputedStyle(scr).backgroundColor) || '#FFFFFF';
   }
   function tint() {
     var c = topColour();
