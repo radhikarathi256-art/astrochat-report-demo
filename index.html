@@ -10,7 +10,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Report demo">
-<link rel="manifest" href="manifest.webmanifest">
+<!-- No <link rel="manifest"> on purpose. From iOS 16.4 a home-screen app that
+     has a manifest is driven by the manifest, and iOS then draws its own opaque
+     status bar in theme_color instead of honouring black-translucent — so the
+     app starts under a solid band, env(safe-area-inset-top) comes back 0, and
+     the whole thing reads as short of the top of the screen. Without the link
+     we are back on the apple-* metas, which do give a translucent bar and a
+     genuinely full-height viewport. manifest.webmanifest stays in the repo for
+     reference; nothing loads it. -->
 <link rel="apple-touch-icon" href="assets/book.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

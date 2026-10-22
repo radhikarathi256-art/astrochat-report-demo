@@ -1262,14 +1262,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp-arch{position:absolute;top:calc(var(--sbh) + 8px);left:0;right:0;height:660px;
   z-index:0;pointer-events:none;
   background:url(assets/arch.png) top center/100% auto no-repeat}
-/* The PNG is a candy pink. It is recoloured here to a deep berry that sits with
-   the orange CTA, darkest directly behind the sketch so a cream card has
-   something to lift off. Painted as a gradient masked by the arch's own alpha
-   rather than a filter on the PNG: a hue-rotate big enough to reach plum drags
-   the green vines somewhere unrelated. Multiply keeps the columns and the vines
-   readable as tone through the new colour. */
+/* The PNG is a candy pink. It is recoloured here to a muted dusty rose — warm
+   enough to be the orange button's family, desaturated enough to stay a
+   backdrop, and darkest directly behind the sketch so a cream card lifts off
+   it. Painted as a gradient masked by the arch's own alpha rather than a filter
+   on the PNG: a hue-rotate big enough to move the pink drags the green vines
+   somewhere unrelated. Multiply keeps the columns and vines readable as tone,
+   so the stops here are a shade lighter than the colour that lands. */
 .rp-arch::after{content:"";position:absolute;inset:0;mix-blend-mode:multiply;
-  background:radial-gradient(78% 52% at 50% 36%,#5E1A3E 0,#8B2C5C 46%,#AE4880 100%);
+  background:radial-gradient(78% 52% at 50% 36%,#8A6069 0,#A9808A 48%,#C9A6AC 100%);
   -webkit-mask:url(assets/arch.png) top center/100% auto no-repeat;
           mask:url(assets/arch.png) top center/100% auto no-repeat}
 .rp .scroll{position:relative;z-index:1}
@@ -1281,10 +1282,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:var(--sbh) 16px 0;
   background:transparent;transition:background .2s ease,box-shadow .2s ease}
 .rp-head > :last-child{margin-left:auto}
-/* Over the berry arch the navy back arrow is unreadable, so while the header is
-   still transparent it is drawn in white; it goes back to navy the moment the
-   header turns solid. */
-.rp-head:not(.solid) .ic-btn svg path{stroke:#fff}
 /* Solid white, not a frosted pane: the arch behind it is painted artwork and
    a blur dragged the pink up into the icons. */
 .rp-head.solid{background:#fff;box-shadow:0 1px 0 var(--g200)}
@@ -1367,19 +1364,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp-share i svg{width:100%;height:100%}
 
 /* Rule, label, rule — a chapter break, not a shouted eyebrow. */
-/* This line sits on the arch, so it is white with white rules — grey on berry
-   was the one piece of text left unreadable after the recolour. */
+/* This line sits on the dusty arch, so it darkens rather than lightens — white
+   disappeared into it once the colour was muted. */
 .rp-covers{display:flex;align-items:center;justify-content:center;gap:12px;
-  margin:36px 20px 12px;font:400 14px/20px var(--sans);color:rgba(255,255,255,.92)}
+  margin:36px 20px 12px;font:400 14px/20px var(--sans);color:#5B3F46}
 .rp-covers::before,.rp-covers::after{content:"";flex:none;width:66px;height:1px;
-  background:rgba(255,255,255,.4)}
+  background:rgba(91,63,70,.3)}
 .rp-covers span{flex:none}
 
 /* Edge to edge, with a gap: every direct child of the body becomes one sheet
    of the report, so the arch shows through the seams. Specificity has to beat
    the report blocks' own card rules further down, so these are written under
    .rp rather than relying on source order. */
-.rp-secs{display:flex;flex-direction:column;gap:12px}
+/* 20, not 12: the gap is where the arch shows through, and it is the only thing
+   stopping fourteen white cards from reading as one long scroll. */
+.rp-secs{display:flex;flex-direction:column;gap:20px}
 .rp .rp-secs > *{margin:0;border-radius:24px;box-shadow:none}
 /* Each block keeps its own padding — several of them gutter their children
    instead, and forcing one value here would double it. */

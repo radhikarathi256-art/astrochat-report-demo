@@ -7,7 +7,10 @@
   /* The strip iOS leaves us under a black-translucent status bar shows whatever
      the page paints there, and Safari samples the body background for its own
      chrome. Both start peach and are flipped to white by mobile.js on scroll. */
-  html,body{background:#FBE4D7;overscroll-behavior:none}
+  /* height:100% as well as the background: without it the document is only as
+     tall as its content, and a home-screen app can be rubber-banded to show a
+     strip of nothing under the fixed .phone. */
+  html,body{height:100%;background:#FBE4D7;overscroll-behavior:none}
   /* Only the docked copy is hidden — the drawer hosts the same live node. */
   body>.switcher{display:none!important}
   .sbar{display:none!important}
