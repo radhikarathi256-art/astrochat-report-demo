@@ -29,6 +29,10 @@ var REPORTS = [
     // `t2` is the long name, used where the card has room for two lines and the
     // book is sitting right next to it — it has to match the cover she can see.
     t2: 'Your Future Partner Prediction Report',
+    // `tl` is the sell page's own headline, Figma 3186:204216 — it names both
+    // halves of what the report answers, which "Your Partner Prediction" does
+    // not. Reports without one fall back to "Your " + t.
+    tl: 'Your Future Partner & Marriage Prediction',
     why: 'Learn how Rahu is blocking you from meeting him',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // All three are painted now, to the same brief: one bold motif on pale
@@ -941,9 +945,10 @@ function boughtTitle() { return reportById(state.pick).t; }
    be hard-coded to Marriage Yog, so picking Money and paying handed her
    somebody else's report. One writer keeps them honest. */
 function paintBought() {
+  var r = reportById(state.pick);
   var t = boughtTitle();
   $('#buyTitle').textContent  = 'Your ' + t;
-  $('#r2Title').textContent   = 'Your ' + t;
+  $('#r2Title').textContent   = r.tl || 'Your ' + t;
   $('#pushReadyTitle').textContent = 'Your ' + t + ' is ready';
   $('#repTitle').textContent  = t;
   $('#bookTitle').textContent = t;

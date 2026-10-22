@@ -981,14 +981,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
   padding:calc(var(--sbh) + 59px) 12px 28px;
   border-radius:0 0 24px 24px;overflow:hidden;background:#FCEFE9}
-/* No photograph behind the book. The couple GIF was a second, different piece
-   of artwork sitting directly behind the one thing being sold, and the two
-   never agreed with each other. A plain wash in the report's own colourway
-   leaves the spread as the only image on the screen. */
+/* The couple GIF, framed high so the loop plays above the book rather than
+   behind it. The wash on top of it is what keeps the spread legible: white
+   lifted through the middle of the frame, so the artwork sits on light rather
+   than on top of a moving photograph. */
 .r2-hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(68% 44% at 50% 22%,rgba(255,255,255,.75) 0,rgba(255,255,255,0) 72%),
-    linear-gradient(180deg,#FBE7DE 0,#FCEFE9 58%,#FDF6F2 100%)}
+    radial-gradient(64% 40% at 50% 62%,rgba(253,246,242,.88) 0,rgba(253,246,242,0) 70%),
+    #FCEFE9 url(assets/r2-hero.gif) center 40%/cover no-repeat}
 /* The wash used to start at 30% and take most of the couple with it. It now
    only softens the last fifth, where the hero meets the white page. */
 .r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -1037,16 +1037,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    no page stock to fake behind it and no inner gutter shadow to add — a cream
    fill here just printed a white card around the artwork. */
 .r2-bookwrap .bkt-leaf{display:block;position:absolute;inset:0;z-index:0;
-  background:transparent no-repeat right center;background-size:200% 100%;
-  filter:drop-shadow(0 10px 16px rgba(74,24,8,.32))}
+  background:transparent no-repeat right center;background-size:200% 100%}
 .r2-bookwrap .bkt-cov{z-index:1;transform-origin:left center;
   transform-style:preserve-3d;
-  /* No painted binding bar: the spread already has its own gutter, and a solid
-     -5px edge landed as a brown stripe straight down the middle of it. A soft
-     falloff is all the fold needs. */
-  box-shadow:-8px 0 12px -6px rgba(74,24,8,.38);
+  /* No shadow of any kind here. The element is a rectangle; the artwork inside
+     it is a painted spread with transparent margins, so both a box-shadow and a
+     drop-shadow draw the rectangle's edge out past the book instead of the
+     book's. The spread already carries its own gutter and board edges. */
   animation:bookOpenHold 1.9s cubic-bezier(.33,1,.68,1) .9s both}
-.r2-bookwrap .bkt-face{backface-visibility:hidden}
+/* The shared cover shadow comes off here too. The closed face is swung away
+   behind the spread, but its shadow is painted from a 126px rectangle and still
+   renders — that is the edge that was running on past the book. */
+.r2-bookwrap .bkt-face{backface-visibility:hidden;box-shadow:none}
 .r2-bookwrap .bkt-back{display:block;position:absolute;inset:0;
   transform:rotateY(180deg);backface-visibility:hidden;
   background:transparent no-repeat left center;background-size:200% 100%}
@@ -1063,7 +1065,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    No shadow: it drew a line exactly where the book is meant to be resting. */
 .r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
   background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center}
-.r2-card h1{margin:0 auto;max-width:290px;font:700 21px/29px var(--sans);color:var(--g900)}
+/* Figma 3186:204216 — Inter Bold 20/30 on #1d2939, centred, in a 290 box. */
+.r2-card h1{margin:0 auto;max-width:290px;font:700 20px/30px var(--sans);color:#1D2939}
 .r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
 .r2-stats div{width:84px}
 .r2-stats b{display:flex;align-items:center;justify-content:center;gap:2px;
@@ -1093,12 +1096,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Every block below the fold is a titled section with a full-bleed rule above
    it. Tiny grey micro-labels made the whole page read as one undivided wash. */
 .r2-block{padding:24px 16px;border-top:1px solid var(--g200)}
-/* The upsell carousel already reads as its own thing; a rule above it just
-   fenced the page off from it. */
-#r2Also{border-top:0;padding-top:8px}
+/* The card hangs 20px into this block, so 24px of padding left almost nothing
+   between the stats row and "About this report". This is the first breath after
+   the hero and it has to read as one. */
+.r2-card + .r2-block{padding-top:48px}
 /* The upsells are a different kind of thing from the sections above them — a
    rule there reads as "one more section", which is the wrong promise. */
-#r2Also{border-top:0}
+#r2Also{border-top:0;padding-top:8px}
+/* Two cards, so they split the row rather than sitting at a fixed 159px with
+   dead space beside them — there is nothing off-screen left to scroll to. */
+#r2AlsoList{overflow-x:visible;margin:0;padding-left:0;padding-right:0}
+#r2AlsoList .pcard{flex:1 1 0;width:auto;min-width:0}
 .r2-h{display:flex;align-items:baseline;margin:0 0 4px;
   font:600 20px/28px var(--sans);color:var(--g900)}
 
@@ -1193,9 +1201,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:#fff;border-top:1px solid var(--g200)}
 /* The sparkle vector is not in the frame — it is a plain 15px peach dot, and a
    dot does not compete with the sentence it sits beside. */
-.buy-why{margin:0;display:flex;align-items:center;gap:7px;min-height:32px;padding:7px 11px;
-  border-radius:10px;background:#F9FAFB;font:400 12px/18px var(--sans);color:var(--g700)}
-.buy-why i{flex:none;width:15px;height:15px;border-radius:50%;background:#FDF0EB}
+/* This is the argument for the price, sitting directly above the button, and on
+   grey at 12px it read as a disclaimer. It now carries the page's own warm
+   gradient and a hairline in the brand, so it reads as the reason to tap. */
+.buy-why{margin:0;display:flex;align-items:center;gap:9px;min-height:36px;padding:8px 11px;
+  border-radius:10px;border:1px solid #FBD9CA;
+  background:linear-gradient(90deg,#FDE3D7 0,#FDF0EB 58%,#FFFFFF 100%);
+  font:500 13px/19px var(--sans);color:var(--g800)}
+.buy-why i{flex:none;display:flex;width:20px;height:20px;color:var(--brand)}
+.buy-why i svg{width:100%;height:100%}
 .buy-row{display:flex;align-items:center;gap:16px;padding:0 16px}
 /* Inside the report there is nothing left to argue, so the bar carries only
    the price and the button. */
