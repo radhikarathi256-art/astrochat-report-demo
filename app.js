@@ -41,7 +41,8 @@ var REPORTS = [
     revs: [
       { s: 5, n: 'Priya S., Jaipur', q: 'It said my partner would be from a creative field. Six months later I got a rishta from a graphic designer.' },
       { s: 5, n: 'Neha K., Indore',  q: 'The part about meeting through people who already know me is exactly how it happened.' },
-      { s: 4, n: 'Ritu M., Nashik',  q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' }
+      { s: 4, n: 'Ritu M., Nashik',  q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' },
+      { s: 5, n: 'Sneha V., Kolkata', q: 'I showed the partner image to my mother before the first meeting. She went quiet when she saw him.' }
     ],
     /* Figma 3111:201622 — eight, and the top three said in the frame's own
        words. The chat card shows three and counts "+5"; History counts all
@@ -70,7 +71,8 @@ var REPORTS = [
     revs: [
       { s: 5, n: 'Anjali D., Surat',  q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
       { s: 5, n: 'Kavya R., Chennai', q: 'The low-Manglik reading saved me months of panic. Two astrologers had said the opposite.' },
-      { s: 4, n: 'Pooja N., Bhopal',  q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' }
+      { s: 4, n: 'Pooja N., Bhopal',  q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' },
+      { s: 5, n: 'Isha G., Lucknow',  q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
     ],
     learn: [
       'Am I Manglik or not — and how strongly',
@@ -96,7 +98,8 @@ var REPORTS = [
     revs: [
       { s: 5, n: 'Shruti B., Pune',   q: 'It named March as the switch month. I got the offer on the 11th of March.' },
       { s: 5, n: 'Meera T., Gurgaon', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
-      { s: 4, n: 'Divya S., Kochi',   q: 'Saturn watching the tenth lord explained a slow year I had been blaming myself for.' }
+      { s: 4, n: 'Divya S., Kochi',   q: 'Saturn watching the tenth lord explained a slow year I had been blaming myself for.' },
+      { s: 5, n: 'Tanvi A., Jaipur',  q: 'It said job, not business, for this year. I had almost put in my notice to start something.' }
     ],
     learn: [
       'The one big career theme of the next three months',
@@ -301,7 +304,7 @@ function back() {
 }
 
 function onEnter(id) {
-  if (id === 'read') { animateBars(); startAsk(); } else { stopAsk(); }
+  if (id === 'read') { startAsk(); } else { stopAsk(); }
   if (id === 'timeline' && !state.paid) return;
 }
 
@@ -620,29 +623,31 @@ function rsEvidence(s) {
 }
 
 /* Every section ends on the same two hills so the bands read as one landscape;
-   the motif on top is what tells them apart. */
+   the motif on top is what tells them apart. They are drawn in the grey ramp,
+   not in pink: the only colour the reader should carry is the painted artwork,
+   and a pink motif beside it read as a second, competing brand. */
 var DECOR = {
-  hearts: '<path d="M262 36c0-8 6-13 12-13s11 5 11 11-9 14-14 18c-5-4-9-10-9-16Z" fill="#FCCEEE"/><path d="M279 24c0-10 8-16 15-16s14 6 14 14-11 18-17 23c-7-5-12-13-12-21Z" fill="#FAA7E0"/>',
-  leaf:   '<path d="M268 48c0-18 14-32 32-32 0 18-14 32-32 32Z" fill="#FAA7E0"/><path d="M300 48V22" stroke="#FCCEEE" stroke-width="2"/>',
-  pin:    '<path d="M288 10c9 0 16 7 16 16 0 12-16 26-16 26s-16-14-16-26c0-9 7-16 16-16Z" fill="#FAA7E0"/><circle cx="288" cy="26" r="6" fill="#FEF6FB"/>',
-  orbit:  '<circle cx="288" cy="32" r="16" fill="#FCCEEE"/><ellipse cx="288" cy="32" rx="30" ry="11" fill="none" stroke="#FAA7E0" stroke-width="2"/>',
-  moon:   '<path d="M298 12a22 22 0 1 0 0 42 26 26 0 0 1 0-42Z" fill="#FAA7E0"/>',
-  lights: '<path d="M258 16h62" stroke="#FCCEEE" stroke-width="2"/><circle cx="268" cy="26" r="7" fill="#FAA7E0"/><circle cx="288" cy="30" r="7" fill="#FCCEEE"/><circle cx="308" cy="26" r="7" fill="#FAA7E0"/>',
-  cups:   '<path d="M270 18h36l-5 22h-26Z" fill="#FAA7E0"/><path d="M282 40h12v12h-12Z" fill="#FCCEEE"/>',
-  rings:  '<circle cx="280" cy="32" r="14" fill="none" stroke="#FAA7E0" stroke-width="4"/><circle cx="300" cy="32" r="14" fill="none" stroke="#FCCEEE" stroke-width="4"/>',
-  house:  '<path d="M288 12l24 18v24h-48V30Z" fill="#FCCEEE"/><path d="M280 54V40h16v14" fill="#FAA7E0"/>',
-  lamp:   '<path d="M266 44c0-8 10-12 22-12s22 4 22 12-10 10-22 10-22-2-22-10Z" fill="#FCCEEE"/><path d="M288 32c0-10 8-14 8-20-10 3-16 10-16 20Z" fill="#FAA7E0"/>',
-  plant:  '<path d="M288 54V24" stroke="#FAA7E0" stroke-width="3"/><path d="M288 34c-12 0-18-8-18-16 12 0 18 7 18 16Zm0-4c12 0 18-8 18-16-12 0-18 7-18 16Z" fill="#FCCEEE"/>',
-  lotus:  '<path d="M288 14c7 8 7 22 0 32-7-10-7-24 0-32Z" fill="#FAA7E0"/><path d="M288 46c-10 0-20-6-24-14 11-3 20 3 24 14Zm0 0c10 0 20-6 24-14-11-3-20 3-24 14Z" fill="#FCCEEE"/>',
-  mala:   '<circle cx="288" cy="32" r="18" fill="none" stroke="#FCCEEE" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="288" cy="52" r="5" fill="#FAA7E0"/>',
-  stars:  '<path d="M288 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z" fill="#FAA7E0"/><circle cx="262" cy="24" r="3" fill="#FCCEEE"/><circle cx="314" cy="40" r="4" fill="#FCCEEE"/>'
+  hearts: '<path d="M262 36c0-8 6-13 12-13s11 5 11 11-9 14-14 18c-5-4-9-10-9-16Z" fill="var(--g200)"/><path d="M279 24c0-10 8-16 15-16s14 6 14 14-11 18-17 23c-7-5-12-13-12-21Z" fill="var(--g300)"/>',
+  leaf:   '<path d="M268 48c0-18 14-32 32-32 0 18-14 32-32 32Z" fill="var(--g300)"/><path d="M300 48V22" stroke="var(--g200)" stroke-width="2"/>',
+  pin:    '<path d="M288 10c9 0 16 7 16 16 0 12-16 26-16 26s-16-14-16-26c0-9 7-16 16-16Z" fill="var(--g300)"/><circle cx="288" cy="26" r="6" fill="#fff"/>',
+  orbit:  '<circle cx="288" cy="32" r="16" fill="var(--g200)"/><ellipse cx="288" cy="32" rx="30" ry="11" fill="none" stroke="var(--g300)" stroke-width="2"/>',
+  moon:   '<path d="M298 12a22 22 0 1 0 0 42 26 26 0 0 1 0-42Z" fill="var(--g300)"/>',
+  lights: '<path d="M258 16h62" stroke="var(--g200)" stroke-width="2"/><circle cx="268" cy="26" r="7" fill="var(--g300)"/><circle cx="288" cy="30" r="7" fill="var(--g200)"/><circle cx="308" cy="26" r="7" fill="var(--g300)"/>',
+  cups:   '<path d="M270 18h36l-5 22h-26Z" fill="var(--g300)"/><path d="M282 40h12v12h-12Z" fill="var(--g200)"/>',
+  rings:  '<circle cx="280" cy="32" r="14" fill="none" stroke="var(--g300)" stroke-width="4"/><circle cx="300" cy="32" r="14" fill="none" stroke="var(--g200)" stroke-width="4"/>',
+  house:  '<path d="M288 12l24 18v24h-48V30Z" fill="var(--g200)"/><path d="M280 54V40h16v14" fill="var(--g300)"/>',
+  lamp:   '<path d="M266 44c0-8 10-12 22-12s22 4 22 12-10 10-22 10-22-2-22-10Z" fill="var(--g200)"/><path d="M288 32c0-10 8-14 8-20-10 3-16 10-16 20Z" fill="var(--g300)"/>',
+  plant:  '<path d="M288 54V24" stroke="var(--g300)" stroke-width="3"/><path d="M288 34c-12 0-18-8-18-16 12 0 18 7 18 16Zm0-4c12 0 18-8 18-16-12 0-18 7-18 16Z" fill="var(--g200)"/>',
+  lotus:  '<path d="M288 14c7 8 7 22 0 32-7-10-7-24 0-32Z" fill="var(--g300)"/><path d="M288 46c-10 0-20-6-24-14 11-3 20 3 24 14Zm0 0c10 0 20-6 24-14-11-3-20 3-24 14Z" fill="var(--g200)"/>',
+  mala:   '<circle cx="288" cy="32" r="18" fill="none" stroke="var(--g200)" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="288" cy="52" r="5" fill="var(--g300)"/>',
+  stars:  '<path d="M288 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z" fill="var(--g300)"/><circle cx="262" cy="24" r="3" fill="var(--g200)"/><circle cx="314" cy="40" r="4" fill="var(--g200)"/>'
 };
 
 function rsDecor(k) {
   return '<div class="rs-dec" aria-hidden="true">' +
     '<svg viewBox="0 0 360 96" preserveAspectRatio="none">' +
-      '<path d="M0 56c60-18 120-18 180 0s120 18 180 0v40H0Z" fill="#FEF6FB"/>' +
-      '<path d="M0 73c70-14 140-14 210 0s100 10 150 0v23H0Z" fill="#FDF2FA"/>' +
+      '<path d="M0 56c60-18 120-18 180 0s120 18 180 0v40H0Z" fill="var(--g100)"/>' +
+      '<path d="M0 73c70-14 140-14 210 0s100 10 150 0v23H0Z" fill="var(--g200)"/>' +
     '</svg>' +
     '<svg class="rs-dec-m" viewBox="0 0 360 96">' + (DECOR[k] || '') + '</svg>' +
   '</div>';
@@ -672,96 +677,18 @@ function renderSample() {
   $('#sampleBody').innerHTML = renderSecs(true);
 }
 
-function accent(label, text) {
-  return '<div class="accent"><span class="bar"></span><div class="at">' +
-         '<b>' + label + '</b><p>' + text + '</p></div></div>';
-}
-
-/* ---------------------------------------------------------------- content: full report (R.7) */
-var MATCH = [
-  { l: 'Trust', v: 8 },
-  { l: 'Family values', v: 9 },
-  { l: 'Communication', v: 6 },
-  { l: 'Patience', v: 5 }
-];
-/* MyNaksh gives a year-by-year likelihood; ours says it in plain percentages
-   so the reader does not have to decode a chart. */
-var BANDS = [
-  { l: 'Rest of 2026', v: 18 },
-  { l: '2027', v: 74 },
-  { l: '2028', v: 52 },
-  { l: '2029', v: 30 },
-  { l: '2030 onwards', v: 16 }
-];
-var PORTRAIT = [
-  ['Nature', 'Calm on the outside, stubborn underneath. Says less than he feels, so you will have to ask twice.'],
-  ['Work', 'Something steady with numbers or systems — finance, engineering, or a small setup of his own.'],
-  ['Family', 'A smaller family with one sibling. Parents who ask a lot of questions before they say yes.'],
-  ['How you meet', 'Through someone you already know. Your chart does not show a stranger from an app.'],
-  ['Direction', 'North or north-west of where you live now, within a day of travel.']
-];
-var GREENS = [
-  'Venus sits well in your 7th house.',
-  'Jupiter looks at your marriage house all through 2027.',
-  'No Manglik dosh, so nothing has to be matched around it.',
-  'Your 2nd house supports a joint home and joint money.'
-];
-var AMBERS = [
-  'Saturn slows family conversations until February.',
-  'Mercury turns back in May 2027 — do not fix a date that month.',
-  'Anger between you two needs a rule, not a winner.'
-];
-/* Upsells stay inside marriage, love and partner — someone who just bought a
-   marriage reading is not shopping for a career report. */
-var ALSO = [
-  { t: 'Kundli Milan report', s: 'Your two charts, point by point', p: '₹49', was: '₹199' },
-  { t: 'Partner sketch', s: 'See the face you will marry', p: '₹49', was: '₹199' },
-  { t: 'Love report', s: 'What your heart needs', p: '₹49', was: '₹199' },
-  { t: 'Rishta timing report', s: 'The best months to say yes', p: '₹49', was: '₹199' }
-];
-
-/* Melooha's ring dials, in our light palette. A bare "72" told the reader
-   nothing, so the word under the label carries the meaning and the ring
-   carries the degree. */
-var DIALS = [
-  ['Marriage timing', 'Strong',       72, '#DC6803'],
-  ['Joint finance',   'Steady',       64, '#027A48'],
-  ['In-law warmth',   'Warms slowly', 60, '#7D58A1'],
-  ['Manglik dosh',    'Not present', 100, '#0E9384']
-];
-
-function dial(label, sub, pct, col) {
-  var r = 42, c = 2 * Math.PI * r;
-  var a0 = -Math.PI / 2, a1 = a0 + 2 * Math.PI * pct / 100;
-  var pt = function (a) { return [(50 + r * Math.cos(a)).toFixed(1), (50 + r * Math.sin(a)).toFixed(1)]; };
-  var s = pt(a0), e = pt(a1);
-  return '<div class="dial" style="--c:' + col + '">' +
-    '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-      '<circle class="tk" cx="50" cy="50" r="' + r + '"/>' +
-      '<circle class="ar" cx="50" cy="50" r="' + r + '" transform="rotate(-90 50 50)" ' +
-        'data-dash="' + (c * pct / 100).toFixed(1) + ' ' + c.toFixed(1) + '" ' +
-        'stroke-dasharray="0 ' + c.toFixed(1) + '"/>' +
-      '<circle class="cap" cx="' + s[0] + '" cy="' + s[1] + '" r="4.4"/>' +
-      '<circle class="cap" cx="' + e[0] + '" cy="' + e[1] + '" r="4.4"/>' +
-    '</svg>' +
-    '<span><b>' + label + '</b><small>' + sub + '</small></span></div>';
-}
-
 function renderRead() {
-  /* She bought one of three, so the reader renders that one on her own chart. */
-  $('#readBody').innerHTML = reportBody(state.pick, 'her') +
+  /* The same fourteen sections the sample shows, with the lock chips off —
+     Figma 3155:12516. The sample is a window onto this page, so a bought report
+     that was laid out differently made the preview read as a different product. */
+  $('#readBody').innerHTML = renderSecs(false) +
       // The end of the report is a door, not a full stop: the other two
       // reports, then the chat where the questions it raised get spent.
       '<div class="carousel-wrap">' +
         '<p class="lbl">MORE ON YOUR CHART</p>' +
         '<div class="carousel">' +
-          REPORTS.filter(function (x) { return x.id !== state.pick; }).map(function (x) {
-            return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
-              book3d(x) +
-              '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
-              '<span class="pc-pr"><em>₹49</em><s>₹499</s></span>' +
-              '<span class="pc-btn">Read the full report \u00b7 \u20b949</span></button>';
-          }).join('') +
+          REPORTS.filter(function (x) { return x.id !== state.pick; })
+            .map(upsellCard).join('') +
         '</div>' +
       '</div>' +
       '<div class="upsell">' +
@@ -769,21 +696,6 @@ function renderRead() {
         '<p>Hemali is online now. If any part of the report needs explaining, or you want the <b>remedies</b> for your own chart, ask her directly.</p>' +
         '<button class="btn primary" type="button" data-chat>Chat with Hemali — ask for remedies</button>' +
       '</div>';
-}
-
-/* `root` is the reader by default and the free preview on the PM track — both
-   render the same report body, so both need their bars and dials filled. */
-function animateBars(root) {
-  root = root || '#readBody';
-  // Reset to 0 first so the fill animates every time the screen is opened.
-  var bars = $$(root + ' .track i');
-  bars.forEach(function (i) { i.style.width = '0'; });
-  var arcs = $$(root + ' .dial .ar');
-  arcs.forEach(function (a) { a.setAttribute('stroke-dasharray', '0 265'); });
-  later(function () {
-    bars.forEach(function (i) { i.style.width = i.getAttribute('data-w') + '%'; });
-    arcs.forEach(function (a) { a.setAttribute('stroke-dasharray', a.getAttribute('data-dash')); });
-  }, 220);
 }
 
 /* ---------------------------------------------------------------- buy sheet */
@@ -1028,6 +940,29 @@ function inr(n) {
 /* A closed book, turned so its spine faces her and carries the title the way a
    real one does. The open book was the wrong object to show: an open book is
    something already being read, and nothing about it says "not yours yet". */
+/* Each report gets its own cover instead of all three sharing one book icon —
+   on a shelf of three, the colourway is what tells them apart at a glance. */
+var MOTIFS = {
+  heart: '<path fill="currentColor" d="M20 30c-5.7-4.2-10-7.8-10-12.6 0-3 2.3-5.4 5.1-5.4 2 0 3.7 1.1 4.9 2.8 1.2-1.7 2.9-2.8 4.9-2.8 2.8 0 5.1 2.4 5.1 5.4C30 22.2 25.7 25.8 20 30z"/>',
+  knot:  '<g fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="16" cy="21" r="6.4"/><circle cx="24" cy="21" r="6.4"/></g>',
+  arrow: '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 27l6.5-6.5 4 4L30 15"/><path d="M23.5 15H30v6.5"/></g>'
+};
+
+/* The flat cover, for the places that only need the report's face at a glance —
+   the chat bubble's thumbnail and the picker's row. */
+function coverArt(r, cls) {
+  var c = r.cover;
+  return '<span class="cv' + (cls ? ' ' + cls : '') + '" aria-hidden="true"' +
+    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+    '<svg class="cv-art" viewBox="0 0 40 52">' +
+      '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
+      '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
+      '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
+      '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
+    '</svg>' +
+  '</span>';
+}
+
 /* The drawn cover's face, for the reports with no painted artwork yet: the
    wash is the element's own background, the motif and its stars ride on top.
    Shared by the standing book and the History card's hinged one. */
@@ -1071,6 +1006,22 @@ function book3d(r) {
       drawnFace(r, 'bk3-face') +
     '</span>' +
   '</span>';
+}
+
+/* Figma 3169:202620 — the upsell card, one component used both at the foot of
+   the report page and at the end of the reader. Cover, title, the one-line
+   promise, price with the saving as its own chip, then Buy now on the bottom
+   edge. Both call sites render the identical card; only the list differs. */
+function upsellCard(x) {
+  return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
+    book3d(x) +
+    '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
+    '<span class="pc-pr">' +
+      '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
+      '<span class="pc-off">90% OFF</span>' +
+    '</span>' +
+    '<span class="pc-btn">Buy now</span>' +
+  '</button>';
 }
 
 /* The report's own artwork as the backdrop, the closed book standing in it, the
@@ -1362,311 +1313,6 @@ function renderPicker() {
   }).join('');
 }
 
-/* Two pages of the real thing, then the wall. No free chapter on this track —
-   the preview is all she gets before paying. */
-/* `show` is what she reads free; `cut` is the sentence that gets taken away
-   mid-thought — the fade lands on the answer, never on filler. */
-/* Two charts, one set of reports. The free preview renders the WHOLE report on
-   the demo chart, so she sees real depth instead of two pages that stop
-   mid-sentence; buying swaps in her own numbers. Same prose, different chart —
-   which is exactly what a real report is. */
-var CHARTS = {
-  sample: {
-    who: 'Priya S.', meta: '14 March 1996 · 6:42 AM · Pune',
-    partner: {
-      big: 'Rahu sits in the seventh house — so things do come together, and then tangle at the last moment. The clearest window opens in June 2027.',
-      dials: [['Chance of meeting', 'Strong', 74, '#DC6803'], ['Stability', 'Steady', 61, '#027A48'],
-              ['The block', 'Easing', 48, '#7D58A1'], ['Love or arranged', 'Love tilt', 62, '#0E9384']],
-      w1: { h: 'June 2027 to January 2028', p: 'Rahu is leaving the seventh house. New introductions are at their highest in this stretch.' },
-      w2: { h: 'April 2029', p: 'The second window — if nothing moved in the first, it opens again here.' },
-      bands: [['Rest of 2026', 14], ['2027', 71], ['2028', 55], ['2029', 34], ['After 2030', 18]],
-      look: 'Deep wheat complexion, average height, a little stubble. Calm eyes, a slow smile.',
-      traits: [['Nature', 'Calm outside, stubborn inside. Says little about what he feels.'],
-               ['Work', 'Something with numbers or systems — finance, engineering, or a small setup of his own.'],
-               ['Family', 'Small family, one sibling. His parents ask a lot of questions before they say yes.'],
-               ['Meeting', 'Through someone you both know. The chart shows no sign of a stranger on an app.'],
-               ['Direction', 'North or north-west of your city, within a day of travel.']],
-      tilt: 62,
-      block: 'Rahu shows whatever is available instantly. So the relationship that feels very fast in the first week is the one that stalls later.',
-      patterns: ['Someone who gets very close very fast', 'Someone who reads your need better than his own words', 'Someone who apologises but does not change the habit'],
-      attach: [['Attachment style', 'Between anxious and secure. A slow reply and your mind runs.'],
-               ['Love language', 'Time, not gifts. Simply sitting together works best on you.']],
-      daily: ['Pray to Durga on Wednesdays', 'Give something yellow on Thursdays', 'No new promise for three weeks']
-    },
-    marriage: {
-      big: 'Mars is in the chart but weakly placed — a low Manglik. 28 of the 36 gunas match, which is considered good.',
-      dials: [['Marriage timing', 'Strong', 70, '#DC6803'], ['Guna match', '28 / 36', 78, '#027A48'],
-              ['In-laws', 'Warms slowly', 58, '#7D58A1'], ['Manglik dosha', 'Mild', 35, '#B42318']],
-      w1: { h: 'November 2027 to June 2028', p: 'Jupiter aspects the seventh house. The family agrees fastest in this stretch too.' },
-      w2: { h: 'January 2030', p: 'If the first window passes, this is the next clear time.' },
-      bands: [['Rest of 2026', 9], ['2027', 58], ['2028', 76], ['2029', 41], ['After 2030', 22]],
-      gun: [['Trust', 8], ['Family values', 9], ['Communication', 6], ['Patience', 5]],
-      traits: [['Life partner', '2–4 years older, a stable job, not a big talker.'],
-               ['In-laws', 'The first six months ask for adjustment, after that the home is calm.'],
-               ['Money', 'It improves after marriage — the second house is strong.'],
-               ['Ceremony', 'A Thursday or a Friday. Do not set a Tuesday date.']],
-      doshas: [['Manglik dosha', 'MILD', 'amber', 'Mars is weakly placed. With a partner whose chart is similar, it settles on its own.'],
-               ['Nadi dosha', 'NOT PRESENT', 'green', 'Your nadis are different. No separate ritual is needed.']],
-      greens: ['Venus is well placed in the seventh house.', 'Jupiter aspects the house of marriage through 2028.',
-               'The second house supports joint money.'],
-      ambers: ['Saturn keeps family talks slow until February.', 'Mercury is retrograde in May 2028 — do not set a date that month.'],
-      tip: 'Open the conversation with family after Diwali. Thursdays and Fridays are the strongest days in your chart.'
-    },
-    career: {
-      big: 'The lord of the tenth house is exalted — recognition will come, no doubt about it. But Saturn aspects it, so the effort stays invisible.',
-      dials: [['Chance of a switch', 'Strong', 68, '#DC6803'], ['Raise', 'Possible', 62, '#027A48'],
-              ['Business vs job', 'Job tilt', 71, '#7D58A1'], ['Boss\u2019s trust', 'Present', 66, '#0E9384']],
-      w1: { h: 'August 2027 to December 2027', p: 'Jupiter aspects the tenth house. The offers are better and the talks actually close.' },
-      w2: { h: 'March 2029', p: 'The second window — if the switch did not happen in the first.' },
-      bands: [['Rest of 2026', 20], ['2027', 69], ['2028', 47], ['2029', 52], ['After 2030', 25]],
-      dates: [['To ask for a raise', 'Thursday, second week of the month'],
-              ['To pitch an idea', 'Wednesday morning, 10 to 12'],
-              ['For an interview', 'Friday — Venus is a friend of your chart'],
-              ['To start something big', 'The first Thursday of the waxing moon']],
-      theme: 'The theme of the next three months: getting your work seen, not finding new work. Show what you have already done.',
-      boss: 'The Sun is fine but Saturn is watching — the trust is in the work, not the show. So he knows your work, he just does not remember it.',
-      change: ['Keep a written record of every task', 'Confirm verbal agreements over email', 'Send a summary of your work once a month'],
-      luck: [['Colour', 'Deep blue and white'], ['Direction', 'North — turn your desk this way'], ['Mantra', 'Offer water to the Sun on Sundays']],
-      tip: 'Raise the subject in the second week of August, and send three months of written work before that.'
-    }
-  },
-  her: {
-    who: 'Mansi', meta: 'Lagna · Navamsa · 14 Oct 2026',
-    partner: {
-      big: 'Rahu sits in your seventh house — that is why things stop just as they start to work out. The clearest window opens in March 2027.',
-      dials: [['Chance of meeting', 'Strong', 79, '#DC6803'], ['Stability', 'Steady', 66, '#027A48'],
-              ['The block', 'Easing', 42, '#7D58A1'], ['Love or arranged', 'Arranged tilt', 66, '#0E9384']],
-      w1: { h: 'March 2027 to November 2027', p: 'Jupiter comes to your seventh house. This is the clearest window of the coming years.' },
-      w2: { h: 'February 2028', p: 'Family talk moves from "let us think" to "let us meet".' },
-      bands: [['Rest of 2026', 18], ['2027', 74], ['2028', 52], ['2029', 30], ['After 2030', 16]],
-      look: 'Fair complexion, tall, clear features. Steady eyes, thinks before he speaks.',
-      traits: [['Nature', 'Calm outside, stubborn inside. Opens up only when asked.'],
-               ['Work', 'Something steady — finance, engineering, or a small setup of his own.'],
-               ['Family', 'Small family, one sibling. His parents come around slowly.'],
-               ['Meeting', 'Through someone you both know — the chart shows no sign of a stranger on an app.'],
-               ['Direction', 'North or north-west, within a day of travel.']],
-      tilt: 34,
-      block: 'Rahu shows whatever is available instantly. Any relationship that feels very fast in the first week is your pattern.',
-      patterns: ['Someone who gets very close very fast', 'Someone who mistakes your need for love', 'Someone who apologises but does not change the habit'],
-      attach: [['Attachment style', 'Anxious. A slow reply and you assume the worst.'],
-               ['Love language', 'Time. Sitting together works better on you than gifts.']],
-      daily: ['Pray to Durga on Wednesdays', 'Feed one person', 'No new promise for three weeks']
-    },
-    marriage: {
-      big: 'There is no Manglik dosha in your chart — nothing special needs matching. 24 of the 36 gunas match.',
-      dials: [['Marriage timing', 'Strong', 72, '#DC6803'], ['Guna match', '24 / 36', 67, '#027A48'],
-              ['In-laws', 'Warms slowly', 60, '#7D58A1'], ['Manglik dosha', 'Not present', 100, '#0E9384']],
-      w1: { h: 'March 2027 to November 2027', p: 'Jupiter comes to your house of marriage. Family talk starts in this stretch.' },
-      w2: { h: 'February 2028', p: 'The second window — talk moves from "let us think" to "let us meet".' },
-      bands: [['Rest of 2026', 18], ['2027', 74], ['2028', 52], ['2029', 30], ['After 2030', 16]],
-      gun: [['Trust', 8], ['Family values', 9], ['Communication', 6], ['Patience', 5]],
-      traits: [['Life partner', '2–4 years older, a stable job, not a big talker.'],
-               ['In-laws', 'They do say yes, but they take time. Move in small steps.'],
-               ['Money', 'It improves after marriage — the second house supports joint money.'],
-               ['Ceremony', 'Thursdays and Fridays are the strongest days in your chart.']],
-      doshas: [['Manglik dosha', 'NOT PRESENT', 'green', 'Mars is not in a Manglik house. No special matching is needed.'],
-               ['Family blessing', 'SLOW', 'amber', 'The family says yes, but slowly. Open the subject in small steps.']],
-      greens: ['Venus is well placed in your seventh house.', 'Jupiter aspects the house of marriage through 2027.',
-               'No Manglik dosha — nothing extra to match.', 'The second house supports a joint home and joint money.'],
-      ambers: ['Saturn keeps family talks slow until February.', 'Mercury is retrograde in May 2027 — do not set a date that month.',
-               'Anger needs one rule from both sides, not a winner.'],
-      tip: 'Open the marriage conversation with family after Diwali. Thursdays and Fridays are the strongest days.'
-    },
-    career: {
-      big: 'The lord of the tenth house is exalted in your chart — recognition will come. But Saturn is aspecting it right now, so the effort stays invisible.',
-      dials: [['Chance of a switch', 'Strong', 73, '#DC6803'], ['Raise', 'Possible', 58, '#027A48'],
-              ['Business vs job', 'Job tilt', 76, '#7D58A1'], ['Boss\u2019s trust', 'Present', 63, '#0E9384']],
-      w1: { h: 'May 2027 to October 2027', p: 'Jupiter aspects your tenth house. The offers are better and the talks actually close.' },
-      w2: { h: 'January 2029', p: 'The second window — if the switch did not happen in the first.' },
-      bands: [['Rest of 2026', 16], ['2027', 72], ['2028', 44], ['2029', 49], ['After 2030', 23]],
-      dates: [['To ask for a raise', 'Thursday, second week of the month'],
-              ['To pitch an idea', 'Wednesday morning, 10 to 12'],
-              ['For an interview', 'Friday — Venus is a friend of your chart'],
-              ['To start something big', 'The first Thursday of the waxing moon']],
-      theme: 'The theme of the next three months: getting your work seen, not finding new work. Show what you have already done.',
-      boss: 'The Sun is fine but Saturn is watching — the trust is in your work, not the show. So he knows the work, he just does not remember it.',
-      change: ['Keep a written record of every task', 'Confirm verbal agreements over email', 'Send a summary of your work once a month'],
-      luck: [['Colour', 'Deep blue and white'], ['Direction', 'North — turn your desk this way'], ['Mantra', 'Offer water to the Sun on Sundays']],
-      tip: 'Raise the subject in the second week of May, and send three months of written work before that.'
-    }
-  }
-};
-
-/* ------------------------------------------------- report body (shared) */
-/* Small helpers so the three reports can be written as content, not markup. */
-function secOpen(h, sub) {
-  return '<div class="r-sec"><div class="top-bar"></div>' +
-    '<div class="shead"><h3>' + esc(h) + '</h3><p>' + esc(sub) + '</p></div>';
-}
-function winBlock(w, strong, lbl) {
-  return '<div class="win' + (strong ? ' strong' : '') + '">' +
-    '<p class="wlbl">' + esc(lbl) + '</p>' +
-    '<h4' + (strong ? '' : ' class="sm"') + '>' + esc(w.h) + '</h4>' +
-    '<p>' + esc(w.p) + '</p></div>';
-}
-function barBlock(lbl, items, max) {
-  return '<div class="bars bands"><p class="blbl">' + esc(lbl) + '</p>' +
-    items.map(function (b) {
-      return '<div class="bar-row"><span>' + esc(b[0]) + '</span>' +
-        '<span class="track"><i data-w="' + (b[1] * (100 / max)) + '"></i></span>' +
-        '<em>' + b[1] + (max === 100 ? '%' : '') + '</em></div>';
-    }).join('') + '</div>';
-}
-function factBlock(items) {
-  return '<div class="facts">' + items.map(function (p) {
-    return '<div><span>' + esc(p[0]) + '</span><p>' + esc(p[1]) + '</p></div>';
-  }).join('') + '</div>';
-}
-function listBlock(lbl, items) {
-  return '<div class="rlist"><p class="blbl">' + esc(lbl) + '</p><ul>' +
-    items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
-}
-
-/* Each report gets its own cover instead of all three sharing one book icon —
-   on a shelf of three, the colourway is what tells them apart at a glance. */
-var MOTIFS = {
-  heart: '<path fill="currentColor" d="M20 30c-5.7-4.2-10-7.8-10-12.6 0-3 2.3-5.4 5.1-5.4 2 0 3.7 1.1 4.9 2.8 1.2-1.7 2.9-2.8 4.9-2.8 2.8 0 5.1 2.4 5.1 5.4C30 22.2 25.7 25.8 20 30z"/>',
-  knot:  '<g fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="16" cy="21" r="6.4"/><circle cx="24" cy="21" r="6.4"/></g>',
-  arrow: '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 27l6.5-6.5 4 4L30 15"/><path d="M23.5 15H30v6.5"/></g>'
-};
-function coverArt(r, cls) {
-  var c = r.cover;
-  return '<span class="cv' + (cls ? ' ' + cls : '') + '" aria-hidden="true"' +
-    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
-    '<svg class="cv-art" viewBox="0 0 40 52">' +
-      '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
-      '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
-      '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
-      '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
-    '</svg>' +
-  '</span>';
-}
-
-/* The partner, seen from behind and dissolving into light. A face would claim
-   a specific person exists and looks like this; a turned back says "someone is
-   coming" without the lie — and it is the more wanted image of the two. */
-function portraitArt() {
-  return '<div class="pt-art" aria-hidden="true">' +
-    /* `meet`, not `slice`: slice crops from the top, which beheaded the figure
-       and left a dome. Nothing may be cropped here — the head IS the image. */
-    '<svg class="pt-fig" viewBox="0 0 400 480" preserveAspectRatio="xMidYMax meet">' +
-      '<defs><linearGradient id="ptg" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#D9A7BD"/>' +
-        '<stop offset=".42" stop-color="#C87FA0"/>' +
-        '<stop offset="1" stop-color="#A5527A"/>' +
-      '</linearGradient></defs>' +
-      '<g fill="url(#ptg)">' +
-        /* Shoulders need a shoulder LINE — a smooth cone reads as a chess
-           pawn. The two short segments are the trapezius rising to the neck,
-           the curve between them is the neckline. */
-        '<path d="M58 480c0-80 27-131 74-150l26-10c15 23 69 23 84 0l26 10c47 19 74 70 74 150z"/>' +
-        '<rect x="170" y="248" width="60" height="78" rx="28"/>' +
-        '<ellipse cx="200" cy="196" rx="72" ry="88"/>' +
-        '<ellipse cx="268" cy="212" rx="13" ry="23"/>' +
-      '</g>' +
-    '</svg>' +
-  '</div>';
-}
-
-function partnerBody(c) {
-  return secOpen('When you will meet', 'The clearest answer in your chart') +
-      winBlock(c.w1, true, 'WINDOW 1 · THE CLEAREST TIME') +
-      winBlock(c.w2, false, 'WINDOW 2 · SECOND CHANCE') +
-      barBlock('CHANCE, YEAR BY YEAR', c.bands, 100) +
-    '</div>' +
-
-    secOpen('What they will look like', 'A picture drawn from the chart') +
-      '<figure class="pt">' + portraitArt() +
-        '<figcaption>' + esc(c.look) + '</figcaption>' +
-      '</figure>' +
-      factBlock(c.traits) +
-    '</div>' +
-
-    secOpen('Love or arranged', 'Which way your chart leans') +
-      '<div class="tilt">' +
-        '<div class="tilt-top"><span>Love</span><span>Arranged</span></div>' +
-        '<span class="track"><i data-w="' + c.tilt + '"></i></span>' +
-        '<div class="tilt-top n"><span>' + c.tilt + '%</span><span>' + (100 - c.tilt) + '%</span></div>' +
-      '</div>' +
-    '</div>' +
-
-    secOpen('What is blocking it now', 'The real reason, and the fix') +
-      accent('WHAT THIS MEANS FOR YOU', esc(c.block)) +
-      listBlock('WHO YOU KEEP ATTRACTING', c.patterns) +
-      factBlock(c.attach) +
-      listBlock('DO THIS EVERY DAY', c.daily) +
-    '</div>';
-}
-
-function marriageBody(c) {
-  return secOpen('When the marriage happens', 'The headline answer in the chart') +
-      winBlock(c.w1, true, 'WINDOW 1 · THE CLEAREST TIME') +
-      winBlock(c.w2, false, 'WINDOW 2 · SECOND CHANCE') +
-      barBlock('CHANCE, YEAR BY YEAR', c.bands, 100) +
-    '</div>' +
-
-    secOpen('Guna match', 'How many of the 36 match') +
-      barBlock('WHERE YOU SCORE, AND HOW MUCH', c.gun, 10) +
-    '</div>' +
-
-    secOpen('What is written', 'Your partner, the in-laws, and after') +
-      factBlock(c.traits) +
-    '</div>' +
-
-    c.doshas.map(function (d) {
-      return '<div class="tagged"><div class="th"><h4>' + esc(d[0]) + '</h4>' +
-        '<span class="tpill ' + d[2] + '">' + esc(d[1]) + '</span></div>' +
-        '<p>' + esc(d[3]) + '</p></div>';
-    }).join('') +
-
-    '<div class="verdicts">' +
-      '<div class="vlist go"><p class="vh">IN YOUR FAVOUR</p><ul>' +
-        c.greens.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="vlist hold"><p class="vh">WATCH OUT FOR</p><ul>' +
-        c.ambers.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul></div>' +
-    '</div>' +
-    accent('→ PRACTICAL TIP', esc(c.tip));
-}
-
-function careerBody(c) {
-  return secOpen('The next three months', 'One big theme, everything else under it') +
-      accent('WHAT THIS MEANS FOR YOU', esc(c.theme)) +
-    '</div>' +
-
-    secOpen('The right time to switch', 'When to talk, when to let it go') +
-      winBlock(c.w1, true, 'WINDOW 1 · THE CLEAREST TIME') +
-      winBlock(c.w2, false, 'WINDOW 2 · SECOND CHANCE') +
-      barBlock('CHANCE, YEAR BY YEAR', c.bands, 100) +
-    '</div>' +
-
-    secOpen('The right dates', 'Which day is for which move') +
-      factBlock(c.dates) +
-    '</div>' +
-
-    secOpen('What your boss thinks', 'And what to change about it') +
-      accent('WHAT THIS MEANS FOR YOU', esc(c.boss)) +
-      listBlock('CHANGE THESE THREE THINGS', c.change) +
-    '</div>' +
-
-    secOpen('Colour, direction and mantra', 'For success at work') +
-      factBlock(c.luck) +
-    '</div>' +
-    accent('→ PRACTICAL TIP', esc(c.tip));
-}
-
-/* One body, two charts. `mode` is 'sample' for the free preview (the demo
-   chart, whole report, nothing withheld) and 'her' once she has paid. */
-function reportBody(id, mode) {
-  var ch = CHARTS[mode], c = ch[id];
-  // No title page: the reader's own hero already names the report and who it
-  // was made for, and two covers in a row is a door opening onto a door.
-  return accent('THE BIG PICTURE', esc(c.big)) +
-    '<div class="r-scores"><p class="dlbl">CHART AT A GLANCE</p>' +
-      c.dials.map(function (d) { return dial(d[0], d[1], d[2], d[3]); }).join('') +
-    '</div>' +
-    (id === 'partner' ? partnerBody(c) : id === 'marriage' ? marriageBody(c) : careerBody(c));
-}
-
 /* The sell page. The hero GIF and the cover swinging open off its spine are
    this page's entire first impression. Nothing is locked: the pointers say what
    the report answers, and then the ENTIRE report follows, rendered on a demo
@@ -1697,14 +1343,10 @@ function renderReport() {
       '<p>\u201c' + esc(v.q) + '\u201d</p>' +
       '<b>' + esc(v.n) + '</b></div>';
   }).join('');
+  // The strip starts parked on the first card, so that one is already snapped.
+  markSnappedReview($('#r2Revs'));
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
-    .map(function (x) {
-      return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
-        book3d(x) +
-        '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
-        '<span class="pc-pr"><em>\u20b949</em><s>\u20b9499</s></span>' +
-        '<span class="pc-btn">Buy Now</span></button>';
-    }).join('');
+    .map(upsellCard).join('');
   $('#r2Why').textContent = r.why;
   // The board says "Buy Now" and nothing else. The price is already sitting
   // beside the button, so repeating ₹49 inside it only crowds the line.
@@ -2143,6 +1785,25 @@ $$('.screen').forEach(function (s) {
   }, { passive: true });
 });
 
+/* Figma 3169:202696 — the review the strip has snapped to sits at full size and
+   its neighbours sit back. The quote is the evidence, so the one she is reading
+   is the one that gets the weight. "Snapped" is the card whose left edge is
+   nearest the strip's own left edge, which is where scroll-snap parks it. */
+function markSnappedReview(strip) {
+  var cards = $$('.review', strip);
+  if (!cards.length) return;
+  var edge = strip.getBoundingClientRect().left + 16, best = 0, bestD = Infinity;
+  cards.forEach(function (c, i) {
+    var d = Math.abs(c.getBoundingClientRect().left - edge);
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  cards.forEach(function (c, i) { c.classList.toggle('is-snap', i === best); });
+}
+$$('.revs').forEach(function (strip) {
+  strip.addEventListener('scroll', function () { markSnappedReview(strip); },
+    { passive: true });
+});
+
 /* The bought reader wears the sample's header. Cloning it beats a second copy
    of the same forty lines of SVG, which is how the two drifted apart before. */
 $$('[data-head-clone]').forEach(function (slot) {
@@ -2160,6 +1821,15 @@ $$('.rp').forEach(function (s) {
     head.classList.toggle('solid', sc.scrollTop > 24);
   }, { passive: true });
 });
+
+/* The report page's nav does the same, but it only goes white once the hero's
+   artwork has actually left — turning it white over the couple looked broken. */
+(function () {
+  var nav = $('#r2Nav'), sc = $('#report [data-scroll]');
+  sc.addEventListener('scroll', function () {
+    nav.classList.toggle('solid', sc.scrollTop > 150);
+  }, { passive: true });
+})();
 
 /* ---------------------------------------------------------------- fit */
 /* Small laptops: the frame is 360x800; when the window is shorter, zoom the

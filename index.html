@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="assets/book.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="mobile.css">
 </head>
@@ -216,16 +216,20 @@
     <!-- ===================== R.2 · Report page ===================== -->
     <section class="screen" id="report" data-screen="report">
       <div class="scroll" data-scroll>
+        <!-- The nav is a sibling of the hero, not a child of it, so it can be
+             position:sticky — inside the hero's overflow:hidden it could never
+             stick. It floats transparently over the artwork and takes a white
+             surface once the hero has scrolled past. -->
+        <header class="r2-nav" id="r2Nav">
+          <button class="ic-btn" type="button" data-back aria-label="Back">
+            <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <!-- Same wallet pill as the reader, cloned in. -->
+          <div class="r2-nav-r" data-head-clone></div>
+        </header>
+
         <!-- Full-bleed hero: photo fading to white, with the nav floating on top. -->
         <div class="r2-hero">
-          <header class="r2-nav">
-            <button class="ic-btn" type="button" data-back aria-label="Back">
-              <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <!-- Same wallet pill and chat counter as the reader, cloned in. -->
-            <div class="r2-nav-r" data-head-clone></div>
-          </header>
-
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
           <div class="r2-bookwrap" id="r2Book"></div>
@@ -329,9 +333,10 @@
             <span data-wallet>₹20</span>
             <svg class="rpw-plus" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.1" stroke="#475467" stroke-width="1.5"/><path d="M10 6.6v6.8M6.6 10h6.8" stroke="#475467" stroke-width="1.5" stroke-linecap="round"/></svg>
           </button>
-          <button class="ic-btn" type="button" data-chat aria-label="Chats">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 10a8 8 0 1116 0 8 8 0 01-8 8H4l1.8-2.5A8 8 0 013 10z" stroke="#1D2939" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7.6" cy="10" r="1.1" fill="#1D2939"/><circle cx="11" cy="10" r="1.1" fill="#1D2939"/><circle cx="14.4" cy="10" r="1.1" fill="#1D2939"/></svg>
-          </button>
+          <!-- No chat icon here. This header is cloned into the report page and
+               the paid reader too, and in all three the job is reading, not
+               going back to a conversation — the wallet is the only control
+               that belongs in a buying flow. -->
         </div>
       </header>
 
@@ -404,7 +409,10 @@
                buy pitch after, gone once bought. Rendered by renderHistCard(). -->
           <div class="tl-item" id="tlChap">
             <time>8:02 AM</time>
-            <div class="card tl-card" id="tlChapCard"></div>
+            <!-- No card chrome here. 3111:201206 is the only box in this slot:
+                 one white panel, 18px corners, 8px padding — and histCard()
+                 draws it. Wrapping it in .card put a box inside a box. -->
+            <div id="tlChapCard"></div>
           </div>
 
           <!-- The report entry: swaps between "making" (R.5) and "ready" (R.6) -->
@@ -638,8 +646,22 @@
       <hr>
       <div class="brow total"><span>You pay</span><span>₹49</span></div>
     </div>
-    <button class="btn primary" type="button" id="payBtn">Pay ₹49</button>
-    <button class="btn text" type="button" data-close-sheet>Maybe Later</button>
+    <!-- Payments Android 484:21625 — the method sits beside the button, not
+         under it, so she can see what she is paying with before she commits.
+         "Maybe Later" is gone: the sheet already closes on the scrim and the
+         grab handle, and a second button made leaving look like the choice. -->
+    <div class="payrow">
+      <button class="paywith" type="button" data-toast="Payment method is not part of this demo">
+        <small>Pay with
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5" stroke="#344054" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </small>
+        <b>
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="5" fill="#5F259F"/><path d="M13.6 6.6h-1.5l-.3-1a1 1 0 0 0-1-.7H8.3v.9h1.9l.3 1H7.3c-1 0-1.8.8-1.8 1.8v.7c0 .8.5 1.4 1.3 1.4h.9v2.4c0 .5.4.9.9.9h.8c.5 0 .9-.4.9-.9v-2.6h1.3l1 3.5h1.1l-1-3.5h.9c.4 0 .7-.3.7-.7V7.3c0-.4-.3-.7-.7-.7Zm-3.3 3.6c0 .4-.3.6-.7.6h-.5c-.3 0-.5-.2-.5-.6V7.6h1.7v2.6Z" fill="#fff"/></svg>
+          PhonePe
+        </b>
+      </button>
+      <button class="btn primary" type="button" id="payBtn">Pay ₹49</button>
+    </div>
   </div>
 
   <!-- Push notification (R.6) -->

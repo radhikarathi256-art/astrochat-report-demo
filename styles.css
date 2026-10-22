@@ -11,6 +11,10 @@
   --purple:#6941C6; --purple50:#F4EBFF;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --serif:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; /* display face = Inter, no serif */
+  /* The one face the boards genuinely set: 3077:159492 "Your Journey" is
+     Cormorant Infant Bold. Kept as its own token so it goes only where the
+     frame asks for it, instead of re-serifing every heading in the build. */
+  --display:'Cormorant Infant',Georgia,serif;
   --dev:'Noto Sans Devanagari','Inter',sans-serif;
   --sbh:26px;            /* status bar height */
 }
@@ -519,12 +523,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the spread's left-hand page on the back face. Underneath, the leaf holds the
    spread's right-hand page, so the moment the cover clears it the book is the
    Figma spread exactly.
-   The wrapper reserves both page widths and the book opens anchored to its
-   fore-edge, shrinking a little as it lays down so the open spread still
-   clears the card's title instead of covering it. */
-.of3-bkw{--lay:.46;position:absolute;left:102px;top:-12px;width:181px;height:127px;
-  perspective:620px;transform-origin:right center;
-  animation:bookLay 6s cubic-bezier(.33,1,.68,1) infinite}
+   Lying flat is for the report hero, which has room on both sides of the
+   spine. On a 288 card it does not: the open spread either covers the title or
+   shrinks to a stamp. So here the book only comes ajar and shuts again — a
+   tease, which is all a card-sized book can honestly be. The wrapper still
+   reserves the left page width so the geometry is the same object. */
+.of3-bkw{position:absolute;left:102px;top:-12px;width:181px;height:127px;
+  perspective:620px}
 /* The right-hand page, with the page block showing past the board's fore-edge. */
 .of3-leaf{position:absolute;left:90px;right:0;top:5px;bottom:5px;
   border-radius:1px 3px 3px 1px;overflow:hidden;
@@ -542,7 +547,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
      the paper is, and the spine band already carries the binding. */
   box-shadow:5px 0 7px -4px rgba(74,24,8,.55),
     -6px 10px 20px -8px rgba(74,24,8,.45);
-  animation:bookFlat 6s cubic-bezier(.33,1,.68,1) infinite}
+  animation:bookAjar 6s cubic-bezier(.33,1,.68,1) infinite}
 .of3-bk,.of3-back{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;backface-visibility:hidden}
 .of3-bk{border-radius:2px 6px 6px 2px}
@@ -553,8 +558,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   z-index:3;pointer-events:none;
   background:linear-gradient(90deg,rgba(94,36,16,.5) 0,rgba(122,46,14,.08) 45%,
     rgba(255,255,255,.28) 70%,rgba(122,46,14,.2) 100%)}
-/* Falls open, lies flat for a long beat, then shuts. The point is the spread,
-   so the rest is longer than the motion. */
+/* The card tease: comes ajar, holds the glance, shuts. The rest is longer than
+   the motion, because the point is that the book moved at all. */
+@keyframes bookAjar{
+  0%,26%   {transform:rotateY(0deg)}
+  40%      {transform:rotateY(-36deg)}
+  48%,82%  {transform:rotateY(-30deg)}
+  96%,100% {transform:rotateY(0deg)}
+}
+/* The hero: falls all the way open and lies flat for a long beat. */
 @keyframes bookFlat{
   0%,22%   {transform:rotateY(0deg)}
   47%      {transform:rotateY(-184deg)}
@@ -562,23 +574,24 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   96%,100% {transform:rotateY(0deg)}
 }
 /* Laying down: the book settles back and to the fore-edge so the open spread
-   fits the space the shut book was given. */
+   lands on the centre line instead of hanging off its own left. */
 @keyframes bookLay{
   0%,22%   {transform:translateX(0) scale(1)}
   47%,80%  {transform:translateX(var(--layx,0px)) scale(var(--lay,1))}
   96%,100% {transform:translateX(0) scale(1)}
 }
 @media (prefers-reduced-motion:reduce){
-  .of3-cov,.of3-bkw{animation:none}
+  .of3-cov{animation:none}
 }
 .of3-pts{margin:22px 6px 0}
 .of3-pts .pts{gap:10px}
-/* Figma 3111:201623 — a bare 12px brand tick, not a filled green chip, and the
-   remainder is a dotted-underline line of the same text rather than a fifth
-   bullet, so the list ends on an invitation instead of another claim. */
+/* Figma 3111:201624 — a 12px tick on a brand50 disc (#FDF0EB fill + a 1.6px
+   #EF6939 check), not the green chip the generic list uses, and the remainder
+   is a dotted-underline line of the same text rather than a fifth bullet, so
+   the list ends on an invitation instead of another claim. */
 .of3-pts .pts li{padding-left:21px;font:500 14px/20px var(--sans);color:var(--g700)}
-.of3-pts .pts li::before{top:4px;width:12px;height:12px;background:none;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2.4 6.2 4.7 8.5 9.6 3.4' fill='none' stroke='%23EF6939' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+.of3-pts .pts li::before{top:4px;width:12px;height:12px;background:var(--brand50);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M3.2 6.2 4.9 7.8 8.4 4.3' fill='none' stroke='%23EF6939' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
 .of3-pts .pts .pts-more{padding-left:0;font-weight:500;color:var(--g700);
   text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
 .of3-pts .pts .pts-more::before{content:none}
@@ -637,14 +650,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .hw-tx small{display:block;margin-top:2px;font:400 12px/18px var(--sans);
   color:var(--g600)}
 /* Figma 3111:201226 — a 59x89 board leaning 27px out of the bubble's top edge,
-   which is what the eye lands on. Same hardbound object as the chat card, same
-   full 180 into the flat spread, just smaller: boards overhanging the paper, a
-   board edge with thickness, and the hinge anchored on the spine. The wrapper
-   carries both page widths and lays the book down on its fore-edge, so the
-   open spread never runs over Hemali's line. */
-.hw-bkw{--lay:.5;position:absolute;right:-3px;top:-27px;width:126px;height:89px;
-  perspective:460px;transform-origin:right center;
-  animation:bookLay 6s cubic-bezier(.33,1,.68,1) .9s infinite}
+   which is what the eye lands on. Same hardbound object as the chat card and
+   the same tease: it comes ajar far enough to show paper, holds, then shuts.
+   Only the report hero falls all the way flat. */
+.hw-bkw{position:absolute;right:-3px;top:-27px;width:126px;height:89px;
+  perspective:460px}
 /* The right-hand page, with the page block showing past the board's fore-edge. */
 .hw-leaf{position:absolute;left:62px;right:0;top:3px;bottom:3px;
   border-radius:1px 3px 3px 1px;overflow:hidden;
@@ -658,7 +668,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   transform-origin:left center;transform-style:preserve-3d;
   box-shadow:4px 0 5px -3px rgba(74,24,8,.5),
     -4px 7px 14px -6px rgba(74,24,8,.4);
-  animation:bookFlat 6s cubic-bezier(.33,1,.68,1) .9s infinite}
+  animation:bookAjar 6s cubic-bezier(.33,1,.68,1) .9s infinite}
 .hw-bk,.hw-back{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;backface-visibility:hidden}
 .hw-bk{border-radius:2px 4px 4px 2px}
@@ -670,7 +680,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:linear-gradient(90deg,rgba(94,36,16,.42) 0,rgba(122,46,14,.06) 48%,
     rgba(255,255,255,.26) 72%,rgba(122,46,14,.18) 100%)}
 @media (prefers-reduced-motion:reduce){
-  .hw-cov,.hw-bkw{animation:none}
+  .hw-cov{animation:none}
 }
 .hw-go{display:block;width:100%;height:36px;margin-top:10px;border:0;
   border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;
@@ -866,7 +876,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- R.2 Report page ---------- */
 /* The hero photo fades into white, so the card below it has no visible seam. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
-  padding:0 12px 28px;border-radius:0 0 24px 24px;overflow:hidden;background:#FCEFE9}
+  padding:calc(var(--sbh) + 59px) 12px 28px;
+  border-radius:0 0 24px 24px;overflow:hidden;background:#FCEFE9}
 /* The couple is an animated loop of the same artwork as r2-hero.png, framed so
    the two heads land under the book. The GIF carries its own motion, so the
    old CSS drift is gone — two pans at once just read as drift. */
@@ -876,8 +887,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    only softens the last fifth, where the hero meets the white page. */
 .r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,0) 72%,rgba(255,255,255,.92) 100%)}
-.r2-nav{position:relative;z-index:3;align-self:stretch;display:flex;align-items:center;
-  padding:calc(var(--sbh) + 12px) 16px 12px}
+/* Sticky, and the same height as the reader's header so the two flows share one
+   silhouette. The negative margin is what puts the hero back underneath it:
+   the nav keeps its place in flow for stickiness, then gives the space back. */
+.r2-nav{position:sticky;top:0;z-index:12;display:flex;align-items:center;
+  height:calc(var(--sbh) + 59px);padding:var(--sbh) 16px 0;
+  margin-bottom:calc(-1 * (var(--sbh) + 59px));
+  background:transparent;transition:background .2s ease,box-shadow .2s ease}
+/* Solid white, not frosted: the hero is painted artwork and a blur of it read
+   as a smear behind the back arrow. */
+.r2-nav.solid{background:#fff;box-shadow:0 1px 0 var(--g200)}
 .r2-nav-r{margin-left:auto;display:flex;align-items:center;gap:9px}
 /* The book sits low and the GIF is framed high, so the couple reads above it
    rather than behind it. At 76px the heads landed inside the open pages. */
@@ -948,7 +967,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and the three blocks took half a screen to say one small thing. */
 /* Centred, to carry on the card's axis rather than restart a left edge the
    section below it does not share. */
-.r2-lead{margin:0;text-align:center;font:400 14px/21px var(--sans);color:var(--g600)}
+/* Ranged left, with the heading. Centred, the ragged right edge made three
+   short lines look like a pull-quote rather than the page's own explanation,
+   and nothing else in the column was centred to agree with it. */
+.r2-lead{margin:0;text-align:left;font:400 14px/21px var(--sans);color:var(--g600)}
 .r2-lead b{font-weight:600;color:var(--g900)}
 /* Secondary, so it is narrower than the full column — at full width it carried
    the same weight as the Buy now button fixed to the bottom of the screen. */
@@ -1011,18 +1033,32 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rsum .stars{font-style:normal;font:400 15px/20px var(--sans);color:#F79009;letter-spacing:2px}
 .rsum em{font-style:normal;font:400 13px/18px var(--sans);color:var(--g500)}
 
-/* Quotes scroll sideways; stacking three of them would bury the CTA. */
-.revs{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+/* Quotes scroll sideways; stacking four of them would bury the CTA. Figma
+   3169:202696 — 247px cards, 8px apart, so the next one always peeks and the
+   strip reads as scrollable without a hint. `align-items:center` is what lets
+   the neighbours sit shorter and still line up on their middles. */
+.revs{display:flex;align-items:center;gap:8px;overflow-x:auto;
+  scroll-snap-type:x mandatory;scroll-padding-left:16px;
   margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
 .revs::-webkit-scrollbar{display:none}
-.review{flex:none;width:258px;scroll-snap-align:start;background:var(--g50);
-  border-radius:12px;padding:13px 15px}
+/* Figma 3169:202609 — white card, 16px corners, g200 hairline, 16px padding.
+   The resting state is the SMALL one (3169:202613, scaled .91) and the snapped
+   card comes up to full size. Scaling down from full means the big card is
+   never bigger than its own box, so nothing can get cut off. */
+.review{flex:none;width:247px;scroll-snap-align:start;background:#fff;
+  border:1px solid var(--g200);border-radius:16px;padding:15px;
+  transform:scale(.91);transform-origin:center;
+  transition:transform .28s cubic-bezier(.33,1,.68,1)}
+.review.is-snap{transform:scale(1)}
 /* Stars, then the finding, then who found it — the quote is the evidence, so
    the name goes under it as the signature rather than above it as a heading. */
-.rv-stars{display:block;font-style:normal;font:400 13px/18px var(--sans);
-  color:#F79009;letter-spacing:1.5px;margin-bottom:7px}
-.review p{margin:0;font:400 14px/20px var(--sans);color:var(--g700)}
-.review b{display:block;margin-top:9px;font:500 12px/18px var(--sans);color:var(--g500)}
+.rv-stars{display:block;font-style:normal;font:400 12px/18px var(--sans);
+  color:#F79009;letter-spacing:1.5px;margin-bottom:6px}
+.review p{margin:0;font:400 15px/22px var(--sans);color:var(--g700)}
+.review b{display:block;margin-top:6px;font:400 12px/18px var(--sans);color:var(--g600)}
+@media (prefers-reduced-motion:reduce){
+  .review{transition:none}
+}
 
 /* ---------- What the report is: chips and the sample door ---------- */
 .r2-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
@@ -1108,9 +1144,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The sketch, as a leaf of report paper with a turned corner, dropped at a
    slight angle. On the sample it is blurred — it is the one thing ₹49 actually
    buys, so it is the hero AND the thing held back. */
+/* Figma 3155:12516 — 240x329 laid at 5.43deg, over a wide low-contrast shadow.
+   The tilt is the whole trick: it is what makes this read as a print resting on
+   the page rather than a cropped image block. */
 .paper{position:relative;width:240px;background:#F8F0E4;
-  border-radius:12px 12px 0 12px;transform:rotate(3deg);
-  box-shadow:0 18px 34px -16px rgba(74,24,8,.4)}
+  border-radius:12px 12px 0 12px;transform:rotate(5.43deg);
+  box-shadow:0 14px 30px rgba(115,64,56,.18)}
 .paper-art{position:relative;height:236px;overflow:hidden;
   border-radius:12px 12px 0 0;background:#EFE4D4}
 .paper-art img{width:100%;height:100%;object-fit:cover;display:block}
@@ -1121,13 +1160,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pv-badge{position:absolute;left:12px;top:12px;display:flex;align-items:center;
   height:26px;padding:0 11px;background:#F8F0E4;border-radius:10px;
   font:700 11px/26px var(--sans);letter-spacing:.1em;color:var(--g600)}
+/* Two equal cells, 91.5px each, split by a 36px hairline — the board's own
+   numbers. The cells were sized by their content before, so "Venus · 9th house"
+   stole width from "Mar – Nov 2027" and the rule sat off-centre, which is what
+   made the card look broken rather than printed. */
 .paper-foot{display:flex;align-items:flex-start;gap:12px;height:93px;
   margin:0 16px;padding-top:13px;border-top:1px solid #D1C2B2;text-align:left}
-.paper-foot > div{flex:1;min-width:0}
-.paper-foot i{flex:none;width:1px;height:44px;background:#D1C2B2;opacity:.7}
-.paper-foot small{display:block;font:500 11px/16px var(--sans);letter-spacing:.06em;
+.paper-foot > div{flex:1 1 0;min-width:0}
+.paper-foot i{flex:none;width:1px;height:36px;background:#D1C2B2;opacity:.7}
+.paper-foot small{display:block;font:500 12px/18px var(--sans);letter-spacing:.06em;
   text-transform:uppercase;color:#A4917E}
-.paper-foot b{display:block;margin-top:2px;font:600 15px/21px var(--sans);color:#3F2D1E}
+.paper-foot b{display:block;margin-top:2px;font:600 14px/20px var(--sans);color:#3F2D1E}
 .paper-fold{position:absolute;right:0;bottom:0;width:26px;height:26px;
   background:linear-gradient(225deg,#E6D0AA 0 50%,transparent 50%);
   filter:drop-shadow(-2px -2px 3px rgba(230,196,188,.9))}
@@ -1443,31 +1486,41 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
 .carousel::-webkit-scrollbar{display:none}
-/* Each upsell gets the same cover, price pattern and button as the report being
-   sold above it — a title and a bare ₹49 gave the reader nothing to recognise. */
-.carousel .pcard{flex:none;width:158px;scroll-snap-align:start;background:#fff;border:1px solid var(--g200);
-  border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
-.carousel .pcard .bk3{--bw:38px;--bh:51px;margin-bottom:10px}
-.carousel .pcard b{font:600 14px/19px var(--sans);color:var(--g900)}
-.carousel .pcard small{flex:1;margin-top:3px;font:400 12px/17px var(--sans);color:var(--g500)}
-.pc-pr{display:flex;align-items:baseline;gap:5px;margin-top:8px}
-.pc-pr em{font-style:normal;font:700 15px/20px var(--sans);color:var(--g900)}
-.pc-pr s{font:400 11px/16px var(--sans);color:var(--g400)}
-/* The same button the board uses everywhere else: solid brand, r12, two words.
-   The outlined version with the price in it wrapped onto two lines at this
-   width, which made every card a different height. */
-.pc-btn{align-self:stretch;margin-top:8px;height:36px;border-radius:12px;
+/* Figma 3169:202620 — 159px card, 16px corners, g200 hairline, 12px padding,
+   8px between rows. Each upsell gets the same cover, price pattern and button
+   as the report being sold above it; a title and a bare ₹49 gave the reader
+   nothing to recognise. */
+.carousel .pcard{flex:none;width:159px;scroll-snap-align:start;background:#fff;
+  border:1px solid var(--g200);border-radius:16px;padding:12px;
+  display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:8px}
+/* The board centres the book over the card and sets it at 76x99 — big enough
+   that the cover, not the title, is what you recognise the report by. */
+.carousel .pcard .bkt,.carousel .pcard .bk3{align-self:center;margin:0;
+  width:76px;height:99px;--bw:76px;--bh:99px}
+.carousel .pcard b{font:400 16px/24px var(--sans);color:var(--g700)}
+.carousel .pcard small{margin:0;font:400 12px/18px var(--sans);color:var(--g600)}
+/* The discount sits under the price as its own chip, which is how the sell card
+   and the chat card both show it — the saving is the reason, so it gets a line. */
+.pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:0}
+.pc-pr i{font-style:normal;display:flex;align-items:center;gap:6px}
+.pc-pr em{font-style:normal;font:400 16px/24px var(--sans);color:var(--g900)}
+.pc-pr s{font:400 12px/18px var(--sans);color:#98A2B3}
+.pc-off{margin-top:-1px;align-self:flex-start;border-radius:5px;padding:2px 5px;
+  background:linear-gradient(90deg,#ECFDF3 0,#FFFFFF 100%);
+  font:400 12px/18px var(--sans);color:var(--s700)}
+/* `margin-top:auto` is the board's fill spacer: the button lands on the bottom
+   edge of every card, so a one-line title and a two-line title still match. */
+.pc-btn{margin-top:auto;height:40px;border-radius:12px;
   display:grid;place-items:center;white-space:nowrap;
-  background:var(--brand);font:400 14px/20px var(--sans);color:#fff}
+  background:var(--brand);font:400 16px/24px var(--sans);color:#fff}
 .pcard:active .pc-btn{background:var(--brand-dk)}
 
 /* ---------- R.5 / R.6 Timeline ---------- */
 .tl-head{padding:18px 16px 0}
-/* Figma 3077:159491 — 24px display over a 12/18 line, both Gray/700. The frame
-   sets Cormorant Infant here; the build stays on Inter per the no-serif rule,
-   so only the size, tracking and colour carry over. */
-.tl-head h1{margin:0;font-family:var(--serif);font-size:24px;line-height:32px;
-  font-weight:700;letter-spacing:-.02em;color:var(--g700)}
+/* Figma 3077:159492, read off the file: Cormorant Infant Bold 24 on #344054,
+   auto line height (the node measures 29), no tracking. */
+.tl-head h1{margin:0;font-family:var(--display);font-size:24px;line-height:29px;
+  font-weight:700;letter-spacing:0;color:var(--g700)}
 .tl-head p{margin:2px 0 0;font:400 12px/18px var(--sans);color:var(--g700)}
 .tl-today{display:flex;align-items:center;gap:8px;padding:18px 16px 6px;
   font:700 14px/20px var(--sans);letter-spacing:.04em;color:var(--brand)}
@@ -1570,6 +1623,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .brow.green{color:var(--s700);font-weight:600}
 .brow.total{font:700 16px/24px var(--sans);color:var(--g900)}
 .buy-price hr{border:0;border-top:1px solid var(--g200);margin:10px 0}
+/* Payments Android 484:21625 — the method and the button share one row, 16px
+   apart, the method stacked as a quiet label over the brand it will open. The
+   button is 200px there because the method takes the rest; here it simply
+   takes whatever is left, which comes out the same on a 360 frame. */
+.payrow{display:flex;align-items:center;gap:16px;margin-top:2px}
+.paywith{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+  border:0;background:none;padding:0;text-align:left}
+.paywith small{display:flex;align-items:center;gap:2px;
+  font:400 14px/22px var(--sans);color:var(--g600)}
+.paywith b{display:flex;align-items:center;gap:4px;
+  font:700 16px/20px var(--sans);color:var(--g800)}
+.payrow .btn{flex:1;width:auto;height:44px}
 
 /* ---------- Push + toast ---------- */
 .push{position:absolute;top:calc(var(--sbh) + 6px);left:10px;right:10px;z-index:80;
