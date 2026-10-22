@@ -25,7 +25,7 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    - `sample`: the whole report on the demo chart, for the free preview. */
 var REPORTS = [
   {
-    id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet — and what is holding it up', pages: 38, rating: '4.7', sold: 128880,
+    id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet — and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
     // `t2` is the long name, used where the card has room for two lines and the
     // book is sitting right next to it — it has to match the cover she can see.
     t2: 'Your Future Partner Prediction Report',
@@ -43,16 +43,17 @@ var REPORTS = [
       { s: 5, n: 'Neha K., Indore',  q: 'The part about meeting through people who already know me is exactly how it happened.' },
       { s: 4, n: 'Ritu M., Nashik',  q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' }
     ],
+    /* Figma 3111:201622 — eight, and the top three said in the frame's own
+       words. The chat card shows three and counts "+5"; History counts all
+       eight. Both numbers come from this one list, so they cannot drift. */
     learn: [
-      'What your partner will look like — a picture drawn from your chart',
+      'Image of your future partner',
+      'How and where you will meet',
+      'What your first meeting looks like',
       'When real love arrives in this life',
-      'Where and how you will meet',
-      'How the relationship will run day to day',
       'What is blocking that person from reaching you now',
       'Love or arranged — what the chart says',
       'The kind of wrong people you keep attracting',
-      'Your attachment style and love language',
-      'The kind of partner who actually suits you',
       'What to do each day so that person comes closer'
     ],
     ask: [
@@ -132,7 +133,7 @@ var PM_JOURNEY = {
       { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
       { who: 'hemali', text: 'Mansi, I have read your chart. Rahu sits in your seventh house — that is why things stop just as they start to work out.' },
       { who: 'hemali', text: 'Do not worry, there is a remedy for it.' },
-      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' },
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
       { who: 'gap',    text: '15 minutes later' },
       { who: 'hemali', text: 'Mansi, I have written a full report on your seventh house — the Rahu block, the timing, what your partner will be like and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.' },
@@ -155,7 +156,7 @@ var PM_JOURNEY = {
     surf: { chat: false, today: true, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi! Yesterday you asked about your partner. What would you like to ask today?' },
-      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
     today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
@@ -169,7 +170,7 @@ var PM_JOURNEY = {
     msgs: [
       { who: 'hemali', text: 'Mansi, I noticed one more thing in your chart — Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.' },
       { who: 'offer3' },
-      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
     today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
@@ -184,7 +185,7 @@ var PM_JOURNEY = {
     msgs: [
       { who: 'hemali', text: 'Mansi, one thing was left — there is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.' },
       { who: 'offer3' },
-      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
     today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
@@ -197,7 +198,7 @@ var PM_JOURNEY = {
     surf: { chat: false, today: false, guide: false, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi, tell me — what would you like to ask today?' },
-      { who: 'ended',  text: 'Your free minutes are over. Next free 2 min chat in 14h 23m.' }
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
     today: { eyebrow: '', note: '' },
     countdown: '✦ FREE 2 MIN CHAT READY'
@@ -1664,6 +1665,9 @@ function renderReport() {
   // The hero is the closed cover of the report she is looking at — the same
   // object the chat bubble and the upsells show, just larger.
   $('#r2Book').innerHTML = book3d(r);
+  // Was hard-coded, so picking Money or Marriage still showed the Partner
+  // report's reader count. One number, read off the report being shown.
+  $('#r2Reads').textContent = inr(r.sold);
   $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
   $('#r2Chips').innerHTML = r.chips.concat([r.pages + ' pages', 'Shareable', 'Private'])
     .map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('');
