@@ -490,6 +490,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pcard .bkt-cov{z-index:1;transform-origin:left center;transform-style:preserve-3d;
   box-shadow:-3px 0 0 #6B2C13,3px 0 6px -2px rgba(74,24,8,.45);
   animation:bookAjar 6s cubic-bezier(.33,1,.68,1) 1.2s infinite}
+/* One at a time: the second book waits out the first one's tease rather than
+   both cards fanning open together, which read as a glitch. */
+.pcard:nth-of-type(2n) .bkt-cov{animation-delay:4.2s}
 .pcard .bkt-face{backface-visibility:hidden}
 .pcard .bkt-back{display:block;position:absolute;inset:0;
   transform:rotateY(180deg);backface-visibility:hidden;border-radius:6px 2px 2px 6px;
@@ -928,6 +931,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The icon slot in a tile is 56 square, so the book stands exactly 56 tall —
    the hero's 86x114 was leaking in here and bursting the row. */
 .tile .bkt,.tile .bk3{width:42px;height:56px;margin:0 7px}
+/* Same tease as the upsell thumbnails: the cover lifts a few degrees and
+   settles, so the tile reads as a book rather than a thumbnail. */
+.tile .bkt{perspective:300px}
+.tile .bkt-leaf{display:block;position:absolute;inset:0;z-index:0;
+  border-radius:2px 5px 5px 2px;
+  background:#FFFDF8 no-repeat right center;background-size:200% 100%;
+  box-shadow:inset 4px 0 9px rgba(74,24,8,.16)}
+.tile .bkt-cov{z-index:1;transform-origin:left center;transform-style:preserve-3d;
+  box-shadow:-2px 0 0 #6B2C13,2px 0 5px -2px rgba(74,24,8,.45);
+  animation:bookAjar 6s cubic-bezier(.33,1,.68,1) 1.8s infinite}
+.tile .bkt-face{backface-visibility:hidden}
+.tile .bkt-back{display:block;position:absolute;inset:0;
+  transform:rotateY(180deg);backface-visibility:hidden;border-radius:5px 2px 2px 5px;
+  background:#FFFDF8 no-repeat left center;background-size:200% 100%}
+@media (prefers-reduced-motion:reduce){
+  .tile .bkt-cov{animation:none}
+}
 .tile .tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .tile b{font:600 16px/22px var(--sans);color:var(--g900);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -995,23 +1015,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    swing runs a single time and the spread simply stays open. */
 .r2-bookwrap .bkt{--lay:.94;--layx:63px;perspective:1100px;transform-origin:center;
   animation:bookLayHold 1.9s cubic-bezier(.33,1,.68,1) .9s both}
+/* The spread carries its own painted board edges on transparency, so there is
+   no page stock to fake behind it and no inner gutter shadow to add — a cream
+   fill here just printed a white card around the artwork. */
 .r2-bookwrap .bkt-leaf{display:block;position:absolute;inset:0;z-index:0;
-  border-radius:2px 6px 6px 2px;
-  background:#FFFDF8 no-repeat right center;background-size:200% 100%;
-  box-shadow:inset 7px 0 14px rgba(74,24,8,.16),0 10px 20px -10px rgba(74,24,8,.4)}
+  background:transparent no-repeat right center;background-size:200% 100%;
+  filter:drop-shadow(0 10px 16px rgba(74,24,8,.32))}
 .r2-bookwrap .bkt-cov{z-index:1;transform-origin:left center;
   transform-style:preserve-3d;
-  /* The binding, on the spine side. Shut it is the dark fold you grip; swung
-     over it lands in the gutter, which is where that shadow belongs once the
-     spread's own painted board edges take over the outside. */
-  box-shadow:-5px 0 0 #6B2C13,-10px 0 10px -5px rgba(74,24,8,.45);
+  /* No painted binding bar: the spread already has its own gutter, and a solid
+     -5px edge landed as a brown stripe straight down the middle of it. A soft
+     falloff is all the fold needs. */
+  box-shadow:-8px 0 12px -6px rgba(74,24,8,.38);
   animation:bookOpenHold 1.9s cubic-bezier(.33,1,.68,1) .9s both}
 .r2-bookwrap .bkt-face{backface-visibility:hidden}
 .r2-bookwrap .bkt-back{display:block;position:absolute;inset:0;
   transform:rotateY(180deg);backface-visibility:hidden;
-  border-radius:6px 2px 2px 6px;
-  background:#FFFDF8 no-repeat left center;background-size:200% 100%;
-  box-shadow:inset -7px 0 14px rgba(74,24,8,.16)}
+  background:transparent no-repeat left center;background-size:200% 100%}
 @media (prefers-reduced-motion:reduce){
   .r2-bookwrap .bkt,.r2-bookwrap .bkt-cov{animation:none}
 }

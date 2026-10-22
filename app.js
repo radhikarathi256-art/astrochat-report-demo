@@ -33,7 +33,9 @@ var REPORTS = [
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // All three are painted now, to the same brief: one bold motif on pale
     // watercolour paper, and a flat spread with the chart on the left page.
-    art: { closed: 'assets/cover-partner.jpg', open: 'assets/spread-partner.jpg' },
+    // The open spread is Figma 3106:6812 exported straight out of the board —
+    // its own painted board edges, on transparency.
+    art: { closed: 'assets/cover-partner.jpg', open: 'assets/spread-partner.png' },
     // What is in the box, as chips — the one thing unique to this report first.
     chips: ['Partner image', 'Birth chart analysis'],
     // Quotes that name something the report called before it happened. A quote
@@ -953,7 +955,10 @@ function esc(s) {
 /* The one report today suggests. A three-row menu makes her choose before she
    has any reason to care; a single report tied to a house Hemali already named
    is a recommendation, and the other two stay one tap away. */
-function leadReport() { return reportById(dayData().lead || 'partner'); }
+/* Pinned to Partner Prediction rather than rotating a different report in each
+   day: one report, nudged until she takes it. Day 1 shows none of this — the
+   free chat is the whole of day 1. */
+function leadReport() { return reportById('partner'); }
 
 /* The pointers ARE the sell. A title and a house name tell her nothing; the
    list of questions tells her whether her own question is answered. So the
@@ -1343,20 +1348,17 @@ function renderDayToday() {
    prediction tiles. */
 function renderGuideTile() {
   if (!state.paid) {
-    // The guidance tile is the quieter of Today's two surfaces, so it carries
-    // the other two reports — the expert card above it already leads with one.
-    // No price chip: the tarot and prediction tiles carry a title, a line and a
-    // chevron, and this is the same object. An empty <span class="bk3"> was
-    // drawing a bare page block at the hero's 86x114 — hence the broken look.
+    // Day 1 is the chat's day: Today carries no report at all, so there is
+    // nothing to put in this slot.
+    if (state.day === 1) { $('#guideSlot').hidden = true; return; }
+    // From day 2 the tile sells the one report, Partner Prediction — not a
+    // "2 more reports" bundle. No price chip: the tarot and prediction tiles
+    // carry a title, a line and a chevron, and this is the same object.
+    var lead = leadReport();
     $('#guideSlot').innerHTML =
-      '<button class="tile" type="button" data-go="picker">' +
-        book3d(REPORTS.filter(function (x) { return x.id !== leadReport().id; })[0]) +
-        // Short enough not to ellipsise at tile width; the sub-line is already
-        // naming both reports.
-        '<span class="tt"><b>2 more reports</b><small>' +
-          esc(REPORTS.filter(function (x) { return x.id !== leadReport().id; })
-                     .map(function (x) { return x.t; }).join(' \u00b7 ')) +
-        '</small></span>' +
+      '<button class="tile" type="button" data-pick="' + lead.id + '">' +
+        book3d(lead) +
+        '<span class="tt"><b>' + esc(lead.t) + '</b><small>' + esc(lead.s) + '</small></span>' +
         '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
     return;
