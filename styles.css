@@ -998,12 +998,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
   padding:calc(var(--sbh) + 59px) 12px 28px;
   border-radius:0 0 24px 24px;overflow:hidden;background:var(--rose)}
-/* The couple, framed high so their heads read above the book rather than behind
-   it. object-position pulls the crop window towards the top of a 720x1280
-   portrait source; centred, the heads landed level with the open pages.
+/* The couple, framed so both heads clear the book entirely. The 720x1280 source
+   is scaled to 693 tall at this width and the crop window is only 415, so where
+   that window sits is the whole composition: too low and the book's top edge
+   cuts through her head, too high and the top of his is off the frame. 54% is
+   the middle of the band that holds through the whole loop — they turn as it
+   plays, and the heads move with them.
    .r2-hero already paints --rose, so this needs no ground of its own. */
 .r2-vid{position:absolute;inset:0;z-index:0;width:100%;height:100%;
-  object-fit:cover;object-position:50% 13%;pointer-events:none}
+  object-fit:cover;object-position:50% 54%;pointer-events:none}
 /* The wash over the video is what keeps the cover legible: the rose lifted
    through the middle of the frame, so the artwork sits on a settled ground
    rather than on top of a moving picture. Same stacking level as the video and
@@ -1035,12 +1038,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    It gives back at the bottom what it takes at the top, so it drops without
    making the hero taller and shoving the card down. One rise on entry — the
    old hinge was a drawing of a book opening and never showed anything. */
-/* 140, not 108. The couple's two heads are ~174px tall once the 720x1280
-   source is cropped to this width, and at 108 the book's top edge cut through
-   them. The hero simply grows by the difference — there is no room to borrow,
-   since the book already ends 3px off the hero's bottom. */
+/* 164, not 108. The two heads are ~190px tall once the 720x1280 source is
+   cropped to this width, and the book's top edge was cutting through hers. The
+   hero simply grows by the difference — there is no room to borrow, since the
+   book already ends 3px off the hero's bottom. Paired with the 54% crop: the
+   two numbers have to move together or one of them breaks the other. */
 .r2-bookwrap{position:relative;z-index:5;display:flex;justify-content:center;
-  margin:140px 0 -14px}
+  margin:164px 0 -14px}
 .r2-bookwrap .bkt,.r2-bookwrap .bk3{width:134px;height:178px}
 /* The page block comes off here. It is a 7px strip pinned to the right of the
    134px box, which is where the fore-edge is while the book is shut — but this
