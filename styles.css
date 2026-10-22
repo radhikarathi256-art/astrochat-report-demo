@@ -1329,8 +1329,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and "Venus · 9th house" onto a second row, which is what made the foot look
    like a broken table; the cells now hug their own text, so the two halves are
    deliberately unequal and the hairline sits wherever the words leave it. */
+/* The turned-up corner is anchored to the bottom of the sheet, so the padding
+   under the foot is what holds it off the last value — it was sitting on the
+   final character of "Mar – Nov 2027". 12px on the right does the same job
+   horizontally. */
 .paper-foot{display:flex;align-items:flex-start;gap:14px;
-  padding:13px 0 16px;border-top:1px solid #D1C2B2;text-align:left}
+  padding:13px 12px 26px 0;border-top:1px solid #D1C2B2;text-align:left}
 .paper-foot > div{flex:0 1 auto;min-width:0}
 .paper-foot i{flex:none;width:1px;height:34px;background:#D1C2B2;opacity:.7}
 .paper-foot small{display:block;white-space:nowrap;
@@ -1534,8 +1538,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Board padding: 8 top, 16 each side, 24 bottom, 8 between the two rows. */
 .askbar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:8px;
   padding:8px 16px calc(24px + env(safe-area-inset-bottom,0px));
-  background:#fff;border-top:1px solid var(--g200);
-  box-shadow:0 -8px 24px -10px rgba(74,24,8,.26)}
+  background:#fff;box-shadow:0 -4px 12px rgba(15,23,41,.08)}
+/* The board's top edge: a 1px rule that fades from white at both ends to hot
+   pink in the middle, so the bar is lit along its lip rather than ruled off by
+   a grey line. Drawn as a strip because a gradient cannot go in border-color. */
+.askbar::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,#fff 0,#F955D4 46%,#fff 100%)}
 .ask-top{display:flex;align-items:center;gap:12px}
 .askbar .av-ring{flex:none;width:50px;height:50px;border-width:2px}
 .ask-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}

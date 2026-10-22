@@ -11,7 +11,13 @@
      bottom of the screen by definition, so there is no number to get wrong and
      nothing outside it that could ever show. */
   html{height:100%;overflow:hidden}
-  body{position:fixed;inset:0;overflow:hidden;
+  /* `--appvh` is window.innerHeight, written by mobile.js. inset:0 gives the
+     box; the min-height is the floor under it, because a home-screen app has
+     been seen resolving even a fixed inset:0 body short of the screen and
+     leaving a band of html under the bottom nav. min-height can only ever
+     extend the box, never shrink it, so the measured number cannot regress
+     the CSS one. */
+  body{position:fixed;inset:0;min-height:var(--appvh,0px);overflow:hidden;
        background:#FBE4D7;overscroll-behavior:none}
   /* Only the docked copy is hidden — the drawer hosts the same live node. */
   body>.switcher{display:none!important}

@@ -17,6 +17,19 @@
   placeSwitcher();
   window.addEventListener('resize', placeSwitcher);
 
+  /* The viewport height, measured rather than computed. visualViewport is
+     deliberately not used: it shrinks when the keyboard opens, and this number
+     has to stay the height of the screen so the bottom bars stay on the bottom
+     of it. orientationchange is read late because iOS reports the pre-rotation
+     height if asked while the rotation is still running. */
+  function lockVH() {
+    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
+  }
+  lockVH();
+  window.addEventListener('resize', lockVH);
+  window.addEventListener('pageshow', lockVH);
+  window.addEventListener('orientationchange', function () { setTimeout(lockVH, 150); });
+
   // A forced reflow, not rAF: browsers throttle rAF when the tab is not
   // painting, and the open class would then never land.
   function open()  { scrim.hidden = false;
