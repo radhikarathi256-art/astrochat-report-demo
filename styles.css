@@ -419,10 +419,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The wash, for the reports with no painted cover yet: two soft blooms in the
    report's own colourway over a pale ground, the way a wet brush leaves it. */
 .bk3-face{background:
-  radial-gradient(120% 70% at 18% 6%,var(--cva) 0,rgba(255,255,255,0) 62%),
-  radial-gradient(92% 60% at 88% 88%,var(--cvb) 0,rgba(255,255,255,0) 58%),
-  radial-gradient(70% 46% at 70% 36%,var(--cvi) 0,rgba(255,255,255,0) 70%),
-  linear-gradient(160deg,#FFFBF6 0,#F6EDE4 100%)}
+  radial-gradient(56% 32% at 27% 17%,var(--cva) 0,rgba(255,255,255,0) 74%),
+  radial-gradient(50% 29% at 75% 71%,var(--cvb) 0,rgba(255,255,255,0) 72%),
+  radial-gradient(44% 25% at 62% 41%,var(--cvi) 0,rgba(255,255,255,0) 76%),
+  linear-gradient(160deg,#FFFCF8 0,#F7F0E7 100%)}
 /* The spine edge: a damp band of the darker wash, not a 3D board. */
 .bkt-face::before,.bk3-face::before{content:'';position:absolute;
   left:0;top:0;bottom:0;width:6px;
