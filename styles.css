@@ -872,7 +872,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:6px 10px 8px;font:700 12px/18px var(--sans);color:#fff;letter-spacing:.01em;
   text-transform:uppercase}
 .expert-top b{font-weight:700;text-transform:none;font-variant-numeric:tabular-nums}
-.expert-body{background:#fff;border-radius:12px;padding:8px 12px;
+/* overflow:hidden is what makes the ticket notches read as notches. The circles
+   are parked 9px outside this card; without the clip the outer 5px of each one
+   cleared the purple shell too and printed a dot on the page behind it. Clipped
+   here, only the 3px that bites into the white is ever drawn. A card's own
+   box-shadow is not clipped by its own overflow, so the shadow is unaffected. */
+.expert-body{background:#fff;border-radius:12px;padding:8px 12px;overflow:hidden;
   box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
 .expert-row{display:flex;align-items:center;gap:10px}
 .expert-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}

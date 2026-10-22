@@ -168,12 +168,13 @@ var PM_JOURNEY = {
     today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
-  /* Days 3 and 4 are identical — Today keeps the offer and the chat joins in.
-     Nothing escalates: same three reports, same preview, same price. */
+  /* Day 3 steps back off the expert card — Today keeps only the personalised
+     tile, and the chat carries the ask. Nothing escalates: same three reports,
+     same preview, same price. */
   3: {
     stamp: '2 days ago',
     lead: 'career',
-    surf: { chat: true, today: true, guide: true, hist: false },
+    surf: { chat: true, today: false, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi, I noticed one more thing in your chart — Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.' },
       { who: 'offer3' },
@@ -182,13 +183,14 @@ var PM_JOURNEY = {
     today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
-  /* Day 4 is the last ask. Nothing gets louder — one line of copy says so,
-     because a silent last ask is a wasted one. */
+  /* Day 4 is the last ask, and it is quieter than day 3, not louder: the chat
+     and the expert card both drop away and the report sits as the first task in
+     Personalised Guidance, where she can take it or walk past it. */
   4: {
     stamp: '3 days ago',
     lead: 'marriage',
     lastAsk: true,
-    surf: { chat: true, today: true, guide: true, hist: false },
+    surf: { chat: false, today: false, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi, one thing was left — there is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.' },
       { who: 'offer3' },
@@ -197,12 +199,13 @@ var PM_JOURNEY = {
     today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
-  /* Day 5: the stop. Everything the brief asks for has been asked four times —
-     from here Today, the chat and History go quiet. */
+  /* Day 5: the stop. Nothing asks her any more — no push, no chat line, no
+     expert card. The report stays on the shelf as a task she can pick up if she
+     wants it, which is not the same as being sold to. */
   5: {
     stamp: '4 days ago',
     quiet: true,
-    surf: { chat: false, today: false, guide: false, hist: false },
+    surf: { chat: false, today: false, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi, tell me — what would you like to ask today?' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
@@ -1352,7 +1355,9 @@ function renderGuideTile() {
   if (!state.paid) {
     // Day 1 is the chat's day: Today carries no report at all, so there is
     // nothing to put in this slot.
-    if (state.day === 1) { $('#guideSlot').hidden = true; return; }
+    // Clearing as well as hiding: switching back from a later day would
+    // otherwise leave that day's tile sitting in the DOM.
+    if (state.day === 1) { $('#guideSlot').hidden = true; $('#guideSlot').innerHTML = ''; return; }
     // From day 2 the tile sells the one report, Partner Prediction — not a
     // "2 more reports" bundle. No price chip: the tarot and prediction tiles
     // carry a title, a line and a chevron, and this is the same object.
@@ -1518,7 +1523,7 @@ function renderTpTabs() {
   wrap.innerHTML =
     '<p class="tp-note">Touchpoints — ' +
       (state.paid ? 'report bought · every surface is the follow-up'
-        : pmQuiet() ? 'nudging has stopped — every surface is quiet'
+        : pmQuiet() ? 'nudging has stopped — the report only sits in her guidance'
         : 'one report a day · ₹49, sample on a demo chart') + '</p>' +
     '<div class="tp-tabs">' + tabs.map(function (t) {
       return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
