@@ -1254,12 +1254,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    it as separate edge-to-edge sheets of paper with gaps between them, so the
    painting shows through the seams and the page reads as pages on a wall.
    =========================================================================== */
-.rp{background:#FEF6FB}
+/* Muted to sit with the arch below. A near-white pink made the arch look like
+   the only saturated thing on the screen. */
+.rp{background:#F6EEF0}
 /* Pulled up to sit right under the status bar: at 48px the crown of the arch
    was below the header and the page read as a band of pink, not an arch. */
+/* The PNG itself is a bright candy pink. Desaturating and darkening it in CSS
+   keeps one asset for both the sample and the bought screen — and the arch is
+   the backdrop, so it has to lose the contest with the sketch in front of it. */
 .rp-arch{position:absolute;top:calc(var(--sbh) + 8px);left:0;right:0;height:660px;
   z-index:0;pointer-events:none;
-  background:url(assets/arch.png) top center/100% auto no-repeat}
+  background:url(assets/arch.png) top center/100% auto no-repeat;
+  filter:saturate(.58) brightness(.92) contrast(1.02)}
 .rp .scroll{position:relative;z-index:1}
 
 /* Transparent on the arch; a white surface only once prose is underneath.
@@ -1290,18 +1296,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Figma 3155:12516 — 240x329 laid at 5.43deg, over a wide low-contrast shadow.
    The tilt is the whole trick: it is what makes this read as a print resting on
    the page rather than a cropped image block. */
-.paper{position:relative;width:240px;background:#F8F0E4;
-  border-radius:12px 12px 0 12px;transform:rotate(5.43deg);
-  box-shadow:0 14px 30px rgba(115,64,56,.18)}
+/* Sticky-note corners (3px, not 12px) and two shadows instead of one: a tight
+   contact shadow where the paper touches the wall, plus a wide soft one for the
+   lift. The single even 30px blur read as a floating card. */
+.paper{position:relative;width:240px;
+  background:linear-gradient(168deg,#FCF5EA 0,#F8F0E4 46%,#F2E7D6 100%);
+  border-radius:3px 3px 0 3px;transform:rotate(5.43deg);
+  box-shadow:0 1px 2px rgba(115,64,56,.2),0 12px 22px -10px rgba(115,64,56,.3)}
 .paper-art{position:relative;height:236px;overflow:hidden;
-  border-radius:12px 12px 0 0;background:#EFE4D4}
+  border-radius:2px 2px 0 0;background:#EFE4D4}
 .paper-art img{width:100%;height:100%;object-fit:cover;display:block}
 /* Soft enough that the face is still a face — a heavier blur sells nothing,
    because there is nothing left to want. */
 .paper.preview .paper-art img{filter:blur(6px) saturate(.92);transform:scale(1.08)}
-/* Top left, over the forehead — where a stamp would sit on a real print. */
-.pv-badge{position:absolute;left:12px;top:12px;display:flex;align-items:center;
-  height:26px;padding:0 11px;background:#F8F0E4;border-radius:10px;
+/* Left side, clear of the tape that now crosses the top corner, and squared
+   off like the paper it is printed on. */
+.pv-badge{position:absolute;left:12px;top:52px;display:flex;align-items:center;
+  height:26px;padding:0 11px;background:#F8F0E4;border-radius:4px;
   font:700 11px/26px var(--sans);letter-spacing:.1em;color:var(--g600)}
 /* Two equal cells, 91.5px each, split by a 36px hairline — the board's own
    numbers. The cells were sized by their content before, so "Venus · 9th house"
@@ -1317,6 +1328,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .paper-fold{position:absolute;right:0;bottom:0;width:26px;height:26px;
   background:linear-gradient(225deg,#E6D0AA 0 50%,transparent 50%);
   filter:drop-shadow(-2px -2px 3px rgba(230,196,188,.9))}
+
+/* Cellotape over the top corners — the thing that says this print was stuck to
+   the wall by hand. Milky rather than clear so it is visible over both the
+   sketch and the arch, with the ends faded out by a mask because cut tape has
+   no crisp edge. The highlight line is the shine along the middle of the strip. */
+.paper .tape{position:absolute;z-index:3;top:14px;width:86px;height:25px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.5) 42%,
+                    rgba(255,255,255,.14) 52%,rgba(226,214,198,.36) 100%);
+  box-shadow:0 1px 3px rgba(115,64,56,.22);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7px,#000 calc(100% - 7px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 7px,#000 calc(100% - 7px),transparent 100%)}
+.paper .tape.l{left:-22px;transform:rotate(-41deg)}
+.paper .tape.r{right:-22px;transform:rotate(41deg)}
 
 /* A white pill, one colour: the language is the whole label, so splitting it
    into grey and pink made two things out of one. */
