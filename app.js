@@ -305,6 +305,7 @@ function back() {
 
 function onEnter(id) {
   if (id === 'read') { startAsk(); } else { stopAsk(); }
+  if (id === 'paysc') { runPay(); } else { stopPay(); }
   if (id === 'timeline' && !state.paid) return;
 }
 
@@ -854,7 +855,51 @@ function startAsk() {
 }
 
 /* ---------------------------------------------------------------- payment */
+/* Payments Android 5075:6087. The report is ₹49 and the wallet is how
+   AstroChat takes money, so Buy Now lands on Add Money at ₹50. */
+var payT = [];
+
+function openPay() {
+  closeSheet();
+  var r = reportById(state.pick);
+  $('#payAlert1').textContent = 'Your ' + r.id + ' report is \u20b949';
+  go('paysc');
+}
+
+/* The demo drives the last tap itself: a beat to read the screen, a visible
+   press, then the spinner. Nobody walking somebody through this should have to
+   stop and hunt for the Pay button. */
+function runPay() {
+  var btn = $('#paySubmit');
+  stopPay();
+  btn.classList.remove('pressed', 'busy');
+  payT.push(later(function () { btn.classList.add('pressed'); }, 1100));
+  payT.push(later(function () {
+    btn.classList.remove('pressed');
+    btn.classList.add('busy');
+    payT.push(later(pay, 950));
+  }, 1400));
+}
+
+function stopPay() {
+  payT.forEach(clearTimeout);
+  payT = [];
+  var btn = $('#paySubmit');
+  if (btn) btn.classList.remove('pressed', 'busy');
+}
+
+/* 18% GST, the way the board totals it: ₹50 + ₹9. */
+function pickAmt(el) {
+  stopPay();
+  var amt = +el.getAttribute('data-amt'), gst = Math.round(amt * 0.18);
+  $$('#paysc .amt').forEach(function (a) { a.classList.toggle('on', a === el); });
+  $('#payGet').textContent = amt;
+  $('#paySum').textContent = '\u20b9' + amt + ' + \u20b9' + gst + ' GST';
+  $('#payTot').textContent = '\u20b9' + (amt + gst);
+}
+
 function pay() {
+  stopPay();
   closeSheet();
   state.paid = true;
   // The report is flat ₹49 and never comes out of the wallet — the wallet is
@@ -1125,6 +1170,27 @@ function histCard(r) {
   '</div>';
 }
 
+/* Figma 3203:205266 — on Today the report rides the expert card as a ticket
+   stub: a dashed perforation, a notch bitten out of each edge of the white
+   card, then one row. The History widget used to be dropped in here whole,
+   which put Hemali's face and name on the card twice and ran it to 383px. */
+function exTicket(r) {
+  return '<button class="ex-tkt" type="button" data-pick="' + r.id + '">' +
+    '<i class="tk-n tk-l" aria-hidden="true"></i>' +
+    '<i class="tk-n tk-r" aria-hidden="true"></i>' +
+    (r.art
+      ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
+      : drawnFace(r, 'tk-bk bk3-face')) +
+    '<span class="tk-t">' +
+      '<b>Your ' + esc(r.id) + ' report is ready</b>' +
+      '<small>Made by Hemali from your chart</small>' +
+    '</span>' +
+    '<i class="tk-go" aria-hidden="true">' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.9 7h8.2m-3.3-3.3L11.1 7l-3.3 3.3" stroke="#F28761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</i>' +
+  '</button>';
+}
+
 function renderChat() {
   $('#chatThread').innerHTML = dayData().msgs.map(function (m) {
     if (m.who === 'sys')    return '<p class="c-sys">' + esc(m.text) + '</p>';
@@ -1242,10 +1308,7 @@ function renderDayToday() {
     // Hiding the slot is not enough — yesterday's countdown would survive in
     // the DOM and reappear the moment anything unhid it.
     if (!sf.today) { $('#expertSlot').innerHTML = ''; return; }
-    // Today shows the same card History does — one offer, drawn one way, so
-    // the second sighting is a reminder rather than a new pitch. The countdown
-    // strip is gone: a clock under an offer makes the offer feel cheap.
-    $('#expertSlot').innerHTML = histCard(leadReport());
+    $('#expertSlot').innerHTML = exTicket(leadReport());
     return;
   }
 
@@ -1523,7 +1586,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,[data-amt],#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-ask]');
   if (!t) return;
 
   // PM track: picking one of the three reports opens it on the report page.
@@ -1660,7 +1723,12 @@ document.addEventListener('click', function (e) {
   }
 
   if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
-  if (t.id === 'payBtn')    { pay(); return; }
+  // Picking a bigger top-up stops the auto-press — she has taken the wheel.
+  if (t.hasAttribute('data-amt')) { pickAmt(t); return; }
+
+  // Both routes to the money land on the same payment screen.
+  if (t.id === 'payBtn' || t.id === 'r2Cta') { openPay(); return; }
+  if (t.id === 'paySubmit') { stopPay(); pay(); return; }
   // Touchpoint tabs in the demo sidebar: jump the phone to that surface.
   if (t.hasAttribute('data-tp')) {
     var tp = t.getAttribute('data-tp');

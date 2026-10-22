@@ -839,6 +839,29 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .expert-meta s{color:var(--g400);font-weight:500;font-size:12px}
 .expert-meta strong{font-weight:600;color:var(--s700)}
 .expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
+/* Figma 3203:205266 — the report as a ticket stub torn off the bottom of the
+   expert card. Negative margins take the row out to the white card's own edge
+   so the notches can bite into it; the dashed rule stays inset 12px. */
+.ex-tkt{position:relative;display:flex;align-items:center;gap:12px;width:auto;
+  margin:8px -12px -8px;padding:8px 12px 6px;border:0;border-top:1px dashed var(--g300);
+  border-radius:0 0 12px 12px;background:#fff;text-align:left}
+.ex-tkt:active{background:var(--g50)}
+/* Half a 12px circle, centred on the perforation, filled with the shell's
+   bottom purple — the same trick a cinema ticket uses to say "tear here". */
+.tk-n{position:absolute;top:-6px;width:12px;height:12px;border-radius:50%;
+  background:#4A3460}
+.tk-l{left:-6px}
+.tk-r{right:-6px}
+.tk-bk{flex:none;width:31px;height:41px;object-fit:cover;border-radius:2px;
+  box-shadow:0 1px 3px rgba(16,24,40,.18)}
+.tk-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tk-t b{font:600 14px/20px var(--sans);color:var(--g700);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tk-t small{font:400 12px/18px var(--sans);color:var(--g600);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tk-go{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand50);
+  display:flex;align-items:center;justify-content:center}
+
 /* Entry B — one row, ~56px. A second full-width button competed with Continue
    Chat at identical width, and the extra ~160px pushed Daily reward below the
    fold. Chat has to win this card, so the report gets a small outlined button. */
@@ -1635,6 +1658,101 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .paywith b{display:flex;align-items:center;gap:4px;
   font:700 16px/20px var(--sans);color:var(--g800)}
 .payrow .btn{flex:1;width:auto;height:44px}
+
+/* ---------- Payment screen · Payments Android 5075:6087 ----------
+   The real Add Money screen: warm alert band, a dashed receipt card with the
+   amount tiles notched into its sides, the gold plate, then the bar. */
+#paysc{background:#fff;display:flex;flex-direction:column}
+.pay-nav{flex:none;gap:2px;padding:calc(var(--sbh) + 8px) 16px 8px;
+  border-bottom:1px solid var(--g300)}
+.pay-ttl{flex:1;font:600 18px/28px var(--sans);color:var(--g700)}
+.pay-wal{flex:none;display:flex;align-items:center;gap:5px;height:26px;padding:4px 8px;
+  border-radius:20px;background:var(--g100);font:500 12px/18px var(--sans);color:var(--g600)}
+.pay-wal i{font-style:normal}
+#paysc .scroll{flex:1;padding:16px 16px 0}
+
+/* 42px of bottom padding under the copy, so the receipt card can be pulled up
+   into it — that overlap is what makes the two read as one object. */
+.pay-alert{display:flex;gap:10px;padding:12px 16px 42px;border-radius:12px 12px 0 0;
+  background:linear-gradient(180deg,#FEF5DE,#FEF8E9 40%,#FFFCF6 72%,#fff)}
+.pay-alert svg{flex:none;margin-top:6px}
+.pay-alert b{display:block;font:600 12px/18px var(--sans);color:#93370D}
+.pay-alert small{display:block;font:400 12px/18px var(--sans);color:#93370D}
+
+.pay-rc{position:relative;margin-top:-30px;padding:16px 16px 19px;background:#fff;
+  border:1px dashed var(--g300)}
+/* The receipt's side notches: a half-round bitten out of each edge, carrying
+   the same dashed rule round the curve. */
+.rc-n{position:absolute;top:115px;width:10px;height:20px;background:#fff;
+  border:1px dashed var(--g300)}
+.rc-l{left:-1px;border-left:0;border-radius:0 10px 10px 0}
+.rc-r{right:-1px;border-right:0;border-radius:10px 0 0 10px}
+
+.pay-tiles{display:flex;gap:14px}
+.amt{position:relative;flex:1;height:67px;border-radius:14px;background:#fff;
+  border:1px solid var(--g300);
+  display:flex;align-items:center;justify-content:center}
+.amt span{display:flex;align-items:baseline;font:600 20px/30px var(--sans);color:var(--g700)}
+.amt span i{font-style:normal;font-size:12px;line-height:25px}
+.amt.on{border:2px solid var(--brand)}
+/* Clipped to its own rounded corner rather than by the tile, so the bonus badge
+   below can still hang outside the tile's bottom edge. */
+.amt-tick{position:absolute;top:0;right:0;width:38px;height:38px;line-height:0;display:none;
+  border-radius:0 13px 0 0;overflow:hidden}
+.amt.on .amt-tick{display:block}
+/* Sits on the tile's bottom edge, half in and half out, the way the board has it. */
+.bonus{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);
+  display:flex;align-items:center;gap:1px;height:26px;padding:4px 5px;border-radius:12px;
+  background:linear-gradient(90deg,#027A48,#039855 60%);
+  font:600 12px/18px var(--sans);color:#fff;white-space:nowrap}
+.bonus s{text-decoration:none;font-weight:400}
+
+.pay-more{display:flex;align-items:center;gap:6px;margin:42px auto 0;height:28px;
+  padding:4px 4px 4px 12px;border-radius:12px;background:#fff;
+  border:.8px dashed var(--g300);font:400 12px/18px var(--sans);color:var(--g500)}
+
+/* Gold plate. The veil is the wash behind it; the arc is the white page
+   closing back over the bottom of the card. */
+.pay-gold{position:relative;flex:none;height:250px;margin-top:auto;
+  display:flex;align-items:flex-end;justify-content:center}
+.pay-gold::before{content:"";position:absolute;left:0;right:0;top:50px;bottom:0;
+  background:linear-gradient(180deg,#FBF6EA,#F2E6C8 60%,#F1E4C4)}
+/* The bottom edge dips in the middle and lifts at the corners — a wide
+   elliptical radius, not an arc laid over the top, which clipped the last line. */
+.gold-card{position:relative;width:268px;height:108px;padding:14px 0 12px;text-align:center;
+  border-radius:14px 14px 134px 134px/14px 14px 26px 26px;
+  background:
+    linear-gradient(180deg,#F7EEDA,#E2CE99 22%,#FBF4E4 48%,#D8C085 72%,#F4EBD3);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75)}
+.gold-card small{display:block;font:500 12px/18px var(--sans);color:var(--g800)}
+.gold-card b{display:flex;align-items:baseline;justify-content:center;gap:1px;
+  margin:3px 0 6px;font:700 30px/35px var(--sans);color:var(--g800)}
+.gold-card b i{font-style:normal;font-size:16px;line-height:1}
+
+.pay-bar{flex:none;padding:0 16px 24px;background:#fff}
+.pay-sum{display:flex;align-items:center;justify-content:space-between;width:100%;
+  padding:12px 0 14px;border:0;background:none;
+  font:400 12px/18px var(--sans);color:var(--g500)}
+.pay-sum span:last-child{display:flex;align-items:center;gap:4px}
+.pay-sum b{font-weight:400}
+.pay-act{display:flex;align-items:center;gap:12px;padding-top:8px}
+.pay-act .paywith small{font-size:12px;line-height:18px;color:var(--g500)}
+.pay-act .paywith b{font-size:16px;line-height:24px;color:var(--g800)}
+.pay-go{position:relative;flex:1;width:auto;height:48px;border-radius:12px;padding:0}
+.pay-go .pg-l{display:flex;align-items:baseline;justify-content:center;gap:4px;
+  font:600 16px/24px var(--sans)}
+.pay-go .pg-l b{font-weight:600}
+.pay-go .pg-l small{font:400 12px/18px var(--sans)}
+/* The demo presses this itself, so the press has to be visible — otherwise the
+   screen just blinks and nobody believes a payment happened. */
+.pay-go.pressed{transform:scale(.96);filter:brightness(.93)}
+.pay-go .pg-b{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  gap:8px;font:600 16px/24px var(--sans)}
+.pay-go.busy .pg-l{visibility:hidden}
+.pay-go.busy .pg-b{display:flex}
+.pay-go .pg-b i{width:16px;height:16px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ---------- Push + toast ---------- */
 .push{position:absolute;top:calc(var(--sbh) + 6px);left:10px;right:10px;z-index:80;
