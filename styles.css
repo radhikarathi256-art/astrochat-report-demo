@@ -489,6 +489,26 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:linear-gradient(90deg,rgba(74,24,8,.22) 0,rgba(74,24,8,0) 100%)}
 .bk3-art{position:absolute;inset:0;width:100%;height:100%;opacity:.74}
 .bkt-leaf,.bkt-back,.bk3-leaf,.bk3-spine{display:none}
+/* ---- the rendered book ----
+   Partner's cover comes out of Figma a second time as a real book in
+   perspective, with its own spine, board thickness and page edges. Wherever the
+   book is only being shown — the chat card's thumb, the same card on the
+   Timeline, the Today guidance tile — that render beats anything the board +
+   ::after page block can draw, so it covers them both. `contain`, not `cover`:
+   the render carries its own transparent margin and cropping it would cut the
+   boards off. */
+.bkt-3d{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:center/contain no-repeat}
+.bkt.has3d::after{content:none}
+.bkt.has3d .bkt-in{display:none}
+/* The two places the book has to MOVE keep the built one, because a flat
+   picture cannot tilt open: the upsell card's tease, and the report hero that
+   swings the full 180. */
+:is(.pcard,.r2-bookwrap) .bkt.has3d .bkt-3d{display:none}
+:is(.pcard,.r2-bookwrap) .bkt.has3d .bkt-in{display:block}
+/* The hero suppresses the page block on its own account, so it is restored
+   only on the card. */
+.pcard .bkt.has3d::after{content:''}
 /* The upsells are the same object at thumbnail size. */
 .pcard .bkt,.pcard .bk3{width:64px;height:87px;margin-bottom:10px}
 /* And they tease: the board lifts off its spine far enough to show paper, holds

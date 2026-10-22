@@ -35,11 +35,21 @@ var REPORTS = [
     tl: 'Your Future Partner & Marriage Prediction',
     why: 'Learn how Rahu is blocking you from meeting him',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
-    // All three are painted now, to the same brief: one bold motif on pale
-    // watercolour paper, and a flat spread with the chart on the left page.
-    // The open spread is Figma 3106:6812 exported straight out of the board —
-    // its own painted board edges, on transparency.
-    art: { closed: 'assets/cover-partner.jpg', open: 'assets/spread-partner.png' },
+    // Partner is the one report whose art is photographed rather than painted:
+    // Figma 3311:6840 for the cover and 3254:6840 for the open spread, exported
+    // straight out of the board. The spread keeps its own board edges on
+    // transparency, re-padded to the proportions the hero's hand-placed contact
+    // shadow and gutter were measured against. The query strings are the only
+    // thing that gets an installed home-screen app to re-fetch art that kept its
+    // filename.
+    // `solid` is the same cover rendered as a real book in perspective
+    // (Figma 3318:6840). It replaces the CSS board wherever the book is inert;
+    // the three places it has to move keep the built one.
+    art: {
+      closed: 'assets/cover-partner.jpg?v=3',
+      open: 'assets/spread-partner.png?v=3',
+      solid: 'assets/book3d-partner.png?v=1'
+    },
     // What is in the box, as chips — the one thing unique to this report first.
     chips: ['Partner image', 'Birth chart analysis'],
     // Quotes that name something the report called before it happened. A quote
@@ -1056,7 +1066,10 @@ function book3d(r) {
   // Where the painted cover and its spread exist, show those instead: the art
   // is the argument, and a drawing of a book cannot make it.
   if (r.art) {
-    return '<span class="bkt" aria-hidden="true">' +
+    return '<span class="bkt' + (r.art.solid ? ' has3d' : '') + '" aria-hidden="true">' +
+      // The rendered book, painted over the built one. CSS decides which of the
+      // two is showing, because that depends on whether this copy has to move.
+      (r.art.solid ? '<span class="bkt-3d" style="background-image:url(' + r.art.solid + ')"></span>' : '') +
       '<span class="bkt-in">' +
         // The right-hand page of the spread, sitting under the cover.
         '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
