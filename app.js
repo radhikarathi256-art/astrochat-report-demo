@@ -42,13 +42,9 @@ var REPORTS = [
     // shadow and gutter were measured against. The query strings are the only
     // thing that gets an installed home-screen app to re-fetch art that kept its
     // filename.
-    // `solid` is the same cover rendered as a real book in perspective
-    // (Figma 3318:6840). It replaces the CSS board wherever the book is inert;
-    // the three places it has to move keep the built one.
     art: {
       closed: 'assets/cover-partner.jpg?v=3',
-      open: 'assets/spread-partner.png?v=3',
-      solid: 'assets/book3d-partner.png?v=1'
+      open: 'assets/spread-partner.png?v=3'
     },
     // What is in the box, as chips — the one thing unique to this report first.
     chips: ['Partner image', 'Birth chart analysis'],
@@ -1121,17 +1117,19 @@ function drawnFace(r, cls) {
 }
 
 function book3d(r) {
+  // The cover's own tint, carried on the root so the back board and the cast
+  // shadow can both be mixed from it. A grey rim and a grey shadow under a
+  // honey or periwinkle cover read as dirt rather than as a book.
+  var tint = '--cva:' + r.cover.a + ';--cvb:' + r.cover.b;
   // Where the painted cover and its spread exist, show those instead: the art
   // is the argument, and a drawing of a book cannot make it.
   if (r.art) {
-    return '<span class="bkt' + (r.art.solid ? ' has3d' : '') + '" aria-hidden="true">' +
-      // The rendered book, painted over the built one. CSS decides which of the
-      // two is showing, because that depends on whether this copy has to move.
-      (r.art.solid ? '<span class="bkt-3d" style="background-image:url(' + r.art.solid + ')"></span>' : '') +
-      // The back board: the same artwork darkened and offset, so the case has a
-      // visible second cover behind the first instead of one printed face.
-      '<span class="bkt-board" style="background-image:url(' + r.art.closed + ')"></span>' +
+    return '<span class="bkt" aria-hidden="true" style="' + tint + '">' +
+      // Everything that makes the case an object lives inside one preserve-3d
+      // stage: back board, page block, then the cover in front of both.
       '<span class="bkt-in">' +
+        '<span class="bkt-board"></span>' +
+        '<span class="bkt-pages"></span>' +
         // The right-hand page of the spread, sitting under the cover.
         '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
         // The cover and the first leaf turn together: painted board on the
@@ -1142,17 +1140,19 @@ function book3d(r) {
           '<span class="bkt-back" style="background-image:url(' + r.art.open + ')"></span>' +
         '</span>' +
       '</span>' +
+      '<span class="bkt-sh"></span>' +
     '</span>';
   }
-  return '<span class="bk3" aria-hidden="true">' +
-    '<span class="bk3-board"></span>' +
+  return '<span class="bk3" aria-hidden="true" style="' + tint + '">' +
     '<span class="bk3-in">' +
-      '<span class="bk3-spine"><em>' + esc(r.t) + '</em></span>' +
+      '<span class="bk3-board"></span>' +
+      '<span class="bk3-pages"></span>' +
       // The leaf sits a hair behind the cover so that when the cover swings
       // open on the tease loop there is paper underneath, not a hole.
       '<span class="bk3-leaf"></span>' +
-      drawnFace(r, 'bk3-face') +
+      '<span class="bk3-cov">' + drawnFace(r, 'bk3-face') + '</span>' +
     '</span>' +
+    '<span class="bk3-sh"></span>' +
   '</span>';
 }
 
