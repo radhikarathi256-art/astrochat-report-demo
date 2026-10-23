@@ -1398,14 +1398,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 @media (prefers-reduced-motion:reduce){
   .review{transition:none}
 }
-/* Unrolled: the strip becomes a column, so every card is full width, upright
-   and the same size. The negative margins and the snap rules were only there
-   to let a card bleed off the gutter; in a column they would pull the cards
-   past the text edge. */
-.revs.stack{display:flex;flex-direction:column;align-items:stretch;gap:10px;
-  overflow:visible;margin:0;padding:0;scroll-snap-type:none}
-.revs.stack .review{width:auto;transform:none}
-
 /* ---------- Meet your astrologer ---------- */
 /* Her, then her numbers: board 3353:14228 runs the portrait down the left and
    the three counts down the right, divided, so one glance gets a face and a
@@ -2126,6 +2118,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- Scrim + sheets ---------- */
 .scrim{position:absolute;inset:0;z-index:70;background:rgba(16,24,40,.45);opacity:0;transition:opacity .22s ease}
 .scrim.on{opacity:1}
+/* Only the pay sheet asks for this. The board draws the page behind it blurred,
+   not merely dimmed, and the blur is what stops the report's own artwork
+   competing with a column of rupee amounts. It lives on the scrim rather than
+   as a filter on the screen itself: filtering an element makes it the
+   containing block for its own position:fixed children, which would drag the
+   sticky nav and the buy bar out of place the moment the sheet opened. */
+.scrim.blur{backdrop-filter:blur(7px) saturate(1.05);
+  -webkit-backdrop-filter:blur(7px) saturate(1.05);
+  background:rgba(16,24,40,.34)}
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:71;background:#fff;
   border-radius:24px 24px 0 0;padding:20px 20px calc(20px + var(--sab,env(safe-area-inset-bottom,0px)));
   transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,0,1);
@@ -2143,19 +2144,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .radio-list .rd{flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--g300);position:relative}
 .radio-list button.on .rd{border-color:#C4320A;border-width:6px;background:#fff}
 
-.buy-top{display:flex;align-items:center;gap:12px}
-.buy-top img{width:48px;height:62px;border-radius:4px;object-fit:cover;flex:none;
-  box-shadow:0 2px 6px rgba(16,24,40,.18)}
-.buy-top b{display:block;font:700 17px/24px var(--sans);color:var(--g900)}
-.buy-top small{display:block;font:400 13px/18px var(--sans);color:var(--g600);margin-top:2px}
-.buy-lang{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  border:1px solid var(--g200);border-radius:10px;padding:13px 14px;font:400 15px/22px var(--sans);color:var(--g700)}
-.buy-lang b{font-weight:600}
-.buy-price{background:var(--g50);border-radius:10px;padding:14px}
-.brow{display:flex;justify-content:space-between;gap:10px;font:400 14px/22px var(--sans);color:var(--g600)}
-.brow.green{color:var(--s700);font-weight:600}
-.brow.total{font:700 16px/24px var(--sans);color:var(--g900)}
-.buy-price hr{border:0;border-top:1px solid var(--g200);margin:10px 0}
 /* Payments Android 484:21625 — the method and the button share one row, 16px
    apart, the method stacked as a quiet label over the brand it will open. The
    button is 200px there because the method takes the rest; here it simply
@@ -2169,81 +2157,78 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:700 16px/20px var(--sans);color:var(--g800)}
 .payrow .btn{flex:1;width:auto;height:44px}
 
-/* ---------- Payment screen · Figma 3339:208658 "AN5 · Payment summary" ----------
-   The wallet top-up is gone. The report is a flat ₹49, the language is the only
-   choice left, and everything above the sheet is the book she is about to own:
-   a blurred ground, a wash in the book's own colours, and the spread lying open
-   on it. The sheet below carries the price and the one button. */
-#paysc{background:#fff;display:flex;flex-direction:column;justify-content:flex-end;
-  overflow:hidden}
-/* The report page behind, blurred. Scaled up before the blur so the softened
-   edges never pull in from the sides of the frame. */
-.pays-bg{position:absolute;inset:0;z-index:0;
-  background:center top/cover no-repeat;
-  transform:scale(1.18);filter:blur(26px) saturate(1.1);opacity:.9}
-/* The wash the book lies on, in the book's own colours. An ellipse rather than
-   a band: the board draws the light pooling under the spread and falling off in
-   every direction, and a linear gradient gave it a horizon. */
-.pays-glow{position:absolute;left:-10%;right:-10%;top:18%;height:62%;z-index:1;
-  opacity:.52;
-  background:radial-gradient(54% 50% at 50% 56%,
-    var(--pay-g1,#FFFFFF) 0,var(--pay-g2,rgba(255,255,255,.55)) 54%,rgba(255,255,255,0) 100%)}
+/* ---------- Pay sheet · Figma 3360:6875 "R.10 Pay sheet · compact" ----------
+   A sheet over the live page now, not a screen with a blurred photograph of one
+   behind it. The ground is whatever she was reading — the detail page or the
+   sample — softened by the scrim, which is both more honest and a shorter trip:
+   closing it puts her back exactly where she was, mid-scroll.
+
+   The element spans the whole phone so the close button can ride up on the blur
+   where the board puts it, but only the white body and the X take pointer
+   events — everything else falls through to the scrim, so a tap on the blur
+   still closes. */
+.pay-sheet{top:0;background:none;box-shadow:none;border-radius:0;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:flex-end}
+.pay-sheet > *{pointer-events:auto}
 .pays-x{position:absolute;z-index:4;top:calc(var(--sbh) + 14px);right:16px;
   width:40px;height:40px;border:0;border-radius:50%;display:grid;place-items:center;
   background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(16,24,40,.14)}
 .pays-x:active{background:#fff}
-/* The spread sits on the wash and rests ON the sheet rather than behind it —
-   it is the object being bought, so nothing covers its edge. */
+/* The spread straddles the sheet's top edge — it is the object being bought, so
+   nothing covers it, and sitting half on the blur is what says the sheet is
+   lying on top of something rather than being the page. */
 .pays-book{position:relative;z-index:6;display:flex;justify-content:center;
-  align-items:flex-end;margin:0 0 -56px;padding:0 20px}
+  align-items:flex-end;margin:0 0 -56px;padding:0 20px;pointer-events:none}
 .pays-book img{width:252px;height:auto;
   filter:drop-shadow(0 16px 22px rgba(74,24,8,.26))}
 /* The reports with no painting fall back to the built book, already open. */
 .pays-book .bkt,.pays-book .bk3{width:120px;height:158px}
 
-/* Solid white. It was frosted, which let the pink ground bleed through every
-   number on the sheet — the one surface on this screen that has to read as a
-   receipt was the only one tinted. The book still carries the colour; the
-   arithmetic sits on paper. */
-.pays-sheet{position:relative;z-index:5;flex:none;background:#fff;
+/* Solid white: the one surface here that has to read as a receipt is the one
+   that must not be tinted. The book carries the colour. */
+.pays-body{position:relative;z-index:5;flex:none;background:#fff;
   border-radius:24px 24px 0 0;padding:64px 16px calc(20px + var(--sab,env(safe-area-inset-bottom,0px)));
-  display:flex;flex-direction:column;gap:18px;
+  display:flex;flex-direction:column;gap:16px;
   box-shadow:0 -8px 28px -12px rgba(16,24,40,.22)}
-/* The purchase, named. Airbnb's "Confirm and pay" opens with the thing being
-   bought and its facts, not with a total. */
-.pays-top{display:flex;flex-direction:column;gap:3px}
+/* Centred under the spread, carrying its axis — the book is the masthead of
+   this sheet and a left-ranged title under a centred object reads as a slip.
+   Airbnb's "Confirm and pay" opens with the thing being bought, not a total. */
+.pays-top{display:flex;flex-direction:column;gap:4px;text-align:center}
 .pays-top h2{margin:0;font:700 18px/25px var(--sans);letter-spacing:-.01em;color:var(--g900)}
 .pays-top p{margin:0;font:400 13px/19px var(--sans);color:var(--g500)}
 /* The language is a decision, so it is a row she can press, not a line of text.
-   Boxed because it is the only thing on this screen she can change. */
+   Boxed because it is the only thing on this sheet she can change. */
 .pays-lang{display:flex;align-items:center;justify-content:space-between;gap:12px;
   width:100%;height:52px;padding:0 14px;border:1px solid var(--g200);border-radius:12px;
   background:#fff;text-align:left}
-.pays-lang span{font:400 16px/24px var(--sans);color:var(--g700)}
-.pays-lang b{font-weight:400}
-.pays-lang i{flex:none;font-style:normal;font:600 16px/24px var(--sans);color:var(--brand)}
+.pays-lang span{display:flex;align-items:center;gap:10px;
+  font:400 15px/22px var(--sans);color:var(--g700)}
+.pays-lang span > svg{flex:none;color:var(--g600)}
+.pays-lang b{font-weight:600;color:var(--g900)}
+.pays-lang i{flex:none;font-style:normal;font:600 15px/22px var(--sans);color:var(--brand)}
 .pays-lang:active{background:var(--g50)}
 
 /* The arithmetic, in the order it happens: what it lists for, what today takes
-   off, what leaves her account. */
-/* No card and no tint. On a white sheet a grey panel around five rows of type
-   fenced the receipt off from the title that names it; Airbnb's price details
-   are a label and a list, held together by a rule above the total only. */
-.pays-sum{display:flex;flex-direction:column;gap:7px}
-.pays-lbl{margin:0 0 1px;font:700 15px/22px var(--sans);color:var(--g900)}
+   off, what tax adds, what the wallet covers, what leaves her account. One grey
+   block, per the board — on a sheet this short the receipt needs an edge or it
+   reads as four more lines of the page. */
+.pays-sum{display:flex;flex-direction:column;gap:10px;
+  background:var(--g50,#F9FAFB);border-radius:12px;padding:14px}
 .psr{display:flex;align-items:center;justify-content:space-between;gap:12px;
   font:400 14px/20px var(--sans);color:var(--g600)}
 .psr b{font-weight:400;color:var(--g700)}
+/* The wallet is the only green line: the streak she has been keeping is the
+   thing making this cheap, so it is the one number allowed to look like good
+   news. The discount above it is already told by "90% off" in its own label. */
 .psr.off,.psr.off b{color:var(--s700)}
 /* The total is the only line that changes weight — it is the number she is
-   agreeing to, and the ₹499 beside it is what makes ₹49 mean anything. */
-.psr.tot{margin-top:4px;padding-top:11px;border-top:1px solid var(--g200);
+   agreeing to, and the struck ₹499 in front of it is what makes ₹38 mean
+   anything. */
+.psr.tot{margin-top:2px;padding-top:12px;border-top:1px solid var(--g200);
   font:600 16px/24px var(--sans);color:var(--g900)}
-.psr.tot b{font:600 16px/24px var(--sans);color:var(--g900)}
+.psr.tot b{display:flex;align-items:baseline;gap:7px;
+  font:700 20px/26px var(--sans);color:var(--g900)}
 .psr.tot s{font:400 14px/20px var(--sans);color:var(--g400)}
-.psr.save{justify-content:flex-end;margin-top:-2px}
-.psr.save i{font-style:normal;border-radius:5px;padding:2px 6px;
-  background:var(--s50);font:600 12px/18px var(--sans);color:var(--s700)}
 
 .pays-act{display:flex;align-items:center;gap:12px}
 .pays-act .paywith small{font-size:12px;line-height:18px;color:var(--g500)}

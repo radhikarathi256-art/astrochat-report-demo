@@ -366,7 +366,8 @@ function back() {
 
 function onEnter(id) {
   if (id === 'read') { startAsk(); } else { stopAsk(); }
-  if (id === 'paysc') { runPay(); } else { stopPay(); }
+  // Pay is a sheet, not a screen, so leaving any screen cancels a pay in flight.
+  stopPay();
   if (id === 'timeline' && !state.paid) return;
 }
 
@@ -432,7 +433,7 @@ function openSheet(name) {
   }
   state.sheet = name;
   if (name === 'lang') renderLangList();
-  if (name === 'buy') paintBuySheet();
+  if (name === 'pay') { paintBought(); paintWallet(); }
   reveal($('#scrim'));
   reveal(el);
   el.setAttribute('aria-hidden', 'false');
@@ -443,7 +444,7 @@ function closeSheet() {
   if (el) { el.classList.remove('on'); el.setAttribute('aria-hidden', 'true'); }
   state.sheet = null;
   var scrim = $('#scrim');
-  scrim.classList.remove('on');
+  scrim.classList.remove('on', 'blur');
   setTimeout(function () { if (!state.sheet) scrim.hidden = true; }, 240);
   // The reward sheet covers the page, so the knock waits for it to clear.
   if (state.repToastPending) {
@@ -566,7 +567,7 @@ function renderLangList() {
 
 function paintShowSample() {
   var btn = $('#showSample');
-  btn.textContent = state.langFrom === 'buy'
+  btn.textContent = state.langFrom === 'pay'
     ? 'Use ' + langById(state.lang).label
     : 'Show sample in ' + langById(state.lang).label;
 }
@@ -775,12 +776,6 @@ function renderRead() {
   // that is always on screen.
 }
 
-/* ---------------------------------------------------------------- buy sheet */
-function paintBuySheet() {
-  $('#buyLang').textContent = langById(state.lang).label;
-  paintBought();
-  paintWallet();
-}
 
 /* ---------------------------------------------------------------- timeline: making -> ready */
 function resetTimeline() {
@@ -943,28 +938,11 @@ function startAsk() {
 var payT = [];
 var LIST_PRICE = 499, PRICE = 49, GST = 0.18;
 
-/* The wash behind the book, in the book's own colours. Sampled off each painted
-   cover, the same three the reader's arch is built from. */
-var PAY_GLOW = {
-  partner:  ['rgba(255,236,240,.95)', 'rgba(244,201,206,.6)'],
-  marriage: ['rgba(255,246,226,.95)', 'rgba(228,206,160,.6)'],
-  career:   ['rgba(238,246,255,.95)', 'rgba(188,214,246,.6)']
-};
-
+/* Opens over whatever she is on. No screen change and no stack push: the
+   ground is the live detail page or the live sample, and closing puts her back
+   on it mid-scroll rather than navigating her somewhere. */
 function openPay() {
-  closeSheet();
   var r = reportById(state.pick);
-  var sc = $('#paysc');
-
-  // The ground is the page she just came from, blurred by CSS. Each report
-  // already owns the art the detail page stands on; where it does not, its
-  // cover stands in.
-  var bg = (r.art && (r.art.hero || r.art.closed)) || '';
-  $('#paysBg').style.backgroundImage = bg ? 'url(' + bg + ')' : '';
-
-  var g = PAY_GLOW[r.id] || PAY_GLOW.partner;
-  sc.style.setProperty('--pay-g1', g[0]);
-  sc.style.setProperty('--pay-g2', g[1]);
 
   // Open and still: the spread is a finished painting of an open book, so it
   // needs no swing and no frame. Only a report without art falls back to the
@@ -976,11 +954,13 @@ function openPay() {
   // The sheet names the purchase. `tl` is the long sell-page headline, so the
   // title here is the same one she tapped Buy Now under.
   $('#paysName').textContent = r.tl || 'Your ' + r.t;
-  $('#paysMeta').textContent = r.pages + ' pages · One-time payment';
+  $('#paysMeta').textContent = r.pages + ' pages · One-time payment · Made for your chart';
 
   $('#paysLangName').textContent = langById(state.lang).label;
   paintPaySum();
-  go('paysc');
+  openSheet('pay');
+  // Dim is not enough behind a page made of artwork; the board blurs it.
+  $('#scrim').classList.add('blur');
 }
 
 /* 18% GST on the ₹49 actually charged. The board's button said ₹118, which is
@@ -995,20 +975,16 @@ function payDue() { return payTotal() - payUsed(); }
 
 function paintPaySum() {
   var due = payDue();
-  $('#payGst').textContent = '+ \u20b9' + payGst();
-  $('#payWal').textContent = '\u2212 \u20b9' + payUsed();
-  $('#payDue').innerHTML = '\u20b9' + due + ' <s>\u20b9' + LIST_PRICE + '</s>';
+  $('#payGst').textContent = '+\u20b9' + payGst();
+  $('#payWal').textContent = '\u2212\u20b9' + payUsed();
+  // Struck list price first, then what she pays — the board's order, and the
+  // one that reads as a markdown rather than as a price with a footnote.
+  $('#payDue').innerHTML = '<s>\u20b9' + LIST_PRICE + '</s> \u20b9' + due;
   // Nothing left to charge means nothing left to say about GST — and "Pay ₹0"
   // is not a sentence, so the wallet gets the credit on the button too.
   $('.pg-l').innerHTML = due === 0
     ? 'Get it with wallet \u2022 <b>\u20b90</b>'
-    : 'Pay <b>\u20b9' + due + '</b> <small>(GST incl.)</small>';
-}
-
-/* The payment screen waits. Paying is the one tap in the demo that has to be
-   hers — a button that presses itself reads as a charge nobody authorised. */
-function runPay() {
-  stopPay();
+    : 'Pay <b>\u20b9' + due + '</b>';
 }
 
 function stopPay() {
@@ -1047,14 +1023,13 @@ function pmQuiet() { return !!dayData().quiet; }
 function pmSurf() { return dayData().surf || {}; }
 /* What she actually owns: whichever of the three she picked. */
 function boughtTitle() { return reportById(state.pick).t; }
-/* Six surfaces name the report she owns — buy sheet, "ready" push, sample
+/* Five surfaces name the report she owns — detail page, "ready" push, sample
    cover, timeline card, book cover and the reader's own header. They used to
    be hard-coded to Marriage Yog, so picking Money and paying handed her
    somebody else's report. One writer keeps them honest. */
 function paintBought() {
   var r = reportById(state.pick);
   var t = boughtTitle();
-  $('#buyTitle').textContent  = 'Your ' + t;
   $('#r2Title').textContent   = r.tl || 'Your ' + t;
   $('#pushReadyTitle').textContent = 'Your ' + t + ' is ready';
   // The timeline card is the one surface with room for the report's full name,
@@ -1574,9 +1549,6 @@ function renderReport() {
           '</svg></i>' + esc(x) + '</li>';
       }).join('') +
     '</ul>';
-  // A fresh render is a fresh pick, so the strip goes back to being a strip.
-  $('#r2Revs').classList.remove('stack');
-  $('#r2AllRevs').hidden = false;
   $('#r2Revs').innerHTML = r.revs.map(function (v) {
     return '<div class="review">' +
       '<i class="rv-stars">' + '\u2605'.repeat(v.s) + '\u2606'.repeat(5 - v.s) + '</i>' +
@@ -1764,7 +1736,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#r2AllRevs,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
   if (!t) return;
 
   // Buy Now skips the detail page. It sits inside a [data-pick] card, and
@@ -1868,9 +1840,9 @@ document.addEventListener('click', function (e) {
   if (t.id === 'repToastX') { hideRepToast(); return; }
 
   // The reward sheet's CTA: before day 3 it asks the OS for notifications;
-  // on day 3 the wallet covers ₹49, so it goes straight to the buy sheet.
+  // on day 3 the wallet covers ₹49, so it goes straight to the pay sheet.
   if (t.id === 'rewardCta') {
-    if (state.day >= lastDay()) { state.langFrom = 'buy'; openSheet('buy'); }
+    if (state.day >= lastDay()) openPay();
     else $('#notifDlg').hidden = false;
     return;
   }
@@ -1898,20 +1870,12 @@ document.addEventListener('click', function (e) {
     return;
   }
 
-  // Unrolls the quote strip into a column in place rather than pushing a
-  // reviews screen. Leaving the page to read reviews is leaving the page you
-  // are deciding on, and the buy bar is pinned below this — a sideways strip
-  // only shows one quote at a time, so the ask is just to see the rest.
-  if (t.id === 'r2AllRevs') {
-    $('#r2Revs').classList.add('stack');
-    t.hidden = true;
-    return;
-  }
-
   if (t.id === 'showSample') {
-    if (state.langFrom === 'buy') {
+    // Picking a language from inside the pay sheet is a change to the thing
+    // being bought, not a detour — so it goes straight back to the receipt.
+    if (state.langFrom === 'pay') {
       renderSample();
-      openSheet('buy');
+      openPay();
     } else {
       closeSheet();
       renderSample();
@@ -1920,11 +1884,11 @@ document.addEventListener('click', function (e) {
     return;
   }
 
-  if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
-  if (t.id === 'paysLang') { state.langFrom = 'buy'; openSheet('lang'); return; }
+  if (t.id === 'paysLang') { state.langFrom = 'pay'; openSheet('lang'); return; }
 
-  // Both routes to the money land on the same payment screen.
-  if (t.id === 'payBtn' || t.id === 'r2Cta') { openPay(); return; }
+  // Every route to the money lands on the same sheet: Buy Now on the detail
+  // page, Buy Now at the foot of the sample, and the last day's reward.
+  if (t.id === 'buyInLang' || t.id === 'r2Cta') { openPay(); return; }
   // Her tap, her spinner: a short busy beat so the pay reads as processing
   // rather than as a screen that swapped under her thumb.
   if (t.id === 'paySubmit') {
@@ -2021,8 +1985,7 @@ document.addEventListener('click', function (e) {
 
   if (t.hasAttribute('data-sheet')) {
     var name = t.getAttribute('data-sheet');
-    if (name === 'lang') state.langFrom = state.sheet === 'buy' ? 'buy' : 'sample';
-    else if (name === 'buy') state.langFrom = 'buy';
+    if (name === 'lang') state.langFrom = state.sheet === 'pay' ? 'pay' : 'sample';
     openSheet(name);
     return;
   }

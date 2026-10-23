@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610231542">
+<link rel="manifest" href="manifest.webmanifest?v=202610231555">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610231542">
-<link rel="stylesheet" href="mobile.css?v=202610231542">
+<link rel="stylesheet" href="styles.css?v=202610231555">
+<link rel="stylesheet" href="mobile.css?v=202610231555">
 </head>
 <body>
 
@@ -278,7 +278,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610231542" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610231555" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -377,13 +377,11 @@
              the ones naming a thing the report called before it happened. -->
         <div class="r2-block">
           <h2 class="r2-h">What users found</h2>
-          <!-- No "4.7 · 2,140 reviews" line under the heading, and no count in
-               the button either. The board has one because that product has
-               the reviews; we do not, and a number we cannot stand behind is
-               the one thing on a sell page that costs more than it earns. The
-               rating is already stated once, up in the title card. -->
+          <!-- No count line and no "show all" button. The board has both
+               because that product has thousands of reviews; we have four, and
+               a door marked "all reviews" that opens onto the same four is
+               worse than no door. The strip scrolls — that is the whole set. -->
           <div class="revs" id="r2Revs"></div>
-          <button class="r2-samp" type="button" id="r2AllRevs">Show all reviews</button>
         </div>
 
         <!-- Upsells belong on the sell page, not only after the read: someone
@@ -420,74 +418,8 @@
       </div>
     </section>
 
-    <!-- ============ Payment · Figma 3339:208658 "AN5 · Payment summary" ======
-         Buy Now on the detail page lands here. It is not the wallet top-up any
-         more: the report is a flat ₹49 and the only decision left is the
-         language, so the screen shows the book she is buying, what it costs and
-         one button. The demo then presses Pay itself, so a walkthrough never
-         stalls on somebody hunting for the button. -->
-    <section class="screen pays" id="paysc" data-screen="paysc">
-      <!-- The report she came from, blurred: the board draws this screen over a
-           soft version of the page behind it, and a flat colour lost the sense
-           that the sheet is sitting on top of something. -->
-      <div class="pays-bg" id="paysBg" aria-hidden="true"></div>
-      <div class="pays-glow" id="paysGlow" aria-hidden="true"></div>
-
-      <button class="pays-x" type="button" data-back aria-label="Close">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </button>
-
-      <!-- Open, and still. The spread is a painting with its own board edges on
-           transparency, so it needs no frame drawn around it. -->
-      <div class="pays-book" id="paysBook"></div>
-
-      <div class="pays-sheet">
-        <!-- What she is paying for, named at the top of the sheet. The spread
-             above says which book it is but not what it is called, and a sheet
-             that opens straight into arithmetic never states the purchase. -->
-        <div class="pays-top">
-          <h2 id="paysName">Your Future Partner &amp; Marriage Prediction</h2>
-          <p id="paysMeta">38 pages · One-time payment</p>
-        </div>
-
-        <button class="pays-lang" type="button" id="paysLang">
-          <span>Report language: <b id="paysLangName">English</b></span>
-          <i>Change</i>
-        </button>
-
-        <div class="pays-sum">
-          <p class="pays-lbl">Price details</p>
-          <div class="psr"><span>Report price</span><b>₹499</b></div>
-          <div class="psr off"><span>Today's discount (90%)</span><b>− ₹450</b></div>
-          <div class="psr"><span>GST (18%)</span><b id="payGst">+ ₹9</b></div>
-          <!-- The daily-reward coins pay the bill down. The streak she has been
-               keeping is the thing that makes the report cheap. -->
-          <div class="psr off"><span>Wallet balance</span><b id="payWal">− ₹58</b></div>
-          <div class="psr tot">
-            <span>You pay</span>
-            <b id="payDue">₹0 <s>₹499</s></b>
-          </div>
-          <div class="psr save"><i>90% OFF</i></div>
-        </div>
-
-        <div class="pays-act">
-          <button class="paywith" type="button" data-toast="Payment method is not part of this demo">
-            <small>Pay with
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5" stroke="#667085" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </small>
-            <b>
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="5" fill="#5F259F"/><path d="M13.6 6.6h-1.5l-.3-1a1 1 0 0 0-1-.7H8.3v.9h1.9l.3 1H7.3c-1 0-1.8.8-1.8 1.8v.7c0 .8.5 1.4 1.3 1.4h.9v2.4c0 .5.4.9.9.9h.8c.5 0 .9-.4.9-.9v-2.6h1.3l1 3.5h1.1l-1-3.5h.9c.4 0 .7-.3.7-.7V7.3c0-.4-.3-.7-.7-.7Zm-3.3 3.6c0 .4-.3.6-.7.6h-.5c-.3 0-.5-.2-.5-.6V7.6h1.7v2.6Z" fill="#fff"/>
-              </svg>
-              PhonePe
-            </b>
-          </button>
-          <button class="btn primary pay-go" type="button" id="paySubmit">
-            <span class="pg-l">Pay <b>₹58</b> <small>(GST incl.)</small></span>
-            <span class="pg-b" aria-hidden="true"><i></i>Paying…</span>
-          </button>
-        </div>
-      </div>
-    </section>
+    <!-- Payment is no longer a screen of its own — see #sheet-pay, down with
+         the other sheets. -->
 
     <!-- ===================== PM spec · pick 1 of 3 ===================== -->
     <section class="screen" id="picker" data-screen="picker">
@@ -854,38 +786,84 @@
     <button class="btn primary" type="button" id="showSample">Show sample in English</button>
   </div>
 
-  <!-- R.4 · Buy sheet -->
-  <div class="sheet" id="sheet-buy" aria-hidden="true">
-    <div class="grab"></div>
-    <div class="buy-top">
-      <img src="assets/book.svg" alt="">
-      <span><b id="buyTitle">Your Marriage Yog report</b><small>Made by Astro Hemali for you</small></span>
-    </div>
-    <div class="buy-lang">
-      <span>Report language: <b id="buyLang">English</b></span>
-      <button class="lnk-btn strong" type="button" data-sheet="lang">Change</button>
-    </div>
-    <div class="buy-price">
-      <div class="brow"><span>Original price</span><span><s>₹499</s></span></div>
-      <div class="brow green"><span>Price drop · 90% OFF</span><span>−₹450</span></div>
-      <hr>
-      <div class="brow total"><span>You pay</span><span>₹49</span></div>
-    </div>
-    <!-- Payments Android 484:21625 — the method sits beside the button, not
-         under it, so she can see what she is paying with before she commits.
-         "Maybe Later" is gone: the sheet already closes on the scrim and the
-         grab handle, and a second button made leaving look like the choice. -->
-    <div class="payrow">
-      <button class="paywith" type="button" data-toast="Payment method is not part of this demo">
-        <small>Pay with
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5" stroke="#344054" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </small>
-        <b>
-          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="5" fill="#5F259F"/><path d="M13.6 6.6h-1.5l-.3-1a1 1 0 0 0-1-.7H8.3v.9h1.9l.3 1H7.3c-1 0-1.8.8-1.8 1.8v.7c0 .8.5 1.4 1.3 1.4h.9v2.4c0 .5.4.9.9.9h.8c.5 0 .9-.4.9-.9v-2.6h1.3l1 3.5h1.1l-1-3.5h.9c.4 0 .7-.3.7-.7V7.3c0-.4-.3-.7-.7-.7Zm-3.3 3.6c0 .4-.3.6-.7.6h-.5c-.3 0-.5-.2-.5-.6V7.6h1.7v2.6Z" fill="#fff"/></svg>
-          PhonePe
-        </b>
+  <!-- R.10 · Pay sheet, board 3360:6875. Was a screen of its own, standing on a
+       blurred copy of the report art. It is a sheet now, and the ground is
+       literally whatever she was on — the detail page or the sample — dimmed
+       and blurred by the scrim. Paying is a thing you do ON a page, not a place
+       you go, and the old version made her leave the page she was deciding
+       about just to see the price of it.
+
+       This also retires the old R.4 buy sheet, which sat between the sample and
+       here saying the same four things with worse arithmetic. One pay surface,
+       reached from the detail page, the sample and the last reward. -->
+  <div class="sheet pay-sheet" id="sheet-pay" aria-hidden="true">
+    <!-- Rides at the top of the phone, on the blur, not on the white — the
+         board puts it there because the sheet's own top edge is already busy
+         with the book straddling it. -->
+    <button class="pays-x" type="button" data-close-sheet aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+
+    <!-- Open, and still. The spread is a painting with its own board edges on
+         transparency, so it needs no frame drawn around it. It straddles the
+         sheet's top edge: half on the blur, half on the white. -->
+    <div class="pays-book" id="paysBook"></div>
+
+    <div class="pays-body">
+      <!-- What she is paying for, named at the top of the sheet. The spread
+           above says which book it is but not what it is called, and a sheet
+           that opens straight into arithmetic never states the purchase. -->
+      <div class="pays-top">
+        <h2 id="paysName">Your Future Partner &amp; Marriage Prediction</h2>
+        <p id="paysMeta">38 pages · One-time payment · Made for your chart</p>
+      </div>
+
+      <!-- The one decision left on this sheet, so it is the one row that looks
+           like a control. The globe is what stops it reading as another price
+           line. -->
+      <button class="pays-lang" type="button" id="paysLang">
+        <span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5S14.2 18.2 12 20.5c-2.2-2.3-3.4-5.3-3.4-8.5S9.8 5.8 12 3.5Z"/></svg>
+          Report in <b id="paysLangName">English</b>
+        </span>
+        <i>Change</i>
       </button>
-      <button class="btn primary" type="button" id="payBtn">Pay ₹49</button>
+
+      <!-- One grey block, so the arithmetic reads as a receipt rather than as
+           four more lines of the sheet. The "Price details" label is gone —
+           a column of rupee amounts does not need to be introduced. -->
+      <div class="pays-sum">
+        <div class="psr"><span>Report price</span><b>₹499</b></div>
+        <div class="psr"><span>Today's offer (90% off)</span><b>−₹450</b></div>
+        <div class="psr"><span>GST (18%)</span><b id="payGst">+₹9</b></div>
+        <!-- The daily-reward coins pay the bill down, and they are the only
+             green thing here: the streak she has been keeping is what makes
+             the report nearly free. -->
+        <div class="psr off"><span>Wallet money</span><b id="payWal">−₹20</b></div>
+        <div class="psr tot">
+          <span>You pay</span>
+          <b id="payDue"><s>₹499</s> ₹38</b>
+        </div>
+      </div>
+
+      <!-- The method sits beside the button, not under it, so she can see what
+           she is paying with before she commits. -->
+      <div class="pays-act">
+        <button class="paywith" type="button" data-toast="Payment method is not part of this demo">
+          <small>Pay with
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5" stroke="#667085" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </small>
+          <b>
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="5" fill="#5F259F"/><path d="M13.6 6.6h-1.5l-.3-1a1 1 0 0 0-1-.7H8.3v.9h1.9l.3 1H7.3c-1 0-1.8.8-1.8 1.8v.7c0 .8.5 1.4 1.3 1.4h.9v2.4c0 .5.4.9.9.9h.8c.5 0 .9-.4.9-.9v-2.6h1.3l1 3.5h1.1l-1-3.5h.9c.4 0 .7-.3.7-.7V7.3c0-.4-.3-.7-.7-.7Zm-3.3 3.6c0 .4-.3.6-.7.6h-.5c-.3 0-.5-.2-.5-.6V7.6h1.7v2.6Z" fill="#fff"/>
+            </svg>
+            PhonePe
+          </b>
+        </button>
+        <button class="btn primary pay-go" type="button" id="paySubmit">
+          <span class="pg-l">Pay <b>₹38</b></span>
+          <span class="pg-b" aria-hidden="true"><i></i>Paying…</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -932,8 +910,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610231542"></script>
-<script src="app.js?v=202610231542"></script>
-<script src="mobile.js?v=202610231542"></script>
+<script src="data.js?v=202610231555"></script>
+<script src="app.js?v=202610231555"></script>
+<script src="mobile.js?v=202610231555"></script>
 </body>
 </html>
