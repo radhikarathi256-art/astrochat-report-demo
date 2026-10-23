@@ -24,9 +24,30 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    - `cover`: its own colourway, so three reports do not look like one product.
    - `sample`: the whole report on the demo chart, for the free preview. */
 
-/* The highlight-row icons, Airbnb's house-facts set: one weight, one size, no
-   fills and no discs behind them, so three rows of the same 1.5px line read as
-   a set of facts rather than three little badges. Keyed by `hl[].i`. */
+/* The contents-list icons, keyed by `licons[]`. Board 3353:14197 gives every
+   line in "What you will get" its own 24px outline mark instead of nine
+   identical ticks — a tick only says "included", which the list already says by
+   being the list, so nine of them are nine copies of one word. A drawing of the
+   thing says which line you are on, which is what makes a list of eight
+   scannable. One viewBox, one 1.5px weight, no fills, no discs: a set, not
+   badges. currentColor so the colour is decided in CSS, once. */
+var LI_ICON = {
+  user:  '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/>',
+  pin:   '<path d="M12 21s6.5-5.7 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 15.3 12 21 12 21Z"/><circle cx="12" cy="10.3" r="2.4"/>',
+  cup:   '<path d="M4.5 6h11.5v6a5.8 5.8 0 0 1-11.5 0z"/><path d="M16 7.5h2.2a2.4 2.4 0 0 1 0 4.8H16"/><path d="M3.5 20h13"/>',
+  cal:   '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  block: '<circle cx="12" cy="12" r="8.5"/><path d="M6.2 6.2l11.6 11.6"/>',
+  rings: '<circle cx="9.3" cy="13.5" r="5"/><circle cx="14.7" cy="13.5" r="5"/>',
+  shield:'<path d="M12 3.2 19 6v6c0 4.2-3 7.2-7 9-4-1.8-7-4.8-7-9V6z"/>',
+  sun:   '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.8M12 18.7v2.8M21.5 12h-2.8M5.3 12H2.5M18.7 5.3l-2 2M7.3 16.7l-2 2M18.7 18.7l-2-2M7.3 7.3l-2-2"/>',
+  spark: '<path d="M12 2.8l2.3 6.1 6.1 2.3-6.1 2.3L12 19.6l-2.3-6.1L3.6 11.2l6.1-2.3z"/>',
+  chart: '<path d="M5 20.5V11M12 20.5V4.5M19 20.5v-6"/><path d="M3 20.5h18"/>',
+  home:  '<path d="M4 10.5 12 4l8 6.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5z"/><path d="M9.5 21v-6h5v6"/>',
+  coin:  '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/>',
+  case:  '<rect x="3" y="7.5" width="18" height="12.5" rx="2"/><path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5M3 12.8h18"/>',
+  eye:   '<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/>',
+  arrow: '<path d="M4 16.5l5.2-5.2 3.4 3.4L20 7.5"/><path d="M20 12.5v-5h-5"/>'
+};
 var REPORTS = [
   {
     id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet, and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
@@ -77,6 +98,9 @@ var REPORTS = [
       'The kind of wrong people you keep attracting',
       'What to do each day so that person comes closer'
     ],
+    // Parallel to `learn`, one key per line. Kept as its own list rather than
+    // folded into the strings so the copy stays copy and stays translatable.
+    licons: ['user', 'pin', 'cup', 'cal', 'block', 'rings', 'shield', 'sun'],
     ask: [
       { q: 'Where will I meet them?',        a: 'Your navamsa points to one direction. An introduction through work or study, not alone in some unknown place. It comes through people who already know you.' },
       { q: 'What is the remedy for Rahu?',   a: 'Pray to Durga on Wednesdays and feed one person. And for three weeks, make no new promise about the thing that is stuck.' },
@@ -110,6 +134,7 @@ var REPORTS = [
       'How many of the 36 gunas match, full compatibility',
       'Which doshas you have, and the right remedies'
     ],
+    licons: ['spark', 'cal', 'chart', 'user', 'home', 'coin', 'rings', 'shield'],
     ask: [
       { q: 'How serious is the Manglik?',    a: 'Mars is in your chart but weakly placed. This is called a low Manglik. With a partner whose chart is similar, it settles on its own.' },
       { q: 'Which is the best month?',       a: 'When Jupiter looks at your seventh house. In that window talks move forward and the family agrees too.' },
@@ -143,6 +168,7 @@ var REPORTS = [
       'How likely a raise is in this job',
       'Colours, directions and mantras for success at work'
     ],
+    licons: ['spark', 'cal', 'case', 'user', 'eye', 'arrow', 'coin', 'sun'],
     ask: [
       { q: 'When should I change jobs?',     a: 'When Jupiter looks at your tenth house. In that window the offers are better and talks close. Before it, only talk, do not switch.' },
       { q: 'What does my boss think?',       a: 'The Sun is fine but Saturn is watching. He trusts the work, not the show. So he knows your work, he just does not remember it.' },
@@ -1537,8 +1563,20 @@ function renderReport() {
   $('#r2Learn').innerHTML =
     '<h2 class="r2-h">What you will get</h2>' +
     '<ul class="r2-learn">' +
-      r.learn.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+      r.learn.map(function (x, i) {
+        // Falls back to the tick if a report is ever short an icon key, so a
+        // missing entry costs a drawing rather than a blank left column.
+        var k = (r.licons || [])[i];
+        return '<li><i aria-hidden="true">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+            (LI_ICON[k] || '<path d="M4.5 12.5 9.5 17.5 19.5 6.5"/>') +
+          '</svg></i>' + esc(x) + '</li>';
+      }).join('') +
     '</ul>';
+  // A fresh render is a fresh pick, so the strip goes back to being a strip.
+  $('#r2Revs').classList.remove('stack');
+  $('#r2AllRevs').hidden = false;
   $('#r2Revs').innerHTML = r.revs.map(function (v) {
     return '<div class="review">' +
       '<i class="rv-stars">' + '\u2605'.repeat(v.s) + '\u2606'.repeat(5 - v.s) + '</i>' +
@@ -1726,7 +1764,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#r2AllRevs,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
   if (!t) return;
 
   // Buy Now skips the detail page. It sits inside a [data-pick] card, and
@@ -1857,6 +1895,16 @@ document.addEventListener('click', function (e) {
   if (t.id === 'r2ViewSample' || t.id === 'r2NavSample') {
     renderSample();
     if (state.screen !== 'sample') go('sample');
+    return;
+  }
+
+  // Unrolls the quote strip into a column in place rather than pushing a
+  // reviews screen. Leaving the page to read reviews is leaving the page you
+  // are deciding on, and the buy bar is pinned below this — a sideways strip
+  // only shows one quote at a time, so the ask is just to see the rest.
+  if (t.id === 'r2AllRevs') {
+    $('#r2Revs').classList.add('stack');
+    t.hidden = true;
     return;
   }
 
