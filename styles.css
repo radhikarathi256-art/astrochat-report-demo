@@ -2036,30 +2036,36 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    a band: the board draws the light pooling under the spread and falling off in
    every direction, and a linear gradient gave it a horizon. */
 .pays-glow{position:absolute;left:-10%;right:-10%;top:18%;height:62%;z-index:1;
+  opacity:.52;
   background:radial-gradient(54% 50% at 50% 56%,
     var(--pay-g1,#FFFFFF) 0,var(--pay-g2,rgba(255,255,255,.55)) 54%,rgba(255,255,255,0) 100%)}
 .pays-x{position:absolute;z-index:4;top:calc(var(--sbh) + 14px);right:16px;
   width:40px;height:40px;border:0;border-radius:50%;display:grid;place-items:center;
   background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(16,24,40,.14)}
 .pays-x:active{background:#fff}
-/* The spread sits on the wash and overlaps the top of the sheet, which is what
-   stops the sheet reading as a separate screen stacked under a picture. */
-.pays-book{position:relative;z-index:3;display:flex;justify-content:center;
-  align-items:flex-end;margin:0 0 -14px;padding:0 20px}
+/* The spread sits on the wash and rests ON the sheet rather than behind it —
+   it is the object being bought, so nothing covers its edge. */
+.pays-book{position:relative;z-index:6;display:flex;justify-content:center;
+  align-items:flex-end;margin:0 0 -56px;padding:0 20px}
 .pays-book img{width:252px;height:auto;
   filter:drop-shadow(0 16px 22px rgba(74,24,8,.26))}
 /* The reports with no painting fall back to the built book, already open. */
 .pays-book .bkt,.pays-book .bk3{width:120px;height:158px}
 
-.pays-sheet{position:relative;z-index:5;flex:none;background:#fff;
-  border-radius:24px 24px 0 0;padding:16px 16px 24px;
+/* Frosted, not solid: the ground stays faintly readable through the sheet, so
+   the book she is buying is still present behind the arithmetic. */
+.pays-sheet{position:relative;z-index:5;flex:none;
+  background:rgba(255,255,255,.74);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);
+          backdrop-filter:blur(22px) saturate(1.5);
+  border-radius:24px 24px 0 0;padding:66px 16px 24px;
   display:flex;flex-direction:column;gap:12px;
   box-shadow:0 -8px 28px -12px rgba(16,24,40,.22)}
 /* The language is a decision, so it is a row she can press, not a line of text.
    Boxed and on top because it is the only thing on this screen she can change. */
 .pays-lang{display:flex;align-items:center;justify-content:space-between;gap:12px;
   width:100%;height:52px;padding:0 14px;border:1px solid var(--g200);border-radius:12px;
-  background:#fff;text-align:left}
+  background:rgba(255,255,255,.72);text-align:left}
 .pays-lang span{font:400 16px/24px var(--sans);color:var(--g700)}
 .pays-lang b{font-weight:400}
 .pays-lang i{flex:none;font-style:normal;font:600 16px/24px var(--sans);color:var(--brand)}
@@ -2067,7 +2073,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* The arithmetic, in the order it happens: what it lists for, what today takes
    off, what leaves her account. */
-.pays-sum{border-radius:12px;background:var(--g50);padding:12px 14px;
+.pays-sum{border-radius:12px;background:rgba(249,250,251,.66);padding:12px 14px;
   display:flex;flex-direction:column;gap:6px}
 .psr{display:flex;align-items:center;justify-content:space-between;gap:12px;
   font:400 14px/20px var(--sans);color:var(--g600)}
