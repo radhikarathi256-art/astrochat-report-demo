@@ -483,11 +483,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The back board, one block-depth behind the front one and a shade darker than
    the artwork, so a thin dark rim shows past the pages the way boards do.
    Colour comes off the cover's own tint rather than grey, because a grey rim
-   on a honey or periwinkle cover reads as dirt. */
+   on a honey or periwinkle cover reads as dirt.
+   38%, not 68%: it has to be darker than the cream page block standing in
+   front of it, and the pale covers — the periwinkle Career one especially —
+   mixed at 68% landed within a shade of the leaves, so the rim disappeared
+   and the book lost its back. The hue still comes off the cover. */
 .bkt-board,.bk3-board{position:absolute;z-index:0;inset:0;
   transform:translateZ(calc(-1 * var(--bk-d)));
   border-radius:2px 5px 5px 2px;
-  background:color-mix(in srgb,var(--cva,#C98B9B) 68%,#2A1016)}
+  background:color-mix(in srgb,var(--cva,#C98B9B) 38%,#2A1016)}
 /* The text block, standing at right angles along the fore-edge. Rotated -90,
    not 90: the block has to fall away behind the cover into the book's depth,
    and a positive turn stands it up in front of the artwork instead. Cream and
