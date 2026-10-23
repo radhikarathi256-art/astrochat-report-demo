@@ -1774,11 +1774,26 @@ document.addEventListener('click', function (e) {
   var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
-  // The jump index. The sample scrolls inside its own [data-scroll], not the
-  // window, so scrollIntoView is the only thing that gets the maths right here.
+  /* The jump index. scrollIntoView does nothing here — the sample scrolls
+     inside its own [data-scroll] and the whole phone is under a transform, so
+     the browser resolves the target against the wrong box and moves no one.
+     Measured by hand instead, with the floating header's height taken off the
+     top so the eyebrow does not land underneath it. */
   if (t.hasAttribute('data-jump')) {
     var sec = $('#rs-' + t.getAttribute('data-jump'));
-    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var sc = $('#sample [data-scroll]');
+    if (sec && sc) {
+      var head = $('#sampleHead');
+      // Assigned, not animated: `behavior:'smooth'` silently does nothing on
+      // this container, and a jump index that sometimes moves is worse than one
+      // that always does. An anchor link lands instantly too.
+      sc.scrollTop = sc.scrollTop + sec.getBoundingClientRect().top -
+        sc.getBoundingClientRect().top - (head ? head.offsetHeight : 0) - 12;
+      // The header and the arch colour both hang off the scroll listener, and a
+      // jump has to leave them in the state the same position reached by thumb
+      // would.
+      sc.dispatchEvent(new Event('scroll'));
+    }
     return;
   }
 
