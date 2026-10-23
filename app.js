@@ -1182,7 +1182,12 @@ function book3d(r) {
 function upsellCard(x) {
   return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
     book3d(x) +
-    '<b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small>' +
+    '<b>' + esc(x.t) + '</b>' +
+    // The one number that decides between two books nobody has heard of. The
+    // card showed a title, a promise and a price — the same three things on
+    // both — so there was nothing on it to choose by.
+    '<span class="pc-rt">\u2605 ' + esc(x.rating) + ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
+    '<small>' + esc(x.s) + '</small>' +
     '<span class="pc-pr">' +
       '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
       '<span class="pc-off">90% OFF</span>' +

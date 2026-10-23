@@ -1151,6 +1151,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border:1px solid var(--g200);border-radius:17px;background:#fff;
   font:600 14px/34px var(--sans);color:var(--g900)}
 .r2-nav-samp svg{flex:none}
+/* Parked against the wallet rather than floating in the middle of the bar.
+   Centred, it read as the page's title; beside the balance it reads as what it
+   is, the other thing you can do from up here. The auto margin on .r2-nav-r
+   has to be overridden or the free space splits between the two and the pair
+   drifts apart again. */
+.r2-nav-samp + .r2-nav-r{margin-left:8px}
 /* On the white nav the pill's own white surface stops reading as a surface, so
    it leans on the rule alone — same silhouette, no stacked whites. */
 .r2-nav.solid .r2-nav-samp{background:transparent}
@@ -1290,11 +1296,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Still used by the "people also bought" rail inside the report. */
 .lbl{margin:0 0 12px;font:600 13px/20px var(--sans);letter-spacing:.03em;color:var(--g500)}
 
-/* One rhythm, carried by the spacing alone: 24 top, 24 bottom, 16 in from the
-   gutter. No rules anywhere on this page — each block already opens with its
-   own heading on a clear field, so hairlines only drew boxes around things
-   that were plainly separate without them. */
-.r2-block{padding:24px 16px}
+/* One rhythm: 24 top, 24 bottom, 16 in from the gutter, with a hairline
+   between every pair. Board 3353:13931 rules every section off at a 320 inset
+   in a 360 frame — the same 16px gutter as the text, so the rule starts and
+   stops exactly where the column does rather than bleeding to the screen. */
+.r2-block{position:relative;padding:24px 16px}
+.r2-block + .r2-block::before{content:"";position:absolute;top:0;left:16px;right:16px;
+  height:1px;background:var(--g200)}
 /* The card hangs 20px into this block, so 24px of padding left almost nothing
    between the stats row and "About this report". This is the first breath after
    the hero and it has to read as one. */
@@ -1938,22 +1946,34 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    8px between rows. Each upsell gets the same cover, price pattern and button
    as the report being sold above it; a title and a bare ₹49 gave the reader
    nothing to recognise. */
-.carousel .pcard{flex:none;width:159px;scroll-snap-align:start;background:#fff;
-  border:1px solid var(--g200);border-radius:16px;padding:12px;
+/* No card around it. Board 3353:14332 sets the cover loose on the page with
+   the title, the rating and the price stacked under it — the hairline and the
+   12px of padding only shrank the one thing that sells a book, which is the
+   book. Everything below still starts on the cover's own left edge. */
+.carousel .pcard{flex:none;width:159px;scroll-snap-align:start;background:none;
+  border:0;border-radius:0;padding:0;
   display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:8px}
-/* 76x99 — big enough that the cover, not the title, is what you recognise the
-   report by. Left, not centred: the title, the price and the button underneath
-   all start at the padding edge, and a book floating in the middle of them was
-   the only thing on the card that did not line up with anything. Both upsells
-   are carousels — the one on the report detail page and the one at the end of a
-   bought report — so this lands on both. */
+/* 118x154, up from 76x99. With the card gone there is no padding to fit inside
+   and the cover can take the full column, which is what the board does — at 76
+   the artwork was a stamp and the title was doing the recognising. Left, not
+   centred: the title, the rating, the price and the button underneath all
+   start on the same edge, and a book floating in the middle of them was the
+   only thing on the card lined up with nothing. Both upsells are carousels —
+   the one on the report page and the one ending a bought report — so this
+   lands on both. */
 .carousel .pcard .bkt,.carousel .pcard .bk3{align-self:flex-start;margin:0;
-  width:76px;height:99px;--bw:76px;--bh:99px}
+  width:118px;height:154px;--bw:118px;--bh:154px}
 /* The name of the report is the strongest thing on the card. At 400/16 in g700
    it weighed the same as its own one-line description, so the pair read as two
    sentences rather than as a title and a subtitle. */
 .carousel .pcard b{font:600 15px/21px var(--sans);color:var(--g900)}
 .carousel .pcard small{margin:0;font:400 13px/19px var(--sans);color:var(--g500)}
+/* Sits straight under the title, the way the listing hangs its rating under
+   the name. The star carries the number; the read count trails it in grey so
+   one line does both jobs without becoming two. */
+.pc-rt{margin:-4px 0 0;display:flex;align-items:center;gap:4px;
+  font:600 13px/19px var(--sans);color:var(--g900)}
+.pc-rt s{text-decoration:none;font-weight:400;color:var(--g500)}
 /* The discount sits under the price as its own chip, which is how the sell card
    and the chat card both show it — the saving is the reason, so it gets a line. */
 /* The price is the top of the card's footer, so it takes the fill spacer and
