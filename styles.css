@@ -530,7 +530,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   top:100%;margin-top:6px;height:14px;pointer-events:none;filter:blur(8px);
   background:radial-gradient(ellipse at center,
     color-mix(in srgb,var(--cva,#C98B9B) 42%,transparent) 0,transparent 70%)}
-.bkt-leaf,.bkt-back,.bk3-leaf,.bk3-spine{display:none}
+.bkt-leaf,.bkt-back,.bkt-pg,.bk3-leaf,.bk3-spine{display:none}
 /* The upsells are the same object at thumbnail size, filling about four fifths
    of the slot so the turn has room to read. */
 .pcard .bkt,.pcard .bk3{--bk-d:8px;width:64px;height:87px;margin-bottom:10px}
@@ -544,14 +544,40 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    standing as a dark rim around the text block — the squares a hardback has —
    then the leaves stacking up as fine lines along the fore-edge. */
 .pcard .bkt-leaf{display:block;position:absolute;inset:0;z-index:0;
+  /* Pushed back to just in front of the rear board, so the loose leaves have
+     somewhere to stack between it and the cover. Flat at z=0 it sat in the
+     cover's own plane and every page landed behind it. */
+  transform:translateZ(calc(1px - var(--bk-d)));
   border-radius:1px 3px 3px 1px;
   background:
     repeating-linear-gradient(90deg,rgba(74,24,8,.12) 0 .5px,rgba(74,24,8,0) .5px 2.5px)
       right center/13px 100% no-repeat,
     linear-gradient(90deg,#F0E2D2 0,#FFFDF8 12%,#FFFDF8 80%,var(--pap-dk) 100%);
+  /* A thinner rim than before: the leaves now cover most of this, so the old
+     2px band read as a dark bar standing beside the cover rather than as the
+     inside edge of a board. */
   box-shadow:
-    inset 0 0 0 2px rgba(74,24,8,.46),
-    inset 7px 0 13px rgba(74,24,8,.24)}
+    inset 0 0 0 1px rgba(74,24,8,.34),
+    inset 7px 0 13px rgba(74,24,8,.2)}
+/* The leaves themselves. Depth alone cannot carry this at 64px — stacked 2px
+   apart through a 22deg turn their edges fan about three quarters of a pixel
+   and merge into one cream slab. So they are also stepped in and down by a
+   pixel and a half each, which is what a riffled block does anyway, and gives
+   three edges the eye can actually count. Each sits inside the boards, the
+   square a case binding leaves round its text block. */
+.pcard .bkt-pg{display:block;position:absolute;z-index:1;
+  top:calc(1px + var(--i) * 1px);bottom:calc(1px + var(--i) * 1px);
+  left:2px;right:calc(var(--i) * 1.6px);border-radius:1px 2px 2px 1px;
+  transform:translateZ(calc(var(--i) * -2px));
+  background:linear-gradient(90deg,#EFE6D6 0,#FFFDF8 9%,#FFFDF8 84%,#E3D7C0 100%);
+  box-shadow:1px 0 0 rgba(120,96,70,.45),0 1px 0 rgba(120,96,70,.3)}
+/* And the topmost leaf carries the rest of the ream as a band of fine lines
+   down its fore-edge, so the block reads as hundreds of pages rather than the
+   three that are actually drawn. */
+.pcard .bkt-pg[style*="--i:1"]{background:
+  repeating-linear-gradient(90deg,rgba(120,96,70,.3) 0 .5px,rgba(120,96,70,0) .5px 2px)
+    right center/9px 100% no-repeat,
+  linear-gradient(90deg,#EFE6D6 0,#FFFDF8 9%,#FFFDF8 84%,#E3D7C0 100%)}
 /* And the cover carries its own thickness round with it. The brown spine bar is
    gone — the case now has a real back board and a real page block, so a painted
    stripe down the left was a second, flatter spine drawn over the first. What

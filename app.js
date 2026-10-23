@@ -1132,6 +1132,12 @@ function book3d(r) {
         '<span class="bkt-pages"></span>' +
         // The right-hand page of the spread, sitting under the cover.
         '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
+        // Loose leaves standing between the boards, each one deeper than the
+        // last. Only the surfaces that open the cover show them; shut, they are
+        // hidden behind it and the fore-edge block does the work instead.
+        '<span class="bkt-pg" style="--i:3"></span>' +
+        '<span class="bkt-pg" style="--i:2"></span>' +
+        '<span class="bkt-pg" style="--i:1"></span>' +
         // The cover and the first leaf turn together: painted board on the
         // front, the spread's left-hand page on the back, so when it swings
         // the full 180 the book is lying open flat rather than ajar.
