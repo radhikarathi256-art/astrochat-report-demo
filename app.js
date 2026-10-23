@@ -944,14 +944,31 @@ function openPay() {
     : book3d(r);
 
   $('#paysLangName').textContent = langById(state.lang).label;
-  $('#payTot').textContent = '\u20b9' + payTotal();
+  paintPaySum();
   go('paysc');
 }
 
 /* 18% GST on the ₹49 actually charged. The board's button said ₹118, which is
    18% on ₹100 — a number from an older price that no longer exists anywhere on
    this screen. */
-function payTotal() { return PRICE + Math.round(PRICE * GST); }
+function payGst() { return Math.round(PRICE * GST); }
+function payTotal() { return PRICE + payGst(); }
+/* The wallet comes off the bill, capped at it — the daily-reward coins are what
+   make the report nearly free, so the arithmetic has to show them doing it. */
+function payUsed() { return Math.min(state.wallet, payTotal()); }
+function payDue() { return payTotal() - payUsed(); }
+
+function paintPaySum() {
+  var due = payDue();
+  $('#payGst').textContent = '+ \u20b9' + payGst();
+  $('#payWal').textContent = '\u2212 \u20b9' + payUsed();
+  $('#payDue').innerHTML = '\u20b9' + due + ' <s>\u20b9' + LIST_PRICE + '</s>';
+  // Nothing left to charge means nothing left to say about GST — and "Pay ₹0"
+  // is not a sentence, so the wallet gets the credit on the button too.
+  $('.pg-l').innerHTML = due === 0
+    ? 'Get it with wallet \u2022 <b>\u20b90</b>'
+    : 'Pay <b>\u20b9' + due + '</b> <small>(GST incl.)</small>';
+}
 
 /* The payment screen waits. Paying is the one tap in the demo that has to be
    hers — a button that presses itself reads as a charge nobody authorised. */
@@ -970,9 +987,7 @@ function pay() {
   stopPay();
   closeSheet();
   state.paid = true;
-  // The report is flat ₹49 and never comes out of the wallet — the wallet is
-  // the daily-reward habit's own currency and spending it here would punish
-  // the one loop that actually brings her back.
+  state.wallet -= payUsed();
   paintWallet();
   paintBought();
   // Every sell surface retires into the follow-up: read, chat, remedies, other reports.

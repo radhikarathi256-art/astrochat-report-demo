@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610231209">
+<link rel="manifest" href="manifest.webmanifest?v=202610231222">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610231209">
-<link rel="stylesheet" href="mobile.css?v=202610231209">
+<link rel="stylesheet" href="styles.css?v=202610231222">
+<link rel="stylesheet" href="mobile.css?v=202610231222">
 </head>
 <body>
 
@@ -268,7 +268,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610231209" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610231222" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -375,9 +375,13 @@
         <div class="pays-sum">
           <div class="psr"><span>Report price</span><b>₹499</b></div>
           <div class="psr off"><span>Today's discount (90%)</span><b>− ₹450</b></div>
+          <div class="psr"><span>GST (18%)</span><b id="payGst">+ ₹9</b></div>
+          <!-- The daily-reward coins pay the bill down. The streak she has been
+               keeping is the thing that makes the report cheap. -->
+          <div class="psr off"><span>Wallet balance</span><b id="payWal">− ₹58</b></div>
           <div class="psr tot">
             <span>You pay</span>
-            <b>₹49 <s>₹499</s></b>
+            <b id="payDue">₹0 <s>₹499</s></b>
           </div>
           <div class="psr save"><i>90% OFF</i></div>
         </div>
@@ -394,7 +398,7 @@
             </b>
           </button>
           <button class="btn primary pay-go" type="button" id="paySubmit">
-            <span class="pg-l">Pay <b id="payTot">₹58</b> <small>(GST incl.)</small></span>
+            <span class="pg-l">Pay <b>₹58</b> <small>(GST incl.)</small></span>
             <span class="pg-b" aria-hidden="true"><i></i>Paying…</span>
           </button>
         </div>
@@ -844,8 +848,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610231209"></script>
-<script src="app.js?v=202610231209"></script>
-<script src="mobile.js?v=202610231209"></script>
+<script src="data.js?v=202610231222"></script>
+<script src="app.js?v=202610231222"></script>
+<script src="mobile.js?v=202610231222"></script>
 </body>
 </html>

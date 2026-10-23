@@ -1386,17 +1386,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    it, and the opening is the page's own ground so the report sits on paper.
    The three stops are the report's own book, sampled off its painted cover, so
    the wall behind the report belongs to the book she opened. */
+/* The opening is white in all three. Only the field around it carries the
+   book's colour, so the report always rises out of plain paper. */
 .rp{background:#F6EEF0;
   --arch-a:#B4536B; --arch-b:#D98C97; --arch-c:#F6E3DE;
-  --arch-in:#F6EEF0}
+  --arch-in:#FFFFFF}
 /* Marriage is gold, like its cover and its spread. */
 .rp[data-rep="marriage"]{background:#FBF4E7;
-  --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE;
-  --arch-in:#FBF4E7}
+  --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE}
 /* Career: the cover's daylight blue. */
 .rp[data-rep="career"]{background:#EDF1F7;
-  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8;
-  --arch-in:#EDF1F7}
+  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8}
 
 /* The colour field. Full-bleed, pulled up under the status bar so the crown of
    the arch is above the fold, and dissolving into the ground on the way down so
@@ -1411,8 +1411,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    reads as pigment on paper rather than a CSS gradient. Painted before the
    opening, so the opening covers it and only the outside is grainy. */
 .rp-arch::before{content:"";position:absolute;inset:0;
-  opacity:.5;mix-blend-mode:overlay;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>") repeat 0 0/180px 180px}
+  opacity:.95;mix-blend-mode:overlay;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.42' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>") repeat 0 0/160px 160px,
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>") repeat 0 0/180px 180px;
+  background-blend-mode:overlay}
 /* The opening. No painting, no branches — just the shape, filled with the
    page's own ground, so the report rises through an arch of plain paper. */
 .rp-arch::after{content:"";position:absolute;left:9%;right:9%;top:5%;bottom:0;
