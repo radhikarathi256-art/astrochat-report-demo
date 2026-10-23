@@ -704,16 +704,25 @@ function renderSecs(locked) {
   }).join('');
 }
 
+/* The arch behind the reader takes the colour of the book being read: the
+   gradient stops and the hue the PNG is rotated into both hang off this one
+   attribute, on both reader screens at once. */
+function paintArch() {
+  $$('.rp').forEach(function (s) { s.setAttribute('data-rep', state.pick); });
+}
+
 function renderSample() {
   var c = copyFor(state.lang);
   var sec = $('#sample');
 
+  paintArch();
   sec.classList.toggle('dev', c.dev);
   $('#langChipLabel').textContent = 'Read in ' + c.chip;
   $('#sampleBody').innerHTML = renderSecs(true);
 }
 
 function renderRead() {
+  paintArch();
   /* The same fourteen sections the sample shows, with the lock chips off —
      Figma 3155:12516. The sample is a window onto this page, so a bought report
      that was laid out differently made the preview read as a different product. */

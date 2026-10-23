@@ -1382,36 +1382,102 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    it as separate edge-to-edge sheets of paper with gaps between them, so the
    painting shows through the seams and the page reads as pages on a wall.
    =========================================================================== */
-/* Muted to sit with the arch below. A near-white pink made the arch look like
-   the only saturated thing on the screen. */
-.rp{background:#F6EEF0}
+/* The ground is now the darkest thing on the screen rather than the lightest:
+   the colour is OUTSIDE the arch and the arch itself is the pale opening cut
+   into it. The three stops are the report's own book, sampled off its painted
+   cover, so the wall behind the report belongs to the book she opened.
+   `rot`/`sat` steer the arch PNG, which is drawn in Partner's pink and has to
+   be carried into the other two families. */
+.rp{background:#F6EEF0;
+  --arch-a:#B4536B; --arch-b:#D98C97; --arch-c:#F6E3DE;
+  --arch-sat:1; --arch-t1:#FFFFFF; --arch-t2:#FFFFFF}
+/* Marriage: the cover's night navy over its gold. */
+.rp[data-rep="marriage"]{background:#EFEDF0;
+  --arch-a:#2E3950; --arch-b:#6E7183; --arch-c:#E3D7BE;
+  --arch-sat:.22; --arch-t1:#F0DCAE; --arch-t2:#FAF2DF}
+/* Career: the cover's daylight blue. */
+.rp[data-rep="career"]{background:#EDF1F7;
+  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8;
+  --arch-sat:.22; --arch-t1:#BCD6F6; --arch-t2:#EAF2FC}
+
 /* Pulled up to sit right under the status bar: at 48px the crown of the arch
-   was below the header and the page read as a band of pink, not an arch. */
-/* Run to the bottom of the screen and dissolve on the way, instead of stopping
+   was below the header and the page read as a band of colour, not an arch.
+   Run to the bottom of the screen and dissolve on the way, instead of stopping
    at the PNG's own edge. The painting used to end in a hard horizontal line a
    little above the ask bar, which read as a crop rather than a backdrop; now
    the last stretch fades into the ground and the bar sits on top of a wash with
-   no edge to notice. */
+   no edge to notice.
+   The element's own background is the colour field. It is full-bleed, but the
+   arch PNG painted over it is opaque through its whole opening, so what is
+   actually visible is a deep surround with a pale arch cut out of it — which is
+   the inversion, done without needing to invert a mask. */
 .rp-arch{position:absolute;top:calc(var(--sbh) + 8px);left:0;right:0;bottom:0;
   z-index:0;pointer-events:none;
-  background:url(assets/arch.png) top center/100% auto no-repeat;
+  background:
+    radial-gradient(118% 62% at 50% 4%,var(--arch-a) 0,var(--arch-b) 46%,var(--arch-c) 100%);
   -webkit-mask-image:linear-gradient(180deg,#000 0,#000 58%,rgba(0,0,0,0) 86%);
           mask-image:linear-gradient(180deg,#000 0,#000 58%,rgba(0,0,0,0) 86%)}
-/* The PNG is a candy pink. It is recoloured here to a muted dusty rose — warm
-   enough to be the orange button's family, desaturated enough to stay a
-   backdrop, and darkest directly behind the sketch so a cream card lifts off
-   it. Painted as a gradient masked by the arch's own alpha rather than a filter
-   on the PNG: a hue-rotate big enough to move the pink drags the green vines
-   somewhere unrelated. Multiply keeps the columns and vines readable as tone,
-   so the stops here are a shade lighter than the colour that lands. */
-.rp-arch::after{content:"";position:absolute;inset:0;mix-blend-mode:multiply;
-  /* No grey in any of the three stops. The old middle was a mauve with the
-     saturation taken out of it, which under multiply turned the whole arch
-     slightly dirty; these are all on the rose-to-peach line, so the painting
-     stays warm however deep it goes. */
-  background:radial-gradient(78% 52% at 50% 36%,#C0677A 0,#DD9A9B 48%,#F3C8C2 100%);
+/* The painting itself — columns, branches, leaves — kept whole. Partner leaves
+   it alone. The other two cannot be hue-rotated: a rotation big enough to carry
+   the pink interior into blue sends the green vines to purple and the opening
+   itself to green, which is what it did. So the pink is drained with `saturate`
+   instead and the report's own pale tint is multiplied back over it, which
+   moves the whole painting as one object and leaves the leaves reading as
+   leaves. Masked by its own alpha so the tint stops at the arch and the deep
+   field outside stays the element's background. */
+.rp-arch::before{content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,var(--arch-t1) 0,var(--arch-t2) 100%),
+    url(assets/arch.png) top center/100% auto no-repeat;
+  background-blend-mode:multiply;
+  filter:saturate(var(--arch-sat));
   -webkit-mask:url(assets/arch.png) top center/100% auto no-repeat;
           mask:url(assets/arch.png) top center/100% auto no-repeat}
+/* Sunlight and the shadows of the leaves above it, falling into the opening.
+   Two gradient fields on one layer: a warm shaft raking in from the top left
+   on `screen`, and a cluster of soft elliptical leaf shadows on top of it.
+   Masked by the arch's own alpha so the light lands on the arch and not on the
+   wall around it, blurred so no single ellipse reads as a shape, and drifting
+   on a long loop — transform only, so the sway costs a composite and nothing
+   else. */
+.rp-arch::after{content:"";position:absolute;left:-14%;right:-14%;top:-6%;bottom:0;
+  mix-blend-mode:multiply;opacity:.5;filter:blur(7px);
+  transform-origin:52% 0;
+  animation:archSway 17s ease-in-out infinite alternate;
+  background:
+    radial-gradient(10px 5px at 24% 15%,rgba(63,74,46,.5) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(13px 6px at 33% 9%,rgba(63,74,46,.42) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(8px 4px at 41% 19%,rgba(63,74,46,.46) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(14px 6px at 58% 12%,rgba(63,74,46,.4) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(9px 5px at 67% 22%,rgba(63,74,46,.46) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(12px 5px at 76% 14%,rgba(63,74,46,.38) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(11px 5px at 30% 31%,rgba(63,74,46,.32) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(10px 4px at 62% 35%,rgba(63,74,46,.3) 0,rgba(63,74,46,0) 100%),
+    radial-gradient(9px 4px at 47% 28%,rgba(63,74,46,.34) 0,rgba(63,74,46,0) 100%);
+  -webkit-mask:url(assets/arch.png) top center/100% auto no-repeat;
+          mask:url(assets/arch.png) top center/100% auto no-repeat}
+/* The sun itself: a single warm shaft from the top left, breathing slowly so
+   the light feels like it is coming through something that moves. Under the
+   leaf shadows, over the painting. */
+.rp-arch .arch-sun{position:absolute;inset:0;pointer-events:none;
+  mix-blend-mode:screen;
+  background:
+    radial-gradient(64% 40% at 22% 2%,rgba(255,238,198,.9) 0,rgba(255,238,198,.26) 46%,rgba(255,238,198,0) 100%),
+    linear-gradient(161deg,rgba(255,246,222,.62) 0,rgba(255,246,222,0) 42%);
+  animation:archSun 9s ease-in-out infinite alternate;
+  -webkit-mask:url(assets/arch.png) top center/100% auto no-repeat;
+          mask:url(assets/arch.png) top center/100% auto no-repeat}
+/* A few degrees and a few pixels. Anything bigger stops being a breeze and
+   starts being an effect. */
+@keyframes archSway{
+  0%  {transform:translate3d(-7px,0,0) rotate(-1.1deg)}
+  50% {transform:translate3d(3px,2px,0) rotate(.5deg)}
+  100%{transform:translate3d(8px,-1px,0) rotate(1.2deg)}
+}
+@keyframes archSun{from{opacity:.62}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .rp-arch::after,.rp-arch .arch-sun{animation:none}
+}
 .rp .scroll{position:relative;z-index:1}
 
 /* Transparent on the arch; a white surface only once prose is underneath.
@@ -1851,9 +1917,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .carousel .pcard{flex:none;width:159px;scroll-snap-align:start;background:#fff;
   border:1px solid var(--g200);border-radius:16px;padding:12px;
   display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:8px}
-/* The board centres the book over the card and sets it at 76x99 — big enough
-   that the cover, not the title, is what you recognise the report by. */
-.carousel .pcard .bkt,.carousel .pcard .bk3{align-self:center;margin:0;
+/* 76x99 — big enough that the cover, not the title, is what you recognise the
+   report by. Left, not centred: the title, the price and the button underneath
+   all start at the padding edge, and a book floating in the middle of them was
+   the only thing on the card that did not line up with anything. Both upsells
+   are carousels — the one on the report detail page and the one at the end of a
+   bought report — so this lands on both. */
+.carousel .pcard .bkt,.carousel .pcard .bk3{align-self:flex-start;margin:0;
   width:76px;height:99px;--bw:76px;--bh:99px}
 .carousel .pcard b{font:400 16px/24px var(--sans);color:var(--g700)}
 .carousel .pcard small{margin:0;font:400 12px/18px var(--sans);color:var(--g600)}
