@@ -1139,6 +1139,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Solid white, not frosted: the hero is painted artwork and a blur of it read
    as a smear behind the back arrow. */
 .r2-nav.solid{background:#fff;box-shadow:0 1px 0 var(--g200)}
+/* White pill, not a bare label: for the first screenful it is sitting on
+   painted artwork, where plain dark text on the hero's light patches is a
+   coin-toss. The surface carries it on both grounds. */
+.r2-nav-samp{margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+  height:34px;padding:0 13px;cursor:pointer;
+  border:1px solid var(--g200);border-radius:17px;background:#fff;
+  font:600 14px/34px var(--sans);color:var(--g900)}
+.r2-nav-samp svg{flex:none}
+/* On the white nav the pill's own white surface stops reading as a surface, so
+   it leans on the rule alone — same silhouette, no stacked whites. */
+.r2-nav.solid .r2-nav-samp{background:transparent}
 .r2-nav-r{margin-left:auto;display:flex;align-items:center;gap:9px}
 /* The book sits low and the GIF is framed high, so the couple reads above it
    rather than behind it. At 76px the heads landed inside the open pages. */
@@ -1368,14 +1379,29 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   .review{transition:none}
 }
 
-/* ---------- What the report is: chips and the sample door ---------- */
-/* Metadata, not controls. At 12/500 inside a full pill they were the size of
-   buttons and invited a tap that does nothing. Smaller type, softer rule, a
-   tighter pill: they read as what is in the box. */
-.r2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.r2-chips span{display:inline-block;border:1px solid var(--g200);border-radius:8px;
-  background:var(--g50,#F9FAFB);
-  padding:4px 9px;font:500 12px/17px var(--sans);color:var(--g600)}
+/* ---------- What the report is: author, highlights, the sample door ---------- */
+/* The host row. Airbnb names the person directly under the rating, before it
+   describes the place, because the thing being bought is somebody's work.
+   Nothing boxes it: avatar, name, one line of credentials. */
+.r2-auth{display:flex;align-items:center;gap:12px;margin:0 0 20px}
+.r2-auth img{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover;
+  background:var(--g100,#F2F4F7)}
+.r2-auth>div{min-width:0;display:flex;flex-direction:column;gap:1px}
+.r2-auth b{font:600 15px/22px var(--sans);color:var(--g900)}
+.r2-auth small{font:400 13px/19px var(--sans);color:var(--g500)}
+
+/* The listing's highlight rows, which replaced five grey pills. The pills
+   named the contents and explained none of them; here each line gets a drawn
+   icon, the thing itself in bold, and one plain sentence saying where in the
+   chart it comes from. The icon sits in a fixed 24px column so every title
+   starts on the same left edge. */
+.r2-hl{margin:18px 0 0;display:flex;flex-direction:column;gap:18px}
+.r2-hl>div{display:flex;align-items:flex-start;gap:16px}
+.r2-hl i{flex:none;display:flex;width:24px;height:24px;margin-top:1px;color:var(--g900)}
+.r2-hl i svg{width:100%;height:100%}
+.r2-hl>div>div{min-width:0;display:flex;flex-direction:column;gap:2px}
+.r2-hl b{font:600 15px/22px var(--sans);color:var(--g900)}
+.r2-hl small{font:400 14px/21px var(--sans);color:var(--g600)}
 /* Airbnb's "Show all photos": full width, neutral rule, dark label. It used to
    be a brand-orange outline, which put a second orange control on a page whose
    only orange should be the ₹49 button. Full width also squares the section's
@@ -2108,20 +2134,24 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The reports with no painting fall back to the built book, already open. */
 .pays-book .bkt,.pays-book .bk3{width:120px;height:158px}
 
-/* Frosted, not solid: the ground stays faintly readable through the sheet, so
-   the book she is buying is still present behind the arithmetic. */
-.pays-sheet{position:relative;z-index:5;flex:none;
-  background:rgba(255,255,255,.74);
-  -webkit-backdrop-filter:blur(22px) saturate(1.5);
-          backdrop-filter:blur(22px) saturate(1.5);
-  border-radius:24px 24px 0 0;padding:66px 16px 24px;
-  display:flex;flex-direction:column;gap:12px;
+/* Solid white. It was frosted, which let the pink ground bleed through every
+   number on the sheet — the one surface on this screen that has to read as a
+   receipt was the only one tinted. The book still carries the colour; the
+   arithmetic sits on paper. */
+.pays-sheet{position:relative;z-index:5;flex:none;background:#fff;
+  border-radius:24px 24px 0 0;padding:64px 16px calc(20px + var(--sab,env(safe-area-inset-bottom,0px)));
+  display:flex;flex-direction:column;gap:18px;
   box-shadow:0 -8px 28px -12px rgba(16,24,40,.22)}
+/* The purchase, named. Airbnb's "Confirm and pay" opens with the thing being
+   bought and its facts, not with a total. */
+.pays-top{display:flex;flex-direction:column;gap:3px}
+.pays-top h2{margin:0;font:700 18px/25px var(--sans);letter-spacing:-.01em;color:var(--g900)}
+.pays-top p{margin:0;font:400 13px/19px var(--sans);color:var(--g500)}
 /* The language is a decision, so it is a row she can press, not a line of text.
-   Boxed and on top because it is the only thing on this screen she can change. */
+   Boxed because it is the only thing on this screen she can change. */
 .pays-lang{display:flex;align-items:center;justify-content:space-between;gap:12px;
   width:100%;height:52px;padding:0 14px;border:1px solid var(--g200);border-radius:12px;
-  background:rgba(255,255,255,.72);text-align:left}
+  background:#fff;text-align:left}
 .pays-lang span{font:400 16px/24px var(--sans);color:var(--g700)}
 .pays-lang b{font-weight:400}
 .pays-lang i{flex:none;font-style:normal;font:600 16px/24px var(--sans);color:var(--brand)}
@@ -2129,15 +2159,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* The arithmetic, in the order it happens: what it lists for, what today takes
    off, what leaves her account. */
-.pays-sum{border-radius:12px;background:rgba(249,250,251,.66);padding:12px 14px;
-  display:flex;flex-direction:column;gap:6px}
+/* No card and no tint. On a white sheet a grey panel around five rows of type
+   fenced the receipt off from the title that names it; Airbnb's price details
+   are a label and a list, held together by a rule above the total only. */
+.pays-sum{display:flex;flex-direction:column;gap:7px}
+.pays-lbl{margin:0 0 1px;font:700 15px/22px var(--sans);color:var(--g900)}
 .psr{display:flex;align-items:center;justify-content:space-between;gap:12px;
   font:400 14px/20px var(--sans);color:var(--g600)}
 .psr b{font-weight:400;color:var(--g700)}
 .psr.off,.psr.off b{color:var(--s700)}
 /* The total is the only line that changes weight — it is the number she is
    agreeing to, and the ₹499 beside it is what makes ₹49 mean anything. */
-.psr.tot{padding-top:8px;border-top:1px solid var(--g200);
+.psr.tot{margin-top:4px;padding-top:11px;border-top:1px solid var(--g200);
   font:600 16px/24px var(--sans);color:var(--g900)}
 .psr.tot b{font:600 16px/24px var(--sans);color:var(--g900)}
 .psr.tot s{font:400 14px/20px var(--sans);color:var(--g400)}
