@@ -106,7 +106,10 @@ img{display:block}
 /* Every screen scrolls; only its chrome is fixed. */
 .scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .pad-nav{height:78px}
-.pad-buy{height:88px}
+/* The buy bar is a flex sibling of the scroller, not an overlay, so this is a
+   last breath under the final section — not clearance. At 88 it left most of a
+   blank screen under the upsells. */
+.pad-buy{height:16px}
 
 /* ---------- App header (Today / Timeline) ---------- */
 .head{position:relative;z-index:12;display:flex;align-items:center;gap:10px;
@@ -1240,15 +1243,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    itself is held in place by the top one.
    No shadow: it drew a line exactly where the book is meant to be resting. */
 .r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
-  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center}
-/* Figma 3186:204216 — Inter Bold 20/30 on #1d2939, centred, in a 290 box. */
-.r2-card h1{margin:0 auto;max-width:290px;font:700 20px/30px var(--sans);color:#1D2939}
-.r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
-.r2-stats div{width:84px}
-.r2-stats b{display:flex;align-items:center;justify-content:center;gap:2px;
-  font:600 16px/24px var(--sans);color:var(--g800);white-space:nowrap}
-.r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
-.r2-div{width:1px;height:20.5px;background:var(--g200)}
+  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:left}
+/* Ranged left, like an Airbnb listing title — and like every other line on this
+   page. Centred it opened an axis that nothing below it kept, so the page read
+   as two documents stacked. 24/31 with a little negative tracking so the long
+   two-line names stay one object rather than four loose words. */
+.r2-card h1{margin:0;font:700 24px/31px var(--sans);letter-spacing:-.015em;color:#1D2939}
+/* The listing's facts, under the name and before the stats: who wrote it, how
+   long it is, what it is available in. Airbnb's "Entire home · 4 guests · 2
+   beds" line. It also takes the provenance out of the About paragraph, which
+   was carrying two jobs in one sentence. */
+.r2-sub{margin:7px 0 0;font:400 14px/21px var(--sans);color:var(--g600)}
+.r2-stats{margin-top:16px;display:flex;align-items:center;justify-content:flex-start;gap:14px}
+.r2-stats div{width:auto}
+.r2-stats b{display:flex;align-items:center;gap:2px;
+  font:600 15px/22px var(--sans);color:var(--g900);white-space:nowrap}
+.r2-stats small{display:block;font:400 12px/18px var(--sans);color:var(--g500)}
+.r2-div{width:1px;height:26px;background:var(--g200)}
 .r2-about{padding:20px 16px 24px;display:flex;flex-direction:column;gap:10px}
 /* One small paragraph. It used to be a large headline, a three-item checklist and
    a provenance line — the checklist repeated "Find answers to" one screen below,
@@ -1258,7 +1269,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Ranged left, with the heading. Centred, the ragged right edge made three
    short lines look like a pull-quote rather than the page's own explanation,
    and nothing else in the column was centred to agree with it. */
-.r2-lead{margin:0;text-align:left;font:400 14px/21px var(--sans);color:var(--g600)}
+.r2-lead{margin:0;text-align:left;font:400 15px/23px var(--sans);color:var(--g600)}
 .r2-lead b{font-weight:600;color:var(--g900)}
 /* Secondary, so it is narrower than the full column — at full width it carried
    the same weight as the Buy now button fixed to the bottom of the screen. */
@@ -1274,7 +1285,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* No rules between the blocks. Each one already opens with its own heading on
    a clear field, so the lines were drawing boxes around things that were
    plainly separate without them. */
+/* One rhythm for the whole page: every section is 24 top, 24 bottom, 16 in from
+   the gutter, and every section after the first is opened by a hairline. The
+   blocks used to sit on a clear field with nothing between them, which left the
+   spacing doing all the work — and 24 under one section plus 24 over the next
+   reads as one 48px hole, not as a join. */
 .r2-block{padding:24px 16px}
+/* Inset to the gutter, not edge to edge, so the rule starts and stops on the
+   same left and right margin as every heading and paragraph it divides. */
+.r2-block + .r2-block{position:relative}
+.r2-block + .r2-block::before{content:'';position:absolute;left:16px;right:16px;
+  top:0;height:1px;background:var(--g200)}
 /* The card hangs 20px into this block, so 24px of padding left almost nothing
    between the stats row and "About this report". This is the first breath after
    the hero and it has to read as one. */
@@ -1288,21 +1309,24 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    card's bottom edge and 20px above the heading. */
 .r2-card + .r2-block::before{content:'';position:absolute;left:16px;right:16px;
   top:28px;height:1px;background:var(--g200)}
-/* The upsells are a different kind of thing from the sections above them — a
-   rule there reads as "one more section", which is the wrong promise. */
-#r2Also{border-top:0;padding-top:8px}
+/* The upsells keep the rule and the rhythm now. With every other join marked,
+   leaving this one open made the rail look like it had fallen out of the
+   reviews above it, and its own padding broke the 24 beat. */
 /* `.carousel.fill` — two cards, so they split the row rather than sitting at a
    fixed 159px with dead space beside them. Nothing is off-screen, so there is
    nothing left to scroll to. Used by both upsell strips. */
 .carousel.fill{overflow-x:visible;margin:0;padding-left:0;padding-right:0}
 .carousel.fill .pcard{flex:1 1 0;width:auto;min-width:0}
-.r2-h{display:flex;align-items:baseline;margin:0 0 4px;
-  font:600 20px/28px var(--sans);color:var(--g900)}
+/* Section headings sit one clear step under the page title (24) and one clear
+   step over body (15), so the ladder is 24 / 18 / 15 rather than 20 / 14 with
+   the heading nearly as loud as the name of the report. */
+.r2-h{display:flex;align-items:baseline;margin:0 0 8px;
+  font:700 18px/25px var(--sans);letter-spacing:-.01em;color:var(--g900)}
 
 /* PM track: what the report answers, as her own questions. It stands in for the
    chapter ladder, because a ladder with nothing shut is only a contents page. */
-.r2-learn{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
-.r2-learn li{position:relative;padding-left:30px;font:500 14px/21px var(--sans);color:var(--g800)}
+.r2-learn{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px}
+.r2-learn li{position:relative;padding-left:30px;font:400 15px/22px var(--sans);color:var(--g800)}
 .r2-learn li::before{content:"";position:absolute;left:0;top:1px;width:20px;height:20px;
   border-radius:50%;background:var(--brand50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 3.8 7.5 8.5 2.8' fill='none' stroke='%23D9572A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/11px 11px no-repeat}
 /* The handover, said plainly and once: the pages below are somebody else's
@@ -1373,36 +1397,41 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 }
 
 /* ---------- What the report is: chips and the sample door ---------- */
-.r2-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.r2-chips span{display:inline-block;border:1px solid var(--g300);border-radius:999px;
-  padding:5px 11px;font:500 12px/17px var(--sans);color:var(--g700)}
-/* Outlined, not filled: the filled orange on this page is the ₹49 button, and
-   a free sample must not look like the thing that costs money. */
-.r2-samp{display:inline-block;margin-top:16px;cursor:pointer;
-  border:1.4px solid var(--brand);border-radius:10px;background:none;
-  padding:10px 18px;font:600 14px/20px var(--sans);color:var(--brand)}
+/* Metadata, not controls. At 12/500 inside a full pill they were the size of
+   buttons and invited a tap that does nothing. Smaller type, softer rule, a
+   tighter pill: they read as what is in the box. */
+.r2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.r2-chips span{display:inline-block;border:1px solid var(--g200);border-radius:8px;
+  background:var(--g50,#F9FAFB);
+  padding:4px 9px;font:500 12px/17px var(--sans);color:var(--g600)}
+/* Airbnb's "Show all photos": full width, neutral rule, dark label. It used to
+   be a brand-orange outline, which put a second orange control on a page whose
+   only orange should be the ₹49 button. Full width also squares the section's
+   left and right edges with everything above it. */
+.r2-samp{display:block;width:100%;margin-top:18px;cursor:pointer;
+  border:1px solid var(--g300);border-radius:12px;background:#fff;
+  padding:0;height:48px;font:600 15px/48px var(--sans);color:var(--g900);
+  text-align:center}
 
 /* ---------- Sticky buy bar · 3111:200974 ----------
    White, not a gradient. Measured off the board: 10/0/12/0 with a 10px gap,
    the "why" line edge to edge on #F9FAFB, then price and button inset 16. */
-.buybar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:10px;
-  padding:10px 0 calc(12px + var(--sab,env(safe-area-inset-bottom,0px)));
+.buybar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:0;
+  padding:0 0 calc(12px + var(--sab,env(safe-area-inset-bottom,0px)));
   background:#fff;border-top:1px solid var(--g200)}
-/* The sparkle vector is not in the frame — it is a plain 15px peach dot, and a
-   dot does not compete with the sentence it sits beside. */
-/* This is the argument for the price, sitting directly above the button, and on
-   grey at 12px it read as a disclaimer. It now carries the page's own warm
-   gradient and a hairline in the brand, so it reads as the reason to tap. */
-.buy-why{margin:0;display:flex;align-items:center;gap:9px;min-height:36px;padding:8px 11px;
-  border-radius:10px;border:1px solid #FBD9CA;
-  background:linear-gradient(90deg,#FDE3D7 0,#FDF0EB 58%,#FFFFFF 100%);
-  font:500 13px/19px var(--sans);color:var(--g800)}
-.buy-why i{flex:none;display:flex;width:20px;height:20px;color:var(--brand)}
+/* The argument for the price, Airbnb's "Rare find!" bar: a flat tinted band
+   edge to edge, sitting flush on the top rule with the price row beneath it.
+   It had a radius and a border before, which made a floating chip of a line
+   that is not tappable — and a card inside a bar reads as a second surface
+   when it is meant to be a label on this one. Flat, full-bleed, no edges. */
+.buy-why{margin:0;display:flex;align-items:center;gap:8px;padding:9px 16px;
+  background:#FDF0E8;font:500 13px/18px var(--sans);color:#8A3F17}
+.buy-why i{flex:none;display:flex;width:16px;height:16px;color:#C0612B}
 .buy-why i svg{width:100%;height:100%}
-.buy-row{display:flex;align-items:center;gap:16px;padding:0 16px}
-/* Inside the sample the bar is white instead of the sell page's warm panel,
-   but it carries the same two rows. */
-.buybar.plain{gap:10px;padding:12px 0 calc(16px + var(--sab,env(safe-area-inset-bottom,0px)))}
+.buy-row{display:flex;align-items:center;gap:16px;padding:12px 16px 0}
+/* Inside the sample the bar carries the same two rows, with a little more air
+   under the button because nothing follows it. */
+.buybar.plain{gap:0;padding:0 0 calc(16px + var(--sab,env(safe-area-inset-bottom,0px)))}
 /* ₹49 and the struck ₹499 read as one price, so they share a line; the cut
    sits under them as its own chip. */
 .buybar .price{display:grid;grid-template-columns:auto auto;gap:0 6px;
@@ -1926,11 +1955,19 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    bought report — so this lands on both. */
 .carousel .pcard .bkt,.carousel .pcard .bk3{align-self:flex-start;margin:0;
   width:76px;height:99px;--bw:76px;--bh:99px}
-.carousel .pcard b{font:400 16px/24px var(--sans);color:var(--g700)}
-.carousel .pcard small{margin:0;font:400 12px/18px var(--sans);color:var(--g600)}
+/* The name of the report is the strongest thing on the card. At 400/16 in g700
+   it weighed the same as its own one-line description, so the pair read as two
+   sentences rather than as a title and a subtitle. */
+.carousel .pcard b{font:600 15px/21px var(--sans);color:var(--g900)}
+.carousel .pcard small{margin:0;font:400 13px/19px var(--sans);color:var(--g500)}
 /* The discount sits under the price as its own chip, which is how the sell card
    and the chat card both show it — the saving is the reason, so it gets a line. */
-.pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:0}
+/* The price is the top of the card's footer, so it takes the fill spacer and
+   the description above it absorbs the slack. Before, only the button was
+   pinned, so a two-line description and a three-line one put their prices at
+   different heights and the pair of cards had no shared baseline. */
+.pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:auto 0 0}
+.pc-pr + .pc-btn{margin-top:0}
 .pc-pr i{font-style:normal;display:flex;align-items:center;gap:6px}
 .pc-pr em{font-style:normal;font:400 16px/24px var(--sans);color:var(--g900)}
 .pc-pr s{font:400 12px/18px var(--sans);color:#98A2B3}
