@@ -85,7 +85,7 @@ var REPORTS = [
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3258:6840 for the spread, 3330:6840 for the hero ground.
     art: {
-      closed: 'assets/cover-marriage.jpg',
+      closed: 'assets/cover-marriage.jpg?v=2',
       open: 'assets/spread-marriage.png?v=1',
       hero: 'assets/bg-marriage.jpg?v=1'
     },
@@ -718,6 +718,7 @@ function renderSample() {
   paintArch();
   sec.classList.toggle('dev', c.dev);
   $('#langChipLabel').textContent = 'Read in ' + c.chip;
+  $('#sampleWhy').textContent = reportById(state.pick).why;
   $('#sampleBody').innerHTML = renderSecs(true);
 }
 

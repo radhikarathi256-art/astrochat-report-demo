@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610231129">
+<link rel="manifest" href="manifest.webmanifest?v=202610231201">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610231129">
-<link rel="stylesheet" href="mobile.css?v=202610231129">
+<link rel="stylesheet" href="styles.css?v=202610231201">
+<link rel="stylesheet" href="mobile.css?v=202610231201">
 </head>
 <body>
 
@@ -268,7 +268,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610231129" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610231201" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -475,9 +475,21 @@
         <div class="pad-buy"></div>
       </div>
 
-      <!-- Plain white here, unlike the sell page: the reader is already inside
-           the report, so the bar has only to carry the price and the button. -->
+      <!-- Plain white here, unlike the sell page, but carrying the same one
+           finding above the button: the sample is where she decides, so the
+           reason to pay has to be in front of her at the moment she taps. -->
       <div class="buybar plain">
+        <p class="buy-why">
+          <i aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                 stroke-width="1.1" stroke-linejoin="round">
+              <rect x=".75" y=".75" width="14.5" height="14.5" rx="1.5"/>
+              <path d="M8 .75 15.25 8 8 15.25.75 8z"/>
+              <path d="M.75.75 15.25 15.25M15.25.75.75 15.25"/>
+            </svg>
+          </i>
+          <span id="sampleWhy"></span>
+        </p>
         <div class="buy-row">
           <div class="price"><b>₹49</b><small><s>₹499</s><i>90% OFF</i></small></div>
           <button class="btn primary grow" type="button" id="buyInLang">Buy Now</button>
@@ -832,8 +844,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610231129"></script>
-<script src="app.js?v=202610231129"></script>
-<script src="mobile.js?v=202610231129"></script>
+<script src="data.js?v=202610231201"></script>
+<script src="app.js?v=202610231201"></script>
+<script src="mobile.js?v=202610231201"></script>
 </body>
 </html>
