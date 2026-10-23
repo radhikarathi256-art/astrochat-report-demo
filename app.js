@@ -86,7 +86,7 @@ var REPORTS = [
     // Figma 3258:6840 for the spread, 3330:6840 for the hero ground.
     art: {
       closed: 'assets/cover-marriage.jpg?v=2',
-      open: 'assets/spread-marriage.png?v=1',
+      open: 'assets/spread-marriage.png?v=2',
       hero: 'assets/bg-marriage.jpg?v=1'
     },
     chips: ['36 guna match', 'Dosha check'],
@@ -953,19 +953,10 @@ function openPay() {
    this screen. */
 function payTotal() { return PRICE + Math.round(PRICE * GST); }
 
-/* The demo drives the last tap itself: a beat to read the screen, a visible
-   press, then the spinner. Nobody walking somebody through this should have to
-   stop and hunt for the Pay button. */
+/* The payment screen waits. Paying is the one tap in the demo that has to be
+   hers — a button that presses itself reads as a charge nobody authorised. */
 function runPay() {
-  var btn = $('#paySubmit');
   stopPay();
-  btn.classList.remove('pressed', 'busy');
-  payT.push(later(function () { btn.classList.add('pressed'); }, 1100));
-  payT.push(later(function () {
-    btn.classList.remove('pressed');
-    btn.classList.add('busy');
-    payT.push(later(pay, 950));
-  }, 1400));
 }
 
 function stopPay() {
@@ -1839,13 +1830,18 @@ document.addEventListener('click', function (e) {
   }
 
   if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
-  // Changing the language on the payment screen stops the auto-press — she has
-  // taken the wheel, and the demo pressing Pay under her would be a theft.
-  if (t.id === 'paysLang') { stopPay(); state.langFrom = 'buy'; openSheet('lang'); return; }
+  if (t.id === 'paysLang') { state.langFrom = 'buy'; openSheet('lang'); return; }
 
   // Both routes to the money land on the same payment screen.
   if (t.id === 'payBtn' || t.id === 'r2Cta') { openPay(); return; }
-  if (t.id === 'paySubmit') { stopPay(); pay(); return; }
+  // Her tap, her spinner: a short busy beat so the pay reads as processing
+  // rather than as a screen that swapped under her thumb.
+  if (t.id === 'paySubmit') {
+    stopPay();
+    t.classList.add('busy');
+    payT.push(later(pay, 700));
+    return;
+  }
   // Touchpoint tabs in the demo sidebar: jump the phone to that surface.
   if (t.hasAttribute('data-tp')) {
     var tp = t.getAttribute('data-tp');
