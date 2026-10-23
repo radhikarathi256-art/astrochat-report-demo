@@ -2066,88 +2066,73 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:700 16px/20px var(--sans);color:var(--g800)}
 .payrow .btn{flex:1;width:auto;height:44px}
 
-/* ---------- Payment screen · Payments Android 5075:6087 ----------
-   The real Add Money screen: warm alert band, a dashed receipt card with the
-   amount tiles notched into its sides, the gold plate, then the bar. */
-#paysc{background:#fff;display:flex;flex-direction:column}
-.pay-nav{flex:none;gap:2px;padding:calc(var(--sbh) + 8px) 16px 8px;
-  border-bottom:1px solid var(--g300)}
-.pay-ttl{flex:1;font:600 18px/28px var(--sans);color:var(--g700)}
-.pay-wal{flex:none;display:flex;align-items:center;gap:5px;height:26px;padding:4px 8px;
-  border-radius:20px;background:var(--g100);font:500 12px/18px var(--sans);color:var(--g600)}
-.pay-wal i{font-style:normal}
-#paysc .scroll{flex:1;padding:16px 16px 0}
+/* ---------- Payment screen · Figma 3339:208658 "AN5 · Payment summary" ----------
+   The wallet top-up is gone. The report is a flat ₹49, the language is the only
+   choice left, and everything above the sheet is the book she is about to own:
+   a blurred ground, a wash in the book's own colours, and the spread lying open
+   on it. The sheet below carries the price and the one button. */
+#paysc{background:#fff;display:flex;flex-direction:column;justify-content:flex-end;
+  overflow:hidden}
+/* The report page behind, blurred. Scaled up before the blur so the softened
+   edges never pull in from the sides of the frame. */
+.pays-bg{position:absolute;inset:0;z-index:0;
+  background:center top/cover no-repeat;
+  transform:scale(1.18);filter:blur(26px) saturate(1.1);opacity:.9}
+/* The wash the book lies on, in the book's own colours. An ellipse rather than
+   a band: the board draws the light pooling under the spread and falling off in
+   every direction, and a linear gradient gave it a horizon. */
+.pays-glow{position:absolute;left:-10%;right:-10%;top:18%;height:62%;z-index:1;
+  background:radial-gradient(54% 50% at 50% 56%,
+    var(--pay-g1,#FFFFFF) 0,var(--pay-g2,rgba(255,255,255,.55)) 54%,rgba(255,255,255,0) 100%)}
+.pays-x{position:absolute;z-index:4;top:calc(var(--sbh) + 14px);right:16px;
+  width:40px;height:40px;border:0;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(16,24,40,.14)}
+.pays-x:active{background:#fff}
+/* The spread sits on the wash and overlaps the top of the sheet, which is what
+   stops the sheet reading as a separate screen stacked under a picture. */
+.pays-book{position:relative;z-index:3;display:flex;justify-content:center;
+  align-items:flex-end;margin:0 0 -14px;padding:0 20px}
+.pays-book img{width:252px;height:auto;
+  filter:drop-shadow(0 16px 22px rgba(74,24,8,.26))}
+/* The reports with no painting fall back to the built book, already open. */
+.pays-book .bkt,.pays-book .bk3{width:120px;height:158px}
 
-/* 42px of bottom padding under the copy, so the receipt card can be pulled up
-   into it — that overlap is what makes the two read as one object. */
-.pay-alert{display:flex;gap:10px;padding:12px 16px 42px;border-radius:12px 12px 0 0;
-  background:linear-gradient(180deg,#FEF5DE,#FEF8E9 40%,#FFFCF6 72%,#fff)}
-.pay-alert svg{flex:none;margin-top:6px}
-.pay-alert b{display:block;font:600 12px/18px var(--sans);color:#93370D}
-.pay-alert small{display:block;font:400 12px/18px var(--sans);color:#93370D}
+.pays-sheet{position:relative;z-index:5;flex:none;background:#fff;
+  border-radius:24px 24px 0 0;padding:16px 16px 24px;
+  display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 -8px 28px -12px rgba(16,24,40,.22)}
+/* The language is a decision, so it is a row she can press, not a line of text.
+   Boxed and on top because it is the only thing on this screen she can change. */
+.pays-lang{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;height:52px;padding:0 14px;border:1px solid var(--g200);border-radius:12px;
+  background:#fff;text-align:left}
+.pays-lang span{font:400 16px/24px var(--sans);color:var(--g700)}
+.pays-lang b{font-weight:400}
+.pays-lang i{flex:none;font-style:normal;font:600 16px/24px var(--sans);color:var(--brand)}
+.pays-lang:active{background:var(--g50)}
 
-.pay-rc{position:relative;margin-top:-30px;padding:16px 16px 19px;background:#fff;
-  border:1px dashed var(--g300)}
-/* The receipt's side notches: a half-round bitten out of each edge, carrying
-   the same dashed rule round the curve. */
-.rc-n{position:absolute;top:115px;width:10px;height:20px;background:#fff;
-  border:1px dashed var(--g300)}
-.rc-l{left:-1px;border-left:0;border-radius:0 10px 10px 0}
-.rc-r{right:-1px;border-right:0;border-radius:10px 0 0 10px}
+/* The arithmetic, in the order it happens: what it lists for, what today takes
+   off, what leaves her account. */
+.pays-sum{border-radius:12px;background:var(--g50);padding:12px 14px;
+  display:flex;flex-direction:column;gap:6px}
+.psr{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font:400 14px/20px var(--sans);color:var(--g600)}
+.psr b{font-weight:400;color:var(--g700)}
+.psr.off,.psr.off b{color:var(--s700)}
+/* The total is the only line that changes weight — it is the number she is
+   agreeing to, and the ₹499 beside it is what makes ₹49 mean anything. */
+.psr.tot{padding-top:8px;border-top:1px solid var(--g200);
+  font:600 16px/24px var(--sans);color:var(--g900)}
+.psr.tot b{font:600 16px/24px var(--sans);color:var(--g900)}
+.psr.tot s{font:400 14px/20px var(--sans);color:var(--g400)}
+.psr.save{justify-content:flex-end;margin-top:-2px}
+.psr.save i{font-style:normal;border-radius:5px;padding:2px 6px;
+  background:var(--s50);font:600 12px/18px var(--sans);color:var(--s700)}
 
-.pay-tiles{display:flex;gap:14px}
-/* Scoped to #paysc: the daily-reward headline already owns a bare `.amt` for the
-   ₹9 figure, and an unscoped tile rule turned it into a full-width box. */
-#paysc .amt{position:relative;flex:1;height:67px;border-radius:14px;background:#fff;
-  border:1px solid var(--g300);
-  display:flex;align-items:center;justify-content:center}
-#paysc .amt span{display:flex;align-items:baseline;font:600 20px/30px var(--sans);color:var(--g700)}
-#paysc .amt span i{font-style:normal;font-size:12px;line-height:25px}
-#paysc .amt.on{border:2px solid var(--brand)}
-/* Clipped to its own rounded corner rather than by the tile, so the bonus badge
-   below can still hang outside the tile's bottom edge. */
-#paysc .amt-tick{position:absolute;top:0;right:0;width:38px;height:38px;line-height:0;display:none;
-  border-radius:0 13px 0 0;overflow:hidden}
-#paysc .amt.on .amt-tick{display:block}
-/* Sits on the tile's bottom edge, half in and half out, the way the board has it. */
-.bonus{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);
-  display:flex;align-items:center;gap:1px;height:26px;padding:4px 5px;border-radius:12px;
-  background:linear-gradient(90deg,#027A48,#039855 60%);
-  font:600 12px/18px var(--sans);color:#fff;white-space:nowrap}
-.bonus s{text-decoration:none;font-weight:400}
-
-.pay-more{display:flex;align-items:center;gap:6px;margin:42px auto 0;height:28px;
-  padding:4px 4px 4px 12px;border-radius:12px;background:#fff;
-  border:.8px dashed var(--g300);font:400 12px/18px var(--sans);color:var(--g500)}
-
-/* Gold plate. The veil is the wash behind it; the arc is the white page
-   closing back over the bottom of the card. */
-.pay-gold{position:relative;flex:none;height:250px;margin-top:auto;
-  display:flex;align-items:flex-end;justify-content:center}
-.pay-gold::before{content:"";position:absolute;left:0;right:0;top:50px;bottom:0;
-  background:linear-gradient(180deg,#FBF6EA,#F2E6C8 60%,#F1E4C4)}
-/* The bottom edge dips in the middle and lifts at the corners — a wide
-   elliptical radius, not an arc laid over the top, which clipped the last line. */
-.gold-card{position:relative;width:268px;height:108px;padding:14px 0 12px;text-align:center;
-  border-radius:14px 14px 134px 134px/14px 14px 26px 26px;
-  background:
-    linear-gradient(180deg,#F7EEDA,#E2CE99 22%,#FBF4E4 48%,#D8C085 72%,#F4EBD3);
-  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75)}
-.gold-card small{display:block;font:500 12px/18px var(--sans);color:var(--g800)}
-.gold-card b{display:flex;align-items:baseline;justify-content:center;gap:1px;
-  margin:3px 0 6px;font:700 30px/35px var(--sans);color:var(--g800)}
-.gold-card b i{font-style:normal;font-size:16px;line-height:1}
-
-.pay-bar{flex:none;padding:0 16px 24px;background:#fff}
-.pay-sum{display:flex;align-items:center;justify-content:space-between;width:100%;
-  padding:12px 0 14px;border:0;background:none;
-  font:400 12px/18px var(--sans);color:var(--g500)}
-.pay-sum span:last-child{display:flex;align-items:center;gap:4px}
-.pay-sum b{font-weight:400}
-.pay-act{display:flex;align-items:center;gap:12px;padding-top:8px}
-.pay-act .paywith small{font-size:12px;line-height:18px;color:var(--g500)}
-.pay-act .paywith b{font-size:16px;line-height:24px;color:var(--g800)}
-.pay-go{position:relative;flex:1;width:auto;height:48px;border-radius:12px;padding:0}
+.pays-act{display:flex;align-items:center;gap:12px}
+.pays-act .paywith small{font-size:12px;line-height:18px;color:var(--g500)}
+.pays-act .paywith b{font-size:16px;line-height:24px;color:var(--g800)}
+.pay-go{position:relative;flex:1;width:auto;height:52px;border-radius:12px;padding:0}
 .pay-go .pg-l{display:flex;align-items:baseline;justify-content:center;gap:4px;
   font:600 16px/24px var(--sans)}
 .pay-go .pg-l b{font-weight:600}

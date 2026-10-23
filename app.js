@@ -906,16 +906,51 @@ function startAsk() {
 }
 
 /* ---------------------------------------------------------------- payment */
-/* Payments Android 5075:6087. The report is ₹49 and the wallet is how
-   AstroChat takes money, so Buy Now lands on Add Money at ₹50. */
+/* Figma 3339:208658. The report is a flat ₹49 off a ₹499 list price and the
+   wallet is not in the way any more — the only thing left to decide is the
+   language, so the screen shows the book, the arithmetic and one button. */
 var payT = [];
+var LIST_PRICE = 499, PRICE = 49, GST = 0.18;
+
+/* The wash behind the book, in the book's own colours. Sampled off each painted
+   cover, the same three the reader's arch is built from. */
+var PAY_GLOW = {
+  partner:  ['rgba(255,236,240,.95)', 'rgba(244,201,206,.6)'],
+  marriage: ['rgba(255,246,226,.95)', 'rgba(228,206,160,.6)'],
+  career:   ['rgba(238,246,255,.95)', 'rgba(188,214,246,.6)']
+};
 
 function openPay() {
   closeSheet();
   var r = reportById(state.pick);
-  $('#payAlert1').textContent = 'Your ' + r.id + ' report is \u20b949';
+  var sc = $('#paysc');
+
+  // The ground is the page she just came from, blurred by CSS. Each report
+  // already owns the art the detail page stands on; where it does not, its
+  // cover stands in.
+  var bg = (r.art && (r.art.hero || r.art.closed)) || '';
+  $('#paysBg').style.backgroundImage = bg ? 'url(' + bg + ')' : '';
+
+  var g = PAY_GLOW[r.id] || PAY_GLOW.partner;
+  sc.style.setProperty('--pay-g1', g[0]);
+  sc.style.setProperty('--pay-g2', g[1]);
+
+  // Open and still: the spread is a finished painting of an open book, so it
+  // needs no swing and no frame. Only a report without art falls back to the
+  // built one.
+  $('#paysBook').innerHTML = r.art
+    ? '<img src="' + r.art.open + '" alt="">'
+    : book3d(r);
+
+  $('#paysLangName').textContent = langById(state.lang).label;
+  $('#payTot').textContent = '\u20b9' + payTotal();
   go('paysc');
 }
+
+/* 18% GST on the ₹49 actually charged. The board's button said ₹118, which is
+   18% on ₹100 — a number from an older price that no longer exists anywhere on
+   this screen. */
+function payTotal() { return PRICE + Math.round(PRICE * GST); }
 
 /* The demo drives the last tap itself: a beat to read the screen, a visible
    press, then the spinner. Nobody walking somebody through this should have to
@@ -937,16 +972,6 @@ function stopPay() {
   payT = [];
   var btn = $('#paySubmit');
   if (btn) btn.classList.remove('pressed', 'busy');
-}
-
-/* 18% GST, the way the board totals it: ₹50 + ₹9. */
-function pickAmt(el) {
-  stopPay();
-  var amt = +el.getAttribute('data-amt'), gst = Math.round(amt * 0.18);
-  $$('#paysc .amt').forEach(function (a) { a.classList.toggle('on', a === el); });
-  $('#payGet').textContent = amt;
-  $('#paySum').textContent = '\u20b9' + amt + ' + \u20b9' + gst + ' GST';
-  $('#payTot').textContent = '\u20b9' + (amt + gst);
 }
 
 function pay() {
@@ -1666,7 +1691,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,[data-amt],#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#repToastSee,#repToastX,#payBtn,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
   if (!t) return;
 
   // Buy Now skips the detail page. It sits inside a [data-pick] card, and
@@ -1813,8 +1838,9 @@ document.addEventListener('click', function (e) {
   }
 
   if (t.id === 'buyInLang') { state.langFrom = 'buy'; openSheet('buy'); return; }
-  // Picking a bigger top-up stops the auto-press — she has taken the wheel.
-  if (t.hasAttribute('data-amt')) { pickAmt(t); return; }
+  // Changing the language on the payment screen stops the auto-press — she has
+  // taken the wheel, and the demo pressing Pay under her would be a theft.
+  if (t.id === 'paysLang') { stopPay(); state.langFrom = 'buy'; openSheet('lang'); return; }
 
   // Both routes to the money land on the same payment screen.
   if (t.id === 'payBtn' || t.id === 'r2Cta') { openPay(); return; }
