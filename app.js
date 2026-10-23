@@ -27,15 +27,6 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
 /* The highlight-row icons, Airbnb's house-facts set: one weight, one size, no
    fills and no discs behind them, so three rows of the same 1.5px line read as
    a set of facts rather than three little badges. Keyed by `hl[].i`. */
-var HL_ICON = {
-  // The kundli square itself, which is the one drawing every Indian astrology
-  // user reads instantly — a generic "document" icon says nothing about where
-  // the pages came from.
-  chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 12 9-9 9 9-9 9-9-9"/></svg>',
-  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.8v2.4"/></svg>',
-  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.2 9.6h17.6M3.2 14.4h17.6"/><path d="M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3Z"/></svg>'
-};
-
 var REPORTS = [
   {
     id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet, and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
@@ -59,18 +50,12 @@ var REPORTS = [
       closed: 'assets/cover-partner.jpg?v=3',
       open: 'assets/spread-partner.png?v=3'
     },
-    // The listing's highlight rows — and, like Airbnb's, facts about the thing
-    // being bought, not its itinerary. The first draft listed its chapters and
-    // "What you will get" two sections below listed the same ones again, so
-    // the page said everything twice. Provenance, terms, languages instead.
-    hl: [
-      { i: 'chart', t: 'Read from your own birth chart',
-                    d: 'Your seventh house and its lord decide who arrives — not your sun sign.' },
-      { i: 'lock',  t: '38 pages, private and yours forever',
-                    d: 'Saved in your chat history. Nobody else can ever see it.' },
-      { i: 'globe', t: 'Written in your language',
-                    d: 'English, Hindi, Marathi, Tamil and six more. Pick one before you pay.' }
-    ],
+    // What is in the box, as chips — the one thing unique to this report first.
+    // These were briefly three icon rows reading "read from your birth chart",
+    // "private forever", "in your language": true of every report we sell and
+    // therefore an argument for none of them. The chips say the same terms in
+    // a tenth of the height and do not pretend to be a sales point.
+    chips: ['Partner image', 'Birth chart analysis'],
     // Quotes that name something the report called before it happened. A quote
     // that only says "very good" proves nothing and sells nothing.
     revs: [
@@ -108,14 +93,7 @@ var REPORTS = [
       open: 'assets/spread-marriage.png?v=2',
       hero: 'assets/bg-marriage.jpg?v=1'
     },
-    hl: [
-      { i: 'chart', t: 'Read from your own birth chart',
-                    d: 'Your 36 gunas counted properly, with every dosha you actually carry.' },
-      { i: 'lock',  t: '42 pages, private and yours forever',
-                    d: 'Saved in your chat history. Nobody else can ever see it.' },
-      { i: 'globe', t: 'Written in your language',
-                    d: 'English, Hindi, Marathi, Tamil and six more. Pick one before you pay.' }
-    ],
+    chips: ['36 guna match', 'Dosha check'],
     revs: [
       { s: 5, n: 'Anjali D., Surat',  q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
       { s: 5, n: 'Kavya R., Chennai', q: 'The low-Manglik reading saved me months of panic. Two astrologers had said the opposite.' },
@@ -148,14 +126,7 @@ var REPORTS = [
       open: 'assets/spread-career.png?v=1',
       hero: 'assets/bg-career.jpg?v=1'
     },
-    hl: [
-      { i: 'chart', t: 'Read from your own birth chart',
-                    d: 'Your tenth house and the dasha running over it right now, not a horoscope column.' },
-      { i: 'lock',  t: '34 pages, private and yours forever',
-                    d: 'Saved in your chat history. Nobody else can ever see it.' },
-      { i: 'globe', t: 'Written in your language',
-                    d: 'English, Hindi, Marathi, Tamil and six more. Pick one before you pay.' }
-    ],
+    chips: ['Switch timing', 'Raise window'],
     revs: [
       { s: 5, n: 'Shruti B., Pune',   q: 'It named March as the switch month. I got the offer on the 11th of March.' },
       { s: 5, n: 'Meera T., Gurgaon', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
@@ -1555,15 +1526,9 @@ function renderReport() {
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
-  // The provenance clause that used to close this sentence ("Astro Hemali makes
-  // it from your birth chart") now has a row of its own above and a face beside
-  // it, so saying it here as well made the lead run a line longer to repeat the
-  // two things directly either side of it.
-  $('#r2Lead').textContent = r.s + '.';
-  $('#r2Hl').innerHTML = r.hl.map(function (h) {
-    return '<div><i>' + HL_ICON[h.i] + '</i><div>' +
-      '<b>' + esc(h.t) + '</b><small>' + esc(h.d) + '</small></div></div>';
-  }).join('');
+  $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
+  $('#r2Chips').innerHTML = r.chips.concat([r.pages + ' pages', 'Shareable', 'Private'])
+    .map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('');
   $('#r2Learn').innerHTML =
     '<h2 class="r2-h">What you will get</h2>' +
     '<ul class="r2-learn">' +

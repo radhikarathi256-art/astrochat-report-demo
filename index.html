@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610231508">
+<link rel="manifest" href="manifest.webmanifest?v=202610231520">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610231508">
-<link rel="stylesheet" href="mobile.css?v=202610231508">
+<link rel="stylesheet" href="styles.css?v=202610231520">
+<link rel="stylesheet" href="mobile.css?v=202610231520">
 </head>
 <body>
 
@@ -278,7 +278,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610231508" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610231520" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -303,25 +303,16 @@
              what it answers, what readers found in it, what else is on her
              chart. The sample moved behind a button — it is a sample, and
              inlining the whole thing buried every section after it. -->
-        <div class="r2-block">
-          <!-- Who wrote it, before what it is. The listing names its host
-               directly under the rating for the same reason: the thing being
-               bought is somebody's work, not a file. -->
-          <div class="r2-auth">
-            <img src="assets/hemali.png" alt="">
-            <div>
-              <b>Written by Astro Hemali</b>
-              <small>Vedic astrologer · 11 years reading charts</small>
-            </div>
-          </div>
-
-          <h2 class="r2-h">About this report</h2>
+        <!-- Centred, carrying on the title card's axis. This block ran left for
+             a while with a host row, a heading and three icon rows under it —
+             "read from your birth chart", "private forever", "in your
+             language" — all of which are true of every report we sell, so it
+             was half a screen of column arguing for none of them. The
+             description and the chips say what it is and what is in it, and
+             the sample door is the only thing here worth tapping. -->
+        <div class="r2-block center">
           <p class="r2-lead" id="r2Lead"></p>
-          <!-- What is in the box, as the listing's highlight rows: a drawn
-               icon, the thing itself in bold, and one plain line under it
-               saying where it comes from. These were five grey pills, which
-               named the contents but explained none of them. -->
-          <div class="r2-hl" id="r2Hl"></div>
+          <div class="r2-chips" id="r2Chips"></div>
           <button class="r2-samp" type="button" id="r2ViewSample">View sample report</button>
         </div>
 
@@ -882,8 +873,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610231508"></script>
-<script src="app.js?v=202610231508"></script>
-<script src="mobile.js?v=202610231508"></script>
+<script src="data.js?v=202610231520"></script>
+<script src="app.js?v=202610231520"></script>
+<script src="mobile.js?v=202610231520"></script>
 </body>
 </html>
