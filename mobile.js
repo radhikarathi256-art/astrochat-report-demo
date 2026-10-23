@@ -73,9 +73,9 @@
     var sc = scr.querySelector('[data-scroll]');
     if (sc && sc.scrollTop > 40) return '#FFFFFF';
     if (scr.querySelector('.head.hero-head')) return '#FBE4D7';
-    // Matches --rose-lo, the darker end of the hero's gradient, which is what
-    // sits directly under the status bar.
-    if (scr.querySelector('.r2-hero')) return '#E6C7C8';
+    // Sampled off the top band of the hero clip as it is actually framed, which
+    // is what sits directly under the status bar.
+    if (scr.querySelector('.r2-hero')) return '#E6B3C4';
     // Everything else reads its own ground off the element. The two screens
     // above are the only ones whose top is painted by a child rather than by
     // the screen itself; hard-coding the rest is what left the report screens
