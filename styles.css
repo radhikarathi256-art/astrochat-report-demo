@@ -1511,13 +1511,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    book's colour, so the report always rises out of plain paper. */
 .rp{background:#F6EEF0;
   --arch-a:#B4536B; --arch-b:#D98C97; --arch-c:#F6E3DE;
-  --arch-in:#FFFFFF}
+  --arch-in:#FFFFFF; --arch-in-sc:#F1DFE4}
 /* Marriage is gold, like its cover and its spread. */
 .rp[data-rep="marriage"]{background:#FBF4E7;
-  --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE}
+  --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE; --arch-in-sc:#F5E7CF}
 /* Career: the cover's daylight blue. */
 .rp[data-rep="career"]{background:#EDF1F7;
-  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8}
+  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8; --arch-in-sc:#DFE8F4}
+/* Once she starts reading, the ground inside the arch takes the report's own
+   colour. It has to be white at the top — the arch is the whole picture there
+   and the sketch is a print resting on paper — but a page of white cards on
+   white ground has no sections in it at all. */
+.rp.scrolled{--arch-in:var(--arch-in-sc)}
 
 /* The colour field. Full-bleed, pulled up under the status bar so the crown of
    the arch is above the fold, and dissolving into the ground on the way down so
@@ -1540,7 +1545,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The opening. No painting, no branches — just the shape, filled with the
    page's own ground, so the report rises through an arch of plain paper. */
 .rp-arch::after{content:"";position:absolute;left:9%;right:9%;top:5%;bottom:0;
-  background:var(--arch-in);
+  background:var(--arch-in);transition:background-color .35s ease;
   border-radius:50% 50% 0 0/23% 23% 0 0}
 /* A warm light across the top of the field, breathing slowly. */
 .rp-arch .arch-sun{position:absolute;inset:0;pointer-events:none;
@@ -1690,7 +1695,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .r-scores,
 .rp .rp-secs > .r-card,
 .rp .rp-secs > .accent,
+.rp .rp-secs > .rsc,
+.rp .rp-secs > .rs-idx,
 .rp .rp-secs > .carousel-wrap{background:#fff}
+.rp .rp-secs > .rsc{padding:28px 20px}
+.rp .rp-secs > .rs-idx{padding:20px}
 /* 24 at the top, 92 at the bottom: the illustration lives in that bottom band,
    bled to both edges, which is what stops fourteen white cards reading as a
    spreadsheet. */
@@ -1699,22 +1708,41 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .carousel-wrap .lbl{padding:0 20px 12px}
 .rp .rp-secs > .upsell{border:0}
 /* A dot and a quiet grey label. It names the section; it is not the headline. */
-.rs-h{display:flex;align-items:center;gap:8px;margin:0 0 14px;
+/* The eyebrow carries a glyph now rather than a dot. Fifteen sections is past
+   the point where an all-caps line is enough to tell one from another at a
+   scroll — the glyph is what she recognises when jumping back to one. */
+.rs-h{display:flex;align-items:center;gap:10px;margin:0 0 14px;
   font:600 12px/18px var(--sans);letter-spacing:.04em;
   text-transform:uppercase;color:var(--g600)}
-.rs-h::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;
-  background:var(--g400)}
+.rs-h > i{flex:none;display:grid;place-items:center;width:32px;height:32px;
+  border-radius:50%;background:#FAEFF2;color:#B4536B}
+.rs-h > i > svg{display:block;width:17px;height:17px}
 /* Every child of a section is 14px below the one before it — the board's one
    vertical rhythm, so nothing needs a bespoke margin. */
 .rs > * + *{margin-top:14px}
 .rs .rs-h{margin-bottom:0}
 .rs-t{margin:0;font:600 20px/30px var(--sans);color:var(--g700);letter-spacing:-.01em}
-/* Said once per section and never in colour: it is a note about what is
-   missing, not a second sales pitch. */
-.rs-lock{display:inline-flex;align-items:center;margin:0;padding:9px 12px;
-  border-radius:16px;background:var(--g50,#F9FAFB);
-  font:400 12px/18px var(--sans);color:var(--g600)}
 .rs-p{margin:0;font:400 16px/24px var(--sans);color:var(--g600)}
+
+/* --- the jump index, Figma 3367:6865 --- */
+.rs-idx{display:flex;flex-direction:column;gap:14px}
+/* Pink, because it is the one block on the page that is not her reading: it is
+   the page admitting whose chart this is. */
+.rs-demo{display:flex;flex-direction:column;gap:4px;padding:14px 16px;
+  border-radius:16px;background:#FAEFF2}
+.rs-demo b{font:600 15px/22px var(--sans);color:#B4536B}
+.rs-demo span{font:400 14px/21px var(--sans);color:var(--g600)}
+.rs-jump{margin:0;text-align:center;font:400 14px/20px var(--sans);color:var(--g500)}
+.rs-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.rs-chips button{padding:8px 14px;border:1px solid var(--g200);border-radius:20px;
+  background:#fff;font:400 14px/20px var(--sans);color:var(--g700)}
+.rs-chips button:active{background:var(--g50,#F9FAFB)}
+
+/* --- the two sell cards, Figma 3367:6922 and 3367:6931 --- */
+.rsc{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.rsc h3{margin:0;font:700 20px/28px var(--sans);letter-spacing:-.01em;color:var(--g900)}
+.rsc p{margin:0;font:400 15px/22px var(--sans);color:var(--g600)}
+.rsc .rsc-go{margin-top:8px;width:100%}
 
 /* --- the evidence blocks, one per `k` on the board --- */
 .rs-card{padding:16px;border-radius:16px;background:#F9FAFB}

@@ -46,7 +46,10 @@ var LI_ICON = {
   coin:  '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/>',
   case:  '<rect x="3" y="7.5" width="18" height="12.5" rx="2"/><path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5M3 12.8h18"/>',
   eye:   '<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/>',
-  arrow: '<path d="M4 16.5l5.2-5.2 3.4 3.4L20 7.5"/><path d="M20 12.5v-5h-5"/>'
+  arrow: '<path d="M4 16.5l5.2-5.2 3.4 3.4L20 7.5"/><path d="M20 12.5v-5h-5"/>',
+  people:'<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19.5a5.8 5.8 0 0 1 11.6 0"/><path d="M15.8 5.7a3.2 3.2 0 0 1 0 5.6M16.5 14.2a5.8 5.8 0 0 1 4.3 5.3"/>',
+  list:  '<path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4 6.5h.01M4 12h.01M4 17.5h.01"/>',
+  beads: '<circle cx="12" cy="11" r="7.5" stroke-dasharray="1.4 4.2"/><circle cx="12" cy="20" r="2.2"/>'
 };
 var REPORTS = [
   {
@@ -720,19 +723,51 @@ function rsDecor(k) {
   '</div>';
 }
 
-/* The report body. `locked` draws the chip the board puts on every section the
-   sample does not pay for; the bought copy passes false and the chip goes. */
-function renderSecs(locked) {
-  return RSECS.map(function (s) {
-    return '<section class="rs">' +
-      '<h3 class="rs-h">' + esc(s.e) + '</h3>' +
+/* The report body, Figma 3366:6885. `sample` is the only difference between the
+   two copies now that the locks are gone: it adds the demo-chart banner, the
+   jump index and the two CTA cards. The answers themselves are identical, which
+   is the point — the sample is the product, not a trailer for it. */
+function renderSecs(sample) {
+  var out = sample ? rsIndex() : '';
+  RSECS.forEach(function (s, i) {
+    // Only the sample carries the ids: it is the only copy with an index to
+    // jump from, and both copies sit in the DOM at the same time.
+    out += '<section class="rs"' + (sample ? ' id="rs-' + i + '"' : '') + '>' +
+      '<h3 class="rs-h"><i aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+          'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+          (LI_ICON[s.ic] || '') +
+        '</svg></i>' + esc(s.e) + '</h3>' +
       '<p class="rs-t">' + esc(s.h) + '</p>' +
-      (locked && s.lock ? '<p class="rs-lock">' + esc(LOCK_TEXT) + '</p>' : '') +
       (s.p ? '<p class="rs-p">' + esc(s.p) + '</p>' : '') +
       rsEvidence(s) +
       rsDecor(s.dec) +
     '</section>';
-  }).join('');
+    if (!sample) return;
+    RCTAS.forEach(function (c) {
+      if (c.after !== i) return;
+      out += '<div class="rsc">' +
+        '<h3>' + esc(c.h) + '</h3>' +
+        '<p>' + esc(c.p) + '</p>' +
+        '<button class="btn primary rsc-go" type="button">Get my report \u00b7 \u20b9' + PRICE + '</button>' +
+      '</div>';
+    });
+  });
+  return out;
+}
+
+/* Fifteen answers is more than anyone scrolls past twice, so the sample opens
+   with a way in. The banner above it is doing the harder job: saying out loud
+   that these are Riya's answers, which is what makes the CTA cards' promise —
+   yours will read differently — land as a fact rather than a sales line. */
+function rsIndex() {
+  return '<div class="rs-idx">' +
+    '<div class="rs-demo"><b>' + esc(RINDEX.h) + '</b><span>' + esc(RINDEX.p) + '</span></div>' +
+    '<p class="rs-jump">' + esc(RINDEX.jump) + '</p>' +
+    '<div class="rs-chips">' + RSECS.map(function (s, i) {
+      return '<button type="button" data-jump="' + i + '">' + esc(s.c) + '</button>';
+    }).join('') + '</div>' +
+  '</div>';
 }
 
 /* The arch behind the reader takes the colour of the book being read: the
@@ -755,9 +790,9 @@ function renderSample() {
 
 function renderRead() {
   paintArch();
-  /* The same fourteen sections the sample shows, with the lock chips off —
-     Figma 3155:12516. The sample is a window onto this page, so a bought report
-     that was laid out differently made the preview read as a different product. */
+  /* The same fifteen answers the sample shows, minus the demo-chart banner, the
+     jump index and the two CTA cards. The sample is a window onto this page, so
+     a bought report laid out differently read as a different product. */
   $('#readBody').innerHTML = renderSecs(false) +
       // The end of the report is a door, not a full stop: the other two
       // reports, then the chat where the questions it raised get spent.
@@ -1736,8 +1771,18 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask]');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
+
+  // The jump index. The sample scrolls inside its own [data-scroll], not the
+  // window, so scrollIntoView is the only thing that gets the maths right here.
+  if (t.hasAttribute('data-jump')) {
+    var sec = $('#rs-' + t.getAttribute('data-jump'));
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  if (t.classList.contains('rsc-go')) { openPay(); return; }
 
   // Buy Now skips the detail page. It sits inside a [data-pick] card, and
   // closest() stops at whichever matches first — the button — so this has to
@@ -2053,7 +2098,13 @@ $$('.rp').forEach(function (s) {
   var head = $('.rp-head', s), sc = $('[data-scroll]', s);
   if (!head || !sc) return;
   sc.addEventListener('scroll', function () {
-    head.classList.toggle('solid', sc.scrollTop > 24);
+    var moved = sc.scrollTop > 24;
+    head.classList.toggle('solid', moved);
+    // And the ground inside the arch warms from paper-white to the report's own
+    // pink. White is right at the top, where the arch is the whole picture and
+    // the sketch has to sit on paper; once she is reading, white ground under
+    // white cards leaves the sections with no edges at all.
+    s.classList.toggle('scrolled', moved);
   }, { passive: true });
 });
 

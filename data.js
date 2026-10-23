@@ -15,94 +15,146 @@ window.LANGS = [
   { id: 'kn', label: 'Kannada' }
 ];
 
-/* The report body, transcribed from the Figma board at 3179:202713 — fourteen
-   sections, each an eyebrow, a heading, the locked chip where the board shows
-   one, a paragraph, and one piece of evidence. `k` names the evidence block;
-   the renderer in app.js has a branch per kind. */
+/* The report body, re-transcribed from the Figma board at 3366:6885 ("R.11
+   Sample report · reworked") — fifteen sections, each an eyebrow with its own
+   glyph, a heading, a paragraph and one piece of evidence. `k` names the
+   evidence block; the renderer in app.js has a branch per kind. `ic` is the
+   eyebrow glyph and `c` is the short label the jump index uses.
+
+   The lock chips are gone. The old sample held twelve of fourteen answers back
+   behind "In your full report", which made the preview an argument rather than
+   a reading — she had to take on trust that the thing she could not see was
+   worth ₹49. The board gives all fifteen away and sells on the two CTA cards
+   instead: the pitch is no longer "there is more", it is "this one is Riya's,
+   yours will say something else". */
 window.RSECS = [
-  { e: 'WHO THEY ARE', h: 'Calm, creative and family-minded',
+  { e: 'WHEN YOU MEET', c: 'When you meet', ic: 'cal',
+    h: 'Your strongest window is 2027',
+    p: 'Jupiter moves into your 7th house in March 2027. That is when meeting someone serious is most likely.',
+    k: 'chance', label: 'CHANCE OF MEETING · every 6 months', dec: 'moon',
+    rows: [['H2 26', 30], ['H1 27', 85], ['H2 27', 100], ['H1 28', 55], ['H2 28', 35], ['H1 29', 25]],
+    winLabel: 'YOUR STRONGEST WINDOW', win: 'March 2027 to November 2027' },
+
+  { e: 'WHO THEY ARE', c: 'Who they are', ic: 'user',
+    h: 'Calm, creative and family-minded',
     p: 'Venus sits in your 7th house, so your partner brings warmth and patience. Their work is likely creative, like design, writing or teaching.',
     k: 'bars', label: 'PARTNER TRAITS · out of 10', dec: 'hearts',
     rows: [['Warmth', 8], ['Loyalty', 9], ['Creativity', 8], ['Patience', 6], ['Ambition', 7]] },
 
-  { e: 'PHYSICAL TRAITS', h: 'Tall, with a calm and kind face',
+  { e: 'PHYSICAL TRAITS', c: 'Looks', ic: 'eye',
+    h: 'Tall, with a calm and kind face',
     p: 'These are likely signs from your 7th house and its lord. Use them as a hint, not an exact picture.',
     k: 'tiles', dec: 'leaf',
     rows: [['HEIGHT', 'Taller than you'], ['BUILD', 'Lean to medium'],
       ['COMPLEXION', 'Wheatish'], ['FACE', 'Oval, soft jaw'],
       ['EYES', 'Warm, expressive'], ['STYLE', 'Simple and neat']] },
 
-  { e: 'WHERE THEY COME FROM', h: 'From a nearby city, a known family', lock: true,
+  { e: 'WHERE THEY COME FROM', c: 'Where from', ic: 'pin',
+    h: 'From a nearby city, a known family',
     p: 'Your 7th lord sits in the 9th house. This points to someone from another city, but not far from yours.',
     k: 'rows', dec: 'pin',
     rows: [['DIRECTION', 'North or east of your home'], ['DISTANCE', 'Within a day of travel'],
       ['FAMILY', 'Educated, close and respected']] },
 
-  { e: 'YOUR KUNDALI', h: 'Your 7th house, explained', lock: true,
+  { e: 'HOW YOU WILL MEET', c: 'How you meet', ic: 'people',
+    h: 'Through people you trust',
+    p: 'You are likely to meet through your circle, not online.',
+    k: 'rows', dec: 'lights',
+    rows: [['WHERE', 'At a family function or on a trip'], ['THROUGH', 'A friend or a relative'],
+      ['FIRST SIGN', 'You talk for a long time at the first meeting']] },
+
+  { e: 'YOUR FIRST MEETING', c: 'First meeting', ic: 'cup',
+    h: 'Easy, warm and a little shy',
+    p: 'Moon and Venus together show a first meeting that feels natural, not forced.',
+    k: 'rows', dec: 'cups',
+    rows: [['SETTING', 'A small get-together, not a formal meet'], ['FEELING', 'Comfort first, attraction grows slowly'],
+      ['LOOK FOR', 'They remember small things you said']] },
+
+  { e: 'LOVE OR ARRANGED', c: 'Love or arranged', ic: 'rings',
+    h: 'Arranged, with love',
+    p: 'Your chart points to a match your family brings, where you choose with your heart.',
+    k: 'split', dec: 'rings', pct: 70,
+    rows: [['70% Arranged, with love', '30% Love first']] },
+
+  { e: 'YOUR KUNDALI', c: 'Kundali', ic: 'chart',
+    h: 'Your 7th house, explained',
     p: 'The 7th house is your marriage house. Here is what sits in it, and what it means for you.',
     k: 'kundali', dec: 'orbit',
     houses: { 1: 'Asc', 4: 'Moon', 7: 'Venus', 9: 'Sat', 10: 'Sun Mer', 12: 'Rahu' },
     legend: [['7th house · Venus', 'Love comes with warmth and care. A steady, kind partner.'],
       ['9th house · lord of your 7th', 'Your partner is likely from another city or a different background.']] },
 
-  { e: 'WHEN YOU MEET', h: 'Your strongest window is 2027', lock: true,
-    p: 'Jupiter moves into your 7th house in March 2027. That is when meeting someone serious is most likely.',
-    k: 'chance', label: 'CHANCE OF MEETING · every 6 months', dec: 'moon',
-    rows: [['H2 26', 30], ['H1 27', 85], ['H2 27', 100], ['H1 28', 55], ['H2 28', 35], ['H1 29', 25]],
-    winLabel: 'YOUR STRONGEST WINDOW', win: 'March 2027 to November 2027' },
+  /* New on this board. Every other section says what will happen; this is the
+     only one that says what is in the way, which is the question people
+     actually arrive with. */
+  { e: 'WHAT IS BLOCKING IT', c: 'What is blocking', ic: 'shield',
+    h: 'Rahu is slowing things down',
+    p: 'Rahu sits close to your 7th house. It brings delays and the wrong people first.',
+    k: 'rows', dec: 'orbit',
+    rows: [['WHAT IT DOES', 'Pulls in people who are not right for you'],
+      ['UNTIL', 'It moves on in early 2027'],
+      ['WHAT HELPS', 'Small steps in the Remedies section']] },
 
-  { e: 'HOW YOU WILL MEET', h: 'Through people you trust', lock: true,
-    p: 'You are likely to meet through your circle, not online.',
-    k: 'rows', dec: 'lights',
-    rows: [['WHERE', 'At a family function or on a trip'], ['THROUGH', 'A friend or a relative'],
-      ['FIRST SIGN', 'You talk for a long time at the first meeting']] },
-
-  { e: 'YOUR FIRST MEETING', h: 'Easy, warm and a little shy', lock: true,
-    p: 'Moon and Venus together show a first meeting that feels natural, not forced.',
-    k: 'rows', dec: 'cups',
-    rows: [['SETTING', 'A small get-together, not a formal meet'], ['FEELING', 'Comfort first, attraction grows slowly'],
-      ['LOOK FOR', 'They remember small things you said']] },
-
-  { e: 'LOVE OR ARRANGED', h: 'Arranged, with love', lock: true,
-    p: 'Your chart points to a match your family brings, where you choose with your heart.',
-    k: 'split', dec: 'rings', pct: 70,
-    rows: [['70% Arranged, with love', '30% Love first']] },
-
-  { e: 'YOUR IN-LAWS', h: 'Caring, with a few old rules', lock: true,
+  { e: 'YOUR IN-LAWS', c: 'In-laws', ic: 'home',
+    h: 'Caring, with a few old rules',
     p: 'Your 4th and 10th houses show a family that cares, but likes things done their way.',
     k: 'rows', dec: 'house',
     rows: [['MOTHER-IN-LAW', 'Warm, gets close in the first year'], ['FATHER-IN-LAW', 'Quiet and fair'],
       ['TIP', 'Learn their routines early']] },
 
-  { e: 'FAMILY & MARRIAGE', h: 'A good start for a steady marriage', lock: true,
-    k: 'tags', dec: 'lamp',
-    rows: [['Manglik reading', 'NOT PRESENT', 'No Mangal dosha in your chart. No special pooja needed for this.'],
-      ['Family blessing', 'SLOW START', 'Their family may take time to say yes. Patience helps here.']] },
-
-  { e: 'WILL IT STAY STRONG', h: 'Strong, if you talk openly', lock: true,
+  { e: 'WILL IT STAY STRONG', c: 'Stay strong', ic: 'arrow',
+    h: 'Strong, if you talk openly',
     p: 'Jupiter looks at your 7th house and protects the bond. Small fights pass quickly.',
     k: 'rows', dec: 'plant',
     rows: [['STRENGTH', 'Trust and shared values'], ['WATCH FOR', 'Holding back your feelings'],
       ['BEST YEARS', '2028 to 2031']] },
 
-  { e: 'WHAT TO DO NOW', h: 'Three small steps for this year', lock: true,
+  { e: 'FAMILY & MARRIAGE', c: 'Family', ic: 'spark',
+    h: 'A good start for a steady marriage',
+    k: 'tags', dec: 'lamp',
+    rows: [['Manglik reading', 'NOT PRESENT', 'No Mangal dosha in your chart. No special pooja needed for this.'],
+      ['Family blessing', 'SLOW START', 'Their family may take time to say yes. Patience helps here.']] },
+
+  { e: 'WHAT TO DO NOW', c: 'What to do', ic: 'list',
+    h: 'Three small steps for this year',
     k: 'tips', dec: 'lotus',
     rows: [['Say yes to family events', 'Most likely place to meet, early 2027.'],
       ['Wear light colours on Fridays', 'Friday is Venus day, your 7th house planet.'],
       ['Talk openly with your parents', 'It helps the family part go smoothly.']] },
 
-  { e: 'REMEDIES', h: 'Simple remedies for your chart', lock: true,
+  { e: 'REMEDIES', c: 'Remedies', ic: 'beads',
+    h: 'Simple remedies for your chart',
     p: 'Small, easy steps that support Venus and Jupiter in your chart.',
     k: 'rows', dec: 'mala',
     rows: [['MANTRA', 'Om Shukraya Namah, 11 times on Fridays'], ['GIVE', 'White sweets at a temple on Fridays'],
       ['WEAR', 'Light pink or white on Fridays']] },
 
-  { e: 'LUCKY FOR YOU', h: 'Your love signs', lock: true,
+  { e: 'LUCKY FOR YOU', c: 'Lucky for you', ic: 'sun',
+    h: 'Your love signs',
     k: 'tiles', dec: 'stars',
     rows: [['DAY', 'Friday'], ['COLOUR', 'Light pink'], ['NUMBER', '6']] }
 ];
 
-window.LOCK_TEXT = 'In your full report, made for your chart';
+/* The two cards the board drops into the run of sections, after "Where they
+   come from" and after "What is blocking it" — the places a reader is most
+   likely to have stopped nodding and started wondering about her own chart.
+   `after` is the index of the section they follow. Sample only: in the bought
+   report there is nothing left to sell, and a card asking her to buy the thing
+   she is reading would read as a bug. */
+window.RCTAS = [
+  { after: 3, h: 'Want this for your chart?',
+    p: 'Astro Hemali makes your report from your own birth details. One-time, no subscription.' },
+  { after: 8, h: 'Your answers will be different',
+    p: 'Every chart is unique. Get yours made by Astro Hemali in about 30 minutes.' }
+];
+
+/* The demo-chart banner and the jump index, straight off the board. Fifteen
+   answers in a scroll this long needs a way in that is not the scrollbar. */
+window.RINDEX = {
+  h: 'This is a sample on a demo chart',
+  p: 'Riya · 14 Mar 1997 · 6:20 AM · Jaipur. Your report is made from your own birth chart.',
+  jump: '15 answers in this sample · tap to jump'
+};
 
 window.SAMPLE = {
   en: {
