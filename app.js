@@ -1513,14 +1513,8 @@ function renderReport() {
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
-  // The facts line under the title: who made it, how long, what it reads in.
-  // These used to be spread across the About paragraph and the chips, which
-  // meant the page said "38 pages" once as a pill and the astrologer's name
-  // once inside a sentence about something else.
-  $('#r2Sub').textContent = 'By Astro Hemali · ' + r.pages + ' pages · ' +
-    LANGS.length + ' languages';
-  $('#r2Lead').textContent = r.s + '. Written from your own birth chart, not a sun sign.';
-  $('#r2Chips').innerHTML = r.chips.concat(['Shareable', 'Private'])
+  $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
+  $('#r2Chips').innerHTML = r.chips.concat([r.pages + ' pages', 'Shareable', 'Private'])
     .map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('');
   $('#r2Learn').innerHTML =
     '<h2 class="r2-h">What you will get</h2>' +

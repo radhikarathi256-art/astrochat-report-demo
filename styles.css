@@ -1243,23 +1243,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    itself is held in place by the top one.
    No shadow: it drew a line exactly where the book is meant to be resting. */
 .r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
-  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:left}
-/* Ranged left, like an Airbnb listing title — and like every other line on this
-   page. Centred it opened an axis that nothing below it kept, so the page read
-   as two documents stacked. 24/31 with a little negative tracking so the long
-   two-line names stay one object rather than four loose words. */
-.r2-card h1{margin:0;font:700 24px/31px var(--sans);letter-spacing:-.015em;color:#1D2939}
-/* The listing's facts, under the name and before the stats: who wrote it, how
-   long it is, what it is available in. Airbnb's "Entire home · 4 guests · 2
-   beds" line. It also takes the provenance out of the About paragraph, which
-   was carrying two jobs in one sentence. */
-.r2-sub{margin:7px 0 0;font:400 14px/21px var(--sans);color:var(--g600)}
-.r2-stats{margin-top:16px;display:flex;align-items:center;justify-content:flex-start;gap:14px}
-.r2-stats div{width:auto}
-.r2-stats b{display:flex;align-items:center;gap:2px;
-  font:600 15px/22px var(--sans);color:var(--g900);white-space:nowrap}
-.r2-stats small{display:block;font:400 12px/18px var(--sans);color:var(--g500)}
-.r2-div{width:1px;height:26px;background:var(--g200)}
+  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center}
+/* Figma 3186:204216 — Inter Bold 20/30 on #1d2939, centred, in a 290 box.
+   It stays centred and it stays alone: this is the title on the cover of the
+   book standing above it, not a listing heading. Ranging it left and hanging a
+   facts line under it turned a calm masthead into four loose grey lines. */
+.r2-card h1{margin:0 auto;max-width:290px;font:700 20px/30px var(--sans);color:#1D2939}
+.r2-stats{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px}
+.r2-stats div{width:84px}
+.r2-stats b{display:flex;align-items:center;justify-content:center;gap:2px;
+  font:600 16px/24px var(--sans);color:var(--g800);white-space:nowrap}
+.r2-stats small{display:block;font:500 12px/18px var(--sans);color:var(--g500)}
+.r2-div{width:1px;height:20.5px;background:var(--g200)}
 .r2-about{padding:20px 16px 24px;display:flex;flex-direction:column;gap:10px}
 /* One small paragraph. It used to be a large headline, a three-item checklist and
    a provenance line — the checklist repeated "Find answers to" one screen below,
@@ -1280,38 +1275,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Still used by the "people also bought" rail inside the report. */
 .lbl{margin:0 0 12px;font:600 13px/20px var(--sans);letter-spacing:.03em;color:var(--g500)}
 
-/* Every block below the fold is a titled section with a full-bleed rule above
-   it. Tiny grey micro-labels made the whole page read as one undivided wash. */
-/* No rules between the blocks. Each one already opens with its own heading on
-   a clear field, so the lines were drawing boxes around things that were
-   plainly separate without them. */
-/* One rhythm for the whole page: every section is 24 top, 24 bottom, 16 in from
-   the gutter, and every section after the first is opened by a hairline. The
-   blocks used to sit on a clear field with nothing between them, which left the
-   spacing doing all the work — and 24 under one section plus 24 over the next
-   reads as one 48px hole, not as a join. */
+/* One rhythm, carried by the spacing alone: 24 top, 24 bottom, 16 in from the
+   gutter. No rules anywhere on this page — each block already opens with its
+   own heading on a clear field, so hairlines only drew boxes around things
+   that were plainly separate without them. */
 .r2-block{padding:24px 16px}
-/* Inset to the gutter, not edge to edge, so the rule starts and stops on the
-   same left and right margin as every heading and paragraph it divides. */
-.r2-block + .r2-block{position:relative}
-.r2-block + .r2-block::before{content:'';position:absolute;left:16px;right:16px;
-  top:0;height:1px;background:var(--g200)}
 /* The card hangs 20px into this block, so 24px of padding left almost nothing
    between the stats row and "About this report". This is the first breath after
    the hero and it has to read as one. */
-.r2-card + .r2-block{padding-top:48px;position:relative}
-/* A hairline between the rating row and "About this report". Everything in the
-   card is centred and everything below it is ranged left, and with nothing
-   marking the change the left edge looked like the centred block had slipped
-   off its axis. The rule makes the two read as two blocks rather than one
-   badly aligned one. Positioned 28px down because the card hangs 20px into
-   this section — measured off the live page, that puts it 8px clear of the
-   card's bottom edge and 20px above the heading. */
-.r2-card + .r2-block::before{content:'';position:absolute;left:16px;right:16px;
-  top:28px;height:1px;background:var(--g200)}
-/* The upsells keep the rule and the rhythm now. With every other join marked,
-   leaving this one open made the rail look like it had fallen out of the
-   reviews above it, and its own padding broke the 24 beat. */
+.r2-card + .r2-block{padding-top:44px}
 /* `.carousel.fill` — two cards, so they split the row rather than sitting at a
    fixed 159px with dead space beside them. Nothing is off-screen, so there is
    nothing left to scroll to. Used by both upsell strips. */
