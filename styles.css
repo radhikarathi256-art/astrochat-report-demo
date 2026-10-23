@@ -460,21 +460,36 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    anything worth withholding, and at 64px it read as a glitch rather than a
    book. So the cover is now what the Figma covers are: a watercolour wash
    with the page edges showing down the right side. */
+/* Turned a few degrees off the page so the case reads as an object with a
+   front, a back and an edge, instead of a printed rectangle seen head-on. */
 .bkt,.bk3{position:relative;z-index:2;flex:none;display:block;
-  width:86px;height:114px;background:none;box-shadow:none}
+  width:86px;height:114px;background:none;box-shadow:none;
+  transform:perspective(620px) rotateY(-9deg);transform-origin:18% 50%}
 /* The page block — the one detail that makes a flat rectangle read as paper.
    Hardbound, so the boards are bigger than the text block: the block is inset
    4px top and bottom and the cover overhangs it, which is the square a case
    binding has and a paperback does not. The fine repeating stripe is stacked
    leaves; without it the block is a beige bar. */
-.bkt::after,.bk3::after{content:'';position:absolute;z-index:0;
-  right:-5px;top:4px;bottom:4px;width:8px;border-radius:0 2px 2px 0;
+.bkt::after,.bk3::after{content:'';position:absolute;z-index:1;
+  right:-9px;top:3px;bottom:3px;width:12px;border-radius:0 2px 2px 0;
   background:
     repeating-linear-gradient(90deg,rgba(74,24,8,.1) 0 .5px,rgba(74,24,8,0) .5px 2px),
     linear-gradient(90deg,var(--pap-lt) 0,var(--pap) 36%,var(--pap-dk) 60%,var(--pap) 100%);
   box-shadow:0 8px 14px -6px rgba(74,24,8,.3)}
 .bkt::before,.bk3::before{content:none}
-.bkt-in,.bk3-in{position:absolute;inset:0;z-index:1}
+/* The back board. Same artwork, darkened and pushed down-right, so what shows
+   past the front cover is a real second board and the gap between the two is
+   the thickness of the case. */
+.bkt-board,.bk3-board{position:absolute;z-index:0;inset:0;
+  transform:translate(7px,5px);border-radius:1px 3px 3px 1px;
+  background:center/cover no-repeat;
+  filter:brightness(.42) saturate(1.3);
+  box-shadow:0 12px 20px -8px rgba(74,24,8,.5)}
+.bk3-board{background:
+  radial-gradient(56% 32% at 27% 17%,var(--cva,#C98B9B) 0,rgba(255,255,255,0) 74%),
+  radial-gradient(50% 29% at 75% 71%,var(--cvb,#9B6B7A) 0,rgba(255,255,255,0) 72%),
+  linear-gradient(160deg,#FFFCF8 0,#F7F0E7 100%)}
+.bkt-in,.bk3-in{position:absolute;inset:0;z-index:2}
 /* The cover is wrapped so it can carry a back face; everywhere but the report
    hero it is an inert pass-through and the book stays shut. */
 .bkt-cov{position:absolute;inset:0;z-index:1}
@@ -486,11 +501,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .bkt-face,.bk3-face{position:absolute;inset:0;overflow:hidden;
   border-radius:1px 3px 3px 1px;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.34),
-    inset -1px 0 0 rgba(74,24,8,.3),
-    inset 0 -2px 0 rgba(74,24,8,.26),
-    0 1px 1px rgba(74,24,8,.4),
-    0 10px 18px -8px rgba(74,24,8,.42)}
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset -2px 0 0 rgba(74,24,8,.34),
+    inset 0 -3px 0 rgba(74,24,8,.3),
+    0 2px 2px rgba(74,24,8,.45),
+    0 12px 20px -8px rgba(74,24,8,.46)}
 .bkt-face{background:center/cover no-repeat}
 /* The wash, for the reports with no painted cover yet: two soft blooms in the
    report's own colourway over a pale ground, the way a wet brush leaves it. */
@@ -524,12 +539,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .bkt-3d{position:absolute;inset:0;z-index:3;pointer-events:none;
   background:center/contain no-repeat}
 .bkt.has3d::after{content:none}
-.bkt.has3d .bkt-in{display:none}
+.bkt.has3d .bkt-in,.bkt.has3d .bkt-board{display:none}
+/* The render is already a photograph of a turned book — turning it again would
+   double the perspective. */
+.bkt.has3d{transform:none}
 /* The two places the book has to MOVE keep the built one, because a flat
    picture cannot tilt open: the upsell card's tease, and the report hero that
    swings the full 180. */
 :is(.pcard,.r2-bookwrap) .bkt.has3d .bkt-3d{display:none}
 :is(.pcard,.r2-bookwrap) .bkt.has3d .bkt-in{display:block}
+.pcard .bkt.has3d .bkt-board{display:block}
 /* The hero suppresses the page block on its own account, so it is restored
    only on the card. */
 .pcard .bkt.has3d::after{content:''}
@@ -1115,6 +1134,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    is the one place the book lies open, so the box is twice the spread's width
    and the strip stood on its own in mid-air beside the artwork. */
 .r2-bookwrap .bkt::after{content:none}
+/* And the back board comes off with it, for the same reason: the spread is a
+   painted PNG with transparent margins, so a darkened copy of the closed cover
+   behind it is not a second board — it is a black rectangle wider than the book. */
+.r2-bookwrap .bkt-board,.r2-bookwrap .bk3-board{display:none}
 #report.on .r2-bookwrap{animation:bookRise .5s cubic-bezier(.22,.9,.3,1) .12s both}
 @keyframes bookRise{
   0%{opacity:0;transform:translateY(14px) scale(.97)}

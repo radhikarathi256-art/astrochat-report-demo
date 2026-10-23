@@ -1128,6 +1128,9 @@ function book3d(r) {
       // The rendered book, painted over the built one. CSS decides which of the
       // two is showing, because that depends on whether this copy has to move.
       (r.art.solid ? '<span class="bkt-3d" style="background-image:url(' + r.art.solid + ')"></span>' : '') +
+      // The back board: the same artwork darkened and offset, so the case has a
+      // visible second cover behind the first instead of one printed face.
+      '<span class="bkt-board" style="background-image:url(' + r.art.closed + ')"></span>' +
       '<span class="bkt-in">' +
         // The right-hand page of the spread, sitting under the cover.
         '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
@@ -1142,6 +1145,7 @@ function book3d(r) {
     '</span>';
   }
   return '<span class="bk3" aria-hidden="true">' +
+    '<span class="bk3-board"></span>' +
     '<span class="bk3-in">' +
       '<span class="bk3-spine"><em>' + esc(r.t) + '</em></span>' +
       // The leaf sits a hair behind the cover so that when the cover swings
