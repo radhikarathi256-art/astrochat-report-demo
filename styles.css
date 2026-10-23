@@ -2166,8 +2166,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    The element spans the whole phone so the close button can ride up on the blur
    where the board puts it, but only the white body and the X take pointer
    events — everything else falls through to the scrim, so a tap on the blur
-   still closes. */
+   still closes.
+
+   Spanning the whole phone means undoing three things the shared .sheet does:
+   its 88% height cap (with top:0 also set, a capped box anchors at the TOP and
+   leaves a gap under the body — which is exactly how this shipped wrong), its
+   20px frame (the white body draws its own), and its scroll box (the book
+   overhangs the body on purpose and must not be clipped). */
 .pay-sheet{top:0;background:none;box-shadow:none;border-radius:0;pointer-events:none;
+  max-height:none;padding:0;overflow:visible;gap:0;
   display:flex;flex-direction:column;justify-content:flex-end}
 .pay-sheet > *{pointer-events:auto}
 .pays-x{position:absolute;z-index:4;top:calc(var(--sbh) + 14px);right:16px;
