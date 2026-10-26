@@ -669,6 +669,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border-radius:1px 3px 3px 1px;overflow:hidden;
   background:linear-gradient(90deg,var(--pap-lt) 0,var(--pap) 52%,var(--pap-dk) 84%,var(--pap) 100%);
   background-size:200% 100%;background-position:right center;background-repeat:no-repeat;
+  /* Paper under whatever is printed on it. The spread art is painted onto this
+     element inline, which replaces the gradient above outright — and since the
+     exports were keyed down to the book and now carry transparent margins, that
+     left the page block with no ground at all: a pale cut-out slab stood beside
+     the cover instead of this book's own pages. The colour is a separate
+     property, so it survives the override and the page stays opaque. */
+  background-color:var(--pap);
   box-shadow:0 9px 16px -8px rgba(74,24,8,.4)}
 .of3-leaf::after{content:'';position:absolute;right:0;top:0;bottom:0;width:10px;
   background:linear-gradient(90deg,rgba(255,249,252,0),var(--pap-dk))}
@@ -731,15 +738,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 }
 .of3-pts{margin:14px 6px 0}
 .of3-pts .pts{gap:10px}
-/* Bigger text than the generic list, so a bigger glyph, and brand-coloured
-   rather than grey: on the sell card these four lines are the offer, and the
-   card has no other orange in it above the price. The remainder stays a
-   dotted-underline line of the same text rather than a fifth bullet, so the
-   list ends on an invitation instead of another claim. */
+/* Bigger text than the generic list, so a bigger glyph. The glyph takes the
+   text's own colour and nothing else: orange made four small drawings compete
+   with the Buy Now button for the only warm note on the card, and a line of
+   orange marks down the left edge read as a second column rather than as part
+   of the sentences beside them. The remainder stays a dotted-underline line of
+   the same text rather than a fifth bullet, so the list ends on an invitation
+   instead of another claim. */
 .of3-pts .pts li{font:500 14px/20px var(--sans);color:var(--g700)}
 .of3-pts .pts li > i,
 .of3-pts .pts li > i > svg{width:18px;height:18px}
-.of3-pts .pts li > i{color:var(--brand)}
+.of3-pts .pts li > i{color:currentColor}
 .of3-pts .pts .pts-more{padding-left:0;font-weight:500;color:var(--g700);
   text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
 /* The hairline above the price is in the frame and does real work: it ends the
@@ -813,6 +822,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border-radius:1px 3px 3px 1px;overflow:hidden;
   background:linear-gradient(90deg,var(--pap-lt) 0,var(--pap) 58%,var(--pap-dk) 88%,var(--pap) 100%);
   background-size:200% 100%;background-position:right center;background-repeat:no-repeat;
+  /* As on the offer card: the inline art replaces the gradient, so the page
+     needs an opaque ground of its own or the keyed-out margins show through. */
+  background-color:var(--pap);
   box-shadow:0 7px 13px -7px rgba(74,24,8,.38)}
 /* One soft gradient, not ruled hairlines. At this size the stripes never read
    as a block of paper — they read as a glitch across the fore-edge. */
@@ -1097,12 +1109,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- R.2 Report page ---------- */
 /* The hero photo fades into white, so the card below it has no visible seam. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
-  /* 104, not 59: the new clip is a much squarer frame than the old one, so
-     object-fit has almost no vertical slack left to push the couple up with.
-     The headroom has to come from the book starting lower instead — which is
-     the same requirement either way, that both faces are clear of the boards
-     rather than half behind them. */
-  padding:calc(var(--sbh) + 104px) 12px 28px;
+  /* The book starts this far down, and that is what sets the height of the
+     picture above it. 144 rather than 104: at the shorter height the couple
+     were packed against the book with nothing over their heads, and the arch
+     they are standing in had no room to be an arch. The extra 40px is all
+     air above the faces, which is the difference between a crop and a frame. */
+  padding:calc(var(--sbh) + 144px) 12px 28px;
   border-radius:0 0 24px 24px;overflow:hidden;background:var(--rose)}
 /* The couple behind the curtain, framed so both heads clear the book entirely.
    The source is a 720x1280 portrait clip with its audio track removed from the

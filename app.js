@@ -111,14 +111,18 @@ var REPORTS = [
     ]
   },
   {
-    id: 'marriage', t: 'Marriage Report', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
+    // Named for the thing people search for. "Marriage Report" said nothing the
+    // subtitle did not already say; Kundli Milan is the word she would use
+    // herself, and it is what the cover says.
+    id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
     why: 'Learn how Mars in your chart is holding the talks back',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
-    // Figma 3258:6840 for the spread, 3330:6840 for the hero ground.
+    // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3330:6840 for
+    // the hero ground.
     art: {
-      closed: 'assets/cover-marriage.jpg?v=3',
-      open: 'assets/spread-marriage.png?v=2',
-      hero: 'assets/bg-marriage.jpg?v=1'
+      closed: 'assets/cover-marriage.jpg?v=4',
+      open: 'assets/spread-marriage.png?v=3',
+      hero: 'assets/bg-marriage.jpg?v=2'
     },
     chips: ['36 guna match', 'Dosha check'],
     revs: [
