@@ -1092,10 +1092,22 @@ function leadReport() { return reportById('partner'); }
    list of questions tells her whether her own question is answered. So the
    same list rides every surface — chat, History, Today — cut to the top few
    with the remainder counted, so the report reads finite and worth ₹49. */
+/* Same glyphs as "What you will get" on the detail page, off the same
+   `licons`. The tick on a disc was the same mark four times over, which made
+   the list read as terms and conditions — four identical boxes being ticked —
+   when each line is a different question. The drawing is what tells them
+   apart, and it is the one the detail page will show her next. */
 function pointers(r, n) {
   var top = r.learn.slice(0, n), rest = r.learn.length - top.length;
   return '<ul class="pts">' +
-    top.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+    top.map(function (x, i) {
+      var k = (r.licons || [])[i];
+      return '<li><i aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+          'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+          (LI_ICON[k] || '<path d="M4.5 12.5 9.5 17.5 19.5 6.5"/>') +
+        '</svg></i>' + esc(x) + '</li>';
+    }).join('') +
     (rest > 0 ? '<li class="pts-more">+' + rest + ' more questions answered</li>' : '') +
   '</ul>';
 }

@@ -422,17 +422,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tl-card .sell-hero{border-radius:0}
 
 /* The pointers. These are the product — the list of her own questions — so
-   they get real line-height and a tick, not a bullet lost in grey text. */
+   they get real line-height and a drawing each, not a bullet lost in grey text.
+   The same glyphs as "What you will get" on the detail page, which is the page
+   this list sends her to: a tick repeated four times was one mark doing four
+   jobs, and made a list of four different questions read as four boxes being
+   ticked. */
 .pts-h{margin:12px 0 7px;font:700 11px/15px var(--sans);letter-spacing:.05em;
   text-transform:uppercase;color:var(--g500)}
 .pts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.pts li{position:relative;padding-left:21px;font:400 12.5px/17px var(--sans);
-  color:var(--g700)}
-.pts li::before{content:'';position:absolute;left:0;top:4px;width:14px;height:14px;
-  border-radius:50%;background:#ECFDF3;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path d='M3.8 7.2 6 9.3l4.2-4.4' fill='none' stroke='%23067647' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
-.pts .pts-more{padding-left:21px;font-weight:600;color:var(--brand-dk)}
-.pts .pts-more::before{background:#FFF1E3;background-image:none}
+.pts li{display:flex;gap:8px;font:400 12.5px/17px var(--sans);color:var(--g700)}
+.pts li > i{flex:none;margin-top:1px;width:15px;height:15px;color:var(--g600)}
+.pts li > i > svg{display:block;width:15px;height:15px}
+/* No glyph of its own — it is not a question, it is the count of the ones not
+   listed — so it takes the indent the glyphs make instead. */
+.pts .pts-more{padding-left:23px;font-weight:600;color:var(--brand-dk)}
 
 /* ---------- The sell card's banner ----------
    Same artwork and same open book as the report page, but composed as a card,
@@ -728,16 +731,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 }
 .of3-pts{margin:14px 6px 0}
 .of3-pts .pts{gap:10px}
-/* Figma 3111:201624 — a 12px tick on a brand50 disc (#FDF0EB fill + a 1.6px
-   #EF6939 check), not the green chip the generic list uses, and the remainder
-   is a dotted-underline line of the same text rather than a fifth bullet, so
-   the list ends on an invitation instead of another claim. */
-.of3-pts .pts li{padding-left:21px;font:500 14px/20px var(--sans);color:var(--g700)}
-.of3-pts .pts li::before{top:4px;width:12px;height:12px;background:var(--brand50);
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M3.2 6.2 4.9 7.8 8.4 4.3' fill='none' stroke='%23EF6939' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+/* Bigger text than the generic list, so a bigger glyph, and brand-coloured
+   rather than grey: on the sell card these four lines are the offer, and the
+   card has no other orange in it above the price. The remainder stays a
+   dotted-underline line of the same text rather than a fifth bullet, so the
+   list ends on an invitation instead of another claim. */
+.of3-pts .pts li{font:500 14px/20px var(--sans);color:var(--g700)}
+.of3-pts .pts li > i,
+.of3-pts .pts li > i > svg{width:18px;height:18px}
+.of3-pts .pts li > i{color:var(--brand)}
 .of3-pts .pts .pts-more{padding-left:0;font-weight:500;color:var(--g700);
   text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
-.of3-pts .pts .pts-more::before{content:none}
 /* The hairline above the price is in the frame and does real work: it ends the
    list, so the price reads as the answer to it rather than a fifth bullet. */
 .of3-foot{display:flex;align-items:center;gap:15px;margin-top:14px;padding:10px 10px 0;
