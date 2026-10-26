@@ -1431,40 +1431,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 @media (prefers-reduced-motion:reduce){
   .review{transition:none}
 }
-/* ---------- Meet your astrologer ---------- */
-/* Her, then her numbers: board 3353:14228 runs the portrait down the left and
-   the three counts down the right, divided, so one glance gets a face and a
-   track record without either becoming a paragraph. */
-/* One card, with the same white-on-hairline treatment the reviews use, so the
-   two blocks of social proof on this page are built the same way. The 16px of
-   padding is also what stops the portrait sitting on the page's own left edge,
-   which is what made this read as a stray row rather than a thing. */
-.astro-card{margin-top:14px;padding:16px;border:1px solid var(--g200);
-  border-radius:16px;background:#fff}
-.astro{display:flex;align-items:center;gap:18px}
-.astro-who{flex:none;width:118px;display:flex;flex-direction:column;align-items:center;
-  gap:7px;text-align:center}
-.astro-av{position:relative;display:block;width:88px;height:88px}
-.astro-av img{width:88px;height:88px;border-radius:50%;object-fit:cover;display:block}
-/* Bottom-right, on the rim — the one spot where it cannot land on her face at
-   any crop. The white ring is what keeps it legible against dark hair. */
-.astro-av > i{position:absolute;right:0;bottom:2px;width:22px;height:22px;
-  display:grid;place-items:center;border-radius:50%;
-  background:#12B76A;box-shadow:0 0 0 2.5px #fff}
-.astro-who > b{font:600 15px/21px var(--sans);color:var(--g900)}
-/* Not a pill: a filled badge beside a filled green tick and a filled star is
-   three competing chips. The outline star carries it. */
-.astro-badge{display:inline-flex;align-items:center;gap:4px;
-  font:500 12px/17px var(--sans);color:var(--brand-dk)}
-/* Hairlines between the counts, not around them — the numbers are already a
-   column, and a card here would make a second card inside the section. */
-.astro-stats{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
-.astro-stats > div{padding:9px 0;border-bottom:1px solid var(--g200)}
-.astro-stats > div:first-child{padding-top:0}
-.astro-stats > div:last-child{padding-bottom:0;border-bottom:0}
-.astro-stats b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
-.astro-stats small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
-
 /* ---------- What the report is: description, chips, the sample door ---------- */
 /* The one block on this page that stays on the title card's axis rather than
    starting the body column. It is the masthead's second half — what the book

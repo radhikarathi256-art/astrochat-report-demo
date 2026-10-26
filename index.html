@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610261821">
+<link rel="manifest" href="manifest.webmanifest?v=202610261843">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610261821">
-<link rel="stylesheet" href="mobile.css?v=202610261821">
+<link rel="stylesheet" href="styles.css?v=202610261843">
+<link rel="stylesheet" href="mobile.css?v=202610261843">
 </head>
 <body>
 
@@ -278,7 +278,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610261821" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610261843" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -320,51 +320,13 @@
              chapter ladder would have nothing to shut. -->
         <div class="r2-block" id="r2Learn"></div>
 
-        <!-- Who writes it. Board 3353:14228 puts this between the contents and
-             the reviews, which is the right seam: the list above says what is in
-             the report, the quotes below are strangers vouching for it, and the
-             only thing that carries weight in between is the person whose name
-             is on the cover. She is already the face in the chat and on Today,
-             so this is the one screen where the numbers behind her get said. -->
-        <div class="r2-block">
-          <h2 class="r2-h">Meet your astrologer</h2>
-          <!-- One card, not a run of loose rows. Everything around it on this
-               page is about the book; she is the only other party to the
-               transaction, so her part of it gets an edge drawn round it. -->
-          <div class="astro-card">
-          <div class="astro">
-            <div class="astro-who">
-              <span class="astro-av">
-                <img src="assets/hemali.png" alt="Astro Hemali">
-                <!-- The tick is the platform vouching, so it sits on her, not
-                     in a row of its own. -->
-                <i aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="m3 6.2 2.1 2.1L9 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </i>
-              </span>
-              <b>Astro Hemali</b>
-              <span class="astro-badge">
-                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1.2 8.6 4.5l3.6.5-2.6 2.6.6 3.6L7 9.5l-3.2 1.7.6-3.6L1.8 5l3.6-.5z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
-                Top astrologer
-              </span>
-            </div>
-            <!-- Three numbers, hairline-divided, in the column beside her: how
-                 much of this she has done, how it landed, how long she has been
-                 at it. Anything else here would be adjectives. -->
-            <div class="astro-stats">
-              <div><b>3,000+</b><small>Reports written</small></div>
-              <div><b>4.8 &#9733;</b><small>Rating</small></div>
-              <div><b>12</b><small>Years of practice</small></div>
-            </div>
-          </div>
-          <!-- Her name, the badge, three numbers, and the way to reach her.
-               The credentials line that used to sit here was gone over and
-               cut: on a page that is already a hero, a contents list,
-               reviews and a carousel, the numbers answer the question the
-               line was answering. -->
-          <button class="r2-samp" type="button" data-chat>Message Hemali</button>
-          </div>
-        </div>
+        <!-- Meet your astrologer used to sit here, between the contents and the
+             reviews. It is gone. She is already the face in the chat, on Today
+             and in the line under the title that says who makes the report, so
+             a card restating her name, her tick and three numbers was the page
+             introducing someone it had introduced twice. The quotes below do
+             the vouching that card was there to do, and they do it with
+             strangers rather than with the seller. -->
 
         <!-- Not "what readers say": what they found. The quotes that work are
              the ones naming a thing the report called before it happened. -->
@@ -903,8 +865,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610261821"></script>
-<script src="app.js?v=202610261821"></script>
-<script src="mobile.js?v=202610261821"></script>
+<script src="data.js?v=202610261843"></script>
+<script src="app.js?v=202610261843"></script>
+<script src="mobile.js?v=202610261843"></script>
 </body>
 </html>
