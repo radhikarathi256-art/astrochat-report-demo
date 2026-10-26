@@ -1459,10 +1459,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    be a brand-orange outline, which put a second orange control on a page whose
    only orange should be the ₹49 button. Full width also squares the section's
    left and right edges with everything above it. */
+/* The secondary button, Figma 3114:12457: white, a brand hairline and brand
+   label. Grey border and near-black text made these read as disabled next to
+   the orange Buy Now in the bar below — which is exactly backwards, since these
+   two are the only things on the page worth tapping before she decides. The
+   sticky bar keeps the filled treatment; nothing in the page body competes with
+   it for solidity, only for colour. */
 .r2-samp{display:block;width:100%;margin-top:18px;cursor:pointer;
-  border:1px solid var(--g300);border-radius:12px;background:#fff;
-  padding:0;height:48px;font:600 15px/48px var(--sans);color:var(--g900);
+  border:1px solid var(--brand);border-radius:12px;background:#fff;
+  box-shadow:0 1px 2px rgba(16,24,40,.05);
+  padding:0;height:48px;font:600 14px/46px var(--sans);color:var(--brand);
   text-align:center}
+.r2-samp:active{background:var(--brand50)}
 
 /* ---------- Sticky buy bar · 3111:200974 ----------
    White, not a gradient. Measured off the board: 10/0/12/0 with a 10px gap,
