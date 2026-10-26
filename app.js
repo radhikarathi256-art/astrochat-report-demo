@@ -117,12 +117,17 @@ var REPORTS = [
     id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
     why: 'Learn how Mars in your chart is holding the talks back',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
-    // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3330:6840 for
+    // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
     art: {
       closed: 'assets/cover-marriage.jpg?v=4',
       open: 'assets/spread-marriage.png?v=3',
-      hero: 'assets/bg-marriage.jpg?v=2'
+      hero: 'assets/bg-marriage.jpg?v=2',
+      // Cropped from the top rather than centred. At 8% the couple sat low
+      // enough that the mandap above them was most of the picture and the two
+      // faces — the only thing in the frame that is about her — were down
+      // level with the book. This lifts them by about a third of the hero.
+      heroPos: '50% 70%'
     },
     chips: ['36 guna match', 'Dosha check'],
     revs: [
@@ -149,14 +154,20 @@ var REPORTS = [
     ]
   },
   {
-    id: 'career', t: 'Career & Job', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
+    // Money, not just the job. The cover says Career & Money and the report
+    // answers raises and timing as much as switches, so the tile says it too.
+    id: 'career', t: 'Career & Money', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
     why: 'Learn how Saturn is slowing down your next move',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
-    // Figma 3325:6840 cover, 3328:6840 spread, 3330:6864 hero ground.
+    // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
     art: {
-      closed: 'assets/cover-career.jpg?v=1',
-      open: 'assets/spread-career.png?v=1',
-      hero: 'assets/bg-career.jpg?v=1'
+      closed: 'assets/cover-career.jpg?v=2',
+      open: 'assets/spread-career.png?v=2',
+      hero: 'assets/bg-career.jpg?v=2',
+      // Enough to clear the book. At the default the climber's head sat right
+      // on the board's top edge, so the one figure in the frame was being cut
+      // by the thing in front of it. The sky above him is what gets lost.
+      heroPos: '50% 55%'
     },
     chips: ['Switch timing', 'Raise window'],
     revs: [
@@ -1580,6 +1591,9 @@ function renderReport() {
   var hero = $('#r2Hero');
   hero.classList.toggle('has-bg', !!(r.art && r.art.hero));
   hero.style.backgroundImage = r.art && r.art.hero ? 'url(' + r.art.hero + ')' : '';
+  // Each still is framed on its own subject, so the crop is part of the art
+  // rather than one rule for all of them. Blank falls back to the CSS default.
+  hero.style.backgroundPosition = (r.art && r.art.heroPos) || '';
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);

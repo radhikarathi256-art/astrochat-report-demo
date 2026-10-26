@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610261749">
+<link rel="manifest" href="manifest.webmanifest?v=202610261810">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610261749">
-<link rel="stylesheet" href="mobile.css?v=202610261749">
+<link rel="stylesheet" href="styles.css?v=202610261810">
+<link rel="stylesheet" href="mobile.css?v=202610261810">
 </head>
 <body>
 
@@ -278,7 +278,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610261749" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610261810" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -357,23 +357,13 @@
               <div><b>12</b><small>Years of practice</small></div>
             </div>
           </div>
-          <!-- Facts about her, not about the product — the three a buyer
-               actually asks before paying: can she read me in my language,
-               does she do this kind of chart, will she answer. -->
-          <ul class="astro-facts">
-            <li>
-              <i aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5S14.2 18.2 12 20.5c-2.2-2.3-3.4-5.3-3.4-8.5S9.8 5.8 12 3.5Z"/></svg></i>
-              Speaks Hindi and English
-            </li>
-            <li>
-              <i aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.8M12 18.7v2.8M21.5 12h-2.8M5.3 12H2.5M18.7 5.3l-2 2M7.3 16.7l-2 2M18.7 18.7l-2-2M7.3 7.3l-2-2"/></svg></i>
-              Vedic astrology and kundli matching
-            </li>
-            <li>
-              <i aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M20.5 11.5c0 4.1-3.8 7.5-8.5 7.5-.9 0-1.8-.1-2.6-.4L4 20.5l1.6-4.1A7 7 0 0 1 3.5 11.5C3.5 7.4 7.3 4 12 4s8.5 3.4 8.5 7.5Z"/></svg></i>
-              Usually replies in 2 minutes
-            </li>
-          </ul>
+          <!-- The same three facts a buyer asks before paying — what she
+               practises, what she can read her in, whether she will answer —
+               but as one line rather than three icon rows. On a page that is
+               already a hero, a contents list, reviews and a carousel, her
+               part of it does not need twelve lines of its own; it needs to
+               be checkable at a glance and then get out of the way. -->
+          <p class="astro-meta">Vedic astrology and kundli matching &middot; Hindi and English &middot; Usually replies in 2 minutes</p>
           <button class="r2-samp" type="button" data-chat>Message Hemali</button>
           </div>
         </div>
@@ -915,8 +905,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610261749"></script>
-<script src="app.js?v=202610261749"></script>
-<script src="mobile.js?v=202610261749"></script>
+<script src="data.js?v=202610261810"></script>
+<script src="app.js?v=202610261810"></script>
+<script src="mobile.js?v=202610261810"></script>
 </body>
 </html>

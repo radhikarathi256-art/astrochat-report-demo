@@ -1130,9 +1130,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    Origin at the top edge so the scale grows downward out of the status bar
    rather than away from both ends, which is what keeps the crop predictable.
    .r2-hero already paints --rose, so this needs no ground of its own. */
+/* The translate is a further crop off the top, taken after the scale, and it
+   raises the two of them by about 40% of where they were sitting: the heads
+   move from roughly y185 to y111, which puts a third of the hero above them
+   instead of two thirds. What leaves the frame is curtain. */
 .r2-vid{position:absolute;inset:0;z-index:0;width:100%;height:100%;
   object-fit:cover;object-position:50% 62%;pointer-events:none;
-  transform:scale(1.25);transform-origin:50% 0}
+  transform:translateY(-74px) scale(1.25);transform-origin:50% 0}
 /* Marriage and Career are painted stills, not film. The image is set on
    .r2-hero itself by renderReport; this only has to clear the things that were
    drawn for the couple — the rose ground, the clip over it, and the rose wash
@@ -1455,14 +1459,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .astro-stats > div:last-child{padding-bottom:0;border-bottom:0}
 .astro-stats b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
 .astro-stats small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
-/* Same geometry as the contents list above it, deliberately: both are rows of
-   an outline mark and a fact, so two different indents would read as two
-   unrelated lists stacked. */
-.astro-facts{margin:20px 0 0;padding:0;list-style:none;
-  display:flex;flex-direction:column;gap:14px}
-.astro-facts li{display:flex;gap:10px;font:400 15px/22px var(--sans);color:var(--g800)}
-.astro-facts li > i{flex:none;margin-top:2px;width:20px;height:20px;color:var(--g600)}
-.astro-facts li > i > svg{display:block}
+/* One line of credentials under the numbers. Smaller and greyer than the body
+   column on purpose: it is the fine print of the card, read once and then
+   skipped, so it should not weigh the same as the sentences that are selling
+   the book. Middots rather than three rows — the facts are a set, not steps. */
+.astro-meta{margin:14px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
 
 /* ---------- What the report is: description, chips, the sample door ---------- */
 /* The one block on this page that stays on the title card's axis rather than
@@ -1547,15 +1548,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the wall behind the report belongs to the book she opened. */
 /* The opening is white in all three. Only the field around it carries the
    book's colour, so the report always rises out of plain paper. */
+/* The scrolled tone is a long way down from the unscrolled white — a few
+   percent of tint was a colour you could only find by looking for it, and the
+   job it has to do is make the white cards read as cards. Deep enough to be
+   obviously a colour, still light enough that body text on it stays black on
+   near-white where a card covers it. */
 .rp{background:#F6EEF0;
   --arch-a:#B4536B; --arch-b:#D98C97; --arch-c:#F6E3DE;
-  --arch-in:#FFFFFF; --arch-in-sc:#F1DFE4}
+  --arch-in:#FFFFFF; --arch-in-sc:#E0B9C4}
 /* Marriage is gold, like its cover and its spread. */
 .rp[data-rep="marriage"]{background:#FBF4E7;
-  --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE; --arch-in-sc:#F5E7CF}
+  --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE; --arch-in-sc:#E9CE99}
 /* Career: the cover's daylight blue. */
 .rp[data-rep="career"]{background:#EDF1F7;
-  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8; --arch-in-sc:#DFE8F4}
+  --arch-a:#2F5596; --arch-b:#88B0E0; --arch-c:#DEEAF8; --arch-in-sc:#BFD2EA}
 /* Once she starts reading, the ground inside the arch takes the report's own
    colour. It has to be white at the top — the arch is the whole picture there
    and the sketch is a print resting on paper — but a page of white cards on
@@ -2048,7 +2054,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .carousel-wrap{padding:8px 0 0}
 .carousel-wrap .lbl{padding:0 0 12px;margin:0}
 /* "People also bought" scrolls sideways, with the bleed so cards run off the edge. */
-.carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+/* 16 between the columns. At 10 the two covers nearly touched, and since the
+   cards have no border and no card around them any more, the gutter is the
+   only thing saying where one book stops and the next begins. */
+.carousel{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
 .carousel::-webkit-scrollbar{display:none}
 /* Figma 3169:202620 — 159px card, 16px corners, g200 hairline, 12px padding,
