@@ -154,9 +154,11 @@ var REPORTS = [
     ]
   },
   {
-    // Money, not just the job. The cover says Career & Money and the report
-    // answers raises and timing as much as switches, so the tile says it too.
-    id: 'career', t: 'Career & Money', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
+    // Money, not just the job, and a window rather than a subject. The cover
+    // says Career & Money; what people actually want to know is whether the
+    // thing lands soon, so the horizon goes in the name instead of sitting in
+    // the subtitle where it read as one more topic.
+    id: 'career', t: 'Career, Money & Next 3 Months', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
     why: 'Learn how Saturn is slowing down your next move',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
@@ -164,10 +166,12 @@ var REPORTS = [
       closed: 'assets/cover-career.jpg?v=2',
       open: 'assets/spread-career.png?v=2',
       hero: 'assets/bg-career.jpg?v=2',
-      // Enough to clear the book. At the default the climber's head sat right
-      // on the board's top edge, so the one figure in the frame was being cut
-      // by the thing in front of it. The sky above him is what gets lost.
-      heroPos: '50% 55%'
+      // Anchored to the very top of the painting. This one is a climb, so the
+      // thing the picture is about is the space above the stairs — the door,
+      // the light coming through it, the sky the coins are stacked against.
+      // Cropping into that to lift the figure took away the only part of the
+      // frame that says where he is going.
+      heroPos: '50% 0%'
     },
     chips: ['Switch timing', 'Raise window'],
     revs: [

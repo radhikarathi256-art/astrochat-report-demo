@@ -1164,8 +1164,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Sticky, and the same height as the reader's header so the two flows share one
    silhouette. The negative margin is what puts the hero back underneath it:
    the nav keeps its place in flow for stickiness, then gives the space back. */
+/* The row itself sits 12px lower than it used to. The padding is what moves,
+   not the height and not the negative margin, so the artwork behind stays
+   exactly where it was: the extra 24 at the top takes it off the centre line
+   by half of that, which is the 12. Back arrow, Preview and the wallet were
+   riding right on the status bar with nothing over them. */
 .r2-nav{position:sticky;top:0;z-index:12;display:flex;align-items:center;
-  height:calc(var(--sbh) + 59px);padding:var(--sbh) 16px 0;
+  height:calc(var(--sbh) + 59px);padding:calc(var(--sbh) + 24px) 16px 0;
   margin-bottom:calc(-1 * (var(--sbh) + 59px));
   background:transparent;transition:background .2s ease,box-shadow .2s ease}
 /* Solid white, not frosted: the hero is painted artwork and a blur of it read
@@ -1459,11 +1464,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .astro-stats > div:last-child{padding-bottom:0;border-bottom:0}
 .astro-stats b{display:block;font:600 16px/22px var(--sans);color:var(--g900)}
 .astro-stats small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
-/* One line of credentials under the numbers. Smaller and greyer than the body
-   column on purpose: it is the fine print of the card, read once and then
-   skipped, so it should not weigh the same as the sentences that are selling
-   the book. Middots rather than three rows — the facts are a set, not steps. */
-.astro-meta{margin:14px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
 
 /* ---------- What the report is: description, chips, the sample door ---------- */
 /* The one block on this page that stays on the title card's axis rather than
@@ -2079,8 +2079,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    only thing on the card lined up with nothing. Both upsells are carousels —
    the one on the report page and the one ending a bought report — so this
    lands on both. */
+/* 177, not 154. The covers are 400x600 and the face paints them with
+   `cover`, so a box at 0.77 was cutting a sixth of the painting off the top
+   and bottom — on Career & Money that took the title band with it. 118/177 is
+   the artwork's own 2:3, so nothing is cropped and the extra height is the
+   book standing taller rather than more card. */
 .carousel .pcard .bkt,.carousel .pcard .bk3{align-self:flex-start;margin:0;
-  width:118px;height:154px;--bw:118px;--bh:154px}
+  width:118px;height:177px;--bw:118px;--bh:177px}
 /* The name of the report is the strongest thing on the card. At 400/16 in g700
    it weighed the same as its own one-line description, so the pair read as two
    sentences rather than as a title and a subtitle. */

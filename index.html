@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610261810">
+<link rel="manifest" href="manifest.webmanifest?v=202610261821">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610261810">
-<link rel="stylesheet" href="mobile.css?v=202610261810">
+<link rel="stylesheet" href="styles.css?v=202610261821">
+<link rel="stylesheet" href="mobile.css?v=202610261821">
 </head>
 <body>
 
@@ -278,7 +278,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610261810" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610261821" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -357,13 +357,11 @@
               <div><b>12</b><small>Years of practice</small></div>
             </div>
           </div>
-          <!-- The same three facts a buyer asks before paying — what she
-               practises, what she can read her in, whether she will answer —
-               but as one line rather than three icon rows. On a page that is
-               already a hero, a contents list, reviews and a carousel, her
-               part of it does not need twelve lines of its own; it needs to
-               be checkable at a glance and then get out of the way. -->
-          <p class="astro-meta">Vedic astrology and kundli matching &middot; Hindi and English &middot; Usually replies in 2 minutes</p>
+          <!-- Her name, the badge, three numbers, and the way to reach her.
+               The credentials line that used to sit here was gone over and
+               cut: on a page that is already a hero, a contents list,
+               reviews and a carousel, the numbers answer the question the
+               line was answering. -->
           <button class="r2-samp" type="button" data-chat>Message Hemali</button>
           </div>
         </div>
@@ -905,8 +903,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610261810"></script>
-<script src="app.js?v=202610261810"></script>
-<script src="mobile.js?v=202610261810"></script>
+<script src="data.js?v=202610261821"></script>
+<script src="app.js?v=202610261821"></script>
+<script src="mobile.js?v=202610261821"></script>
 </body>
 </html>
