@@ -71,8 +71,8 @@ var REPORTS = [
     // thing that gets an installed home-screen app to re-fetch art that kept its
     // filename.
     art: {
-      closed: 'assets/cover-partner.jpg?v=3',
-      open: 'assets/spread-partner.png?v=3'
+      closed: 'assets/cover-partner.jpg?v=4',
+      open: 'assets/spread-partner.png?v=4'
     },
     // What is in the box, as chips — the one thing unique to this report first.
     // These were briefly three icon rows reading "read from your birth chart",
@@ -116,7 +116,7 @@ var REPORTS = [
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3258:6840 for the spread, 3330:6840 for the hero ground.
     art: {
-      closed: 'assets/cover-marriage.jpg?v=2',
+      closed: 'assets/cover-marriage.jpg?v=3',
       open: 'assets/spread-marriage.png?v=2',
       hero: 'assets/bg-marriage.jpg?v=1'
     },

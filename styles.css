@@ -1104,15 +1104,23 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
      rather than half behind them. */
   padding:calc(var(--sbh) + 104px) 12px 28px;
   border-radius:0 0 24px 24px;overflow:hidden;background:var(--rose)}
-/* The couple, framed so both heads clear the book entirely. The source is a
-   720x1280 portrait clip with its audio track removed from the file. Being
-   that tall, `cover` leaves roughly 300px of vertical slack in a 460px hero,
-   so unlike the old near-square take this one is positioned, not merely pushed
-   as far as it will go: 22% drops the two heads below the floating nav while
-   keeping both chins clear of the book, which starts 285px down.
+/* The couple behind the curtain, framed so both heads clear the book entirely.
+   The source is a 720x1280 portrait clip with its audio track removed from the
+   file. Being that tall, `cover` leaves roughly 300px of vertical slack in a
+   460px hero, so this is positioned rather than merely pushed as far as it will
+   go: 62% puts the two heads at about y150 and y205, against a book that starts
+   at y268.
+   The scale is on top of that, and it is what makes them people rather than
+   figures in a wide shot — at 1:1 the whole arch fits in the frame and the two
+   of them are a third of its height. The cost is the apex of the arch, which
+   crops off the top; that is the right thing to lose, since the arch repeats on
+   the cover underneath and the faces do not appear anywhere else.
+   Origin at the top edge so the scale grows downward out of the status bar
+   rather than away from both ends, which is what keeps the crop predictable.
    .r2-hero already paints --rose, so this needs no ground of its own. */
 .r2-vid{position:absolute;inset:0;z-index:0;width:100%;height:100%;
-  object-fit:cover;object-position:50% 22%;pointer-events:none}
+  object-fit:cover;object-position:50% 62%;pointer-events:none;
+  transform:scale(1.25);transform-origin:50% 0}
 /* Marriage and Career are painted stills, not film. The image is set on
    .r2-hero itself by renderReport; this only has to clear the things that were
    drawn for the couple — the rose ground, the clip over it, and the rose wash
