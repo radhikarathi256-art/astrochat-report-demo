@@ -651,20 +651,38 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    card the whole message is about, so it gets the room. */
 /* The book hangs 12px over the card's top edge, so the thread's own gap is not
    enough — without this the cover lands on the message above it. */
+/* The side padding goes, so the head can run to the card's own edges. What is
+   left is the bottom 9px, under the last row. Everything between gets its inset
+   back on its own rule — one block bleeds, the rest are indented. */
 .of3{position:relative;align-self:stretch;width:100%;cursor:pointer;margin-top:22px;
-  padding:6px 6px 9px;border-radius:20px;background:#fff;
+  /* No overflow:hidden — the book stands 12px proud of the top edge and would
+     be guillotined by it. The head carries its own top radius instead. */
+  padding:0 0 9px;border-radius:20px;background:#fff;
   box-shadow:0 12px 28px -12px rgba(122,46,14,.22),0 0 0 1px rgba(16,24,40,.04)}
+/* Edge to edge, dark pink into white. The painted banner was a second picture
+   on a card that already has one — the book — and the two of them were
+   competing for the same corner, with the title caught in the middle of both.
+   Colour behind the words puts the only artwork back where it belongs.
+   The dark end is on the left because that is where the reading starts, and it
+   holds through 40% so the title and the rating both sit on ink dark enough to
+   take white. Past that it opens to the card's own white, which is why the
+   block has no bottom edge to draw: the right-hand side simply becomes the card,
+   and the cover stands in the light rather than being cut out of the dark.
+   Radius only on the top corners — the bottom of this block is the middle of
+   the card, and rounding it there would have drawn a seam. */
 .of3-head{display:flex;flex-direction:column;justify-content:flex-start;gap:7px;
-  min-height:95px;padding:8px;border-radius:14px;
-  background:url(assets/chat-banner.png) center/cover no-repeat}
-/* 188px of the 276 is banner; past that the book takes over, so the title is
-   held off it rather than running under the cover. */
-.of3-ttl{max-width:calc(100% - 108px);font:700 18px/28px var(--sans);color:#101828;
+  min-height:103px;padding:14px 16px;border-radius:20px 20px 0 0;
+  background:linear-gradient(94deg,#8E2449 0%,#A33056 40%,#D4859F 74%,#fff 100%)}
+/* Held off the book rather than running under it. */
+.of3-ttl{max-width:calc(100% - 118px);font:700 18px/28px var(--sans);color:#fff;
   letter-spacing:-.01em}
 .of3-badge{display:flex;align-items:center;gap:8px;height:20px;margin-top:auto}
+/* Not pure white. The title is the white on this block; the rating and the
+   reader count sit a step back from it, the same way they sat a step back from
+   g900 when the ground was pale. */
 .of3-badge b{display:flex;align-items:center;gap:4px;
-  font:500 14px/20px var(--sans);color:var(--g700)}
-.of3-sep{flex:none;width:1px;height:6px;background:#D0D5DD}
+  font:500 14px/20px var(--sans);color:rgba(255,255,255,.84)}
+.of3-sep{flex:none;width:1px;height:6px;background:rgba(255,255,255,.38)}
 /* The hinge. Perspective on the wrapper, the cover pivoting on its spine over
    a page leaf, so there is paper in the gap instead of a hole. */
 /* ---------- The hardback, and how it opens ----------
@@ -685,7 +703,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    reserves the left page width so the geometry is the same object. */
 /* Anchored to the card's right edge rather than a fixed left, so the book
    stays in its corner now that the card is fluid. */
-.of3-bkw{position:absolute;right:5px;top:-12px;width:181px;height:127px;
+/* 11, not 5. Absolute offsets run from the padding box, and the card's 6px of
+   side padding has gone, so 5 would have slid the book 6px out toward the edge.
+   The book has not moved. */
+.of3-bkw{position:absolute;right:11px;top:-12px;width:181px;height:127px;
   perspective:620px}
 /* The right-hand page, with the page block showing past the board's fore-edge. */
 .of3-leaf{position:absolute;left:90px;right:0;top:5px;bottom:5px;
@@ -759,7 +780,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 @media (prefers-reduced-motion:reduce){
   .of3-cov{animation:none}
 }
-.of3-pts{margin:14px 6px 0}
+/* 16 of its own, since the card no longer supplies 6. Same 12 off the edge the
+   list has always had, plus the 4 that lines it up under the head's text. */
+.of3-pts{margin:14px 16px 0}
 .of3-pts .pts{gap:10px}
 /* Bigger text than the generic list, so a bigger glyph. The glyph takes the
    text's own colour and nothing else: orange made four small drawings compete
@@ -779,7 +802,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
 /* The hairline above the price is in the frame and does real work: it ends the
    list, so the price reads as the answer to it rather than a fifth bullet. */
-.of3-foot{display:flex;align-items:center;gap:15px;margin-top:14px;padding:10px 10px 0;
+.of3-foot{display:flex;align-items:center;gap:15px;margin-top:14px;padding:10px 16px 0;
   min-height:41px;border-top:1px solid var(--g200)}
 .of3-price{display:grid;grid-template-columns:auto auto;gap:0 6px;
   align-items:center;justify-content:start;flex:none;margin:0}
