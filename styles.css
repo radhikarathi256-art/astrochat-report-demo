@@ -92,6 +92,15 @@ img{display:block}
 .switcher .tp-tabs button{display:inline-block;width:auto;margin:0;padding:5px 10px;
   border-radius:999px;font-size:12px;line-height:17px;font-weight:600;color:var(--g700)}
 .switcher .tp-tabs button:hover{border-color:var(--brand);color:var(--brand)}
+/* The pitched-report switch. A row of three, not a third stack of full-width
+   cards — these are one short answer to one question, and stacked they read as
+   five more days. Same chip shape the touchpoint tabs use, so the panel has two
+   kinds of control in it rather than three. */
+.sw-lead{display:flex;gap:6px;margin-bottom:2px}
+.switcher .sw-lead button{flex:1;width:auto;margin:0;padding:6px 4px;text-align:center;
+  border-radius:999px;font-size:12px;line-height:17px;font-weight:600;color:var(--g700)}
+.switcher .sw-lead button:hover{border-color:var(--brand);color:var(--brand)}
+.switcher .sw-lead button.on{border-color:var(--brand);background:var(--brand50);color:var(--w900)}
 .switcher .ghost{text-align:center;color:var(--brand);border-color:#F6C3AE}
 .switcher .sw-link{display:block;margin-top:8px;text-align:center;
   font:500 12px/18px var(--sans);color:var(--g500);text-decoration:none}

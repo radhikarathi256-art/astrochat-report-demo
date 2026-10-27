@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=20261027180904">
+<link rel="manifest" href="manifest.webmanifest?v=20261027182552">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261027180904">
-<link rel="stylesheet" href="mobile.css?v=20261027180904">
+<link rel="stylesheet" href="styles.css?v=20261027182552">
+<link rel="stylesheet" href="mobile.css?v=20261027182552">
 </head>
 <body>
 
@@ -48,6 +48,18 @@
   <button type="button" data-day="3">Day 3 · Chat joins in<small>Expert card + personalised + inside the free chat</small></button>
   <button type="button" data-day="4">Day 4 · Last ask<small>Same as day 3; after today the nudging stops</small></button>
   <button type="button" data-day="5">Day 5 · Nudging stops<small>Every surface quiet, reports stay reachable</small></button>
+  <hr>
+  <!-- Which report the app pitches. The script pins it to Partner, because
+       that is the house Hemali named; these are here so the same pitch can be
+       read with the other two books behind it, where the promise is a score
+       and a set of months rather than a face. Day 3 and 4 are where it shows
+       up in the chat. -->
+  <b class="sw-lbl">Chat pitch · which report</b>
+  <div class="sw-lead">
+    <button type="button" data-lead="partner" class="on">Partner</button>
+    <button type="button" data-lead="marriage">Kundli Milan</button>
+    <button type="button" data-lead="career">Career</button>
+  </div>
   <hr>
   <button type="button" id="restart" class="ghost">Restart demo</button>
   <a class="sw-link" href="variations.html">20 attachment variations →</a>
@@ -953,8 +965,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=20261027180904"></script>
-<script src="app.js?v=20261027180904"></script>
-<script src="mobile.js?v=20261027180904"></script>
+<script src="data.js?v=20261027182552"></script>
+<script src="app.js?v=20261027182552"></script>
+<script src="mobile.js?v=20261027182552"></script>
 </body>
 </html>

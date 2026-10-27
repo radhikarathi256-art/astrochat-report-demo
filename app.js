@@ -154,6 +154,14 @@ var REPORTS = [
     // Parallel to `learn`, one key per line. Kept as its own list rather than
     // folded into the strings so the copy stays copy and stays translatable.
     licons: ['user', 'pin', 'cup', 'cal', 'block', 'rings', 'shield', 'sun'],
+    /* What Hemali says in the chat just before the card. It has to live on the
+       report, not in the day's script: the line names a house and a planet, so
+       a script that hard-codes "Saturn, your tenth house" while the card under
+       it sells Kundli Milan is an astrologer contradicting herself one line
+       later. `pitchLong` is the day-1 version, said fifteen minutes after the
+       chat ended, which is why it can afford to mention the sample. */
+    pitch: 'Mansi, one more thing in your chart. Rahu is sitting on your seventh house, and who you meet and when rests on that. I have a report on it too.',
+    pitchLong: 'Mansi, I have written a full report on your seventh house covering the Rahu block, the timing, what your partner will be like and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
     /* The keepsake at the top of a bought report: the one finding worth pinning
        to a wall, on the paper it was drawn on. Partner has a face to show, so
        the art box holds the sketch. The other two have no portrait to draw —
@@ -224,6 +232,8 @@ var REPORTS = [
       'Which doshas you have, and the right remedies'
     ],
     licons: ['spark', 'cal', 'chart', 'user', 'home', 'coin', 'rings', 'shield'],
+    pitch: 'Mansi, one thing was left. There is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.',
+    pitchLong: 'Mansi, I have run the full Kundli Milan on your chart and his — the guna count, the Mangal dosha in both charts, the marriage window and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -287,6 +297,8 @@ var REPORTS = [
       'Colours, directions and mantras for success at work'
     ],
     licons: ['spark', 'cal', 'case', 'user', 'eye', 'arrow', 'coin', 'sun'],
+    pitch: 'Mansi, I noticed one more thing in your chart. Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.',
+    pitchLong: 'Mansi, I have written a full report on your tenth house covering the switch window, what your boss actually sees, the months money moves and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
     /* Career is bought for timing, so the months are the headline. The year
        sits under them rather than inside the range, which keeps the figure to
        four characters and the same weight as the other two cards. */
@@ -323,7 +335,7 @@ var PM_JOURNEY = {
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
       { who: 'gap',    text: '15 minutes later' },
-      { who: 'hemali', text: 'Mansi, I have written a full report on your seventh house covering the Rahu block, the timing, what your partner will be like and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.' },
+      { who: 'hemali', pitch: 'long' },
       { who: 'offer3' }
     ],
     today: { eyebrow: '', note: '' },
@@ -356,7 +368,7 @@ var PM_JOURNEY = {
     lead: 'career',
     surf: { chat: true, today: false, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi, I noticed one more thing in your chart. Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.' },
+      { who: 'hemali', pitch: 'short' },
       { who: 'offer3' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
@@ -372,7 +384,7 @@ var PM_JOURNEY = {
     lastAsk: true,
     surf: { chat: false, today: false, guide: true, hist: false },
     msgs: [
-      { who: 'hemali', text: 'Mansi, one thing was left. There is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.' },
+      { who: 'hemali', pitch: 'short' },
       { who: 'offer3' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
@@ -424,6 +436,12 @@ var state = {
   claimed: 0,
   reminded: false,
   pick: 'partner',  // which of the three reports she is looking at
+  /* Which report the app is pitching today — the chat card, the expert ticket,
+     the History chapter and the push all read it. Separate from `pick`, which
+     is whatever she has tapped into: the pitch is the app's choice, the pick is
+     hers. A demo control, not a user one — the real app would pin this to the
+     house Hemali just named, which for this script is Partner. */
+  lead: 'partner',
   /* The morning's report is waiting in History — the dot on the nav says so,
      and visiting History clears it. */
   histDot: true,
@@ -1407,10 +1425,16 @@ function esc(s) {
 /* The one report today suggests. A three-row menu makes her choose before she
    has any reason to care; a single report tied to a house Hemali already named
    is a recommendation, and the other two stay one tap away. */
-/* Pinned to Partner Prediction rather than rotating a different report in each
-   day: one report, nudged until she takes it. Day 1 shows none of this — the
-   free chat is the whole of day 1. */
-function leadReport() { return reportById('partner'); }
+/* Pinned to one report rather than rotating a different one each day: one
+   report, nudged until she takes it. Day 1 shows none of this — the free chat
+   is the whole of day 1.
+   Which one is now a demo switch rather than a constant, because the pitch
+   reads differently depending on the book behind it: Partner has a face to
+   promise, Kundli Milan has a score, Career has months. Reading them in the
+   chat was the only way to tell whether the card works for all three or only
+   for the one it was written against. The app still picks one and sticks to
+   it — the switch just says which. */
+function leadReport() { return reportById(state.lead); }
 
 /* The pointers ARE the sell. A title and a house name tell her nothing; the
    list of questions tells her whether her own question is answered. So the
@@ -1744,7 +1768,10 @@ function renderChat() {
     if (m.who === 'gap')    return '<p class="c-gap"><span>' + esc(m.text) + '</span></p>';
     if (m.who === 'offer3') return offer3Card();
     if (m.who === 'remind') return remindCard();
-    return '<div class="c-b ' + m.who + '"><p>' + esc(m.text) + '</p><time>02:24 PM</time></div>';
+    // A bubble that pitches takes its words off the report being pitched, so
+    // the sentence and the card under it always name the same house.
+    var txt = m.pitch ? leadReport()[m.pitch === 'long' ? 'pitchLong' : 'pitch'] : m.text;
+    return '<div class="c-b ' + m.who + '"><p>' + esc(txt) + '</p><time>02:24 PM</time></div>';
   }).join('') + (state.paid ? segueCard() : '');
 }
 
@@ -2147,6 +2174,19 @@ function setDay(n) {
   restart();
 }
 
+/* Swapping the pitched report rewinds the same way picking a day does. It has
+   to: the push line, the expert ticket, the History chapter and the chat card
+   are all written in the day's script and half of them are already on screen by
+   the time this is tapped, so re-rendering in place would leave one surface
+   selling Kundli Milan and the next still selling Partner. */
+function setLead(id) {
+  state.lead = id;
+  $$('.switcher [data-lead]').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-lead') === id);
+  });
+  restart();
+}
+
 /* ---------------------------------------------------------------- reset */
 function restart() {
   clearTimers();
@@ -2211,7 +2251,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -2311,6 +2351,7 @@ document.addEventListener('click', function (e) {
   if (t.id === 'restart') { restart(); return; }
 
   if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day')); return; }
+  if (t.hasAttribute('data-lead')) { setLead(t.getAttribute('data-lead')); return; }
 
   // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
   // on the daily reward board. Your Experts stays on screen above it.

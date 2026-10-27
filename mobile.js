@@ -51,7 +51,7 @@
   // so the surface it jumped to is actually visible. app.js's own document-level
   // handler still runs, so nothing here has to re-implement the switch.
   drawer.addEventListener('click', function (e) {
-    if (e.target.closest('[data-day],[data-tp],#restart,.sw-link')) close();
+    if (e.target.closest('[data-day],[data-lead],[data-tp],#restart,.sw-link')) close();
   });
 
   /* The status-bar strip takes its colour from whatever is at the top of the
