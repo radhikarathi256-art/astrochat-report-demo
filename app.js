@@ -128,7 +128,7 @@ var REPORTS = [
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
     art: {
-      closed: 'assets/cover-marriage.jpg?v=4',
+      closed: 'assets/cover-marriage.jpg?v=5',
       open: 'assets/spread-marriage.png?v=3',
       hero: 'assets/bg-marriage.jpg?v=2',
       // Cropped from the top rather than centred. At 8% the couple sat low

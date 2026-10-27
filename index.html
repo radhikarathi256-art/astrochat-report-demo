@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610271210">
+<link rel="manifest" href="manifest.webmanifest?v=202610271219">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610271210">
-<link rel="stylesheet" href="mobile.css?v=202610271210">
+<link rel="stylesheet" href="styles.css?v=202610271219">
+<link rel="stylesheet" href="mobile.css?v=202610271219">
 </head>
 <body>
 
@@ -278,7 +278,7 @@
             <!-- Versioned like the stylesheets. The file keeps its name when the
                  clip is recut, so without this an installed home-screen app goes
                  on playing whichever take it cached the day it was added. -->
-            <source src="assets/r2-hero.mp4?v=202610271210" type="video/mp4">
+            <source src="assets/r2-hero.mp4?v=202610271219" type="video/mp4">
           </video>
           <!-- The painted cover, standing closed. The open-book drawing is gone:
                it was a stock illustration of a book, not this report. -->
@@ -418,21 +418,30 @@
         <!-- His half is empty and comes first, because it is the only part of
              this screen that is actually work. -->
         <h3 class="mt-h">Enter Boy's Details</h3>
+        <!-- Empty, the box carries one grey prompt and nothing else; the
+             notched label only appears once there is a value to label, which
+             is how the live app's own details form behaves (517:21478). The
+             input comes before the label in the markup so `placeholder-shown`
+             can reach it with a plain sibling selector. -->
         <div class="mt-card">
-          <label class="fld"><span>Name</span>
-            <input type="text" id="bName" autocomplete="off" placeholder=" ">
+          <label class="fld">
+            <input type="text" id="bName" autocomplete="off" placeholder="Enter Name">
+            <span>Name</span>
           </label>
-          <label class="fld"><span>Date of Birth</span>
-            <input type="text" id="bDob" inputmode="numeric" autocomplete="off" placeholder="DD/MM/YYYY">
+          <label class="fld">
+            <input type="text" id="bDob" inputmode="numeric" autocomplete="off" placeholder="Select Date of Birth">
+            <span>Date of Birth</span>
             <i class="fld-ic" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.75" width="15" height="13.75" rx="2.5" stroke="#475467" stroke-width="1.4"/><path d="M2.5 8.125h15M6.875 2.5v2.5M13.125 2.5v2.5" stroke="#475467" stroke-width="1.4" stroke-linecap="round"/></svg>
             </i>
           </label>
-          <label class="fld"><span>Place of Birth</span>
-            <input type="text" id="bPlace" autocomplete="off" placeholder=" ">
+          <label class="fld">
+            <input type="text" id="bPlace" autocomplete="off" placeholder="Enter Place of Birth">
+            <span>Place of Birth</span>
           </label>
-          <label class="fld"><span>Time of Birth</span>
-            <input type="text" id="bTime" autocomplete="off" placeholder="HH:MM">
+          <label class="fld">
+            <input type="text" id="bTime" autocomplete="off" placeholder="Select Time of Birth">
+            <span>Time of Birth</span>
             <i class="fld-ic" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#475467" stroke-width="1.4"/><path d="M10 5.625V10l2.8 2.8" stroke="#475467" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </i>
@@ -445,20 +454,24 @@
              the report is about to be built on. -->
         <h3 class="mt-h">Enter Girl's Details <small>From your profile</small></h3>
         <div class="mt-card">
-          <label class="fld"><span>Name</span>
-            <input type="text" id="gName" autocomplete="off" placeholder=" " value="Mansi Sharma">
+          <label class="fld">
+            <input type="text" id="gName" autocomplete="off" placeholder="Enter Name" value="Mansi Sharma">
+            <span>Name</span>
           </label>
-          <label class="fld"><span>Date of Birth</span>
-            <input type="text" id="gDob" inputmode="numeric" autocomplete="off" placeholder="DD/MM/YYYY" value="30/10/1996">
+          <label class="fld">
+            <input type="text" id="gDob" inputmode="numeric" autocomplete="off" placeholder="Select Date of Birth" value="30/10/1996">
+            <span>Date of Birth</span>
             <i class="fld-ic" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.75" width="15" height="13.75" rx="2.5" stroke="#475467" stroke-width="1.4"/><path d="M2.5 8.125h15M6.875 2.5v2.5M13.125 2.5v2.5" stroke="#475467" stroke-width="1.4" stroke-linecap="round"/></svg>
             </i>
           </label>
-          <label class="fld"><span>Place of Birth</span>
-            <input type="text" id="gPlace" autocomplete="off" placeholder=" " value="Pune, Maharashtra">
+          <label class="fld">
+            <input type="text" id="gPlace" autocomplete="off" placeholder="Enter Place of Birth" value="Pune, Maharashtra">
+            <span>Place of Birth</span>
           </label>
-          <label class="fld"><span>Time of Birth</span>
-            <input type="text" id="gTime" autocomplete="off" placeholder="HH:MM" value="04:20">
+          <label class="fld">
+            <input type="text" id="gTime" autocomplete="off" placeholder="Select Time of Birth" value="04:20">
+            <span>Time of Birth</span>
             <i class="fld-ic" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#475467" stroke-width="1.4"/><path d="M10 5.625V10l2.8 2.8" stroke="#475467" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </i>
@@ -949,8 +962,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610271210"></script>
-<script src="app.js?v=202610271210"></script>
-<script src="mobile.js?v=202610271210"></script>
+<script src="data.js?v=202610271219"></script>
+<script src="app.js?v=202610271219"></script>
+<script src="mobile.js?v=202610271219"></script>
 </body>
 </html>

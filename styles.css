@@ -2199,12 +2199,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .fld{position:relative;display:block;margin-top:18px}
 .fld:first-child{margin-top:0}
 .fld > span{position:absolute;top:-7px;left:11px;z-index:1;padding:0 5px;
-  background:#fff;font:400 12px/14px var(--sans);color:var(--g500);pointer-events:none}
+  background:#fff;font:400 12px/14px var(--sans);color:var(--g500);pointer-events:none;
+  transition:opacity .15s ease}
+/* Empty, there is no notch — only the grey prompt inside the box, which is how
+   the live details form reads (517:21478). A label on a box with nothing in it
+   says the same word twice; it earns its place the moment the placeholder
+   leaves and the value needs naming. */
+.fld input:placeholder-shown ~ span{opacity:0}
 .fld input{width:100%;height:52px;padding:0 44px 0 15px;
   border:1px solid var(--g300);border-radius:10px;background:#fff;
   font:400 16px/24px var(--sans);color:var(--g900);
   appearance:none;outline:none;transition:border-color .18s ease,box-shadow .18s ease}
-.fld input::placeholder{color:var(--g400)}
+/* The prompt is the only thing in an empty box, so it has to be readable
+   rather than a hint — g400 on white was close to a disabled field. */
+.fld input::placeholder{color:var(--g500)}
 .fld input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand50)}
 .fld-ic{position:absolute;right:14px;top:50%;margin-top:-10px;line-height:0;pointer-events:none}
 /* The one empty field, pointed at. Get Report stays live and does the finding,
