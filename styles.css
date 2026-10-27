@@ -410,6 +410,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 .c-b{max-width:84%;padding:9px 12px;border-radius:12px;position:relative}
 .c-b p{margin:0;font:400 15px/21px var(--sans);color:var(--g800)}
+/* A pitch arrives as three short paragraphs in one bubble. 10 is wider than the
+   21px line gap, so the breaks read as breaks and the middle line - the one she
+   is scanning for, what she will learn - can be found without reading the rest.
+   Anything less and the three run back into a block. */
+.c-b p + p{margin-top:10px}
 .c-b time{display:block;margin-top:2px;text-align:right;
   font:400 11px/14px var(--sans);color:var(--g400)}
 .c-b.hemali{align-self:flex-start;background:#fff;border-radius:3px 12px 12px 12px}

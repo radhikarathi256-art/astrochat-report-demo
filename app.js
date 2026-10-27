@@ -159,9 +159,27 @@ var REPORTS = [
        a script that hard-codes "Saturn, your tenth house" while the card under
        it sells Kundli Milan is an astrologer contradicting herself one line
        later. `pitchLong` is the day-1 version, said fifteen minutes after the
-       chat ended, which is why it can afford to mention the sample. */
-    pitch: 'Mansi, one more thing in your chart. Rahu is sitting on your seventh house, and who you meet and when rests on that. I have a report on it too.',
-    pitchLong: 'Mansi, I have written a full report on your seventh house covering the Rahu block, the timing, what your partner will be like and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
+       chat ended, which is why it can afford to mention the sample.
+
+       Three lines, not a paragraph, and always the same three:
+         1. the reason she is being spoken to at all - something she said in the
+            chat, or something the calendar is doing to her right now;
+         2. what she will learn, named as specifics rather than as a subject;
+         3. what buying gets her, and why it matters.
+       A paragraph makes all three the same weight and hides the only one she is
+       scanning for, which is the second. Separating them also makes the ask
+       readable in the two seconds the bubble is on screen before the card
+       underneath takes over. */
+    pitch: [
+      'Mansi, you asked me about your partner. Rahu sitting on your seventh house is the whole answer, and it is why things stop just as they start to work.',
+      'Learn what they will be like, how the two of you meet, and the months it can actually happen.',
+      'Buy the report and get a full reading of your seventh house, with the remedy that breaks the block.'
+    ],
+    pitchLong: [
+      'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed.',
+      'Learn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.',
+      'Buy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
     /* The keepsake at the top of a bought report: the one finding worth pinning
        to a wall, on the paper it was drawn on. Partner has a face to show, so
        the art box holds the sketch. The other two have no portrait to draw —
@@ -257,8 +275,21 @@ var REPORTS = [
     ],
     licons: ['chart', 'list', 'people', 'coin', 'rings', 'home',
              'spark', 'block', 'shield', 'cal', 'arrow', 'beads'],
-    pitch: 'Mansi, one thing was left. There is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.',
-    pitchLong: 'Mansi, I have run the full Kundli Milan on your chart and his — the guna count, the Mangal dosha in both charts, the marriage window and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
+    /* The trigger for this one is a person, not a planet. Kundli Milan is the
+       only report of the three that needs a second chart, so it is only ever
+       pitched to someone who has named him in the chat - and saying so out loud
+       is what separates it from an ad. She told Hemali about him; Hemali is
+       answering about him. */
+    pitch: [
+      'Mansi, you mentioned him in the chat. Do you want me to run the Kundli Milan for the two of you?',
+      'Learn how many of the 36 gunas match, whether either of you is Manglik, and the window the marriage can actually happen in.',
+      'Buy the report and get a detailed analysis of both kundalis read side by side, with the remedies that strengthen the match.'
+    ],
+    pitchLong: [
+      'Mansi, you mentioned him today, so I put both charts in front of me after we finished.',
+      'Learn your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
+      'Buy the report and get a detailed analysis of the two kundalis together, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -322,8 +353,22 @@ var REPORTS = [
       'Colours, directions and mantras for success at work'
     ],
     licons: ['spark', 'cal', 'case', 'user', 'eye', 'arrow', 'coin', 'sun'],
-    pitch: 'Mansi, I noticed one more thing in your chart. Saturn is aspecting your tenth house. Your job and promotion timing rests on that. I have a report on it too.',
-    pitchLong: 'Mansi, I have written a full report on your tenth house covering the switch window, what your boss actually sees, the months money moves and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
+    /* Career has no person to name and no question she asked, so its trigger is
+       the calendar: the month is running out and nothing has moved. That is the
+       one thing about work she is already thinking when the message arrives,
+       which makes it the only honest way in. The months are spelled out instead
+       of being called "the next three months" because three named months read
+       as a forecast and the phrase reads as a category. */
+    pitch: [
+      'Mansi, October is almost gone and you have been working hard with very little moving. That is Saturn watching your tenth house, not you.',
+      'Learn what November, December and January each hold for your work, month by month.',
+      'One move in the right month can change the whole year. The report names that month.'
+    ],
+    pitchLong: [
+      'Mansi, I kept reading your chart after we spoke. October is nearly over and the year has felt slow to you - Saturn aspecting your tenth house is why.',
+      'Learn what November, December and January hold, the dates worth asking for a raise on, the right month to switch, and what your boss actually sees.',
+      'Buy the report and get your tenth house read in full, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
     /* Career is bought for timing, so the months are the headline. The year
        sits under them rather than inside the range, which keeps the figure to
        four characters and the same weight as the other two cards. */
@@ -1794,9 +1839,13 @@ function renderChat() {
     if (m.who === 'offer3') return offer3Card();
     if (m.who === 'remind') return remindCard();
     // A bubble that pitches takes its words off the report being pitched, so
-    // the sentence and the card under it always name the same house.
+    // the sentence and the card under it always name the same house. Pitches
+    // arrive as three lines - why now, what you learn, what buying gets you -
+    // and each becomes its own paragraph inside the one bubble, because this
+    // is one message from Hemali, not three pings.
     var txt = m.pitch ? leadReport()[m.pitch === 'long' ? 'pitchLong' : 'pitch'] : m.text;
-    return '<div class="c-b ' + m.who + '"><p>' + esc(txt) + '</p><time>02:24 PM</time></div>';
+    var body = [].concat(txt).map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('');
+    return '<div class="c-b ' + m.who + '">' + body + '<time>02:24 PM</time></div>';
   }).join('') + (state.paid ? segueCard() : '');
 }
 
