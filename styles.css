@@ -763,7 +763,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   min-height:41px;border-top:1px solid var(--g200)}
 .of3-price{display:grid;grid-template-columns:auto auto;gap:0 6px;
   align-items:center;justify-content:start;flex:none;margin:0}
-.of3-price b{font:700 14px/20px var(--sans);color:var(--g900)}
+.of3-price b{font:600 18px/28px var(--sans);color:var(--s700)}
 .of3-price s{font:400 12px/18px var(--sans);color:#98A2B3}
 .of3-price span{display:contents}
 .of3-price i{grid-column:1/-1;justify-self:start;margin-top:-1px;
@@ -925,7 +925,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pk-strip{display:flex;align-items:baseline;gap:7px;margin:12px 16px 0;padding:9px 12px;
   border-radius:10px;background:#FFF1E3}
 .pk-strip span{flex:1;min-width:0;font:500 12px/17px var(--sans);color:#8A4B21}
-.pk-strip b{font:700 17px/21px var(--sans);color:var(--g900)}
+.pk-strip b{font:600 18px/28px var(--sans);color:var(--s700)}
 .pk-strip s{font:400 12px/17px var(--sans);color:var(--g400)}
 .pk-strip i{padding:2px 5px;border-radius:5px;background:#ECFDF3;color:#067647;
   font:700 9px/13px var(--sans);font-style:normal;letter-spacing:.04em}
@@ -1523,7 +1523,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    sits under them as its own chip. */
 .buybar .price{display:grid;grid-template-columns:auto auto;gap:0 6px;
   align-items:center;justify-content:start}
-.buybar .price b{font:600 14px/20px var(--sans);color:var(--g900)}
+.buybar .price b{font:600 18px/28px var(--sans);color:var(--s700)}
 .buybar .price small{display:contents}
 .buybar .price small s{font:400 12px/18px var(--sans);color:#98A2B3}
 .buybar .price small i{grid-column:1/-1;justify-self:start;margin-top:-1px;
@@ -1533,7 +1533,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* With the price gone the row is only buttons, and the 16px gap that separated
    a number from a button is too much between two buttons. */
 .buy-row.owned{gap:10px}
-.price b{display:block;font:700 22px/28px var(--sans);color:var(--g900)}
+.price b{display:block;font:600 18px/28px var(--sans);color:var(--s700)}
 /* The saving was one grey 12px line and read as a footnote. Same treatment as
    the entry points now: struck MRP, then the cut in a filled chip. */
 .price small{display:flex;align-items:center;gap:6px;white-space:nowrap;
@@ -2113,7 +2113,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:auto 0 0}
 .pc-pr + .pc-btn{margin-top:0}
 .pc-pr i{font-style:normal;display:flex;align-items:center;gap:6px}
-.pc-pr em{font-style:normal;font:400 16px/24px var(--sans);color:var(--g900)}
+.pc-pr em{font-style:normal;font:600 18px/28px var(--sans);color:var(--s700)}
 .pc-pr s{font:400 12px/18px var(--sans);color:#98A2B3}
 .pc-off{margin-top:-1px;align-self:flex-start;border-radius:5px;padding:2px 5px;
   background:linear-gradient(90deg,#ECFDF3 0,#FFFFFF 100%);
