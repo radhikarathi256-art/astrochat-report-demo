@@ -171,12 +171,12 @@ var REPORTS = [
        readable in the two seconds the bubble is on screen before the card
        underneath takes over. */
     pitch: [
-      'Mansi, you asked me about your partner. Rahu sitting on your seventh house is the whole answer, and it is why things stop just as they start to work.',
+      'Mansi, you asked me about your partner. Rahu sitting on your seventh house is the whole answer, and your Partner Prediction report is built on it.',
       'Learn what they will be like, how the two of you meet, and the months it can actually happen.',
       'Buy the report and get a full reading of your seventh house, with the remedy that breaks the block.'
     ],
     pitchLong: [
-      'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed.',
+      'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed, so I have written your Partner Prediction report around it.',
       'Learn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.',
       'Buy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
@@ -295,12 +295,12 @@ var REPORTS = [
        is what separates it from an ad. She told Hemali about him; Hemali is
        answering about him. */
     pitch: [
-      'Mansi, you mentioned him in the chat. Do you want me to run the Kundli Milan for the two of you?',
+      'Mansi, you mentioned him in the chat. Do you want the Kundli Milan report done for the two of you?',
       'Learn how many of the 36 gunas match, whether either of you is Manglik, and the window the marriage can actually happen in.',
       'Buy the report and get a detailed analysis of both kundalis read side by side, with the remedies that strengthen the match.'
     ],
     pitchLong: [
-      'Mansi, you mentioned him today, so I put both charts in front of me after we finished.',
+      'Mansi, you mentioned him today, so I put both charts in front of me after we finished and made you the Kundli Milan report.',
       'Learn your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
       'Buy the report and get a detailed analysis of the two kundalis together, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
@@ -381,12 +381,12 @@ var REPORTS = [
        of being called "the next three months" because three named months read
        as a forecast and the phrase reads as a category. */
     pitch: [
-      'Mansi, October is almost gone and you have been working hard with very little moving. That is Saturn watching your tenth house, not you.',
+      'Mansi, October is almost gone and you have been working hard with very little moving. That is Saturn watching your tenth house, not you, and your Career report starts right there.',
       'Learn what November, December and January each hold for your work, month by month.',
       'One move in the right month can change the whole year. The report names that month.'
     ],
     pitchLong: [
-      'Mansi, I kept reading your chart after we spoke. October is nearly over and the year has felt slow to you - Saturn aspecting your tenth house is why.',
+      'Mansi, I kept reading your chart after we spoke. October is nearly over and the year has felt slow to you - Saturn aspecting your tenth house is why, and that is where your Career report begins.',
       'Learn what November, December and January hold, the dates worth asking for a raise on, the right month to switch, and what your boss actually sees.',
       'Buy the report and get your tenth house read in full, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
