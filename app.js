@@ -39,30 +39,48 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    one family. No <circle>/<rect> primitives left: the squircle has to be
    written as a path, and keeping every key a path means the stroke behaves the
    same on all of them. One viewBox, one 1.5 weight, no fills, no discs: a set,
-   not badges. currentColor so the colour is decided in CSS, once. */
+   not badges. currentColor so the colour is decided in CSS, once.
+
+   One more rule, measured rather than eyeballed: every mark draws inside the
+   same ~18.5-unit box centred on (12,12). The svg boxes were always identical —
+   it was the artwork inside them that ranged from rings at 10.8 units tall and
+   sitting 3.2 low, to shield at 20.3 — and down one column that reads as eight
+   icons at eight sizes, which is the thing a set is supposed to stop. Forms
+   that are honestly wide and short (chart, arrow, eye, rings) are not stretched
+   to square; they are brought up to roughly 13-16 so they hold the line without
+   being distorted into something they are not. Circles (block, coin) sit a
+   little under the box on purpose: a disc reads larger than a square of the
+   same measure, so matching them by number makes them look bigger. */
 var LI_ICON = {
   user:  '<path d="M12 10.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M20.5 17.5c0 2.5-3.8 4-8.5 4s-8.5-1.5-8.5-4 3.8-4 8.5-4 8.5 1.5 8.5 4Z"/>',
-  pin:   '<path d="M12 13.4a2.9 2.9 0 1 0 0-5.8 2.9 2.9 0 0 0 0 5.8Z"/><path d="M3.6 8.8c2-8.5 14.8-8.5 16.8 0 1.2 5-1.9 9.2-4.7 11.9a5 5 0 0 1-7.4 0C5.5 18 2.4 13.8 3.6 8.8Z"/>',
-  cup:   '<path d="M6.3 4.5h11.4v3.8c0 3.6-2.6 6.2-5.7 6.2s-5.7-2.6-5.7-6.2z"/><path d="M17.9 5.8h1.3a2.1 2.1 0 0 1 0 4.2h-1.1M6.1 5.8H4.8a2.1 2.1 0 0 0 0 4.2h1.1"/><path d="M12 14.5v3.1M8.2 20.6h7.6a3.1 3.1 0 0 0-3.1-3h-1.4a3.1 3.1 0 0 0-3.1 3Z"/>',
+  pin:   '<path d="M12 13.1a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Z"/><path d="M3.9 9c1.9-7.9 14.3-7.9 16.2 0 1.15 4.7-1.8 8.6-4.5 11.1a4.9 4.9 0 0 1-7.2 0C5.7 17.6 2.75 13.7 3.9 9Z"/>',
+  cup:   '<path d="M6.3 3.4h11.4v4.9c0 3.6-2.6 6.2-5.7 6.2s-5.7-2.6-5.7-6.2z"/><path d="M17.9 4.7h1.3a2.1 2.1 0 0 1 0 4.2h-1.1M6.1 4.7H4.8a2.1 2.1 0 0 0 0 4.2h1.1"/><path d="M12 14.5v3.3M8.2 20.8h7.6a3.1 3.1 0 0 0-3.1-3h-1.4a3.1 3.1 0 0 0-3.1 3Z"/>',
   cal:   '<path d="M7.8 2.5v2.4M16.2 2.5v2.4"/><path d="M2.8 12.6c0-4.1 0-6.1 1.2-7.4C5.2 4 7.2 4 11.2 4h1.6c4 0 6 0 7.2 1.2 1.2 1.3 1.2 3.3 1.2 7.4v.9c0 4.1 0 6.1-1.2 7.4-1.2 1.2-3.2 1.2-7.2 1.2h-1.6c-4 0-6 0-7.2-1.2-1.2-1.3-1.2-3.3-1.2-7.4z"/><path d="M3.2 9h17.6"/>',
-  block: '<path d="M12 21.5a9.5 9.5 0 1 0 0-19 9.5 9.5 0 0 0 0 19Z"/><path d="M5.6 5.6 18.4 18.4"/>',
-  rings: '<path d="M9.2 20.6a5.4 5.4 0 1 0 0-10.8 5.4 5.4 0 0 0 0 10.8Z"/><path d="M14.8 20.6a5.4 5.4 0 1 0 0-10.8 5.4 5.4 0 0 0 0 10.8Z"/>',
-  shield:'<path d="M3.5 11.3c0-3.6 0-5.3.4-5.9.4-.5 2.1-1.1 5.4-2.3l.6-.2c1-.4 1.6-.6 2.1-.6s1 .2 2.1.6l.6.2c3.3 1.2 5 1.8 5.4 2.3.4.6.4 2.3.4 5.9 0 .5 0 1.1 0 1.7-.1 6.3-5.7 8.8-7.3 9.4-.4.2-.9.2-1.3 0-1.7-.6-7.2-3.1-7.3-9.4 0-.6 0-1.2 0-1.7Z"/>',
+  block: '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M5.5 5.5 18.5 18.5"/>',
+  rings: '<path d="M8.6 18.2a6.2 6.2 0 1 0 0-12.4 6.2 6.2 0 0 0 0 12.4Z"/><path d="M15.4 18.2a6.2 6.2 0 1 0 0-12.4 6.2 6.2 0 0 0 0 12.4Z"/>',
+  shield:'<path d="M3.7 11.4c0-3.4 0-5.1.4-5.7.4-.5 2-1.1 5.2-2.2l.6-.2c1-.4 1.5-.6 2.1-.6s1.1.2 2.1.6l.6.2c3.2 1.1 4.8 1.7 5.2 2.2.4.6.4 2.3.4 5.7 0 .5 0 1.1 0 1.6-.1 6-5.5 8.4-7 9-.4.2-.9.2-1.3 0-1.6-.6-6.9-3-7-9 0-.5 0-1.1 0-1.6Z"/>',
   sun:   '<path d="M16.8 12a4.8 4.8 0 1 1-9.6 0 4.8 4.8 0 0 1 9.6 0Z"/><path d="M12 2.6v1.3M12 20.1v1.3M4.6 12H3.3M20.7 12h-1.3M18.6 5.4l-.9.9M6.3 17.7l-.9.9M18.6 18.6l-.9-.9M6.3 6.3l-.9-.9"/>',
-  spark: '<path d="M11 3.3c.3 2.6 1.1 4.5 2.4 5.5.6.5 1.4.8 2.4 1-1 .2-1.8.5-2.4 1-1.3 1-2.1 2.9-2.4 5.5-.3-2.6-1.1-4.5-2.4-5.5-.6-.5-1.4-.8-2.4-1 1-.2 1.8-.5 2.4-1 1.3-1 2.1-2.9 2.4-5.5Z"/><path d="M17.9 15.8c.2 1.3.6 1.9 1.9 2.1-1.3.2-1.7.8-1.9 2.1-.2-1.3-.6-1.9-1.9-2.1 1.3-.2 1.7-.8 1.9-2.1Z"/>',
-  chart: '<path d="M4.8 20.4v-6.2M12 20.4V6.4M19.2 20.4v-3.8"/><path d="M2.5 20.6h19"/>',
+  spark: '<path d="M9.8 3.4c.4 3.4 1.5 5.9 3.2 7.2.8.65 1.85 1 3.2 1.3-1.35.3-2.4.65-3.2 1.3-1.7 1.3-2.8 3.8-3.2 7.2-.4-3.4-1.5-5.9-3.2-7.2-.8-.65-1.85-1-3.2-1.3 1.35-.3 2.4-.65 3.2-1.3 1.7-1.3 2.8-3.8 3.2-7.2Z"/><path d="M18.4 3.6c.3 1.7.9 2.5 2.6 2.8-1.7.3-2.3 1.1-2.6 2.8-.3-1.7-.9-2.5-2.6-2.8 1.7-.3 2.3-1.1 2.6-2.8Z"/>',
+  chart: '<path d="M4.8 20.2v-7.4M12 20.2V3.8M19.2 20.2v-4.4"/><path d="M2.5 20.4h19"/>',
   home:  '<path d="M4.2 11c0-1.4 0-2.1.3-2.6.3-.6.9-1 2-1.7l3.7-2.3c1.1-.7 1.6-1 2.3-1s1.2.3 2.3 1l3.7 2.3c1.1.7 1.7 1.1 2 1.7.3.5.3 1.2.3 2.6v4.2c0 2.8 0 4.3-.9 5.2-.9.9-2.3.9-5.1.9h-4.6c-2.8 0-4.2 0-5.1-.9-.9-.9-.9-2.4-.9-5.2z"/><path d="M14.4 21.9v-4.3a2.4 2.4 0 0 0-4.8 0v4.3"/>',
-  coin:  '<path d="M12 21.5a9.5 9.5 0 1 0 0-19 9.5 9.5 0 0 0 0 19Z"/><path d="M14.6 9.2c-.4-.9-1.4-1.6-2.6-1.6-1.5 0-2.8 1-2.8 2.2s1.2 2.2 2.8 2.2 2.8 1 2.8 2.2-1.2 2.2-2.8 2.2c-1.2 0-2.2-.6-2.6-1.6M12 6.2v1.4M12 16.4v1.4"/>',
+  coin:  '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M14.6 9.3c-.4-.9-1.4-1.5-2.6-1.5-1.5 0-2.8 1-2.8 2.2s1.2 2.2 2.8 2.2 2.8 1 2.8 2.2-1.2 2.2-2.8 2.2c-1.2 0-2.2-.6-2.6-1.5M12 6.4v1.4M12 16.2v1.4"/>',
   case:  '<path d="M2.6 14.2c0-3.4 0-5.1 1-6.1 1-1.1 2.7-1.1 6.1-1.1h4.6c3.4 0 5.1 0 6.1 1.1 1 1 1 2.7 1 6.1 0 3.4 0 5.1-1 6.1-1 1.1-2.7 1.1-6.1 1.1H9.7c-3.4 0-5.1 0-6.1-1.1-1-1-1-2.7-1-6.1Z"/><path d="M16.2 6.8c0-1.4 0-2.1-.4-2.6-.5-.9-1.5-.9-2.4-.9h-2.8c-.9 0-1.9 0-2.4.9-.4.5-.4 1.2-.4 2.6"/><path d="M2.8 12.9h18.4"/>',
   eye:   '<path d="M3.3 13.4c-.4-.6-.6-1-.6-1.4 0-.4.2-.8.6-1.4C4.9 8.3 8.1 4.6 12 4.6s7.1 3.7 8.7 6c.4.6.6 1 .6 1.4 0 .4-.2.8-.6 1.4-1.6 2.3-4.8 6-8.7 6s-7.1-3.7-8.7-6Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>',
-  arrow: '<path d="M3.6 16.9 8.9 11a1.6 1.6 0 0 1 2.3-.1l2.1 1.9a1.6 1.6 0 0 0 2.3-.1l4.8-5.4"/><path d="M20.4 11V7.1h-3.9"/>',
+  arrow: '<path d="M3 18.7 9.2 11.5a1.7 1.7 0 0 1 2.4-.1l2 1.8a1.7 1.7 0 0 0 2.4-.1L21 5.6"/><path d="M21.3 10.4V5.3h-5.1"/>',
   people:'<path d="M9 11.2a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z"/><path d="M15.8 17.6c0 2.1-3 3.4-6.8 3.4s-6.8-1.3-6.8-3.4 3-3.4 6.8-3.4 6.8 1.3 6.8 3.4Z"/><path d="M16.2 4.6a3.6 3.6 0 0 1 0 6M18.2 13.6c2.1.4 3.6 1.4 3.6 2.7 0 1-.9 1.9-2.3 2.4"/>',
   list:  '<path d="M9 6.6h11.6M9 12h11.6M9 17.4h11.6"/><path d="M4.1 7.4a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 12.8a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 18.2a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z"/>',
   beads: '<path d="M12 18.4a7.4 7.4 0 1 0 0-14.8 7.4 7.4 0 0 0 0 14.8Z" stroke-dasharray="1.4 4.2"/><path d="M12 22.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"/>'
 };
+/* `s` is the one line under every cover — on the upsell card, on the picker,
+   on the tile, and as the opening of the sell page's lead. Three books wrote it
+   three different ways and three different lengths, so side by side one ran to
+   three lines and its neighbour to two, and everything below them — rating,
+   price, button — stopped lining up. They are all the same promise, so they are
+   all the same shape now: the questions the book answers, two or three of them,
+   joined by `and`, around 36 characters, no full stop (1844 adds one). */
 var REPORTS = [
   {
-    id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet, and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
+    id: 'partner', t: 'Partner Prediction', s: 'Who they are, where you meet and when', pages: 38, rating: '4.7', sold: 13000,
     // Read once. The chart it is drawn from does not move, so there is no
     // second edition to sell and every surface that sold it says Read Report
     // from the moment it is hers.
@@ -132,7 +150,7 @@ var REPORTS = [
     // Named for the thing people search for. "Marriage Report" said nothing the
     // subtitle did not already say; Kundli Milan is the word she would use
     // herself, and it is what the cover says.
-    id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
+    id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'How well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
     cadence: 'once',
     // The one report with a second person in it, so the one report that has to
     // ask. Board 1321:37310 — his four fields empty, hers written in.
@@ -187,7 +205,7 @@ var REPORTS = [
     // says Career & Money; what people actually want to know is whether the
     // thing lands soon, so the horizon goes in the name instead of sitting in
     // the subtitle where it read as one more topic.
-    id: 'career', t: 'Career, Money & Next 3 Months', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
+    id: 'career', t: 'Career, Money & Next 3 Months', s: 'When to switch and when money moves', pages: 34, rating: '4.6', sold: 71250,
     // A quarter at a time. The report is a window rather than a reading, so it
     // runs out: once this one is hers she can read it, and she can also buy the
     // next three months. Every repeat buy is its own row in history.
