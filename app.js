@@ -1808,10 +1808,28 @@ function renderReport() {
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
   $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
-  $('#r2Chips').innerHTML = r.chips.concat([r.pages + ' pages', 'Shareable', 'Private'])
-    .map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('');
+  // Two kinds of chip, drawn as one until now. The first are what only this
+  // report has; the last three are true of everything we sell. Flat grey pills
+  // made "36 guna match" look like the word "Private", so the report's own
+  // terms take the brand tint and a star, and the standard three stay quiet
+  // with the drawing that says which of them it is.
+  var CHIP_IC = {
+    key:   '<path d="M6 1 7.3 4.5 10.8 5.8 7.3 7.1 6 10.6 4.7 7.1 1.2 5.8 4.7 4.5z"/>',
+    pages: '<path d="M2 2.2h3c.7 0 1 .4 1 1V10c0-.5-.4-.9-.9-.9H2zM10 2.2H7c-.7 0-1 .4-1 1V10c0-.5.4-.9.9-.9H10z"/>',
+    share: '<path d="M9 1.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8M3 4.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8M9 7.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8M4.3 5.4l3.4-1.7M4.3 6.6l3.4 1.7"/>',
+    lock:  '<path d="M2.7 5.3h6.6v5H2.7zM4.3 5.3V3.7a1.7 1.7 0 0 1 3.4 0v1.6"/>'
+  };
+  function chip(label, kind) {
+    return '<span class="' + (kind === 'key' ? 'ch-key' : 'ch-std') + '">' +
+      '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1" ' +
+        'stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">' +
+        CHIP_IC[kind] + '</svg>' + esc(label) + '</span>';
+  }
+  $('#r2Chips').innerHTML =
+    r.chips.map(function (c) { return chip(c, 'key'); }).join('') +
+    chip(r.pages + ' pages', 'pages') + chip('Shareable', 'share') + chip('Private', 'lock');
   $('#r2Learn').innerHTML =
-    '<h2 class="r2-h">What you will get</h2>' +
+    '<h2 class="r2-h">What You Will Get</h2>' +
     '<ul class="r2-learn">' +
       r.learn.map(function (x, i) {
         // Falls back to the tick if a report is ever short an icon key, so a
