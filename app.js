@@ -1443,7 +1443,7 @@ function pointers(r, n) {
 /* 49 against 499, and what the 49 buys you forever. Said once per surface,
    directly under the list of questions it pays for. */
 function priceRow() {
-  return '<p class="of3-price"><b>₹49</b><s>₹499</s><i>90% OFF</i>' +
+  return '<p class="of3-price"><s>₹499</s><b>₹49</b><i>90% OFF</i>' +
     '<em>one-time · yours forever</em></p>';
 }
 
@@ -1581,7 +1581,11 @@ function upsellCard(x) {
     // sell page and in the reviews.
     '<span class="pc-rt">' + STAR + ' ' + esc(x.rating) +
       ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
-    '<small>' + esc(x.s) + '</small>' +
+    // No promise line. This card is a cross-sell at the foot of a page that
+    // has already sold one of these books, so its job is to name the other
+    // two and price them, not to pitch them a second time — the pitch is one
+    // tap away on the page it opens. Two lines of grey between the rating and
+    // the price only pushed the price down and made the card a paragraph.
     // Once it is hers the card stops selling. The price row goes — a discount
     // beside a book she has already paid for is the page asking a second
     // time — and the button becomes the way back into it. Career keeps a price
@@ -1592,7 +1596,12 @@ function upsellCard(x) {
       '<span class="pc-foot">' +
         (owns(x.id) && x.cadence !== 'quarterly' ? '' :
           '<span class="pc-pr">' +
-            '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
+            // Struck price first, then what it costs. Read left to right that
+            // is the sentence the discount actually makes — it was 499, it is
+            // 49 — and the number she pays is the one the eye stops on,
+            // because it is the last and the largest. The other way round the
+            // 499 trailed the 49 like a footnote.
+            '<i><s>\u20b9499</s><em>\u20b949</em></i>' +
             '<span class="pc-off">90% OFF</span>' +
           '</span>') +
         '<span class="pc-btn">' + (owns(x.id) ? 'Read Report' : 'Buy now') + '</span>' +
