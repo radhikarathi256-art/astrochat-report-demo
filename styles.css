@@ -1210,13 +1210,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Sticky, and the same height as the reader's header so the two flows share one
    silhouette. The negative margin is what puts the hero back underneath it:
    the nav keeps its place in flow for stickiness, then gives the space back. */
-/* The row itself sits 12px lower than it used to. The padding is what moves,
-   not the height and not the negative margin, so the artwork behind stays
-   exactly where it was: the extra 24 at the top takes it off the centre line
-   by half of that, which is the 12. Back arrow, Preview and the wallet were
-   riding right on the status bar with nothing over them. */
+/* Padding of exactly the status bar and nothing more, which is what centres the
+   row. Any extra on top is not shared — the height is fixed and there is no
+   bottom padding to balance it, so every pixel added above comes straight out
+   of the gap below. At 24 that gap was 2.5px: the arrow and the wallet sat on
+   the hairline with 26 of air over them, reading as a row that had slipped.
+   Zero extra puts 14.5 on each side, and makes this header the same shape as
+   the reader's, which has always been plain var(--sbh). */
 .r2-nav{position:sticky;top:0;z-index:12;display:flex;align-items:center;
-  height:calc(var(--sbh) + 59px);padding:calc(var(--sbh) + 24px) 16px 0;
+  height:calc(var(--sbh) + 59px);padding:var(--sbh) 16px 0;
   margin-bottom:calc(-1 * (var(--sbh) + 59px));
   background:transparent;transition:background .2s ease,box-shadow .2s ease}
 /* Solid white, not frosted: the hero is painted artwork and a blur of it read
@@ -1307,7 +1309,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    out in flow would be centred on the wrong thing. Over the gutter rather than
    on one page, because it opens both of them. z-index 7 clears the painted
    gutter band at 6; the band is pointer-events:none, so the tap still lands. */
-.r2-bk-samp{position:absolute;z-index:7;left:50%;bottom:34px;
+/* On the spread, not at its foot. At 34 the pill straddled the book's bottom
+   edge, so half of it was on the pages and half on the hero behind them, and it
+   crowded the white card underneath. 54 centres it on the open spread: it is
+   now a label lying on the pages, and the book's edges are all visible around
+   it. */
+.r2-bk-samp{position:absolute;z-index:7;left:50%;bottom:54px;
   transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;
   height:30px;padding:0 13px;cursor:pointer;white-space:nowrap;
   border:0;border-radius:15px;background:#fff;
@@ -1352,9 +1359,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    padding — any more and the book's bottom edge would land on the title. The
    negative bottom margin pulls everything after the card up with it; the card
    itself is held in place by the top one.
-   No shadow: it drew a line exactly where the book is meant to be resting. */
+   No shadow: it drew a line exactly where the book is meant to be resting.
+   The overlap stays at 36 — the open book standing in front of the card is the
+   point of the composition, and dropping the card to clear it left the spread
+   floating over a white band. The padding is what moves instead: 52 at the top
+   rather than 20, which is the 34 the book reaches into the card plus the 18
+   the title needs. The book keeps its position; the heading starts below where
+   the book ends instead of behind it. */
 .r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
-  background:#fff;border-radius:20px;padding:20px 16px 16px;text-align:center}
+  background:#fff;border-radius:20px;padding:52px 16px 16px;text-align:center}
 /* Figma 3186:204216 — Inter Bold 20/30 on #1d2939, centred, in a 290 box.
    It stays centred and it stays alone: this is the title on the cover of the
    book standing above it, not a listing heading. Ranging it left and hanging a
