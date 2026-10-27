@@ -1433,7 +1433,12 @@ function upsellCard(x) {
   return '<button class="pcard" type="button" ' +
       (owns(x.id) ? 'data-open-rep="' : 'data-pick="') + x.id + '">' +
     book3d(x) +
-    '<b>' + esc(x.t) + '</b>' +
+    // The long name, because the book is right above it. Partner is the only
+    // report whose short name is shorter than its cover — the other two put
+    // their whole title on the jacket — so this card was the one place the
+    // artwork said "Your Future Partner" and the line under it said something
+    // else. Everywhere else a cover sits beside a name already uses t2.
+    '<b>' + esc(x.t2 || x.t) + '</b>' +
     // The one number that decides between two books nobody has heard of. The
     // card showed a title, a promise and a price — the same three things on
     // both — so there was nothing on it to choose by.
