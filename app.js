@@ -193,7 +193,14 @@ var REPORTS = [
     // The one report with a second person in it, so the one report that has to
     // ask. Board 1321:37310 — his four fields empty, hers written in.
     needsMatch: true,
-    why: 'Learn how Mars in your chart is holding the talks back',
+    /* The hook over the buy bar. Mars holding the talks back is a worry, and a
+       worry is what the free chat already gave her — it is the reason she is
+       on this page, not a reason to pay. The score is the one thing in the
+       report she cannot get anywhere else and the thing she would say out loud
+       if asked what she wants from it, so the last line before the button
+       names it and says it is hers. Out of 36 is in the sentence because 28
+       means nothing without the scale. */
+    why: 'Get your 36-guna compatibility score with him',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
@@ -221,17 +228,35 @@ var REPORTS = [
       { s: 4, n: 'Pooja N., Bhopal',  q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' },
       { s: 5, n: 'Isha G., Lucknow',  q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
     ],
+    /* Twelve, and the first one is the score. The old eight opened on "Am I
+       Manglik" — a dosha check — which is the thing she is afraid of rather
+       than the thing she is buying, and it buried the guna count at number
+       seven. These lead with the number, then break compatibility into the
+       four parts people actually argue about, then name the three doshas
+       instead of saying "which doshas you have", because a woman who has been
+       told she is Manglik is scanning for that word and will not find it in
+       an abstraction.
+       More of them on purpose: this is the longest report of the three at 42
+       pages, and every surface counts this list out loud — the chat card says
+       "+9 more questions answered" off its length, the picker and History say
+       "12 questions answered". Eight lines made the longest book look like the
+       thinnest. */
     learn: [
-      'Am I Manglik or not, and how strongly',
+      'Your real compatibility score, and what it means for the two of you',
+      'How many of the 36 gunas match, and which ones do not',
+      'How well you match on temperament and daily life',
+      'How you match on money, spending and saving',
+      'What the two charts say about closeness and intimacy',
+      'How the two families are likely to get along',
+      'Whether you are Manglik, and how strongly',
+      'Nadi, Kaal Sarp and the other doshas in both charts',
+      'Whether those doshas can be cancelled, and what it takes',
       'When the marriage happens, and the best window for it',
-      'A full reading of your house of marriage',
-      'The kind of life partner written in your chart',
-      'Whether your in-laws will stand by you',
-      'Whether money changes after marriage',
-      'How many of the 36 gunas match, full compatibility',
-      'Which doshas you have, and the right remedies'
+      'Whether money changes for you after marriage',
+      'The specific remedies that strengthen this match'
     ],
-    licons: ['spark', 'cal', 'chart', 'user', 'home', 'coin', 'rings', 'shield'],
+    licons: ['chart', 'list', 'people', 'coin', 'rings', 'home',
+             'spark', 'block', 'shield', 'cal', 'arrow', 'beads'],
     pitch: 'Mansi, one thing was left. There is a Mars question in your chart, so the Manglik part, the marriage timing and the in-laws sit in a separate report. Do take a look today.',
     pitchLong: 'Mansi, I have run the full Kundli Milan on your chart and his — the guna count, the Mangal dosha in both charts, the marriage window and the remedies, all of it. A complete sample on another chart is open to read, so you can see how deep it goes.',
     /* Gun Milan is the number this report is bought for, so it is the number on
