@@ -180,6 +180,20 @@ var REPORTS = [
       'Learn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.',
       'Buy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
+    /* The colour behind the title in the chat card, taken off this report's own
+       hero rather than being one magenta for all three. Sampled from the art:
+       the deepest saturated pixel in the partner film is a dusty brick, which
+       is the curtain light at the edge of the frame. The ramp then opens to the
+       card's white on the right, the same shape for every report - only the hue
+       moves, so the card is recognisably the same card and still arrives in the
+       colour of the book it is selling. */
+    tint: 'linear-gradient(94deg,#8A4038 0%,#A04F43 40%,#DCA498 74%,#fff 100%)',
+    /* The +15 min notification on day 1. Same three beats as the chat pitch,
+       squeezed into one line: why now, what she gets, what it costs. */
+    push: 'Mansi, Rahu is in your seventh house. That is the block. Your Partner Prediction is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    /* The ticket stub on Today, day 2. It used to read "Your partner report is
+       ready" off the raw id, which named a folder rather than a book. */
+    tkt: { t: 'Your Partner Prediction is ready', s: 'Who they are, and when you meet them' },
     /* The keepsake at the top of a bought report: the one finding worth pinning
        to a wall, on the paper it was drawn on. Partner has a face to show, so
        the art box holds the sketch. The other two have no portrait to draw —
@@ -290,6 +304,13 @@ var REPORTS = [
       'Learn your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
       'Buy the report and get a detailed analysis of the two kundalis together, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
+    /* The rose this card has always worn. Kundli Milan is the one report whose
+       hero art is warmer than its book - the painting is gold and brown, the
+       cover is rose - and the cover is what the card is showing, so the cover
+       wins. */
+    tint: 'linear-gradient(94deg,#8E2449 0%,#A33056 40%,#D4859F 74%,#fff 100%)',
+    push: 'Mansi, I have both charts open. Your 36-guna score is ready \u2014 Kundli Milan is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    tkt: { t: 'Your Kundli Milan is ready', s: 'The 36-guna score for the two of you' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -369,6 +390,12 @@ var REPORTS = [
       'Learn what November, December and January hold, the dates worth asking for a raise on, the right month to switch, and what your boss actually sees.',
       'Buy the report and get your tenth house read in full, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
+    /* Amber, off the stairs and the stacked coins in the career painting. The
+       warmest of the three, which is right for the only report that is sold on
+       a month rather than on a person. */
+    tint: 'linear-gradient(94deg,#8A4E1C 0%,#A5631F 40%,#D9A86B 74%,#fff 100%)',
+    push: 'Mansi, October is almost gone and nothing has moved. Your next three months, read month by month \u2014 \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    tkt: { t: 'Your Career report is ready', s: 'November, December and January, month by month' },
     /* Career is bought for timing, so the months are the headline. The year
        sits under them rather than inside the range, which keeps the figure to
        four characters and the same weight as the other two cards. */
@@ -413,7 +440,11 @@ var PM_JOURNEY = {
     /* A notification that names her own house and opens that one preview beats
        a storefront ad that makes her choose again on the other side of the tap. */
     lead: 'partner',
-    push: 'Mansi, Rahu is in your seventh house. The Partner Prediction report is ₹49 today instead of ₹499 📖'
+    /* The flag only says that day 1 has a notification. What it says is the
+       pitched report's business, the same as the chat line directly under it -
+       a push hard-coded to Rahu while the card sells Kundli Milan is the same
+       contradiction the chat bubble had. */
+    push: true
   },
   /* `lead` is the one report each day actually suggests. Day 1 and 2 lead with
      the house she asked about; if that has not landed in two days the
@@ -1737,7 +1768,9 @@ function offer3Card() {
   // The whole card is the link to the detail page; only Buy Now jumps the
   // queue straight to payment.
   return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '">' +
-    '<div class="of3-head">' +
+    // Inline, because the colour belongs to the report rather than to the card
+    // and there is exactly one of these on screen at a time.
+    '<div class="of3-head" style="background:' + r.tint + '">' +
       '<div class="of3-ttl">' + esc(r.t2 || r.t) + '</div>' +
       // The green dot is switched off in the frame, and rightly so: it says
       // "live" next to a rating, which is the one thing a rating is not.
@@ -1822,8 +1855,11 @@ function exTicket(r) {
       ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
       : drawnFace(r, 'tk-bk bk3-face')) +
     '<span class="tk-t">' +
-      '<b>Your ' + esc(r.id) + ' report is ready</b>' +
-      '<small>Made by Hemali from your chart</small>' +
+      // Off the report, not off its id. "Your marriage report is ready" named a
+      // folder; the line under it said who made it, which the card already says
+      // twice. Now the stub names the book and tells her what is inside it.
+      '<b>' + esc(r.tkt.t) + '</b>' +
+      '<small>' + esc(r.tkt.s) + '</small>' +
     '</span>' +
     '<i class="tk-go" aria-hidden="true">' +
       '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.9 7h8.2m-3.3-3.3L11.1 7l-3.3 3.3" stroke="#F28761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
@@ -2312,7 +2348,7 @@ function restart() {
 /* ---------------------------------------------------------------- push note */
 function showPush() {
   var el = $('#pushNote');
-  $('#pushText').textContent = dayData().push;
+  $('#pushText').textContent = leadReport().push;
   el.hidden = false;
   requestAnimationFrame(function () { el.classList.add('on'); });
   later(hidePush, 6000);

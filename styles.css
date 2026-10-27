@@ -686,6 +686,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the card, and rounding it there would have drawn a seam. */
 .of3-head{display:flex;flex-direction:column;justify-content:flex-start;gap:7px;
   min-height:103px;padding:14px 16px;border-radius:20px 20px 0 0;
+  /* The fallback only. The live colour arrives inline from the report being
+     pitched, so the card turns up in the shade of the book it is selling. */
   background:linear-gradient(94deg,#8E2449 0%,#A33056 40%,#D4859F 74%,#fff 100%)}
 /* Held off the book rather than running under it. */
 .of3-ttl{max-width:calc(100% - 118px);font:700 18px/28px var(--sans);color:#fff;
