@@ -1141,8 +1141,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    move from roughly y185 to y111, which puts a third of the hero above them
    instead of two thirds. What leaves the frame is curtain. */
 .r2-vid{position:absolute;inset:0;z-index:0;width:100%;height:100%;
-  object-fit:cover;object-position:50% 62%;pointer-events:none;
-  transform:translateY(-74px) scale(1.25);transform-origin:50% 0}
+  object-fit:cover;pointer-events:none;transform-origin:50% 0}
+/* The numbers above belong to the Partner footage, not to the slot — they were
+   measured against that frame. A second clip with a different composition has
+   to be framed on its own, so each one carries its crop. */
+.r2-vid.vid-partner{object-position:50% 62%;transform:translateY(-74px) scale(1.25)}
+/* Kundali Milan is a tall 720x1280 with the two of them filling it: heads at
+   about a seventh down, the joined hands at two fifths. Anchored to the top so
+   the crop comes off the bottom, where there is only cloth — faces and hands
+   are the whole of what this clip has to say, and centring it would have cut
+   the heads and kept the hem. */
+.r2-vid.vid-marriage{object-position:50% 0%;transform:none}
 /* Marriage and Career are painted stills, not film. The image is set on
    .r2-hero itself by renderReport; this only has to clear the things that were
    drawn for the couple — the rose ground, the clip over it, and the rose wash

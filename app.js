@@ -76,7 +76,12 @@ var REPORTS = [
     // filename.
     art: {
       closed: 'assets/cover-partner.jpg?v=4',
-      open: 'assets/spread-partner.png?v=4'
+      open: 'assets/spread-partner.png?v=4',
+      // Two reports now have a filmed hero and they share one element, so each
+      // has to name its own file — otherwise coming back from Kundali Milan
+      // leaves her couple playing over this one.
+      video: 'assets/r2-hero.mp4?v=202610271219',
+      rate: 1
     },
     // What is in the box, as chips — the one thing unique to this report first.
     // These were briefly three icon rows reading "read from your birth chart",
@@ -130,6 +135,13 @@ var REPORTS = [
     art: {
       closed: 'assets/cover-marriage.jpg?v=5',
       open: 'assets/spread-marriage.png?v=3',
+      // Filmed, like Partner's. The painted ground below is what Career still
+      // uses and what this one fell back to before the clip existed.
+      video: 'assets/hero-marriage.mp4?v=1',
+      // Run at 0.4, which is the 2.5x slower she asked for: the clip is four
+      // seconds of a very small movement, and at speed it reads as a loop
+      // catching rather than two people standing still.
+      rate: 0.4,
       hero: 'assets/bg-marriage.jpg?v=2',
       // Cropped from the top rather than centred. At 8% the couple sat low
       // enough that the mandap above them was most of the picture and the two
@@ -175,7 +187,7 @@ var REPORTS = [
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
     art: {
-      closed: 'assets/cover-career.jpg?v=2',
+      closed: 'assets/cover-career.jpg?v=3',
       open: 'assets/spread-career.png?v=2',
       hero: 'assets/bg-career.jpg?v=2',
       // Anchored to the very top of the painting. This one is a climb, so the
@@ -1209,6 +1221,39 @@ function renderBuys() {
   }).join('');
 }
 
+/* One <video> element serves every report that has a filmed hero, so the file
+   and its speed are swapped rather than a second player being stacked behind
+   the first. The id also rides on the element as a class, because each clip is
+   framed differently and the crop belongs to the footage, not to the slot. */
+function paintHeroVideo(r, src) {
+  var v = $('.r2-vid');
+  v.hidden = !src;
+  REPORTS.forEach(function (x) { v.classList.toggle('vid-' + x.id, x.id === r.id && !!src); });
+  if (!src) { v.pause(); return; }
+  // Only re-point it when the file actually changes. Re-setting the same src
+  // restarts the clip every time she opens the page, which on a slow loop
+  // reads as a stutter on arrival.
+  // No load() here: setting src already starts one, and the explicit call
+  // resets the element a tick later — which paused the clip the play() below
+  // had just started, leaving a still frame that looked like a broken video.
+  if (v.getAttribute('src') !== src) v.setAttribute('src', src);
+  // There is no attribute for playback rate, and the element forgets it each
+  // time it loads a new file, so it is set on arrival as well as now.
+  var rate = r.art.rate || 1;
+  var start = function () {
+    // She can pick a second report before the first file has arrived, which
+    // leaves this waiting on a clip that is no longer on screen — and it would
+    // wake up and set that one's speed on whatever is playing now.
+    if (v.getAttribute('src') !== src) return;
+    v.playbackRate = rate;
+    var p = v.play();
+    // Autoplay can still be refused; a held frame is what shows then.
+    if (p && p.catch) p.catch(function () {});
+  };
+  if (v.readyState >= 1) start();
+  else v.addEventListener('loadedmetadata', start, { once: true });
+}
+
 function paintBought() {
   var r = reportById(state.pick);
   var t = boughtTitle();
@@ -1735,11 +1780,14 @@ function renderReport() {
   // board. `has-bg` is what stops the couple's clip and its rose wash from
   // showing through a ground that is neither pink nor about a couple.
   var hero = $('#r2Hero');
-  hero.classList.toggle('has-bg', !!(r.art && r.art.hero));
-  hero.style.backgroundImage = r.art && r.art.hero ? 'url(' + r.art.hero + ')' : '';
+  var vid = r.art && r.art.video;
+  // A painted ground only where there is no film. Career still has one.
+  hero.classList.toggle('has-bg', !!(r.art && r.art.hero && !vid));
+  hero.style.backgroundImage = r.art && r.art.hero && !vid ? 'url(' + r.art.hero + ')' : '';
   // Each still is framed on its own subject, so the crop is part of the art
   // rather than one rule for all of them. Blank falls back to the CSS default.
   hero.style.backgroundPosition = (r.art && r.art.heroPos) || '';
+  paintHeroVideo(r, vid);
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
