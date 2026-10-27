@@ -54,6 +54,10 @@ var LI_ICON = {
 var REPORTS = [
   {
     id: 'partner', t: 'Partner Prediction', s: 'Who, where and when you will meet, and what is holding it up', pages: 38, rating: '4.7', sold: 13000,
+    // Read once. The chart it is drawn from does not move, so there is no
+    // second edition to sell and every surface that sold it says Read Report
+    // from the moment it is hers.
+    cadence: 'once',
     // `t2` is the long name, used where the card has room for two lines and the
     // book is sitting right next to it — it has to match the cover she can see.
     t2: 'Your Future Partner Prediction Report',
@@ -115,6 +119,10 @@ var REPORTS = [
     // subtitle did not already say; Kundli Milan is the word she would use
     // herself, and it is what the cover says.
     id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'When it happens, with whom, and how the home feels', pages: 42, rating: '4.8', sold: 96440,
+    cadence: 'once',
+    // The one report with a second person in it, so the one report that has to
+    // ask. Board 1321:37310 — his four fields empty, hers written in.
+    needsMatch: true,
     why: 'Learn how Mars in your chart is holding the talks back',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
@@ -159,6 +167,10 @@ var REPORTS = [
     // thing lands soon, so the horizon goes in the name instead of sitting in
     // the subtitle where it read as one more topic.
     id: 'career', t: 'Career, Money & Next 3 Months', s: 'Switch, promotion, your boss and the right time', pages: 34, rating: '4.6', sold: 71250,
+    // A quarter at a time. The report is a window rather than a reading, so it
+    // runs out: once this one is hers she can read it, and she can also buy the
+    // next three months. Every repeat buy is its own row in history.
+    cadence: 'quarterly',
     why: 'Learn how Saturn is slowing down your next move',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
@@ -303,7 +315,14 @@ var state = {
   wallet: 20,
   lang: 'en',
   langFrom: 'sample',   // which surface opened the language sheet
+  /* `paid` stays what it always was — has she bought anything at all — because
+     every post-purchase surface in the app reads it. `owned` is the list that
+     makes history mean something: ids in the order they were bought. */
   paid: false,
+  owned: [],
+  /* One row per purchase, newest first, so a repeat buy of a quarterly report
+     leaves its own mark instead of overwriting the first one. */
+  buys: [],
   screen: 'today-a',
   stack: [],
   sheet: null,
@@ -877,7 +896,10 @@ function runMaking() {
 function markReady() {
   $$('#repSteps .step').forEach(function (s) { s.classList.add('done'); s.classList.remove('now'); });
   later(function () {
-    $('#tlReportTime').textContent = '12:10 PM';
+    // The stamp the payment recorded, not a fixed one — a second purchase sat
+    // directly above the first at the same minute, which made one timeline
+    // read as a duplicate rather than two things bought.
+    $('#tlReportTime').textContent = state.buys.length ? state.buys[0].time : '12:10 PM';
     var st = $('#repStatus');
     st.textContent = 'Ready to read';
     st.classList.add('green');
@@ -928,6 +950,19 @@ function enterRead() {
   clearTimers();
   state.stack = [state.entry];        // the report is now "read", so back lands on Today
   show('read', 'fade');
+}
+
+/* Reading one she already owns. No book opening: that beat is the report being
+   handed over for the first time, and replaying it on every visit would turn a
+   moment into a loading screen. The page just opens, at the top, on the right
+   report — she can own three now, so which one has to be set before it paints. */
+function openRep(id) {
+  state.pick = id;
+  paintBought();
+  renderRead();
+  renderReport();
+  $('#read [data-scroll]').scrollTop = 0;
+  go('read', 'fade');
 }
 
 /* ---------------------------------------------------------------- the reader's composer
@@ -1050,22 +1085,78 @@ function stopPay() {
   if (btn) btn.classList.remove('pressed', 'busy');
 }
 
+/* ------------------------------------------------------------- what she owns
+   `owned` answers "can she read it", which is what the buttons need; `buys` is
+   the record, one entry per payment, so a quarterly report bought twice leaves
+   two rows in history rather than quietly replacing itself. */
+function owns(id) { return state.owned.indexOf(id) > -1; }
+/* The quarter a Career edition covers, counted off how many she already has.
+   Nothing here is a real date — it only has to read as a window that moves. */
+var QUARTERS = ['Oct – Dec 2026', 'Jan – Mar 2027', 'Apr – Jun 2027', 'Jul – Sep 2027'];
+function editionLabel(r) {
+  if (r.cadence !== 'quarterly') return '';
+  var n = state.buys.filter(function (b) { return b.id === r.id; }).length;
+  return QUARTERS[Math.min(n, QUARTERS.length - 1)];
+}
+
 function pay() {
   stopPay();
   closeSheet();
+  var r = reportById(state.pick);
   state.paid = true;
+  // The edition is read before the buy is recorded, so the row says the window
+  // this payment just bought rather than the one after it.
+  var ed = editionLabel(r);
+  if (!owns(r.id)) state.owned.push(r.id);
+  state.buys.unshift({ id: r.id, ed: ed, time: nowStamp() });
   state.wallet -= payUsed();
   paintWallet();
   paintBought();
   // Every sell surface retires into the follow-up: read, chat, remedies, other reports.
   renderDayToday(); renderChat(); renderHistCard(); renderTpTabs(); renderRead();
+  renderReport(); renderBuys();
   toast('Payment successful', 'success');
+  // Matching needs a second chart before anything can be written, so it stops
+  // here for his details. The other two are read off a chart the app already
+  // holds and go straight to being made.
   later(function () {
     state.stack = [state.entry];
-    show('timeline', 'fade');
-    resetTimeline();
-    later(runMaking, 350);
+    if (r.needsMatch) { show('match', 'fade'); return; }
+    startMaking();
   }, 900);
+}
+
+/* The making run, pulled out of pay() so the matching form can call it when it
+   is done rather than duplicating the sequence. */
+function startMaking() {
+  state.stack = [state.entry];
+  show('timeline', 'fade');
+  resetTimeline();
+  later(runMaking, 350);
+}
+
+/* ---------------------------------------------------------------- R.4b matching form
+   The button never greys out. A disabled CTA makes her hunt the page for what
+   is missing; a live one can be the thing that finds it — and it marks one
+   field, not four, because four red boxes is a page saying everything is wrong
+   instead of a form saying look here. */
+var MATCH_FIELDS = ['bName', 'bDob', 'bPlace', 'bTime', 'gName', 'gDob', 'gPlace', 'gTime'];
+function clearMatchErr() {
+  MATCH_FIELDS.forEach(function (id) { $('#' + id).closest('.fld').classList.remove('err'); });
+}
+function submitMatch() {
+  clearMatchErr();
+  for (var i = 0; i < MATCH_FIELDS.length; i++) {
+    var el = $('#' + MATCH_FIELDS[i]);
+    if (!el.value.trim()) {
+      el.closest('.fld').classList.add('err');
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.focus({ preventScroll: true });
+      toast('Fill this in to continue');
+      return;
+    }
+  }
+  startMaking();
 }
 
 /* ------------------------------------------------------------- journey */
@@ -1083,6 +1174,41 @@ function boughtTitle() { return reportById(state.pick).t; }
    cover, timeline card, book cover and the reader's own header. They used to
    be hard-coded to Marriage Yog, so picking Money and paying handed her
    somebody else's report. One writer keeps them honest. */
+/* A clock for the history rows. Not the real time of day: the rest of this
+   timeline is a scripted morning, so a live clock would be the one entry
+   disagreeing with the others. It steps forward with each purchase instead. */
+var BUY_TIMES = ['12:10 PM', '12:41 PM', '1:16 PM', '2:05 PM', '3:22 PM'];
+function nowStamp() {
+  return BUY_TIMES[Math.min(state.buys.length, BUY_TIMES.length - 1)];
+}
+
+/* Every purchase before the newest one. The newest keeps the card above, which
+   is the one that animates from being made to being ready; these are settled,
+   so they are the report, what it covers, and the way back into it. */
+function renderBuys() {
+  var host = $('#tlBuys');
+  if (!host) return;
+  host.innerHTML = state.buys.slice(1).map(function (b) {
+    var r = reportById(b.id);
+    return '<div class="tl-item">' +
+      '<time>' + esc(b.time) + '</time>' +
+      '<div class="card tl-card">' +
+        '<div class="rep-top">' + book3d(r) +
+          '<div>' +
+            '<p class="eyebrow">Made by Astro Hemali for you</p>' +
+            '<b>' + esc(r.t2 || 'Your ' + r.t) + '</b>' +
+            '<p class="rep-status green">' + (b.ed ? esc(b.ed) : 'Ready to read') + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rep-acts">' +
+          '<button class="btn outline" type="button" data-toast="Sharing is not part of this demo">Share</button>' +
+          '<button class="btn primary" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
 function paintBought() {
   var r = reportById(state.pick);
   var t = boughtTitle();
@@ -1249,7 +1375,11 @@ function book3d(r) {
    promise, price with the saving as its own chip, then Buy now on the bottom
    edge. Both call sites render the identical card; only the list differs. */
 function upsellCard(x) {
-  return '<button class="pcard" type="button" data-pick="' + x.id + '">' +
+  // An owned card opens the report rather than its sales page. The label says
+  // Read Report, and a button that says read and then shows a cover with a
+  // price under it has not read anything.
+  return '<button class="pcard" type="button" ' +
+      (owns(x.id) ? 'data-open-rep="' : 'data-pick="') + x.id + '">' +
     book3d(x) +
     '<b>' + esc(x.t) + '</b>' +
     // The one number that decides between two books nobody has heard of. The
@@ -1257,11 +1387,16 @@ function upsellCard(x) {
     // both — so there was nothing on it to choose by.
     '<span class="pc-rt">\u2605 ' + esc(x.rating) + ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
     '<small>' + esc(x.s) + '</small>' +
-    '<span class="pc-pr">' +
-      '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
-      '<span class="pc-off">90% OFF</span>' +
-    '</span>' +
-    '<span class="pc-btn">Buy now</span>' +
+    // Once it is hers the card stops selling. The price row goes — a discount
+    // beside a book she has already paid for is the page asking a second
+    // time — and the button becomes the way back into it. Career keeps a price
+    // because its quarter runs out, so there is a real next edition to buy.
+    (owns(x.id) && x.cadence !== 'quarterly' ? '' :
+      '<span class="pc-pr">' +
+        '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
+        '<span class="pc-off">90% OFF</span>' +
+      '</span>') +
+    '<span class="pc-btn">' + (owns(x.id) ? 'Read Report' : 'Buy now') + '</span>' +
   '</button>';
 }
 
@@ -1428,6 +1563,11 @@ function segueCard() {
   var r = reportById(state.pick);
   return '<div class="c-b hemali"><p>Mansi, your <b>' + esc(r.t) +
       '</b> report is open. If any part needs explaining, or you want the remedies, ask me right here.</p>' +
+      // The way back in, said here too. The thread is where she left the report
+      // to come and ask, so the one thing it should be able to do is give it
+      // back — the offer that used to sit in this spot was selling a book she
+      // has already paid for.
+      '<button class="sg-read" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
       '<time>02:41 PM</time></div>' +
     '<div class="sg" id="sgChips">' +
       '<p class="sg-h">Ask beyond the report</p>' +
@@ -1633,7 +1773,20 @@ function renderReport() {
   $('#r2Why').textContent = r.why;
   // The board says "Buy Now" and nothing else. The price is already sitting
   // beside the button, so repeating ₹49 inside it only crowds the line.
-  $('#r2Cta').textContent = 'Buy Now';
+  // Once it is hers the bar stops being a shop. A price next to a book she has
+  // already paid for is the page asking a second time, so the whole price
+  // block goes and the button becomes the way back in. Career is the one that
+  // can still sell: the window it covers runs out, so the next edition is a
+  // real thing to buy and it goes beside Read rather than instead of it.
+  var mine = owns(r.id);
+  var repeat = mine && r.cadence === 'quarterly';
+  $('.buy-row', $('#report')).classList.toggle('owned', mine);
+  $('#r2Price').hidden = mine;
+  $('#r2Again').hidden = !repeat;
+  $('#r2Again').textContent = 'Buy ' + editionLabel(r);
+  $('#r2Cta').textContent = mine ? 'Read Report' : 'Buy Now';
+  $('#r2Cta').classList.toggle('outline', repeat);
+  $('#r2Cta').classList.toggle('primary', !repeat);
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -1760,6 +1913,10 @@ function restart() {
   state.lang = 'en';
   state.langFrom = 'sample';
   state.paid = false;
+  // The shelf empties with everything else. A leftover "Read Report" on a day
+  // that has not been paid for is the demo contradicting itself.
+  state.owned = [];
+  state.buys = [];
   state.reminded = false;
   state.repToastSeen = false;
   state.repToastPending = false;
@@ -1781,6 +1938,7 @@ function restart() {
   renderDayToday();
   renderTpTabs();
   renderHistCard();
+  renderBuys();
   armIntroSheet();
   resetTimeline();
   applyPaidTimeline();
@@ -1808,7 +1966,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -1835,6 +1993,12 @@ document.addEventListener('click', function (e) {
   }
 
   if (t.classList.contains('rsc-go')) { openPay(); return; }
+
+  if (t.id === 'mtGo') { submitMatch(); return; }
+
+  // A report she owns opens. Everywhere else a card is a shop window and goes
+  // to the detail page to make its case; these have already made it.
+  if (t.hasAttribute('data-open-rep')) { openRep(t.getAttribute('data-open-rep')); return; }
 
   // Buy Now skips the detail page. It sits inside a [data-pick] card, and
   // closest() stops at whichever matches first — the button — so this has to
@@ -1985,7 +2149,11 @@ document.addEventListener('click', function (e) {
 
   // Every route to the money lands on the same sheet: Buy Now on the detail
   // page, Buy Now at the foot of the sample, and the last day's reward.
-  if (t.id === 'buyInLang' || t.id === 'r2Cta') { openPay(); return; }
+  // The one button whose job changes. Before the payment it opens the sheet;
+  // after it, it is the door into the report, because the bar it sits in has
+  // stopped being a shop.
+  if (t.id === 'r2Cta' && owns(state.pick)) { openRep(state.pick); return; }
+  if (t.id === 'buyInLang' || t.id === 'r2Cta' || t.id === 'r2Again') { openPay(); return; }
   // Her tap, her spinner: a short busy beat so the pay reads as processing
   // rather than as a screen that swapped under her thumb.
   if (t.id === 'paySubmit') {
