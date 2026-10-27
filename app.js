@@ -1919,7 +1919,17 @@ function renderReport() {
   paintBought();
   // The hero is the closed cover of the report she is looking at — the same
   // object the chat bubble and the upsells show, just larger.
-  $('#r2Book').innerHTML = book3d(r);
+  // The sample door, on the book rather than in the header. As a Preview pill
+  // in the nav it was a word floating over artwork, naming nothing she could
+  // see; sitting on the open spread it points at the exact pages it opens, and
+  // the book stops being a picture and becomes the thing you tap. It is a
+  // sibling of the spread inside the same wrapper, so it moves with the book.
+  $('#r2Book').innerHTML = book3d(r) +
+    '<button class="r2-bk-samp" type="button" id="r2BookSample">' +
+      '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+        '<path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="8" cy="8" r="1.9" stroke="currentColor" stroke-width="1.4"/></svg>' +
+      'Sample report</button>';
   // Partner's hero moves; the other two are painted stills out of the same
   // board. `has-bg` is what stops the couple's clip and its rose wash from
   // showing through a ground that is neither pink nor about a couple.
@@ -2177,7 +2187,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2NavSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -2336,7 +2346,7 @@ document.addEventListener('click', function (e) {
 
   // The sample is a whole report, so it gets its own screen rather than being
   // inlined under About, where it buried every section after it.
-  if (t.id === 'r2ViewSample' || t.id === 'r2NavSample') {
+  if (t.id === 'r2ViewSample' || t.id === 'r2BookSample') {
     renderSample();
     if (state.screen !== 'sample') go('sample');
     return;

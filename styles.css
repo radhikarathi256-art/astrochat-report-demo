@@ -1222,23 +1222,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Solid white, not frosted: the hero is painted artwork and a blur of it read
    as a smear behind the back arrow. */
 .r2-nav.solid{background:#fff;box-shadow:0 1px 0 var(--g200)}
-/* White pill, not a bare label: for the first screenful it is sitting on
-   painted artwork, where plain dark text on the hero's light patches is a
-   coin-toss. The surface carries it on both grounds. */
-.r2-nav-samp{margin-left:auto;display:inline-flex;align-items:center;gap:6px;
-  height:34px;padding:0 13px;cursor:pointer;
-  border:1px solid var(--g200);border-radius:17px;background:#fff;
-  font:600 14px/34px var(--sans);color:var(--g900)}
-.r2-nav-samp svg{flex:none}
-/* Parked against the wallet rather than floating in the middle of the bar.
-   Centred, it read as the page's title; beside the balance it reads as what it
-   is, the other thing you can do from up here. The auto margin on .r2-nav-r
-   has to be overridden or the free space splits between the two and the pair
-   drifts apart again. */
-.r2-nav-samp + .r2-nav-r{margin-left:8px}
-/* On the white nav the pill's own white surface stops reading as a surface, so
-   it leans on the rule alone — same silhouette, no stacked whites. */
-.r2-nav.solid .r2-nav-samp{background:transparent}
 .r2-nav-r{margin-left:auto;display:flex;align-items:center;gap:9px}
 /* The book sits low and the GIF is framed high, so the couple reads above it
    rather than behind it. At 76px the heads landed inside the open pages. */
@@ -1251,9 +1234,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    hero simply grows by the difference — there is no room to borrow, since the
    book already ends 3px off the hero's bottom. Paired with the 54% crop: the
    two numbers have to move together or one of them breaks the other. */
+/* Down a fifth, and the top margin takes back every pixel the book gives up,
+   so its bottom edge and the hero's height are exactly where they were and
+   only the artwork behind it changes. At 134 the spread was 252px across a
+   394px column — two thirds of the width, landing right where the couple are,
+   so the two of them were arguing over the same part of the picture. The film
+   is the first impression and the book is the object sitting on it; the object
+   has to be the smaller of the two for that to read. */
 .r2-bookwrap{position:relative;z-index:5;display:flex;justify-content:center;
-  margin:164px 0 -14px}
-.r2-bookwrap .bkt,.r2-bookwrap .bk3{width:134px;height:178px}
+  margin:200px 0 -14px}
+.r2-bookwrap .bkt,.r2-bookwrap .bk3{width:107px;height:142px}
 /* The page block, the back board and the standing shadow all come off here.
    This is the one place the book lies open: the box ends up twice the spread's
    width, so a fore-edge pinned to its right stands on its own in mid-air, and a
@@ -1283,7 +1273,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    It opens once. A book that keeps shutting itself on the page where she is
    deciding to buy it is withholding the thing she came to look at, so the
    swing runs a single time and the spread simply stays open. */
-.r2-bookwrap .bkt{--lay:.94;--layx:63px;perspective:1100px;transform-origin:center;
+.r2-bookwrap .bkt{--lay:.94;--layx:50px;perspective:1100px;transform-origin:center;
   animation:bookLayHold 1.9s cubic-bezier(.33,1,.68,1) .9s both}
 /* What the book was missing was not detail but contact: a 252x167 painting with
    no shadow is a sticker on the hero, not an object lying on it. Two marks fix
@@ -1294,8 +1284,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    134px wrapper, y 5 to 172).
    First the contact shadow: an ellipse under the spread, tucked inside the
    painted edges so it reads as the book's own weight. */
-.r2-bookwrap::after{content:'';position:absolute;z-index:4;left:-38px;width:210px;
-  bottom:4px;height:22px;border-radius:50%;
+.r2-bookwrap::after{content:'';position:absolute;z-index:4;left:-30px;width:168px;
+  bottom:3px;height:18px;border-radius:50%;
   background:radial-gradient(50% 50% at 50% 50%,rgba(74,24,8,.34) 0,rgba(74,24,8,0) 72%);
   filter:blur(5px);opacity:0;
   animation:bookSeat .5s ease-out 2.5s forwards}
@@ -1303,7 +1293,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    is the darkest part of an open book. A narrow band of multiply over the
    middle, with no hard edge on either side of it. */
 .r2-bookwrap::before{content:'';position:absolute;z-index:6;pointer-events:none;
-  left:50%;width:34px;margin-left:-17px;top:12px;bottom:16px;
+  left:50%;width:27px;margin-left:-13.5px;top:10px;bottom:13px;
   mix-blend-mode:multiply;opacity:0;
   background:linear-gradient(90deg,rgba(142,97,72,0) 0,rgba(142,97,72,.3) 44%,
     rgba(142,97,72,.36) 50%,rgba(142,97,72,.3) 56%,rgba(142,97,72,0) 100%);
@@ -1311,6 +1301,27 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Both hold off until the cover has finished swinging over — before that the
    book is shut and on its edge, and neither mark describes where it is. */
 @keyframes bookSeat{to{opacity:1}}
+/* The sample door, lying on the open spread. Absolute, so the wrapper's flex
+   centring ignores it and it can straddle the gutter — the open book is 201px
+   wide here but the wrapper is only the 107 of a shut one, so anything laid
+   out in flow would be centred on the wrong thing. Over the gutter rather than
+   on one page, because it opens both of them. z-index 7 clears the painted
+   gutter band at 6; the band is pointer-events:none, so the tap still lands. */
+.r2-bk-samp{position:absolute;z-index:7;left:50%;bottom:34px;
+  transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;
+  height:30px;padding:0 13px;cursor:pointer;white-space:nowrap;
+  border:0;border-radius:15px;background:#fff;
+  box-shadow:0 4px 12px rgba(74,24,8,.22),0 1px 2px rgba(74,24,8,.14);
+  font:600 12px/30px var(--sans);color:var(--g900)}
+.r2-bk-samp svg{flex:none}
+.r2-bk-samp:active{background:var(--g100)}
+/* Held back until the cover has swung over, like the shadow and the gutter.
+   Before that the book is shut and on its edge, and a pill hanging in the air
+   where the pages are about to be is a label on nothing. */
+#report.on .r2-bk-samp{opacity:0;animation:bookSeat .35s ease-out 2.6s forwards}
+@media (prefers-reduced-motion:reduce){
+  #report.on .r2-bk-samp{animation:none;opacity:1}
+}
 /* The spread carries its own painted board edges on transparency, so there is
    no page stock to fake behind it and no inner gutter shadow to add — a cream
    fill here just printed a white card around the artwork. */
