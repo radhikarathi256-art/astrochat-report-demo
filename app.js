@@ -1558,6 +1558,15 @@ function upsellCard(x) {
   return '<button class="pcard" type="button" ' +
       (owns(x.id) ? 'data-open-rep="' : 'data-pick="') + x.id + '">' +
     book3d(x) +
+    // Everything but the cover, in one column beside it. The card lies on its
+    // side now: two books stacked one above the other, each a cover with its
+    // own facts to the right, instead of two narrow columns side by side.
+    // Side by side, a title as long as "Kundli Milan Marriage Compatibility"
+    // had 159px to live in and took three lines, which pushed its rating, its
+    // promise and its price out of step with the card next to it. Full width
+    // the same title takes two, and the two cards cannot disagree about
+    // heights because they no longer share a row.
+    '<span class="pc-txt">' +
     // The long name, because the book is right above it. Partner is the only
     // report whose short name is shorter than its cover — the other two put
     // their whole title on the jacket — so this card was the one place the
@@ -1577,12 +1586,18 @@ function upsellCard(x) {
     // beside a book she has already paid for is the page asking a second
     // time — and the button becomes the way back into it. Career keeps a price
     // because its quarter runs out, so there is a real next edition to buy.
-    (owns(x.id) && x.cadence !== 'quarterly' ? '' :
-      '<span class="pc-pr">' +
-        '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
-        '<span class="pc-off">90% OFF</span>' +
-      '</span>') +
-    '<span class="pc-btn">' + (owns(x.id) ? 'Read Report' : 'Buy now') + '</span>' +
+      // Price and button on one line, because the column is wide enough to
+      // hold both now. Stacked, they made a card on its side as tall as the
+      // upright one was and gave the row no footing.
+      '<span class="pc-foot">' +
+        (owns(x.id) && x.cadence !== 'quarterly' ? '' :
+          '<span class="pc-pr">' +
+            '<i><em>\u20b949</em><s>\u20b9499</s></i>' +
+            '<span class="pc-off">90% OFF</span>' +
+          '</span>') +
+        '<span class="pc-btn">' + (owns(x.id) ? 'Read Report' : 'Buy now') + '</span>' +
+      '</span>' +
+    '</span>' +
   '</button>';
 }
 

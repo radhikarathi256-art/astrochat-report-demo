@@ -1413,11 +1413,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    to read as one thought, separated by more air than sits between whole
    sections. 28 nets the same 24 every other block uses. */
 .r2-card + .r2-block{padding-top:28px}
-/* `.carousel.fill` — two cards, so they split the row rather than sitting at a
-   fixed 159px with dead space beside them. Nothing is off-screen, so there is
-   nothing left to scroll to. Used by both upsell strips. */
-.carousel.fill{overflow-x:visible;margin:0;padding-left:0;padding-right:0}
-.carousel.fill .pcard{flex:1 1 0;width:auto;min-width:0}
 /* Section headings sit one clear step under the page title (24) and one clear
    step over body (15), so the ladder is 24 / 18 / 15 rather than 20 / 14 with
    the heading nearly as loud as the name of the report. */
@@ -1842,6 +1837,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .rs{position:relative;overflow:hidden;padding:24px 20px 92px}
 .rp .rp-secs > .carousel-wrap{padding:24px 0}
 .rp .rp-secs > .carousel-wrap .lbl{padding:0 20px 12px}
+/* The cards take the label's margin now. Nothing runs off the edge any more —
+   when this was a sideways rail the covers were meant to bleed, so the strip
+   was laid out flush and only the eyebrow was inset. */
+.rp .rp-secs > .carousel-wrap .carousel{padding:0 20px}
 .rp .rp-secs > .upsell{border:0}
 /* A dot and a quiet grey label. It names the section; it is not the headline. */
 /* The eyebrow carries a glyph now rather than a dot. Fifteen sections is past
@@ -2151,13 +2150,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tagged p{margin:10px 0 0;font:400 16px/24px var(--sans);color:var(--g600)}
 .carousel-wrap{padding:8px 0 0}
 .carousel-wrap .lbl{padding:0 0 12px;margin:0}
-/* "People also bought" scrolls sideways, with the bleed so cards run off the edge. */
-/* 16 between the columns. At 10 the two covers nearly touched, and since the
-   cards have no border and no card around them any more, the gutter is the
-   only thing saying where one book stops and the next begins. */
-.carousel{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
-.carousel::-webkit-scrollbar{display:none}
+/* A stack, not a scroller. There are only ever two other reports, so a
+   sideways rail was a gesture that led to nothing — and at two per row each
+   card got 159px, which is narrower than the titles these books have. Down the
+   page they get the whole column, and nothing is hidden off the edge. */
+.carousel{display:flex;flex-direction:column;gap:20px;
+  overflow:visible;margin:0;padding:0}
 /* Figma 3169:202620 — 159px card, 16px corners, g200 hairline, 12px padding,
    8px between rows. Each upsell gets the same cover, price pattern and button
    as the report being sold above it; a title and a bare ₹49 gave the reader
@@ -2166,9 +2164,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the title, the rating and the price stacked under it — the hairline and the
    12px of padding only shrank the one thing that sells a book, which is the
    book. Everything below still starts on the cover's own left edge. */
-.carousel .pcard{flex:none;width:159px;scroll-snap-align:start;background:none;
+.carousel .pcard{width:100%;background:none;
   border:0;border-radius:0;padding:0;
-  display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:8px}
+  display:flex;align-items:flex-start;gap:14px;text-align:left}
+/* The column beside the cover. `min-width:0` is what lets the long titles wrap
+   instead of forcing the row wider than the screen — without it the flex item
+   sizes to its longest word and the cover gets squeezed. */
+.carousel .pcard .pc-txt{flex:1;min-width:0;align-self:stretch;
+  display:flex;flex-direction:column;align-items:stretch;gap:6px}
 /* 118x154, up from 76x99. With the card gone there is no padding to fit inside
    and the cover can take the full column, which is what the board does — at 76
    the artwork was a stamp and the title was doing the recognising. Left, not
@@ -2182,19 +2185,22 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and bottom — on Career & Money that took the title band with it. 118/177 is
    the artwork's own 2:3, so nothing is cropped and the extra height is the
    book standing taller rather than more card. */
-.carousel .pcard .bkt,.carousel .pcard .bk3{align-self:flex-start;margin:0;
-  width:118px;height:177px;--bw:118px;--bh:177px}
+/* 96x144 lying on its side, down from 118x177 upright. Still the artwork's own
+   2:3, so nothing is cropped; smaller only because the cover no longer has to
+   carry the card on its own — it has a title, a rating and a promise beside it
+   at full width now rather than squeezed underneath. */
+.carousel .pcard .bkt,.carousel .pcard .bk3{flex:none;align-self:flex-start;margin:0;
+  width:96px;height:144px;--bw:96px;--bh:144px}
 /* The name of the report is the strongest thing on the card. At 400/16 in g700
    it weighed the same as its own one-line description, so the pair read as two
    sentences rather than as a title and a subtitle. */
 .carousel .pcard b{font:600 15px/21px var(--sans);color:var(--g900)}
-/* Two lines, always. Equal copy makes them agree today; this keeps them
-   agreeing whatever the copy becomes, because the rating, price and button
-   under these are a row running across both cards, and one extra line in one
-   card breaks all three. Clamped as well as reserved, so an over-long line is
-   cut rather than allowed to push. */
+/* Clamped at two lines, not reserved at two. The cards are stacked now, so
+   nothing is running across a row and a one-line promise costs nobody their
+   alignment — but a runaway line would still push the price out past the
+   cover, so the ceiling stays. */
 .carousel .pcard small{margin:0;font:400 13px/19px var(--sans);color:var(--g500);
-  min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
   overflow:hidden}
 /* Sits straight under the title, the way the listing hangs its rating under
    the name. The star carries the number; the read count trails it in grey so
@@ -2204,21 +2210,24 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pc-rt s{text-decoration:none;font-weight:400;color:var(--g500)}
 /* The discount sits under the price as its own chip, which is how the sell card
    and the chat card both show it — the saving is the reason, so it gets a line. */
-/* The price is the top of the card's footer, so it takes the fill spacer and
-   the description above it absorbs the slack. Before, only the button was
-   pinned, so a two-line description and a three-line one put their prices at
-   different heights and the pair of cards had no shared baseline. */
-.pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:auto 0 0}
-.pc-pr + .pc-btn{margin-top:0}
+/* Price on the left, button on the right, on the bottom edge of the column.
+   `margin-top:auto` pins the pair to the foot so a one-line promise and a
+   two-line one still end at the cover's baseline. The price takes the spare
+   room, which puts the button hard right whether or not there is a price —
+   an owned card drops the price entirely. */
+.pc-foot{margin-top:auto;padding-top:4px;
+  display:flex;align-items:flex-end;justify-content:flex-end;gap:12px}
+.pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin-right:auto}
 .pc-pr i{font-style:normal;display:flex;align-items:center;gap:6px}
 .pc-pr em{font-style:normal;font:600 18px/28px var(--sans);color:var(--s700)}
 .pc-pr s{font:400 12px/18px var(--sans);color:#98A2B3}
 .pc-off{margin-top:-1px;align-self:flex-start;border-radius:5px;padding:2px 5px;
   background:linear-gradient(90deg,#ECFDF3 0,#FFFFFF 100%);
   font:400 12px/18px var(--sans);color:var(--s700)}
-/* `margin-top:auto` is the board's fill spacer: the button lands on the bottom
-   edge of every card, so a one-line title and a two-line title still match. */
-.pc-btn{margin-top:auto;height:40px;border-radius:12px;
+/* Sized to its label now rather than stretched across the card. Beside a price
+   it is one of two things on a line, and a full-width bar under a ₹49 read as
+   the whole card being a button. */
+.pc-btn{flex:none;height:40px;padding:0 20px;border-radius:12px;
   display:grid;place-items:center;white-space:nowrap;
   background:var(--brand);font:400 16px/24px var(--sans);color:#fff}
 .pcard:active .pc-btn{background:var(--brand-dk)}
