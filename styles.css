@@ -1152,7 +1152,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    are the whole of what this clip has to say, and centring it would have cut
    the heads and kept the hem. */
 .r2-vid.vid-marriage{object-position:50% 0%;transform:none}
-/* Marriage and Career are painted stills, not film. The image is set on
+/* Career is the same 720x1280 shape, with the crown in the top tenth and the
+   climb running down from it. Top-anchored for the same reason: the subject is
+   what sits above the stairs, and the bottom of the frame is cloud the card
+   covers anyway. */
+.r2-vid.vid-career{object-position:50% 0%;transform:none}
+/* The fallback for any report still on a painted still. The image is set on
    .r2-hero itself by renderReport; this only has to clear the things that were
    drawn for the couple — the rose ground, the clip over it, and the rose wash
    that lifted the middle of that frame. The white fade at the bottom stays,

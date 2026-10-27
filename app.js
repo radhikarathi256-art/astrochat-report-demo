@@ -189,6 +189,13 @@ var REPORTS = [
     art: {
       closed: 'assets/cover-career.jpg?v=3',
       open: 'assets/spread-career.png?v=2',
+      // Filmed, like the other two. The crown turns above the stairs — the same
+      // climb the cover paints, so the still below is only the fallback now.
+      video: 'assets/hero-career.mp4?v=1',
+      // Left at speed. This one is already ten seconds of one slow rotation;
+      // the 0.4 that Kundali Milan needed was for four seconds of almost no
+      // movement, and applying it here would stop the crown rather than calm it.
+      rate: 1,
       hero: 'assets/bg-career.jpg?v=2',
       // Anchored to the very top of the painting. This one is a climb, so the
       // thing the picture is about is the space above the stairs — the door,
