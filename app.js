@@ -51,6 +51,20 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    being distorted into something they are not. Circles (block, coin) sit a
    little under the box on purpose: a disc reads larger than a square of the
    same measure, so matching them by number makes them look bigger. */
+/* The rating star, written once. Four places drew one next to a number and all
+   four used the unicode glyph, which paints at about 0.7em inside its em box —
+   so a star set to the size of the figure beside it still came out smaller than
+   the figure, and the four of them disagreed on top of that because each had
+   been nudged by hand. Sized in CSS off the text it sits in, and centred in its
+   own viewBox so nothing has to be nudged at all. */
+var STAR_D = 'M12 3.05 14.9 8.95l6.5.95-4.7 4.6 1.1 6.45L12 17.9 6.2 20.95l1.1-6.45-4.7-4.6 6.5-.95z';
+var STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_D + '"/></svg>';
+/* The unearned half of a review score. Same outline as the filled one so a row
+   of five reads as five of one thing — the glyph pair did not, because ☆ is not
+   ★ hollowed out, it is a separate drawing with its own width, which is what
+   made four-star rows sit a little wider than five-star rows. */
+var STAR_OFF = '<svg class="star star-off" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_D + '"/></svg>';
+
 var LI_ICON = {
   user:  '<path d="M12 10.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M20.5 17.5c0 2.5-3.8 4-8.5 4s-8.5-1.5-8.5-4 3.8-4 8.5-4 8.5 1.5 8.5 4Z"/>',
   pin:   '<path d="M12 13.1a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Z"/><path d="M3.9 9c1.9-7.9 14.3-7.9 16.2 0 1.15 4.7-1.8 8.6-4.5 11.1a4.9 4.9 0 0 1-7.2 0C5.7 17.6 2.75 13.7 3.9 9Z"/>',
@@ -140,6 +154,22 @@ var REPORTS = [
     // Parallel to `learn`, one key per line. Kept as its own list rather than
     // folded into the strings so the copy stays copy and stays translatable.
     licons: ['user', 'pin', 'cup', 'cal', 'block', 'rings', 'shield', 'sun'],
+    /* The keepsake at the top of a bought report: the one finding worth pinning
+       to a wall, on the paper it was drawn on. Partner has a face to show, so
+       the art box holds the sketch. The other two have no portrait to draw —
+       there is no picture of a marriage score or a quarter of a year — so they
+       put their headline figure in the same box instead of leaving it empty or
+       inventing a stock image. Two facts underneath either way, because the
+       point of the card is that it is small enough to screenshot. */
+    hero: {
+      img: 'assets/sketch.jpg?v=202610221813',
+      alt: 'Sketch of your future partner',
+      foot: [['7th lord', 'Venus \u00b7 9th house'], ['You meet', 'Mar \u2013 Nov 2027']],
+      // What the same card says before she has paid. The labels change too, not
+      // just the values: withheld, the job of the line is to name what is
+      // coming, and "7th lord" does not do that for anyone.
+      hide: [['Your sketch', 'After you buy'], ['You meet', 'In full report']]
+    },
     ask: [
       { q: 'Where will I meet them?',        a: 'Your navamsa points to one direction. An introduction through work or study, not alone in some unknown place. It comes through people who already know you.' },
       { q: 'What is the remedy for Rahu?',   a: 'Pray to Durga on Wednesdays and feed one person. And for three weeks, make no new promise about the thing that is stuck.' },
@@ -194,6 +224,14 @@ var REPORTS = [
       'Which doshas you have, and the right remedies'
     ],
     licons: ['spark', 'cal', 'chart', 'user', 'home', 'coin', 'rings', 'shield'],
+    /* Gun Milan is the number this report is bought for, so it is the number on
+       the card. Out of 36 under it, because 28 alone means nothing to anyone
+       who has not been told the scale. */
+    hero: {
+      fig: { lbl: 'Gun Milan', big: '28', unit: 'out of 36' },
+      foot: [['Mangal dosha', 'In neither chart'], ['Best window', 'Feb \u2013 Aug 2027']],
+      hide: [['Your score', 'After you buy'], ['Best window', 'In full report']]
+    },
     ask: [
       { q: 'How serious is the Manglik?',    a: 'Mars is in your chart but weakly placed. This is called a low Manglik. With a partner whose chart is similar, it settles on its own.' },
       { q: 'Which is the best month?',       a: 'When Jupiter looks at your seventh house. In that window talks move forward and the family agrees too.' },
@@ -249,6 +287,14 @@ var REPORTS = [
       'Colours, directions and mantras for success at work'
     ],
     licons: ['spark', 'cal', 'case', 'user', 'eye', 'arrow', 'coin', 'sun'],
+    /* Career is bought for timing, so the months are the headline. The year
+       sits under them rather than inside the range, which keeps the figure to
+       four characters and the same weight as the other two cards. */
+    hero: {
+      fig: { lbl: 'Your switch window', big: 'Apr \u2013 Sep', unit: '2027' },
+      foot: [['10th lord', 'Saturn \u00b7 6th house'], ['Money moves', 'Jun 2027']],
+      hide: [['Your window', 'After you buy'], ['Money moves', 'In full report']]
+    },
     ask: [
       { q: 'When should I change jobs?',     a: 'When Jupiter looks at your tenth house. In that window the offers are better and talks close. Before it, only talk, do not switch.' },
       { q: 'What does my boss think?',       a: 'The Sun is fine but Saturn is watching. He trusts the work, not the show. So he knows your work, he just does not remember it.' },
@@ -868,12 +914,39 @@ function renderSample() {
   paintArch();
   sec.classList.toggle('dev', c.dev);
   $('#langChipLabel').textContent = 'Read in ' + c.chip;
+  paintPaper($('#samplePaper'), true);
   $('#sampleWhy').textContent = reportById(state.pick).why;
   $('#sampleBody').innerHTML = renderSecs(true);
 }
 
+/* Paints the keepsake card for whichever report was bought. `preview` keeps the
+   sample page's blur-and-badge treatment; the bought page passes nothing. */
+function paintPaper(host, preview) {
+  if (!host) return;
+  var r = reportById(state.pick), h = r.hero || {};
+  var art = h.img
+    ? '<img src="' + h.img + '" alt="' + esc(h.alt || '') + '">'
+    // No portrait to draw, so the box holds the finding instead. Same height as
+    // the sketch, so all three cards are one object at one size.
+    : '<div class="paper-fig"><small>' + esc(h.fig.lbl) + '</small>' +
+      '<b>' + esc(h.fig.big) + '</b><em>' + esc(h.fig.unit) + '</em></div>';
+  host.innerHTML =
+    '<div class="paper-art">' + art +
+      (preview ? '<span class="pv-badge">Preview</span>' : '') +
+    '</div>' +
+    '<div class="paper-foot">' +
+      ((preview ? h.hide : h.foot) || []).map(function (f, i) {
+        return (i ? '<i></i>' : '') +
+          '<div><small>' + esc(f[0]) + '</small><b>' + esc(f[1]) + '</b></div>';
+      }).join('') +
+    '</div>' +
+    '<span class="paper-fold" aria-hidden="true"></span>' +
+    '<span class="tape t" aria-hidden="true"></span>';
+}
+
 function renderRead() {
   paintArch();
+  paintPaper($('#readPaper'), false);
   /* The same fifteen answers the sample shows, minus the demo-chart banner, the
      jump index and the two CTA cards. The sample is a window onto this page, so
      a bought report laid out differently read as a different product. */
@@ -1497,7 +1570,7 @@ function upsellCard(x) {
     // The star is its own element so it can take the rating gold. Sharing the
     // line's colour made it ink-black here while the same star was gold on the
     // sell page and in the reviews.
-    '<span class="pc-rt"><i class="pc-st">\u2605</i> ' + esc(x.rating) +
+    '<span class="pc-rt">' + STAR + ' ' + esc(x.rating) +
       ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
     '<small>' + esc(x.s) + '</small>' +
     // Once it is hers the card stops selling. The price row goes — a discount
@@ -1523,7 +1596,7 @@ function sellCard(r) {
       '<span class="sell-hd">' +
         '<b class="sell-t">' + esc(r.t) + '</b>' +
         '<span class="sell-stats">' +
-          '<em><b>' + r.rating + '</b><i>★</i> · ' + r.pages + ' pages</em>' +
+          '<em><b>' + r.rating + '</b>' + STAR + ' · ' + r.pages + ' pages</em>' +
           '<em><b>' + inr(r.sold) + '</b> readers</em>' +
         '</span>' +
       '</span>' +
@@ -1551,7 +1624,10 @@ function offer3Card() {
       // The green dot is switched off in the frame, and rightly so: it says
       // "live" next to a rating, which is the one thing a rating is not.
       '<div class="of3-badge">' +
-        '<b>' + r.rating + '</b><i class="of3-star">\u2605</i>' +
+        // Star inside the `b`, not beside it. As a sibling it took the badge's
+        // 8px gap — the same distance as the separator — so 4.7 and its star
+        // looked no more related to each other than to the reader count.
+        '<b>' + r.rating + STAR + '</b>' +
         '<i class="of3-sep"></i>' +
         '<b>' + inr(r.sold) + ' readers</b>' +
       '</div>' +
@@ -1896,7 +1972,7 @@ function renderReport() {
     '</ul>';
   $('#r2Revs').innerHTML = r.revs.map(function (v) {
     return '<div class="review">' +
-      '<i class="rv-stars">' + '\u2605'.repeat(v.s) + '\u2606'.repeat(5 - v.s) + '</i>' +
+      '<i class="rv-stars">' + STAR.repeat(v.s) + STAR_OFF.repeat(5 - v.s) + '</i>' +
       '<p>\u201c' + esc(v.q) + '\u201d</p>' +
       '<b>' + esc(v.n) + '</b></div>';
   }).join('');

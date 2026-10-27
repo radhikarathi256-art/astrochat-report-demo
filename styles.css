@@ -14,6 +14,13 @@
      offer, the sell page and the reviews. Coins and the reward gradient are a
      different thing and keep their own. */
   --star:#FFD029;
+  /* The star itself is a drawing now, not the glyph. The unicode star paints at
+     roughly 0.7em inside its own em box, so setting it to the same font-size as
+     the number beside it still produced a star visibly smaller than the digits —
+     the rating looked shrunken at every size, worst at 16px. Drawn, sized 1em
+     and centred in its own viewBox, it matches the cap height of whatever text
+     it sits in, so one rule serves the 11px sell line and the 16px stat block
+     alike. `.star` is in the utilities block further down. */
   --purple:#6941C6; --purple50:#F4EBFF;
   /* The report's own pinks. `dec1/dec2` are the motifs, pale then deep;
      `decw1/decw2` are the two waves they sit on. */
@@ -437,7 +444,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   text-transform:uppercase;color:var(--g500)}
 .pts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .pts li{display:flex;gap:8px;font:400 12.5px/17px var(--sans);color:var(--g700)}
-.pts li > i{flex:none;margin-top:1px;width:15px;height:15px;color:var(--g600)}
+/* g400, the same as the detail page list these lines are a preview of. At g600
+   the mark weighed as much as the words it was labelling, and the same icon
+   changed colour between the chat card and the page it opens. */
+.pts li > i{flex:none;margin-top:1px;width:15px;height:15px;color:var(--g400)}
 .pts li > i > svg{display:block;width:15px;height:15px}
 /* No glyph of its own — it is not a question, it is the count of the ones not
    listed — so it takes the indent the glyphs make instead. */
@@ -619,7 +629,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and stacked labels — that bar is most of what made this read as a page. */
 .sell-stats{display:block;margin-top:5px;font:500 11px/16px var(--sans);color:#7A5A4B}
 .sell-stats em{display:block;font-style:normal}
-.sell-stats i{font-style:normal;color:var(--star)}
+/* One star, used at every size. 1em so it tracks the text, flex:none so a
+   squeezed row crushes the words rather than the mark, and the small negative
+   vertical-align seats it on the digits in the inline contexts (the flex ones
+   centre it themselves and ignore this). */
+.star{flex:none;width:1em;height:1em;fill:var(--star);vertical-align:-.13em}
+/* Hollow, not a different glyph. Stroked on the inside edge so an empty star
+   occupies exactly the box a filled one does and a four-star row lines up with
+   a five-star row. */
+.star-off{fill:none;stroke:var(--star);stroke-width:1.7;stroke-linejoin:round}
 .sell-stats b{font-weight:700;color:var(--g900)}
 .sell-body{display:block;padding:11px 14px 0}
 .sell-why{display:block;font:400 12.5px/18px var(--sans);color:var(--g600)}
@@ -646,7 +664,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-badge{display:flex;align-items:center;gap:8px;height:20px;margin-top:auto}
 .of3-badge b{display:flex;align-items:center;gap:4px;
   font:500 14px/20px var(--sans);color:var(--g700)}
-.of3-star{font-size:12px;font-style:normal;line-height:1;color:var(--star)}
 .of3-sep{flex:none;width:1px;height:6px;background:#D0D5DD}
 /* The hinge. Perspective on the wrapper, the cover pivoting on its spine over
    a page leaf, so there is paper in the gap instead of a hole. */
@@ -754,7 +771,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-pts .pts li{font:500 14px/20px var(--sans);color:var(--g700)}
 .of3-pts .pts li > i,
 .of3-pts .pts li > i > svg{width:18px;height:18px}
-.of3-pts .pts li > i{color:currentColor}
+/* Not currentColor. Taking the row's ink made the mark weigh exactly as much as
+   the sentence it labels, and made this the one place the same icon was dark —
+   it is a preview of the detail page list, so it is the detail page's grey. */
+.of3-pts .pts li > i{color:var(--g400)}
 .of3-pts .pts .pts-more{padding-left:0;font-weight:500;color:var(--g700);
   text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
 /* The hairline above the price is in the frame and does real work: it ends the
@@ -1362,10 +1382,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-block{position:relative;padding:24px 16px}
 .r2-block + .r2-block::before{content:"";position:absolute;top:0;left:16px;right:16px;
   height:1px;background:var(--g200)}
-/* The card hangs 20px into this block, so 24px of padding left almost nothing
-   between the stats row and "About this report". This is the first breath after
-   the hero and it has to read as one. */
-.r2-card + .r2-block{padding-top:44px}
+/* The card hangs 20px into this block, so the padding here is always 20 more
+   than the gap it buys. At 44 that was a 40px hole between the stats row and
+   the first line of the promise — the two things on this screen that most need
+   to read as one thought, separated by more air than sits between whole
+   sections. 28 nets the same 24 every other block uses. */
+.r2-card + .r2-block{padding-top:28px}
 /* `.carousel.fill` — two cards, so they split the row rather than sitting at a
    fixed 159px with dead space beside them. Nothing is off-screen, so there is
    nothing left to scroll to. Used by both upsell strips. */
@@ -1453,8 +1475,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .review.is-snap{transform:scale(1)}
 /* Stars, then the finding, then who found it — the quote is the evidence, so
    the name goes under it as the signature rather than above it as a heading. */
-.rv-stars{display:block;font-style:normal;font:400 12px/18px var(--sans);
-  color:var(--star);letter-spacing:1.5px;margin-bottom:6px}
+/* A row of drawings now, so the spacing is a flex gap rather than letter
+   spacing — which only ever worked by adding a trailing space after the fifth
+   star and pushing the whole row off its left edge. font-size is what sizes
+   them, since `.star` is 1em. */
+.rv-stars{display:flex;gap:2px;font-size:13px;margin-bottom:6px}
 .review p{margin:0;font:400 15px/22px var(--sans);color:var(--g700)}
 .review b{display:block;margin-top:6px;font:400 12px/18px var(--sans);color:var(--g600)}
 @media (prefers-reduced-motion:reduce){
@@ -1500,11 +1525,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    two are the only things on the page worth tapping before she decides. The
    sticky bar keeps the filled treatment; nothing in the page body competes with
    it for solidity, only for colour. */
-/* Sized to its own label rather than to the column. Full width put a second
-   48px bar directly above the real one in the sticky buy bar, and two
-   stacked full-width buttons read as a choice between equals — this one is a
-   look inside, not the purchase. The block is centred, so it centres. */
-.r2-samp{display:inline-block;margin-top:18px;cursor:pointer;
+/* Full width, to the column. It is the only control in its block and a
+   186px pill floating in a 394px column left dead air either side of it; the
+   outline against the solid buy bar is what keeps the two from reading as a
+   choice between equals, not the width. */
+.r2-samp{display:block;width:100%;margin-top:18px;cursor:pointer;
   border:1px solid var(--brand);border-radius:12px;background:#fff;
   box-shadow:0 1px 2px rgba(16,24,40,.05);
   padding:0 24px;height:44px;font:600 14px/42px var(--sans);color:var(--brand);
@@ -1663,9 +1688,34 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   border-radius:1px;background:#EFE4D4;
   box-shadow:inset 0 0 0 1px rgba(115,64,56,.09)}
 .paper-art img{width:100%;height:100%;object-fit:cover;display:block}
+/* What stands in for the sketch when there is nothing to draw. A marriage score
+   and a quarter of a year have no portrait, and a stock illustration in this
+   box would be the one invented thing on a card that is otherwise all findings.
+   So the finding is the artwork: label, figure, scale. Same 244px box, so the
+   three keepsakes are one object at one size. */
+.paper-fig{height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;padding:0 18px;text-align:center}
+.paper-fig small{font:500 11px/16px var(--sans);letter-spacing:.08em;
+  text-transform:uppercase;color:#A4917E}
+/* Cormorant, the one place the file genuinely asks for the display face: this
+   is a number on a keepsake, not a stat in a table. */
+.paper-fig b{font:700 clamp(40px,13vw,56px)/1.05 var(--display);color:#3F2D1E;
+  letter-spacing:-.01em}
+.paper-fig em{font-style:normal;font:500 13px/19px var(--sans);color:#8A7560}
 /* Soft enough that the face is still a face — a heavier blur sells nothing,
    because there is nothing left to want. */
 .paper.preview .paper-art img{filter:blur(6px) saturate(.92);transform:scale(1.08)}
+/* The figure is withheld the same way the sketch is. Only the number blurs —
+   the label above it stays sharp, because what is being sold is knowing the
+   score, and that only works if she can read the word "Gun Milan". */
+.paper.preview .paper-fig b{filter:blur(9px);user-select:none}
+.paper.preview .paper-fig em{opacity:.45}
+/* Clear of the Preview badge. On the sketch the badge sits over a photograph
+   and costs nothing; over the figure it landed across the label — "Gun Milan"
+   with a chip through it — and that label is the one part of this card that
+   has to stay readable, because it is what is being sold. Only in preview;
+   the bought card has no badge to dodge. */
+.paper.preview .paper-fig{padding-top:46px}
 /* Left side, clear of the tape that now crosses the top corner, and squared
    off like the paper it is printed on. */
 .pv-badge{position:absolute;left:26px;top:30px;display:flex;align-items:center;
@@ -1941,11 +1991,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Input and send on one line. The input takes whatever is left, so the
    placeholder still has most of the bar to type its question across. */
 .ask-row{display:flex;align-items:center;gap:8px}
+/* Round. A 12px-radius square beside a 12px-radius field made send look like a
+   second field that had been filled in orange; a circle is unmistakably the
+   control and nothing else on the bar is one. */
 .ask-send{flex:none;width:44px;height:44px;display:grid;place-items:center;
-  border:0;border-radius:12px;background:var(--brand);color:#fff;cursor:pointer}
+  border:0;border-radius:50%;background:var(--brand);color:#fff;cursor:pointer}
 .ask-send:active{background:var(--brand-dk)}
+/* 14 medium, per the Figma. 16 regular was a size nothing else on the bar used
+   and it sat heavier than the name above it, which is the one thing on this
+   row that should lead. */
 .ask-in{flex:1;min-width:0;width:auto;height:44px;border:0;border-radius:12px;
-  padding:0 14px;background:var(--g100);font:400 16px/24px var(--sans);color:var(--g800)}
+  padding:0 14px;background:var(--g100);font:500 14px/20px var(--sans);color:var(--g800)}
 .ask-in::placeholder{color:var(--g400)}
 .ask-in:focus{outline:2px solid var(--brand50)}
 
@@ -2121,7 +2177,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pc-rt{margin:-4px 0 0;display:flex;align-items:center;gap:4px;
   font:600 13px/19px var(--sans);color:var(--g900)}
 .pc-rt s{text-decoration:none;font-weight:400;color:var(--g500)}
-.pc-st{font-style:normal;line-height:1;color:var(--star)}
 /* The discount sits under the price as its own chip, which is how the sell card
    and the chat card both show it — the saving is the reason, so it gets a line. */
 /* The price is the top of the card's footer, so it takes the fill spacer and
