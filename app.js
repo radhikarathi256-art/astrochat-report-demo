@@ -1442,7 +1442,11 @@ function upsellCard(x) {
     // The one number that decides between two books nobody has heard of. The
     // card showed a title, a promise and a price — the same three things on
     // both — so there was nothing on it to choose by.
-    '<span class="pc-rt">\u2605 ' + esc(x.rating) + ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
+    // The star is its own element so it can take the rating gold. Sharing the
+    // line's colour made it ink-black here while the same star was gold on the
+    // sell page and in the reviews.
+    '<span class="pc-rt"><i class="pc-st">\u2605</i> ' + esc(x.rating) +
+      ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
     '<small>' + esc(x.s) + '</small>' +
     // Once it is hers the card stops selling. The price row goes — a discount
     // beside a book she has already paid for is the page asking a second

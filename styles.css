@@ -8,6 +8,12 @@
   --g300:#D0D5DD; --g200:#EAECF0; --g100:#F2F4F7; --g50:#F9FAFB;
   --w900:#7A2E0E; --w700:#B54708; --w500:#F79009; --w100:#FEF0C7; --w50:#FFFAEB; --w25:#FFFCF5;
   --s700:#027A48; --s50:#ECFDF3;
+  /* The rating star, from the live app's own icon (767:127545). Every star that
+     stands for a rating takes this one value — the page had three different
+     golds doing the same job, so the same 4.7 changed colour between the chat
+     offer, the sell page and the reviews. Coins and the reward gradient are a
+     different thing and keep their own. */
+  --star:#FFD029;
   --purple:#6941C6; --purple50:#F4EBFF;
   /* The report's own pinks. `dec1/dec2` are the motifs, pale then deep;
      `decw1/decw2` are the two waves they sit on. */
@@ -613,7 +619,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and stacked labels — that bar is most of what made this read as a page. */
 .sell-stats{display:block;margin-top:5px;font:500 11px/16px var(--sans);color:#7A5A4B}
 .sell-stats em{display:block;font-style:normal}
-.sell-stats i{font-style:normal;color:#F79009}
+.sell-stats i{font-style:normal;color:var(--star)}
 .sell-stats b{font-weight:700;color:var(--g900)}
 .sell-body{display:block;padding:11px 14px 0}
 .sell-why{display:block;font:400 12.5px/18px var(--sans);color:var(--g600)}
@@ -640,7 +646,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-badge{display:flex;align-items:center;gap:8px;height:20px;margin-top:auto}
 .of3-badge b{display:flex;align-items:center;gap:4px;
   font:500 14px/20px var(--sans);color:var(--g700)}
-.of3-star{font-size:12px;font-style:normal;line-height:1;color:#FEC84B}
+.of3-star{font-size:12px;font-style:normal;line-height:1;color:var(--star)}
 .of3-sep{flex:none;width:1px;height:6px;background:#D0D5DD}
 /* The hinge. Perspective on the wrapper, the cover pivoting on its spine over
    a page leaf, so there is paper in the gap instead of a hole. */
@@ -1422,7 +1428,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rsum{display:flex;align-items:center;gap:12px;margin:12px 0}
 .rsum>b{font:700 34px/38px var(--sans);color:var(--g900)}
 .rsum>span{display:flex;flex-direction:column;gap:1px}
-.rsum .stars{font-style:normal;font:400 15px/20px var(--sans);color:#F79009;letter-spacing:2px}
+.rsum .stars{font-style:normal;font:400 15px/20px var(--sans);color:var(--star);letter-spacing:2px}
 .rsum em{font-style:normal;font:400 13px/18px var(--sans);color:var(--g500)}
 
 /* Quotes scroll sideways; stacking four of them would bury the CTA. Figma
@@ -1445,7 +1451,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Stars, then the finding, then who found it — the quote is the evidence, so
    the name goes under it as the signature rather than above it as a heading. */
 .rv-stars{display:block;font-style:normal;font:400 12px/18px var(--sans);
-  color:#F79009;letter-spacing:1.5px;margin-bottom:6px}
+  color:var(--star);letter-spacing:1.5px;margin-bottom:6px}
 .review p{margin:0;font:400 15px/22px var(--sans);color:var(--g700)}
 .review b{display:block;margin-top:6px;font:400 12px/18px var(--sans);color:var(--g600)}
 @media (prefers-reduced-motion:reduce){
@@ -2086,6 +2092,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pc-rt{margin:-4px 0 0;display:flex;align-items:center;gap:4px;
   font:600 13px/19px var(--sans);color:var(--g900)}
 .pc-rt s{text-decoration:none;font-weight:400;color:var(--g500)}
+.pc-st{font-style:normal;line-height:1;color:var(--star)}
 /* The discount sits under the price as its own chip, which is how the sell card
    and the chat card both show it — the saving is the reason, so it gets a line. */
 /* The price is the top of the card's footer, so it takes the fill spacer and
