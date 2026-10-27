@@ -903,20 +903,22 @@ function hideReadyPush() {
 function openBook() {
   hideReadyPush();
   go('book', 'fade');
-  var bk = $('#bookEl'), cap = $('#bookCap'), r = reportById(state.pick);
-  // Where the painted cover exists, the thing that swings open is the real
-  // cover, onto the painted spread — not a drawing of a book.
-  var img = $('#bookCover img'), pg = $('#bookPage');
-  bk.classList.toggle('art', !!r.art);
-  img.src = r.art ? r.art.closed : 'assets/book.svg';
-  pg.style.backgroundImage = r.art ? 'url(' + r.art.open + ')' : '';
+  var bk = $('#bookEl'), cap = $('#bookCap'), stage = $('#bookStage'), r = reportById(state.pick);
+  // The painted cover is the picture; what is inside is paper. Printing the
+  // spread on the page is what made the open book twice the width of the shut
+  // one, and that resize is what tore the two halves apart on the way.
+  $('#bookCover img').src = r.art ? r.art.closed : 'assets/book.svg';
   bk.classList.remove('open');
+  stage.classList.remove('gone');
   cap.textContent = 'Your report is ready';
   later(function () {
     bk.classList.add('open');
     cap.textContent = 'Opening your report…';
   }, 450);
-  later(enterRead, 1800);
+  // Open, then go. The stage fades forward over the arch rather than the
+  // screen cutting out from under a book that has just finished opening.
+  later(function () { stage.classList.add('gone'); }, 1480);
+  later(enterRead, 1840);
 }
 
 /* The opening is a curtain, not a toll booth: the second time she sees it a tap
@@ -1783,6 +1785,7 @@ function restart() {
   resetTimeline();
   applyPaidTimeline();
   $('#bookEl').classList.remove('open');
+  $('#bookStage').classList.remove('gone');
   show(state.entry, 'fade');
   // The notification no longer fires on load. It is a touchpoint, not a page
   // state, so it belongs to its own chip — otherwise it lands on top of

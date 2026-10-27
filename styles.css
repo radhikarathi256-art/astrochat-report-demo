@@ -2137,29 +2137,38 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- R.6b/c Book opening ---------- */
 #book{background:var(--w25)}
 .book-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
-  perspective:1400px}
-.book{position:relative;width:170px;height:218px;transform-origin:center;
-  transition:width .9s cubic-bezier(.4,0,.2,1),height .9s cubic-bezier(.4,0,.2,1)}
-.book.open{width:290px;height:400px}
-.book .page{position:absolute;inset:0;background:#fff;border-radius:10px;
+  perspective:1400px;cursor:pointer;
+  transition:opacity .42s ease,transform .42s cubic-bezier(.4,0,.2,1)}
+/* The last beat. The book does not cut to the report: once it is open it
+   comes towards the camera and goes, and the arch is already underneath it,
+   so the hand-off is one movement rather than a swap of two screens. */
+.book-stage.gone{opacity:0;transform:scale(1.14)}
+/* One size, 2:3, which is the covers own ratio. The box used to grow from
+   170x218 to 290x400 while the cover swung off its left edge — so what
+   played was a cover flying away from a page of a different size in a
+   different place. Two objects coming apart, not one book opening. */
+.book{position:relative;width:184px;height:276px;transform-origin:center}
+/* White pages, with the title printed on them. The painted spread is what
+   forced the open book to be twice the width of the shut one; on this
+   screen the cover is the picture and the inside is paper. */
+.book .page{position:absolute;inset:0;background:#fff;border-radius:3px 10px 10px 3px;
   box-shadow:0 18px 40px -16px rgba(122,46,14,.35);
-  display:flex;flex-direction:column;justify-content:center;padding:26px;opacity:0;
-  transition:opacity .5s ease .25s}
-.book.open .page{opacity:1}
-.book .page h2{margin:6px 0 0;font:700 22px/28px var(--sans);color:var(--g700)}
-.book .page .psub{margin:4px 0 0;font:400 14px/20px var(--sans);color:var(--g600)}
+  display:flex;flex-direction:column;justify-content:center;padding:24px}
+.book .page h2{margin:6px 0 0;font:700 20px/26px var(--sans);color:var(--g700)}
+.book .page .psub{margin:4px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
 .book .page hr{width:100%;border:0;border-top:1px solid var(--g200);margin:16px 0 0}
-.book .cover{position:absolute;inset:0;transform-origin:left center;backface-visibility:hidden;
-  transition:transform .9s ease-in-out}
-.book .cover img{width:100%;height:100%;object-fit:contain}
-.book.open .cover{transform:rotateY(-160deg)}
+/* The hinge is the top edge, not the left. Lifting the board up and back
+   keeps it joined to the book the whole way and nothing travels sideways
+   out of the frame; past 90 degrees its back is what faces us, and
+   backface-visibility takes it off, leaving the open page. */
+.book .cover{position:absolute;inset:0;transform-origin:center top;backface-visibility:hidden;
+  transition:transform .85s cubic-bezier(.33,1,.68,1)}
+.book .cover img{width:100%;height:100%;object-fit:cover;border-radius:3px 10px 10px 3px}
+.book.open .cover{transform:rotateX(-152deg)}
 .book-cap{margin:0;font:600 15px/22px var(--sans);color:var(--brand);transition:opacity .3s ease}
-/* With painted artwork the cover fills its card edge to edge and the page
-   behind it is the painted spread, so what swings open is the real book. */
-.book.art .cover img{object-fit:cover;border-radius:3px 7px 7px 3px}
-.book.art .page{background:#FBF6EC right center/auto 104% no-repeat;padding:0}
-.book.art .page > *{display:none}
-.book-stage{cursor:pointer}
+@media (prefers-reduced-motion:reduce){
+  .book .cover,.book-stage{transition:none}
+}
 
 /* ---------- Scrim + sheets ---------- */
 .scrim{position:absolute;inset:0;z-index:70;background:rgba(16,24,40,.45);opacity:0;transition:opacity .22s ease}
