@@ -1362,12 +1362,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    No shadow: it drew a line exactly where the book is meant to be resting.
    The overlap stays at 36 — the open book standing in front of the card is the
    point of the composition, and dropping the card to clear it left the spread
-   floating over a white band. The padding is what moves instead: 52 at the top
-   rather than 20, which is the 34 the book reaches into the card plus the 18
-   the title needs. The book keeps its position; the heading starts below where
-   the book ends instead of behind it. */
+   floating over a white band. The padding is what moves instead: 44 at the top
+   rather than 20, which is the 34 the book reaches into the card plus 10 of
+   air. The book keeps its position; the heading starts below where the book
+   ends instead of behind it. 44 and not 52 — at 52 the clearance read as a gap
+   between the book and its own title rather than the title breathing. */
 .r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
-  background:#fff;border-radius:20px;padding:52px 16px 16px;text-align:center}
+  background:#fff;border-radius:20px;padding:44px 16px 16px;text-align:center}
 /* Figma 3186:204216 — Inter Bold 20/30 on #1d2939, centred, in a 290 box.
    It stays centred and it stays alone: this is the title on the cover of the
    book standing above it, not a listing heading. Ranging it left and hanging a
