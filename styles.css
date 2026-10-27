@@ -2190,12 +2190,17 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and bottom — on Career & Money that took the title band with it. 118/177 is
    the artwork's own 2:3, so nothing is cropped and the extra height is the
    book standing taller rather than more card. */
-/* 96x144 lying on its side, down from 118x177 upright. Still the artwork's own
-   2:3, so nothing is cropped; smaller only because the cover no longer has to
-   carry the card on its own — it has a title, a rating and a promise beside it
-   at full width now rather than squeezed underneath. */
+/* 88x132, down from 96x144 and 118x177 before that. Still the artwork's own
+   2:3, so nothing is cropped; smaller because the cover no longer carries the
+   card on its own — it has a title, a rating and a price beside it at full
+   width now rather than squeezed underneath.
+   The height is also what sets the hole above the price. The foot is pinned to
+   the bottom by `margin-top:auto`, so the column's spare room is the gap, and
+   the column is as tall as the cover: 12px off the cover is 12px off the gap,
+   and the price row still lands on the book's own baseline. Taking it out of
+   the margin instead would have unpinned them. */
 .carousel .pcard .bkt,.carousel .pcard .bk3{flex:none;align-self:flex-start;margin:0;
-  width:96px;height:144px;--bw:96px;--bh:144px}
+  width:88px;height:132px;--bw:88px;--bh:132px}
 /* The name of the report is the strongest thing on the card. At 400/16 in g700
    it weighed the same as its own one-line description, so the pair read as two
    sentences rather than as a title and a subtitle. */
