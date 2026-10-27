@@ -14,11 +14,7 @@
      offer, the sell page and the reviews. Coins and the reward gradient are a
      different thing and keep their own. */
   --star:#FFD029;
-  /* `purple200` is the rule that goes with the other two. Added when the report
-     term chips moved off orange: a tinted pill needs a border a shade down from
-     its own ground, and borrowing g300 for it put a grey rule around a purple
-     fill, which is the thing that makes a tint look like a mistake. */
-  --purple:#6941C6; --purple50:#F4EBFF; --purple200:#E9D7FE;
+  --purple:#6941C6; --purple50:#F4EBFF;
   /* The report's own pinks. `dec1/dec2` are the motifs, pale then deep;
      `decw1/decw2` are the two waves they sit on. */
   --dec1:#FCCEEE; --dec2:#FAA7E0; --decw1:#FEF6FB; --decw2:#FDF2FA;
@@ -1483,12 +1479,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The report's own terms, lifted out of the standard three. These are the only
    lines here that differ between one book and the next, so they take the tint
    and the star; Shareable and Private are the small print and stay grey.
-   Purple, not brand. What made the orange version read as a button was not the
-   pill — it was wearing the same colour as the ₹49 button a thumb's width
-   below it, so two of them looked like the choices and the real control looked
-   like a third. Purple is the one accent on this page that is not spoken for,
-   so the tint can say "only in this book" without also saying "press me". */
-.r2-chips .ch-key{border-color:var(--purple200);background:var(--purple50);color:var(--purple)}
+   The colour is the book's, not a new one. Orange failed because it matched the
+   buy button a thumb below and the chips started looking like the choice;
+   purple failed for the opposite reason — this page is rose, peach, green, gold
+   and grey already, and a sixth hue that belongs to none of it reads as a
+   sticker someone else put there. `w900` on `w25` is the warm dark the covers
+   and the paper are already built from, so it sits down into the page while
+   still being the only thing in the row that is not grey. Dark brown is far
+   enough from a peach button to never be mistaken for one. */
+.r2-chips .ch-key{border-color:#EBDCCB;background:var(--w25);color:var(--w900)}
 .r2-chips .ch-key svg{fill:currentColor;stroke:none}
 .r2-chips .ch-std svg{color:var(--g400)}
 /* Airbnb's "Show all photos": full width, neutral rule, dark label. It used to
