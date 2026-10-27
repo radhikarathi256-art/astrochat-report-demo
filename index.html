@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=202610271508">
+<link rel="manifest" href="manifest.webmanifest?v=202610271523">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=202610271508">
-<link rel="stylesheet" href="mobile.css?v=202610271508">
+<link rel="stylesheet" href="styles.css?v=202610271523">
+<link rel="stylesheet" href="mobile.css?v=202610271523">
 </head>
 <body>
 
@@ -694,14 +694,23 @@
       <!-- Tapping anywhere skips to the report: an animation that cannot be
            skipped is a toll booth the second time she sees it. -->
       <div class="book-stage" id="bookStage">
-        <div class="book" id="bookEl">
-          <div class="page" id="bookPage">
-            <p class="eyebrow">MADE BY ASTRO HEMALI</p>
-            <h2 id="bookTitle">Marriage Yog report</h2>
-            <p class="psub">For Mansi · from your chat</p>
-            <hr>
+        <!-- The perspective lives here, not on the stage: it only applies to an
+             element's own children, and the caption is a sibling of the book. -->
+        <div class="book-wrap">
+          <i class="book-halo" aria-hidden="true"></i>
+          <div class="book" id="bookEl">
+            <div class="page" id="bookPage">
+              <p class="eyebrow">MADE BY ASTRO HEMALI</p>
+              <h2 id="bookTitle">Marriage Yog report</h2>
+              <p class="psub">For Mansi · from your chat</p>
+              <hr>
+            </div>
+            <!-- The slab between the two boards. Without it the three-quarter
+                 turn is a flat picture being skewed; with it the book has a
+                 thickness to turn, which is the whole reason to turn it. -->
+            <i class="spine" aria-hidden="true"></i>
+            <div class="cover" id="bookCover"><img src="assets/book.svg" alt=""></div>
           </div>
-          <div class="cover" id="bookCover"><img src="assets/book.svg" alt=""></div>
         </div>
         <p class="book-cap" id="bookCap">Your report is ready</p>
       </div>
@@ -933,6 +942,12 @@
 
   <div class="toast" id="toast" hidden></div>
 
+  <!-- The light the opened book lets out. It sits outside the screens on
+       purpose: it has to still be on top while the thing underneath it changes
+       from the book to the report, which is what makes the hand-off one
+       movement instead of two pages swapping. -->
+  <i class="blaze" id="blaze" aria-hidden="true"></i>
+
   <!-- The report's quiet knock on Today. It arrives once the check-in is
        answered, which is the one moment she has just been given something and
        is still on the page. Dismissible, because a nudge she cannot close is
@@ -964,8 +979,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=202610271508"></script>
-<script src="app.js?v=202610271508"></script>
-<script src="mobile.js?v=202610271508"></script>
+<script src="data.js?v=202610271523"></script>
+<script src="app.js?v=202610271523"></script>
+<script src="mobile.js?v=202610271523"></script>
 </body>
 </html>

@@ -2178,40 +2178,85 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rep-acts .btn{flex:1 1 0;min-width:0;width:auto;height:44px;font-size:15px;padding:0 12px}
 .rep-acts .of3-price{flex:none}
 
-/* ---------- R.6b/c Book opening ---------- */
+/* ---------- R.6b/c Book opening ----------
+   Four beats, in this order: the book is standing shut in the middle, it
+   turns to three-quarters, the front board swings off the spine, and the
+   light that comes out of it grows until it is the whole screen — with the
+   report already underneath, so the page is revealed by the glow pulling
+   back rather than by a screen appearing. */
 #book{background:var(--w25)}
 .book-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
-  perspective:1400px;cursor:pointer;
+  cursor:pointer;
   transition:opacity .42s ease,transform .42s cubic-bezier(.4,0,.2,1)}
-/* The last beat. The book does not cut to the report: once it is open it
-   comes towards the camera and goes, and the arch is already underneath it,
-   so the hand-off is one movement rather than a swap of two screens. */
-.book-stage.gone{opacity:0;transform:scale(1.14)}
-/* One size, 2:3, which is the covers own ratio. The box used to grow from
+.book-stage.gone{opacity:0;transform:scale(1.06)}
+/* Perspective belongs to the element whose children are transformed, and the
+   caption is a sibling of the book — on the stage it would have had to apply
+   to both or to neither. 1500 is far enough back that a 42-degree turn reads
+   as a turn and not as a fisheye. */
+.book-wrap{position:relative;display:grid;place-items:center;perspective:1500px}
+/* One size, 2:3, which is the cover's own ratio. The box used to grow from
    170x218 to 290x400 while the cover swung off its left edge — so what
    played was a cover flying away from a page of a different size in a
    different place. Two objects coming apart, not one book opening. */
-.book{position:relative;width:184px;height:276px;transform-origin:center}
+.book{position:relative;width:184px;height:276px;transform-style:preserve-3d;
+  transition:transform .95s cubic-bezier(.33,1,.68,1)}
+/* Shut and square to the camera, then three-quarters. Positive rotateY swings
+   the left edge forward, which is the edge the spine is on and the edge the
+   board is hinged to — turn it the other way and the book opens away from us
+   round a hinge we cannot see. */
+.book.turn{transform:rotateY(42deg) translateZ(-10px)}
 /* White pages, with the title printed on them. The painted spread is what
    forced the open book to be twice the width of the shut one; on this
    screen the cover is the picture and the inside is paper. */
 .book .page{position:absolute;inset:0;background:#fff;border-radius:3px 10px 10px 3px;
   box-shadow:0 18px 40px -16px rgba(122,46,14,.35);
-  display:flex;flex-direction:column;justify-content:center;padding:24px}
+  display:flex;flex-direction:column;justify-content:center;padding:24px;
+  transform:translateZ(-9px)}
 .book .page h2{margin:6px 0 0;font:700 20px/26px var(--sans);color:var(--g700)}
 .book .page .psub{margin:4px 0 0;font:400 13px/19px var(--sans);color:var(--g600)}
 .book .page hr{width:100%;border:0;border-top:1px solid var(--g200);margin:16px 0 0}
-/* The hinge is the top edge, not the left. Lifting the board up and back
-   keeps it joined to the book the whole way and nothing travels sideways
-   out of the frame; past 90 degrees its back is what faces us, and
-   backface-visibility takes it off, leaving the open page. */
-.book .cover{position:absolute;inset:0;transform-origin:center top;backface-visibility:hidden;
-  transition:transform .85s cubic-bezier(.33,1,.68,1)}
+/* The 18px of board and paper between the two covers, stood on its edge:
+   hinged at the book's left edge, pushed forward to the front board's depth
+   and laid back ninety degrees so it spans from +9 to -9. It takes the
+   cover's own tint, because a grey spine on a honey cover reads as a gap. */
+.book .spine{position:absolute;left:0;top:0;width:18px;height:100%;
+  transform-origin:left center;transform:translateZ(9px) rotateY(90deg);
+  background:linear-gradient(90deg,rgba(0,0,0,.26),rgba(0,0,0,.05) 42%,rgba(0,0,0,.22));
+  background-color:var(--brand-dk);border-radius:3px 0 0 3px}
+/* The hinge is the spine. Past ninety degrees the board's back is what faces
+   us, and backface-visibility takes it off, leaving the open page. */
+.book .cover{position:absolute;inset:0;transform-origin:left center;backface-visibility:hidden;
+  transform:translateZ(9px);
+  transition:transform .9s cubic-bezier(.33,1,.68,1)}
 .book .cover img{width:100%;height:100%;object-fit:cover;border-radius:3px 10px 10px 3px}
-.book.open .cover{transform:rotateX(-152deg)}
+.book.open .cover{transform:translateZ(9px) rotateY(-158deg)}
+/* What is inside the book, before it is the whole screen. Behind the boards
+   while it is shut, so the turn already has something warm behind it, then up
+   to full as the cover clears — the blaze that follows is this same light
+   continuing, which is why they share a colour. */
+.book-halo{position:absolute;width:300px;height:300px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,240,226,.95) 0%,rgba(255,221,194,.5) 42%,rgba(255,221,194,0) 72%);
+  opacity:.45;transform:scale(.7);
+  transition:opacity .6s ease,transform .6s ease}
+.book-stage.lit .book-halo{opacity:1;transform:scale(1.25)}
 .book-cap{margin:0;font:600 15px/22px var(--sans);color:var(--brand);transition:opacity .3s ease}
+
+/* The light, lifted clear of the screens so it can hold while the screen
+   under it changes. It starts the size of the book and ends bigger than the
+   phone; `off` drops the opacity without pulling the scale back, so the last
+   thing that happens is the report fading up through white rather than a
+   circle shrinking off it. */
+.blaze{position:absolute;inset:0;z-index:65;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 44%,#fff 0%,#FFF4EA 30%,rgba(255,228,208,0) 68%);
+  transform-origin:50% 44%;transform:scale(.22);
+  transition:transform .66s cubic-bezier(.3,0,.1,1),opacity .34s ease}
+.blaze.on{opacity:1;transform:scale(3.6)}
+.blaze.off{opacity:0;transform:scale(3.6);transition:opacity .6s ease}
+
 @media (prefers-reduced-motion:reduce){
-  .book .cover,.book-stage{transition:none}
+  .book,.book .cover,.book-stage,.book-halo{transition:none}
+  .blaze{transition:opacity .2s ease}
+  .blaze.on{transform:scale(3.6)}
 }
 
 /* ---------- R.4b Kundali Milan details ---------- */

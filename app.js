@@ -953,31 +953,56 @@ function hideReadyPush() {
 function openBook() {
   hideReadyPush();
   go('book', 'fade');
-  var bk = $('#bookEl'), cap = $('#bookCap'), stage = $('#bookStage'), r = reportById(state.pick);
+  var bk = $('#bookEl'), cap = $('#bookCap'), stage = $('#bookStage'),
+      bz = $('#blaze'), r = reportById(state.pick);
   // The painted cover is the picture; what is inside is paper. Printing the
   // spread on the page is what made the open book twice the width of the shut
   // one, and that resize is what tore the two halves apart on the way.
   $('#bookCover img').src = r.art ? r.art.closed : 'assets/book.svg';
-  bk.classList.remove('open');
-  stage.classList.remove('gone');
+  // The spine takes the cover's darker tint, so the 18mm she sees edge-on
+  // during the turn belongs to the book she just bought.
+  $('#bookEl .spine').style.backgroundColor = r.cover ? r.cover.b : '';
+  bk.classList.remove('turn', 'open');
+  stage.classList.remove('gone', 'lit');
+  bz.className = 'blaze';
   cap.textContent = 'Your report is ready';
+  // 1. Shut, square on, for long enough to be seen as an object — this is the
+  //    first time the thing she paid for is in front of her at full size.
+  // 2. The turn. Three-quarters is the angle a book is held at when it is
+  //    being handed over, and it is the only angle that shows the spine, which
+  //    is the one part that says this is a volume and not a picture of one.
+  later(function () { bk.classList.add('turn'); }, 420);
+  // 3. The board comes off the spine and the inside starts to light.
   later(function () {
     bk.classList.add('open');
+    stage.classList.add('lit');
     cap.textContent = 'Opening your report…';
-  }, 450);
-  // Open, then go. The stage fades forward over the arch rather than the
-  // screen cutting out from under a book that has just finished opening.
-  later(function () { stage.classList.add('gone'); }, 1480);
-  later(enterRead, 1840);
+  }, 1180);
+  // 4. The light wins. It is the same glow from inside the book, scaled past
+  //    the edges of the phone, and it is deliberately overexposed: a white
+  //    screen is the only thing that can carry the swap underneath it.
+  later(function () { bz.classList.add('on'); }, 1620);
+  // 5. The swap happens inside the white, where there is nothing to see.
+  later(function () { stage.classList.add('gone'); enterRead(true); }, 2240);
 }
 
 /* The opening is a curtain, not a toll booth: the second time she sees it a tap
    takes her straight in. */
-function enterRead() {
+function enterRead(lit) {
   if (state.screen !== 'book') return;
   clearTimers();
   state.stack = [state.entry];        // the report is now "read", so back lands on Today
   show('read', 'fade');
+  var bz = $('#blaze');
+  // `lit` is only true when the sequence called this from inside the white.
+  // The click handler passes a MouseEvent, which is why this is an identity
+  // test and not a truthiness one — a tap to skip must not flash the screen.
+  if (lit !== true) { bz.className = 'blaze'; return; }
+  // One frame of white over the report, then the light pulls back off it. The
+  // report is revealed by the glow going, which is the point of putting the
+  // glow outside the screens in the first place.
+  later(function () { bz.classList.add('off'); }, 110);
+  later(function () { bz.className = 'blaze'; }, 800);
 }
 
 /* Reading one she already owns. No book opening: that beat is the report being
@@ -2033,8 +2058,9 @@ function restart() {
   armIntroSheet();
   resetTimeline();
   applyPaidTimeline();
-  $('#bookEl').classList.remove('open');
-  $('#bookStage').classList.remove('gone');
+  $('#bookEl').classList.remove('turn', 'open');
+  $('#bookStage').classList.remove('gone', 'lit');
+  $('#blaze').className = 'blaze';
   show(state.entry, 'fade');
   // The notification no longer fires on load. It is a touchpoint, not a page
   // state, so it belongs to its own chip — otherwise it lands on top of
