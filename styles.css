@@ -1386,10 +1386,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    icon floats into the gap between the two lines and loses the row it belongs
    to. The 2px nudge drops it onto the first line's optical middle. */
 .r2-learn li{display:flex;gap:10px;font:400 15px/22px var(--sans);color:var(--g800)}
-/* g600, not brand: nine brand-orange drawings down the left of a white page
+/* g400, and not brand: nine brand-orange drawings down the left of a white page
    turn a contents list into a rash, and the one orange thing on this screen
-   should stay the buy button. */
-.r2-learn li > i{flex:none;margin-top:2px;width:20px;height:20px;color:var(--g600)}
+   should stay the buy button. Two steps lighter than the sentence it labels,
+   which is the whole of the reference — the drawing is where the eye re-enters
+   the list, not a thing to be read, and at g600 eight of them were competing
+   with the words for first look. */
+.r2-learn li > i{flex:none;margin-top:2px;width:20px;height:20px;color:var(--g400)}
 .r2-learn li > i > svg{display:block;width:20px;height:20px}
 /* The handover, said plainly and once: the pages below are somebody else's
    chart, so the depth reads as proof rather than as her own reading. */
