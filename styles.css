@@ -1477,10 +1477,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:4px 9px;font:500 12px/17px var(--sans);color:var(--g600)}
 .r2-chips svg{flex:none;width:12px;height:12px}
 /* The report's own terms, lifted out of the standard three. These are the only
-   lines here that differ between one book and the next, so they take the brand
-   tint and the star; Shareable and Private are the small print and stay grey. */
-.r2-chips .ch-key{border-color:#F7D3C4;background:var(--brand50);color:var(--brand-dk)}
-.r2-chips .ch-key svg{fill:currentColor;stroke:none}
+   lines here that differ between one book and the next, so they come forward —
+   but on ink and ground, not on colour. An orange fill with an orange label is
+   the shape of a button, and two of them sitting in a row above the real one
+   invited a tap that does nothing, which is the same mistake the note above
+   this already records. White ground and g900 ink put them in front of
+   Shareable and Private without making them look pressable. */
+.r2-chips .ch-key{border-color:var(--g300);background:#fff;color:var(--g900)}
+.r2-chips .ch-key svg{fill:var(--g400);stroke:none}
 .r2-chips .ch-std svg{color:var(--g400)}
 /* Airbnb's "Show all photos": full width, neutral rule, dark label. It used to
    be a brand-orange outline, which put a second orange control on a page whose
