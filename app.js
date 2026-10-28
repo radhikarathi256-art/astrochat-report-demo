@@ -2329,11 +2329,12 @@ function renderReport() {
   $('#r2Price').hidden = mine;
   $('#r2Again').hidden = !repeat;
   $('#r2Again').textContent = 'Buy ' + editionLabel(r);
-  /* Buy Now is a lie on a button that opens a form. Matching asks for a second
-     chart first, so the button says so, and the price beside it is the honest
-     version of what the next two taps cost. */
+  /* Buy Now on its own is a lie on a button that opens a form, but dropping it
+     is the other mistake: a button that only promises a form reads as one more
+     step before the real one, and she is being asked to pay the price sitting
+     next to it. So the button says both, in the order they happen. */
   $('#r2Cta').textContent = mine ? 'Read Report'
-    : matchFirst(r) ? 'Enter Details \u0026 Get Report' : 'Buy Now';
+    : matchFirst(r) ? 'Enter Details \u0026 Buy Now' : 'Buy Now';
   $('#r2Cta').classList.toggle('outline', repeat);
   $('#r2Cta').classList.toggle('primary', !repeat);
 }
