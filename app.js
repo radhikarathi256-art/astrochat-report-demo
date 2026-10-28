@@ -414,7 +414,18 @@ var REPORTS = [
        nothing else. */
     toast: 'Hemali can match your 36 gunas \u00b7 Free',
     toastDone: 'Hemali has read your 28 of 36 \u00b7 \u20b949',
-    tkt: { t: 'Your Kundli Milan is ready', s: 'The 36-guna score for the two of you' },
+    /* "Is ready" is the one word this card cannot use. Nothing is ready: she
+       has not given his birth details, so there is no match to be ready, and a
+       card that claims one sends her to an empty ring. It names the thing
+       instead and says what the tap does - match the gunas, free - and only
+       once there is a 28 does it have something to call ready, which is the
+       detailed Kundli Milan behind it.
+
+       Both Today surfaces read this pair: the expert ticket and the tile in
+       Personalised Guidance. Same two lines in both places, so there is one
+       sentence to change rather than two to keep in step. */
+    tkt: { t: 'Your Kundli Milan', s: 'Match all 36 gunas for the two of you, free' },
+    tktDone: { t: 'Your Kundli Milan is 28 of 36', s: 'Get the detailed Kundli Milan' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -797,6 +808,10 @@ function pushLine() {
   var r = leadReport();
   return (state.matched && r.pushDone) ? r.pushDone : r.push;
 }
+/* The two Today surfaces. Same shape as the push: a report with something
+   different to say after the match keeps both versions here, and one that has
+   not stays on its single pair. */
+function tktCopy(r) { return (state.matched && r.tktDone) ? r.tktDone : r.tkt; }
 
 function showRepToast() {
   if (state.paid || state.repToastSeen || !repToastDays()) return;
@@ -1648,6 +1663,9 @@ function submitMatch() {
      widget, and it only works if the number is already there when she looks. */
   renderChat();
   renderHistCard();
+  // Today too: the expert ticket and the Personalised Guidance tile both offer
+  // to match all 36 gunas free, which stops being an offer the moment she has.
+  renderDayToday();
   show('report', 'fade');
   later(openPay, 260);
 }
@@ -2188,8 +2206,8 @@ function exTicket(r) {
       // Off the report, not off its id. "Your marriage report is ready" named a
       // folder; the line under it said who made it, which the card already says
       // twice. Now the stub names the book and tells her what is inside it.
-      '<b>' + esc(r.tkt.t) + '</b>' +
-      '<small>' + esc(r.tkt.s) + '</small>' +
+      '<b>' + esc(tktCopy(r).t) + '</b>' +
+      '<small>' + esc(tktCopy(r).s) + '</small>' +
     '</span>' +
     '<i class="tk-go" aria-hidden="true">' +
       '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.9 7h8.2m-3.3-3.3L11.1 7l-3.3 3.3" stroke="#F28761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
@@ -2360,10 +2378,15 @@ function renderGuideTile() {
     // "2 more reports" bundle. No price chip: the tarot and prediction tiles
     // carry a title, a line and a chevron, and this is the same object.
     var lead = leadReport();
+    // Kundli Milan says the same two lines here as on the expert ticket, since
+    // a tile that names the report while the ticket names the match makes them
+    // look like two different offers. The other two have one pair of lines and
+    // keep using it.
+    var gc = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
     $('#guideSlot').innerHTML =
       '<button class="tile" type="button" data-pick="' + lead.id + '">' +
         book3d(lead) +
-        '<span class="tt"><b>' + esc(lead.t) + '</b><small>' + esc(lead.s) + '</small></span>' +
+        '<span class="tt"><b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small></span>' +
         '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
     return;
