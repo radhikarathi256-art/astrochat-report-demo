@@ -142,8 +142,14 @@ h1.row2{margin-top:46px;padding-top:30px;border-top:1px solid #D8DCE4}
 .d-tx{flex:1;min-width:0}
 .d-tx .ttl{font-size:17px;line-height:23px}
 .d-tx .rt{margin-top:7px}
-.d-proof{margin:9px 0 0;padding:7px 10px;border-radius:9px;background:var(--brand50);
-  font:500 12px/17px var(--sans);color:var(--w900)}
+/* Proof, not a second button. This was a filled peach pill - same warm family
+   as the CTA, two rounded orange-ish objects on one card - so the eye had to
+   decide which of them was the thing to tap. A line with a green dot carries
+   the same sentence and competes with nothing. */
+.d-proof{display:flex;align-items:center;gap:7px;margin:8px 0 0;
+  font:500 12.5px/18px var(--sans);color:var(--g600)}
+.d-proof::before{content:'';flex:none;width:6px;height:6px;border-radius:50%;
+  background:var(--s700)}
 .d .chips{margin-top:14px}
 .d-foot{margin-top:16px}
 .d-foot .cta{width:100%;height:52px;font-size:17px}
@@ -349,8 +355,9 @@ h1.row2{margin-top:46px;padding-top:30px;border-top:1px solid #D8DCE4}
       <h2>D <em>&middot; proof-led</em></h2>
       <p>By this point in the thread she already knows what the report is, so the content shrinks
         to four chips and the card leads with the two things that actually move a stranger: what
-        other people did, and what it costs today. The saving is stated as money, not a
-        percentage, because &#8377;450 is a number she can feel.</p>
+        other people did, and what it costs today. The saving is said <b>once</b>, as money rather
+        than a percentage, and the proof line is a line &mdash; a second filled pill was a second
+        thing competing to be tapped.</p>
       <div class="bed">
         <p class="msg">Your chart is read out house by house, remedies included. A complete sample
           on another chart is open to read first.<time>02:24&nbsp;PM</time></p>
@@ -374,7 +381,10 @@ h1.row2{margin-top:46px;padding-top:30px;border-top:1px solid #D8DCE4}
             <span class="chip more">+5 more</span>
           </div>
           <div class="d-foot">
-            <button class="cta" type="button">Get It For &#8377;49 <span class="was">&#8377;499</span></button>
+            <!-- The saving is stated once, up in the eyebrow row. It used to be
+                 said twice - Save 450 there and a struck 499 in here - which
+                 reads as two different offers rather than one said twice. -->
+            <button class="cta" type="button">Get It For &#8377;49</button>
             <p class="d-micro">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
               Opens instantly, in your language, yours forever
