@@ -297,13 +297,57 @@ var REPORTS = [
     pitch: [
       'Mansi, you mentioned him in the chat. Do you want the Kundli Milan report done for the two of you?',
       'Learn how many of the 36 gunas match, whether either of you is Manglik, and the window the marriage can actually happen in.',
-      'Buy the report and get a detailed analysis of both kundalis read side by side, with the remedies that strengthen the match.'
+      // Not "buy" — the button under this one is free now. Asking for money in
+      // the same breath as asking for his birth time makes the typing feel
+      // like part of the price.
+      'Give me his birth details and I will match the two charts for you now. The full report is there if you want the whole of it.'
     ],
     pitchLong: [
       'Mansi, you mentioned him today, so I put both charts in front of me after we finished and made you the Kundli Milan report.',
       'Learn your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
-      'Buy the report and get a detailed analysis of the two kundalis together, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+      'Give me his birth details and the match is yours free. The full report, remedies and all, is a complete sample away - open on another chart, so you can see how deep it goes before you decide.'
     ],
+    /* The page after the form. Everything here replaces its plain counterpart
+       once both charts exist, which is the whole reason the details come
+       before the money: the detail page stops being a brochure for a book and
+       becomes a reading of her own match that happens to stop halfway.
+
+       The number is 28, so 8 points are missing - and 8 is exactly the weight
+       of Nadi, the heaviest koota of the eight and the one families actually
+       refuse over. That is not a convenient coincidence to invent, it is what
+       a 28 usually means, and it gives every surface on this page the same
+       single subject instead of a generic "learn more". The chips show it,
+       the hook names the remedy for it, and the pointer list opens on it.
+
+       The hook is the one place a remedy is promised. A locked list says what
+       is missing; a remedy says something can be done, and the gap between
+       those two is the reason to pay. */
+    matched: {
+      tl: function (n) { return 'Your Kundli Milan With ' + n; },
+      lead: function (n) {
+        return '28 of 36 gunas matched with ' + n +
+          '. Astro Hemali has read both charts for what the other 8 are doing.';
+      },
+      chips: ['28 of 36 gunas', 'Nadi 0 of 8', 'Nadi dosha present'],
+      why: 'All 8 missing points are Nadi. One remedy cancels it, and it is in the report',
+      head: 'What Your 28 Does Not Tell You',
+      learn: [
+        'Why all 8 missing points are Nadi, and what Nadi actually governs',
+        'Whether your Nadi dosha is cancelled, and the exact remedy if it is not',
+        'Whether he is Manglik, and how strongly',
+        'How the two of you match on temperament and daily life',
+        'How you match on money, spending and saving',
+        'What the two charts say about closeness and intimacy',
+        'How your family and his are likely to get along',
+        'Kaal Sarp and the other doshas sitting in both charts',
+        'When the marriage happens, and the best window for it',
+        'Whether money changes for you after marriage',
+        'The specific remedies that strengthen this match',
+        'What to tell the families when they ask about the guna count'
+      ],
+      licons: ['block', 'beads', 'spark', 'people', 'coin', 'rings',
+               'home', 'shield', 'cal', 'arrow', 'sun', 'list']
+    },
     /* The rose this card has always worn. Kundli Milan is the one report whose
        hero art is warmer than its book - the painting is gold and brown, the
        cover is rose - and the cover is what the card is showing, so the cover
@@ -543,6 +587,18 @@ var state = {
      hers. A demo control, not a user one — the real app would pin this to the
      house Hemali just named, which for this script is Partner. */
   lead: 'partner',
+  /* His details, and whether they have been given. Kundli Milan is the only
+     report that needs a second chart, and the chart now comes before the
+     money: the form is free, the guna number it produces is free, and the
+     paywall sits after both. Two reasons it is that way round. Most women do
+     not know the man's exact birth time, so taking ₹49 first and handing her
+     a form she cannot fill is a stuck purchase and a refund; this way the
+     same failure is a free walk-away. And four fields about him is real
+     effort, so by the time the price appears she has already put something
+     in - which is the right order for sunk cost, where paying first and then
+     being given homework is a bill after the bill. */
+  matched: false,
+  boy: 'Rahul',
   /* The morning's report is waiting in History — the dot on the nav says so,
      and visiting History clears it. */
   histDot: true,
@@ -1384,9 +1440,22 @@ function pay() {
   // holds and go straight to being made.
   later(function () {
     state.stack = [state.entry];
-    if (r.needsMatch) { show('match', 'fade'); return; }
+    // Nothing stops here any more. Matching collects its second chart before
+    // the payment now, so by the time money has changed hands every report
+    // has everything it needs and goes straight to being made.
     startMaking();
   }, 900);
+}
+
+/* The one door into paying. Every sell surface used to call openPay directly,
+   which was right while all three reports were the same shape — read off a
+   chart the app already holds, and buyable in one tap. Kundli Milan is not
+   that shape: it needs his birth details, and those are worth more before the
+   price than after it. So the gate sits here rather than in six places. */
+function startBuy() {
+  var r = reportById(state.pick);
+  if (r.needsMatch && !state.matched) { show('match', 'fade'); return; }
+  openPay();
 }
 
 /* The making run, pulled out of pay() so the matching form can call it when it
@@ -1419,7 +1488,21 @@ function submitMatch() {
       return;
     }
   }
-  startMaking();
+  // His name is used by name from here on — the score screen is about the two
+  // of them, and "your match" where a name could stand is the app forgetting
+  // what she just typed.
+  state.boy = $('#bName').value.trim().split(' ')[0] || 'him';
+  state.matched = true;
+  // Back to the detail page rather than on to a score screen of its own. The
+  // number is not a destination - on a page by itself it is a result she has
+  // finished reading, and the only thing left to do with it is leave. On the
+  // detail page it is the subject the whole page is now about: the same
+  // title, chips, hook and pointer list she saw before, rewritten around her
+  // 28. One page that changes is a stronger argument than two pages where the
+  // first hands off to the second.
+  state.pick = 'marriage';
+  renderReport();
+  show('report', 'fade');
 }
 
 /* ------------------------------------------------------------- journey */
@@ -1795,12 +1878,27 @@ function offer3Card() {
       '</span>' +
     '</span>' +
     '<div class="of3-pts">' + pointers(r, 3) + '</div>' +
-    '<div class="of3-foot">' +
-      '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
-      '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>' +
+    // Kundli Milan asks before it sells. It is the one report that cannot be
+    // written off a chart the app already holds, so the first thing it needs
+    // from her is his birth details - and a price next to a Buy Now is the
+    // wrong way to ask for twenty seconds of typing. The foot becomes the
+    // question instead: calculate the match, free, and the number comes back
+    // on the other side of it. The price arrives once there is something to
+    // put it against.
+    '<div class="of3-foot' + (matchFirst(r) ? ' of3-foot-ask' : '') + '">' +
+      (matchFirst(r)
+        ? '<button class="of3-go wide" type="button" data-buy="' + r.id + '">' +
+            'Calculate Guna Match \u00b7 Free</button>'
+        : '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
+          '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
     '</div>' +
   '</div>';
 }
+
+/* True while a report still owes a second chart. Every sell surface asks it,
+   because the question they put to her changes shape: the other two are a
+   price and a Buy Now, this one is a free calculation she has not run yet. */
+function matchFirst(r) { return !!r.needsMatch && !state.matched && !owns(r.id); }
 
 /* The same offer where History shows it, per 3077:159093 — not the chat card
    shrunk down, but a message from Hemali: her face, her rate, and the pitch
@@ -2075,6 +2173,12 @@ function renderPicker() {
    pointers. */
 function renderReport() {
   var r = reportById(state.pick);
+  // Once the second chart is in, this page is about her match rather than
+  // about a book, so the four surfaces that carry the argument - title,
+  // subheader, chips, pointer list - swap to the matched set. Everything else
+  // on the page is the same: the cover, the sample, the reviews and the price
+  // do not change just because we now know his birth time.
+  var m = (r.matched && state.matched) ? r.matched : null;
   // The pick has just changed, so every surface that names the report she is
   // buying — this title included — has to be rewritten with it.
   paintBought();
@@ -2106,7 +2210,9 @@ function renderReport() {
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
-  $('#r2Lead').textContent = r.s + '. Astro Hemali makes it from your birth chart.';
+  if (m) $('#r2Title').textContent = m.tl(state.boy);
+  $('#r2Lead').textContent = m ? m.lead(state.boy)
+    : r.s + '. Astro Hemali makes it from your birth chart.';
   // Two kinds of chip, drawn as one until now. The first are what only this
   // report has; the last three are true of everything we sell. Flat grey pills
   // made "36 guna match" look like the word "Private", so the report's own
@@ -2125,15 +2231,17 @@ function renderReport() {
         CHIP_IC[kind] + '</svg>' + esc(label) + '</span>';
   }
   $('#r2Chips').innerHTML =
-    r.chips.map(function (c) { return chip(c, 'key'); }).join('') +
+    (m ? m.chips : r.chips).map(function (c) { return chip(c, 'key'); }).join('') +
     chip(r.pages + ' pages', 'pages') + chip('Shareable', 'share') + chip('Private', 'lock');
+  var learn  = m ? m.learn  : r.learn;
+  var licons = m ? m.licons : r.licons;
   $('#r2Learn').innerHTML =
-    '<h2 class="r2-h">What You Will Get</h2>' +
+    '<h2 class="r2-h">' + esc(m ? m.head : 'What You Will Get') + '</h2>' +
     '<ul class="r2-learn">' +
-      r.learn.map(function (x, i) {
+      learn.map(function (x, i) {
         // Falls back to the tick if a report is ever short an icon key, so a
         // missing entry costs a drawing rather than a blank left column.
-        var k = (r.licons || [])[i];
+        var k = (licons || [])[i];
         return '<li><i aria-hidden="true">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
             'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
@@ -2151,7 +2259,7 @@ function renderReport() {
   markSnappedReview($('#r2Revs'));
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
     .map(upsellCard).join('');
-  $('#r2Why').textContent = r.why;
+  $('#r2Why').textContent = m ? m.why : r.why;
   // The board says "Buy Now" and nothing else. The price is already sitting
   // beside the button, so repeating ₹49 inside it only crowds the line.
   // Once it is hers the bar stops being a shop. A price next to a book she has
@@ -2387,7 +2495,7 @@ document.addEventListener('click', function (e) {
     return;
   }
 
-  if (t.classList.contains('rsc-go')) { openPay(); return; }
+  if (t.classList.contains('rsc-go')) { startBuy(); return; }
 
   if (t.id === 'mtGo') { submitMatch(); return; }
 
@@ -2401,7 +2509,7 @@ document.addEventListener('click', function (e) {
   if (t.hasAttribute('data-buy')) {
     state.pick = t.getAttribute('data-buy');
     renderReport();
-    openPay();
+    startBuy();
     return;
   }
 
@@ -2499,7 +2607,7 @@ document.addEventListener('click', function (e) {
   // The reward sheet's CTA: before day 3 it asks the OS for notifications;
   // on day 3 the wallet covers ₹49, so it goes straight to the pay sheet.
   if (t.id === 'rewardCta') {
-    if (state.day >= lastDay()) openPay();
+    if (state.day >= lastDay()) startBuy();
     else $('#notifDlg').hidden = false;
     return;
   }
@@ -2549,7 +2657,7 @@ document.addEventListener('click', function (e) {
   // after it, it is the door into the report, because the bar it sits in has
   // stopped being a shop.
   if (t.id === 'r2Cta' && owns(state.pick)) { openRep(state.pick); return; }
-  if (t.id === 'buyInLang' || t.id === 'r2Cta' || t.id === 'r2Again') { openPay(); return; }
+  if (t.id === 'buyInLang' || t.id === 'r2Cta' || t.id === 'r2Again') { startBuy(); return; }
   // Her tap, her spinner: a short busy beat so the pay reads as processing
   // rather than as a screen that swapped under her thumb.
   if (t.id === 'paySubmit') {
