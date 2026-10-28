@@ -352,7 +352,14 @@ var REPORTS = [
          keeping its own 28 to fall out of step with. */
       score: { n: 28, of: 36 },
       chips: ['28 of 36 gunas', 'Nadi 0 of 8', 'Nadi dosha present'],
-      why: 'All 8 missing points are Nadi. One remedy cancels it, and it is in the report',
+      /* The last line she reads before the price, so it has to carry a stake
+         and not an inventory. The old one spent its first half restating the
+         arithmetic already on the dial two inches to the left, and its second
+         half pointing at a product - "it is in the report" - which is the
+         weakest thing a sentence can end on when the report is the thing being
+         sold. Say what Nadi costs her, say it is survivable, and stop. Three
+         wrapped lines became two. */
+      why: 'Nadi is the one families refuse over. Yours can be cancelled \u2014 the remedy is inside.',
       head: 'What Your 28 Does Not Tell You',
       learn: [
         'Why all 8 missing points are Nadi, and what Nadi actually governs',
