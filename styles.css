@@ -988,26 +988,62 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .gn-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
 .gn-tx strong{font:600 15px/22px var(--sans);color:var(--g900)}
 .gn-tx span{font:400 13px/18px var(--sans);color:var(--g600)}
-/* What the free calculation covers, in three words each. Pills rather than a
-   sentence, because she is meant to recognise them, not read them. */
-.gn-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.gn-chips i{font-style:normal;padding:3px 9px;border-radius:99px;
-  background:#fff;border:1px solid #F6D6C8;
-  font:500 12px/18px var(--sans);color:var(--w900)}
-.gn-hist .gn-chips i{background:#fff}
+/* Before the form the ring has nothing to hold, so the slot carries the cover
+   instead — the same object the other two reports lead with, at the same 68px
+   the dial will occupy once there is a score, so the card does not jump when
+   one replaces the other. */
+.gn-cov{position:relative;flex:none;width:52px;height:68px;border-radius:5px;
+  overflow:hidden;background:#F6D6C8;
+  box-shadow:0 6px 14px -6px rgba(122,46,14,.35)}
+.gn-cov img,.gn-cov .bk3-face{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover}
 .gn-foot{margin-top:14px}
 .gn-go{display:block;width:100%;height:42px;border:0;border-radius:10px;
   background:var(--brand);color:#fff;cursor:pointer;
   font:600 15px/22px var(--sans);
   box-shadow:0 1px 2px rgba(16,24,40,.05)}
 .gn-go:active{background:var(--brand-dk)}
-/* Underlined and small, directly under the button it is not competing with.
-   A second filled button here would turn one decision into two. */
-.gn-more{display:block;width:100%;margin-top:9px;padding:0;border:0;
-  background:none;cursor:pointer;text-decoration:underline;
-  text-underline-offset:2px;
-  font:500 13px/18px var(--sans);color:var(--g600)}
-.gn-more:active{color:var(--g900)}
+
+/* ---------- Koota panel · detail page, post-form ---------- */
+/* One bordered card rather than four stacked blocks. The score, the eight rows
+   and the finding are one reading and have to look like one object; split into
+   separate cards the page reads as three announcements about the same thing. */
+.km{margin-top:12px;border-radius:14px;border:1px solid #F0E3DC;background:#fff;
+  padding:16px;box-shadow:0 10px 24px -16px rgba(122,46,14,.28)}
+.km-top{display:flex;align-items:center;gap:14px}
+.km-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.km-tx strong{font:600 16px/22px var(--sans);color:var(--g900)}
+.km-tx span{font:400 13px/18px var(--sans);color:var(--g600)}
+.km-list{list-style:none;margin:16px 0 0;padding:14px 0 0;
+  border-top:1px solid var(--g100)}
+.km-list li{display:flex;align-items:center;gap:9px;height:34px}
+.km-list li+li{border-top:1px solid #F7F2EF}
+/* The icon carries the state and the row inherits from it, so a locked row is
+   grey end to end instead of a grey padlock next to black type pretending
+   nothing is missing. */
+.km-list i{flex:none;display:flex;width:18px;height:18px;border-radius:50%;
+  align-items:center;justify-content:center;background:var(--g100);color:var(--g500)}
+.km-list i svg{width:11px;height:11px}
+.km-list li.on i{background:#E6F6EE;color:var(--s700)}
+.km-list b{flex:1 1 auto;min-width:0;font:500 14px/20px var(--sans);color:var(--g500);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.km-list li.on b{color:var(--g900)}
+.km-list em{flex:none;font-style:normal;font:500 13px/18px var(--sans);
+  color:var(--g400)}
+.km-list li.on em{font-weight:600;color:var(--s700)}
+/* The one that failed, in the warning wash rather than in red. Red says error;
+   this is not an error, it is a finding she needs to keep reading about. */
+.km-bad{margin-top:14px;border-radius:12px;background:#FFF8EB;
+  border:1px solid #FDE8C8;padding:12px 14px}
+.km-bad-h{display:flex;align-items:baseline;gap:8px}
+.km-bad-h b{flex:1 1 auto;font:600 15px/22px var(--sans);color:var(--w900)}
+.km-bad-h em{flex:none;font-style:normal;font:700 15px/22px var(--sans);
+  color:var(--w700)}
+.km-bad p{margin:3px 0 0;font:400 13px/19px var(--sans);color:var(--w700)}
+/* Not in a box. The remedy is the page talking to her in its own voice about
+   what happens next, and putting it in a third tinted panel would make it look
+   like a fourth fact rather than the way out of the third one. */
+.km-rem{margin:12px 2px 0;font:400 13px/19px var(--sans);color:var(--g600)}
 
 /* Day 4 says it is the last ask in words, never in colour — escalating the
    pixels is how you teach people to stop looking. */

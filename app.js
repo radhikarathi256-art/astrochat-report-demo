@@ -314,17 +314,17 @@ var REPORTS = [
        uses when it has to name the paid half is analysis, which is what she
        would call it anyway. */
     pitch: [
-      'Mansi, you mentioned him in the chat. Do you want me to match the two charts for the two of you?',
-      'I will tell you how many of the 36 gunas match, whether either of you is Manglik, and the window the marriage can actually happen in.',
-      // Not "buy" — the button under this one is free now. Asking for money in
-      // the same breath as asking for his birth time makes the typing feel
-      // like part of the price.
-      'Give me his birth details and I will match the two charts for you now. The full reading is there if you want the whole of it.'
+      'Mansi, you mentioned Rahul in the chat. Do you want your compatibility report with him?',
+      'I read the two charts side by side - how well the two of you actually match, what is holding it back, and the window the marriage can happen in.',
+      // No price and no number. The button under this one opens a form, not a
+      // payment, and asking for money in the same breath as asking for his
+      // birth time makes the typing feel like part of it.
+      'Give me his birth details and I will do it now.'
     ],
     pitchLong: [
-      'Mansi, you mentioned him today, so I put both charts in front of me after we finished and matched them.',
-      'Your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
-      'Give me his birth details and the score is yours free. The full analysis, remedies and all, is a complete sample away - open on another chart, so you can see how deep it goes before you decide.'
+      'Mansi, you mentioned Rahul today, so I put both charts in front of me after we finished.',
+      'How well the two of you match and what is holding it back, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
+      'Give me his birth details and I will read them together. There is a complete sample on another chart if you want to see how deep it goes first.'
     ],
     /* The page after the form. Everything here replaces its plain counterpart
        once both charts exist, which is the whole reason the details come
@@ -351,6 +351,36 @@ var REPORTS = [
          figure - the pay sheet's dial - read it from here instead of each
          keeping its own 28 to fall out of step with. */
       score: { n: 28, of: 36 },
+      /* The eight kootas, weighted the way Ashta Koota actually weights them -
+         1, 2, 3, 4, 5, 6, 7, 8 - which is the only reason 36 is 36. The first
+         seven all match and Nadi takes nothing, so the 28 adds up and the
+         missing 8 has one name.
+
+         Two are shown and five are locked. Showing none makes the page a
+         receipt for a form she filled in; showing all eight hands over the
+         answer and leaves the report with nothing but adjectives to sell.
+         Two is enough to prove the match is real and specific to her, and
+         the lock on the rest is then an obvious, honest door. Nadi is pulled
+         out of the table on its own because it is the finding, not a row. */
+      kootas: [
+        { n: 'Varna',        s: 1, of: 1, open: true },
+        { n: 'Vashya',       s: 2, of: 2, open: true },
+        { n: 'Tara',         s: 3, of: 3 },
+        { n: 'Yoni',         s: 4, of: 4 },
+        { n: 'Graha Maitri', s: 5, of: 5 },
+        { n: 'Gana',         s: 6, of: 6 },
+        { n: 'Bhakoot',      s: 7, of: 7 }
+      ],
+      nadi: { n: 'Nadi', s: 0, of: 8,
+              why: 'The heaviest of the eight, and the one families refuse over' },
+      /* Named, not given. A remedy she can act on from this page is a page she
+         never needs to buy anything from; a remedy that does not exist is the
+         page withholding a problem with no way out. So it says there is one and
+         that it is specific to these two charts, and the instruction is the
+         thing on the other side of the price. */
+      remedy: 'A Nadi dosha can be cancelled, and in these two charts there is ' +
+              'a cancellation to work with. Astro Hemali has written out which ' +
+              'one applies to you and what to do about it.',
       chips: ['28 of 36 gunas', 'Nadi 0 of 8', 'Nadi dosha present'],
       /* The last line she reads before the price, so it has to carry a stake
          and not an inventory. The old one spent its first half restating the
@@ -378,25 +408,29 @@ var REPORTS = [
       licons: ['block', 'beads', 'spark', 'people', 'coin', 'rings',
                'home', 'shield', 'cal', 'arrow', 'sun', 'list']
     },
-    /* The two surfaces that sell this one without the word report. In the chat
-       and in History the product is a number out of 36, and a second noun
-       standing next to it only splits her attention: a score is something she
-       wants, a report is something she has to be sold. So these two places
-       show the dial and nothing else, and the word analysis carries whatever
-       the dial cannot.
+    /* Chat and History, the two places she is met by name. Everywhere else
+       this is "Kundli Milan Marriage Compatibility Report" and nothing more,
+       because Today and the picker do not know who he is - but these two
+       surfaces were there when she said his name, so they can use it, and
+       "your compatibility report with Rahul" is a different offer from
+       "Kundli Milan" even though it is the same forty-two pages.
 
-       One widget, two states. Before the form it is an empty ring - a ? over
-       /36 - with the three things the match is read on under it. After the
-       form the same ring holds 28 and the line under the names becomes the
-       gap, which is the only part of a 28 worth paying for. She watches one
-       object fill in rather than meeting a second card that claims to be about
-       the same two people. */
-    guna: {
-      pre: '36 gunas, read off both charts. Free',
-      chips: ['Ashta Koot', 'Manglik', 'Nadi'],
-      post: 'All 8 open points are Nadi. Your full analysis is ready',
-      cta: 'Calculate Guna Match',
-      cta2: 'Buy Now',
+       The guna count is gone from the pitch. It was leading with a term she
+       has to already believe in - 36 gunas, free - when the thing she wants is
+       to know whether this works with him. The gunas are still the substance,
+       they just belong on the other side of the form where they are her
+       numbers rather than a vocabulary lesson.
+
+       No price on either state. The pre-form button captures intent and
+       nothing else: Get Your Report, then the free form, then the page with
+       her own match on it. The money is asked for once, at the end, when there
+       is a 28 on the screen to spend it against. */
+    card: {
+      tPre: 'Your Compatibility Report With Rahul',
+      sPre: 'Astro Hemali reads both your charts together',
+      ctaPre: 'Get Your Report',
+      sPost: '28 of 36 matched. Nadi is what is holding it back, and it can be cancelled',
+      ctaPost: 'See Your Match',
       more: 'Learn more about it'
     },
     /* The rose this card has always worn. Kundli Milan is the one report whose
@@ -408,31 +442,26 @@ var REPORTS = [
        used to wear belonged to the book, which is already in the picture a few
        pixels to the right. Two different warms touching looked like a mistake. */
     tint: 'linear-gradient(94deg,#3E2211 0%,#633618 40%,#A8835F 74%,#fff 100%)',
-    /* Two states, because a push that says the score is ready before she has
-       given his birth details is a lie she can check in one tap - and the tap
-       lands on an empty ring. Before the form the notification sells the free
-       match; after it, it sells the eight points the match could not account
-       for. Neither says report: this is the one offer where the thing she came
-       for is a number, and a price next to a product name is what she swipes
-       away. The money only turns up once there is a 28 to spend it on. */
-    push: 'Mansi, give me his birth details and I will match all 36 gunas for the two of you \u2014 free \u2728',
-    pushDone: 'Mansi, all 8 of your missing gunas are Nadi. The full reading of your 28 is \u20b949 today instead of \u20b9499 \u2728',
-    /* The toast is four words wide, so it gets the number and the price and
-       nothing else. */
-    toast: 'Hemali can match your 36 gunas \u00b7 Free',
-    toastDone: 'Hemali has read your 28 of 36 \u00b7 \u20b949',
-    /* "Is ready" is the one word this card cannot use. Nothing is ready: she
-       has not given his birth details, so there is no match to be ready, and a
-       card that claims one sends her to an empty ring. It names the thing
-       instead and says what the tap does - match the gunas, free - and only
-       once there is a 28 does it have something to call ready, which is the
-       detailed Kundli Milan behind it.
+    /* Two states, because a notification that says the match is ready before
+       she has given his birth details is a lie she can check in one tap. And
+       no price in either: one that leads with 49 is an ad, one that leads with
+       him is a message. The push is a one-to-one surface, so it keeps his
+       name - this is the same licence the chat and History have. */
+    push: 'Mansi, give me Rahul\u2019s birth details and I will read the two charts together \u2728',
+    pushDone: 'Mansi, your compatibility report with Rahul is ready. One thing is holding the match back \u2728',
+    toast: 'Hemali can read your compatibility with Rahul',
+    toastDone: 'Your compatibility with Rahul is ready',
+    /* Today is not a surface that knows who he is - the ticket and the tile in
+       Personalised Guidance sit next to a reward ladder and a tarot card, in
+       front of whoever opens the app - so here it is the product name and
+       nothing else. "Is ready" is gone from both states: before the form
+       nothing is ready, and after it the thing that is ready is a match, which
+       the second line says without claiming it twice.
 
-       Both Today surfaces read this pair: the expert ticket and the tile in
-       Personalised Guidance. Same two lines in both places, so there is one
-       sentence to change rather than two to keep in step. */
-    tkt: { t: 'Your Kundli Milan', s: 'Match all 36 gunas for the two of you, free' },
-    tktDone: { t: 'Your Kundli Milan is 28 of 36', s: 'Get the detailed Kundli Milan' },
+       Both Today surfaces read this pair, so there is one sentence to change
+       rather than two to keep in step. */
+    tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'How well you match, and when you marry' },
+    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Your match is read and waiting' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -1673,8 +1702,12 @@ function submitMatch() {
   // Today too: the expert ticket and the Personalised Guidance tile both offer
   // to match all 36 gunas free, which stops being an offer the moment she has.
   renderDayToday();
+  // The detail page, and nothing on top of it. She has just handed over twenty
+  // seconds of typing and is owed the result of it; a pay sheet sliding up over
+  // her own score turns the free thing she agreed to into a bill. The page is
+  // now carrying the match itself, so the reading happens first and the price
+  // waits at the bottom where she can get to it when she wants it.
   show('report', 'fade');
-  later(openPay, 260);
 }
 
 /* ------------------------------------------------------------- journey */
@@ -2023,7 +2056,7 @@ function offer3Card() {
   // Kundli Milan does not sell a book here. It sells the one number she came
   // for, and the book turns up later on the detail page where there is room to
   // explain it.
-  if (gunaSell(r)) return gunaCard(r, 'chat');
+  if (milanSell(r)) return milanCard(r, 'chat');
   // The whole card is the link to the detail page; only Buy Now jumps the
   // queue straight to payment.
   return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '">' +
@@ -2079,7 +2112,7 @@ function matchFirst(r) { return !!r.needsMatch && !state.matched && !owns(r.id);
 /* True on the two surfaces that should be selling a score rather than a book.
    Once she owns it the book is the honest picture again - there is a thing to
    open - so this falls away and the ordinary card comes back. */
-function gunaSell(r) { return !!(r.guna && r.needsMatch && !owns(r.id)); }
+function milanSell(r) { return !!(r.card && r.needsMatch && !owns(r.id)); }
 
 /* Both names, whichever pair the app is entitled to use. Before the form the
    only name it has for him is the one she said in the chat, which is why the
@@ -2095,56 +2128,58 @@ function gunaNames() {
   return her + ' \u0026 ' + him;
 }
 
-/* The dial card. One widget, two states, used by the chat offer and the
-   History row - so the number she unlocked in the chat is the same object she
-   finds in History later, not a second card about the same two people.
-
-   The ring is the whole argument. Empty it is a question with a free answer
-   under it; full it is 28 with a visible bite out of it, and the bite is what
-   the money is for. r=26 gives a 163.4 circumference, so the arc is just that
-   times the fraction - no magic numbers to drift when the score changes. */
-function gunaCard(r, where) {
-  var m = state.matched && r.matched;
-  var g = r.guna;
+/* The small 28-of-36 ring, drawn wherever a card has room for the score and
+   nothing else. r=28 gives a 175.9 circumference, so the arc is that times the
+   fraction and there is no magic number to drift if the score ever changes. */
+function scoreDial(sc) {
   var C = 2 * Math.PI * 28;
-  var pct = m ? m.score.n / m.score.of : 0;
+  return '<span class="gn-dial">' +
+    '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+      '<circle class="gn-trk" cx="32" cy="32" r="28"></circle>' +
+      '<circle class="gn-arc" cx="32" cy="32" r="28" stroke-dasharray="' +
+        (C * sc.n / sc.of).toFixed(1) + ' ' + C.toFixed(1) + '"></circle>' +
+    '</svg>' +
+    // The pair is wrapped so it can be centred in the ring as one object while
+    // the two of them sit on a shared baseline inside it. Baseline alignment on
+    // the dial itself pins the line box to the top, which put the /36 out over
+    // the stroke where the chord is narrowest.
+    '<span class="gn-num"><b>' + sc.n + '</b><small>/' + sc.of + '</small></span>' +
+  '</span>';
+}
+
+/* Chat and History. One card, two states, so the thing she asked for in the
+   chat is the same object she finds in History afterwards rather than a second
+   card about the same two people.
+
+   Before the form there is no ring and no 36. Leading on a guna count asks her
+   to already believe in gunas; what she wants to know is whether this works
+   with Rahul, so the card says that, shows the cover, and the button captures
+   intent and nothing else. The number arrives on the other side of the form,
+   where it is hers.
+
+   After the form the ring carries the 28 with the bite visibly out of it and
+   the line under it names what the bite is. The button goes to the detail
+   page, not to the pay sheet: she has just been given a result, and the next
+   thing she is owed is the reading of it, not a price. */
+function milanCard(r, where) {
+  var m = state.matched && r.matched;
+  var c = r.card;
   return '<div class="gn gn-' + where + (m ? ' gn-done' : '') +
       '" role="button" tabindex="0" data-pick="' + r.id + '">' +
     '<div class="gn-top">' +
-      '<span class="gn-dial">' +
-        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
-          '<circle class="gn-trk" cx="32" cy="32" r="28"></circle>' +
-          // Left out entirely at zero rather than drawn with a zero-length
-          // dash: a round cap on nothing still paints a dot, and a dot at
-          // twelve o'clock on an empty ring looks like a score of about one.
-          (m ? '<circle class="gn-arc" cx="32" cy="32" r="28" ' +
-            'stroke-dasharray="' + (C * pct).toFixed(1) + ' ' + C.toFixed(1) + '"></circle>' : '') +
-        '</svg>' +
-        // The pair is wrapped so it can be centred in the ring as one object
-        // while the two of them sit on a shared baseline inside it. Baseline
-        // alignment on the dial itself pins the line box to the top, which put
-        // the /36 out over the stroke where the chord is narrowest.
-        '<span class="gn-num"><b>' + (m ? m.score.n : '?') + '</b>' +
-        '<small>/' + (m ? m.score.of : 36) + '</small></span>' +
-      '</span>' +
+      (m ? scoreDial(m.score)
+         : '<span class="gn-cov">' +
+             (r.art ? '<img src="' + r.art.closed + '" alt="">' : drawnFace(r, 'bk3-face')) +
+           '</span>') +
       '<span class="gn-tx">' +
-        '<strong>' + esc(gunaNames()) + '</strong>' +
-        '<span>' + esc(m ? g.post : g.pre) + '</span>' +
+        '<strong>' + esc(m ? gunaNames() : c.tPre) + '</strong>' +
+        '<span>' + esc(m ? c.sPost : c.sPre) + '</span>' +
       '</span>' +
     '</div>' +
-    // Only while the dial is empty. They are a promise about what the free
-    // calculation covers, and once the number is on the ring the promise has
-    // been kept - leaving them up turns them into decoration.
-    (m ? '' : '<div class="gn-chips">' +
-      g.chips.map(function (c) { return '<i>' + esc(c) + '</i>'; }).join('') + '</div>') +
     '<div class="gn-foot">' +
-      '<button class="gn-go" type="button" data-buy="' + r.id + '">' +
-        (m ? g.cta2 : g.cta) + '</button>' +
-      // Underneath, and quiet. The decision is Buy Now; this is the way out for
-      // the one person in ten who wants to read what she is buying first, and
-      // giving it equal weight would make the pair look like a choice.
-      (m ? '<button class="gn-more" type="button" data-pick="' + r.id + '">' +
-             g.more + '</button>' : '') +
+      '<button class="gn-go" type="button" ' +
+        (m ? 'data-pick="' : 'data-buy="') + r.id + '">' +
+        (m ? c.ctaPost : c.ctaPre) + '</button>' +
     '</div>' +
   '</div>';
 }
@@ -2160,14 +2195,14 @@ function histCard(r) {
       '<span class="hw-av"><img src="assets/hemali.png" alt=""><i></i></span>' +
       '<span class="hw-who">' +
         '<span class="hw-line"><b>Astro Hemali</b></span>' +
-        '<small>' + (gunaSell(r) ? 'Read from both your charts'
+        '<small>' + (milanSell(r) ? 'Read from both your charts'
                                  : 'Made from your birth chart') + '</small>' +
       '</span>' +
     '</div>' +
     // Her face stays, the bubble goes. The credibility on this card is that a
     // person read two charts, and that is exactly what the row above says; what
     // sits under it is the number, not a book she has not bought.
-    (gunaSell(r) ? gunaCard(r, 'hist') :
+    (milanSell(r) ? milanCard(r, 'hist') :
     '<div class="hw-bub">' +
       '<div class="hw-row">' +
         '<span class="hw-tx">' +
@@ -2481,9 +2516,17 @@ function renderReport() {
      by state: Kundli Milan needs two charts, so saying so here is the page
      being honest about what the button is going to ask for rather than a
      form appearing out of nowhere after the tap. */
-  $('#r2Lead').textContent = r.needsMatch
-    ? r.s + '. Add both sets of birth details and Astro Hemali reads the two charts together.'
-    : r.s + '. Astro Hemali makes it from your birth chart.';
+  /* Once the form is in, the page stops asking for it. "Add both sets of birth
+     details" under her own finished score is the page not having noticed she
+     did the thing, which is the cheapest way to make a product feel unattended.
+     The line becomes the handover into the panel below it instead. */
+  var matched = !!(state.matched && r.matched);
+  $('#r2Lead').textContent = !r.needsMatch
+    ? r.s + '. Astro Hemali makes it from your birth chart.'
+    : matched
+      ? 'Both charts are in. Here is how the two of you match, and the one thing holding it back.'
+      : r.s + '. Add both sets of birth details and Astro Hemali reads the two charts together.';
+  renderMatchPanel(r, matched);
   // Two kinds of chip, drawn as one until now. The first are what only this
   // report has; the last three are true of everything we sell. Flat grey pills
   // made "36 guna match" look like the word "Private", so the report's own
@@ -2504,10 +2547,16 @@ function renderReport() {
   $('#r2Chips').innerHTML =
     r.chips.map(function (c) { return chip(c, 'key'); }).join('') +
     chip(r.pages + ' pages', 'pages') + chip('Shareable', 'share') + chip('Private', 'lock');
-  var learn  = r.learn;
-  var licons = r.licons;
+  /* Post-match the twelve pointers are the same twelve, but they are answering
+     a different question. Before the form the list is what a milan covers;
+     after it, with a 28 and a locked Nadi sitting above it, the list is what
+     the 28 does not tell her - so the heading and the wording both come from
+     the matched set. */
+  var learn  = (matched && r.matched.learn)  || r.learn;
+  var licons = (matched && r.matched.licons) || r.licons;
   $('#r2Learn').innerHTML =
-    '<h2 class="r2-h">' + esc(r.needsMatch ? 'What The Milan Answers' : 'What You Will Get') + '</h2>' +
+    '<h2 class="r2-h">' + esc(matched ? r.matched.head
+      : r.needsMatch ? 'What The Milan Answers' : 'What You Will Get') + '</h2>' +
     '<ul class="r2-learn">' +
       learn.map(function (x, i) {
         // Falls back to the tick if a report is ever short an icon key, so a
@@ -2530,7 +2579,11 @@ function renderReport() {
   markSnappedReview($('#r2Revs'));
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
     .map(upsellCard).join('');
-  $('#r2Why').textContent = r.why;
+  /* Pre-match the hook promises the score, which is the right promise while
+     the score is still the unknown. Post-match that promise has been kept, so
+     the line over the button has to be about what is still shut - which is
+     exactly what `matched.why` was written for. */
+  $('#r2Why').textContent = (matched && r.matched.why) || r.why;
   // The board says "Buy Now" and nothing else. The price is already sitting
   // beside the button, so repeating ₹49 inside it only crowds the line.
   // Once it is hers the bar stops being a shop. A price next to a book she has
@@ -2552,10 +2605,77 @@ function renderReport() {
      goes straight to the sheet and the button is a plain Buy Now again -
      promising a form she is no longer being shown would be the opposite
      mistake. */
+  /* Three states, because the button is doing three different things. Before
+     the form it opens a form. After the form, with five kootas visibly shut on
+     the page above it, "Unlock" is the literal description of what the money
+     buys - "Buy Now" next to a row of padlocks makes her work out the
+     connection herself. Once it is hers it is a door. */
   $('#r2Cta').textContent = mine ? 'Read Report'
-    : matchFirst(r) ? 'Enter Details \u0026 Buy Now' : 'Buy Now';
+    : matchFirst(r) ? 'Enter Details \u0026 Buy Now'
+    : matched ? 'Unlock Full Report' : 'Buy Now';
   $('#r2Cta').classList.toggle('outline', repeat);
   $('#r2Cta').classList.toggle('primary', !repeat);
+}
+
+/* Her result, on the page the form now returns to.
+
+   Two of the eight kootas are named and scored, five are shut, and Nadi is
+   lifted out below them. That split is the whole design of the teaser: showing
+   none makes the page a receipt for twenty seconds of typing, showing all eight
+   hands over the answer and leaves ₹49 buying adjectives. Two real rows prove
+   the reading exists and is about her charts specifically, and the five locks
+   are then a door she can see the shape of.
+
+   The locked rows keep their names. A row of "Locked / Locked / Locked" is a
+   paywall; "Yoni - locked" tells her there is a named thing she has not been
+   told, which is a different and much better kind of gap.
+
+   Nadi gets its own block because it is the finding rather than a row - it is
+   the only one at zero, it is the heaviest, and it is the reason the 28 is 28.
+   The remedy line directly under it is the release valve: the page is allowed
+   to leave her with a problem only if it also tells her the problem has a
+   known answer. */
+function renderMatchPanel(r, matched) {
+  var box = $('#r2Match');
+  box.hidden = !matched;
+  if (!matched) { box.innerHTML = ''; return; }
+  var m = r.matched, nd = m.nadi;
+  var TICK = '<path d="M2.5 6.4 5 8.9l4.5-5"/>';
+  var LOCK = '<path d="M2.8 5.4h6.4v5.1H2.8zM4.4 5.4V3.8a1.6 1.6 0 0 1 3.2 0v1.6"/>';
+  function ic(d) {
+    return '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" ' +
+      'aria-hidden="true">' + d + '</svg>';
+  }
+  box.innerHTML =
+    '<h2 class="r2-h">Your Compatibility Score</h2>' +
+    '<div class="km">' +
+      '<div class="km-top">' + scoreDial(m.score) +
+        '<span class="km-tx">' +
+          '<strong>' + esc(gunaNames()) + '</strong>' +
+          '<span>' + m.score.n + ' of ' + m.score.of +
+            ' gunas matched across the eight kootas</span>' +
+        '</span>' +
+      '</div>' +
+      '<ul class="km-list">' +
+        m.kootas.map(function (k) {
+          return '<li' + (k.open ? ' class="on"' : '') + '>' +
+            '<i>' + ic(k.open ? TICK : LOCK) + '</i>' +
+            '<b>' + esc(k.n) + '</b>' +
+            '<em>' + (k.open ? k.s + '/' + k.of : 'Locked') + '</em>' +
+          '</li>';
+        }).join('') +
+      '</ul>' +
+      '<div class="km-bad">' +
+        '<div class="km-bad-h">' +
+          '<b>' + esc(nd.n) + '</b>' +
+          '<em>' + nd.s + ' of ' + nd.of + '</em>' +
+        '</div>' +
+        '<p>' + esc(nd.why) + '. This is where all ' +
+          (m.score.of - m.score.n) + ' of your missing points are.</p>' +
+      '</div>' +
+      '<p class="km-rem">' + esc(m.remedy) + '</p>' +
+    '</div>';
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
