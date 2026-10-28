@@ -328,6 +328,10 @@ var REPORTS = [
         return '28 of 36 gunas matched with ' + n +
           '. Astro Hemali has read both charts for what the other 8 are doing.';
       },
+      /* The number on its own, so the surfaces that only have room for the
+         figure - the pay sheet's dial - read it from here instead of each
+         keeping its own 28 to fall out of step with. */
+      score: { n: 28, of: 36 },
       chips: ['28 of 36 gunas', 'Nadi 0 of 8', 'Nadi dosha present'],
       why: 'All 8 missing points are Nadi. One remedy cancels it, and it is in the report',
       head: 'What Your 28 Does Not Tell You',
@@ -1371,6 +1375,26 @@ function openPay() {
   // title here is the same one she tapped Buy Now under.
   $('#paysName').textContent = r.tl || 'Your ' + r.t;
   $('#paysMeta').textContent = r.pages + ' pages · One-time payment · Made for your chart';
+
+  /* The score strip. It needs a report that has a matched state and a match
+     that has actually been run - before that there is no number, and a dial
+     reading 0 of 36 next to a Buy button is the sheet arguing against itself. */
+  var m = state.matched && r.matched;
+  var guna = $('#paysGuna');
+  guna.hidden = !m;
+  if (m) {
+    $('#paysGunaN').textContent = m.score.n;
+    $('#paysGunaOf').textContent = 'of ' + m.score.of;
+    // Her name first, off the form rather than a constant, because the form
+    // let her correct it and a sheet that has forgotten the correction is the
+    // one place she will not forgive it.
+    var her = ($('#gName').value || '').trim().split(' ')[0] || 'You';
+    $('#paysGunaWho').textContent = her + ' \u0026 ' + state.boy;
+    // The same sentence the Buy bar was carrying. She is mid-tap on that
+    // button, so changing the argument underneath her would read as a
+    // different offer.
+    $('#paysGunaWhy').textContent = m.why;
+  }
 
   $('#paysLangName').textContent = langById(state.lang).label;
   paintPaySum();

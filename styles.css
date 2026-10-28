@@ -2590,6 +2590,25 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pays-lang i{flex:none;font-style:normal;font:600 15px/22px var(--sans);color:var(--brand)}
 .pays-lang:active{background:var(--g50)}
 
+/* The score she already owns, carried onto the sheet. Brand tint rather than
+   the receipt's grey, because this is the one block here that is an argument
+   and not an amount - next to .pays-sum in the same grey it would read as
+   another line of the bill. */
+.pays-guna{display:flex;align-items:center;gap:14px;
+  background:var(--brand50);border-radius:12px;padding:12px 14px}
+/* Round, so it reads as a score and not as a quantity. Solid white on the
+   tint keeps the figure the brightest thing in the block. */
+.pg-dial{flex:none;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;width:56px;height:56px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.pg-dial b{font:700 22px/24px var(--sans);letter-spacing:-.02em;color:var(--brand)}
+.pg-dial small{font:500 10px/14px var(--sans);color:var(--g500)}
+.pg-txt{min-width:0;display:flex;flex-direction:column;gap:2px}
+.pg-txt strong{font:600 14px/20px var(--sans);color:var(--g900)}
+/* The unresolved 8, in two lines. It is the reason she is on this sheet, so it
+   gets the room a one-line truncation would take from it. */
+.pg-txt span{font:400 12px/17px var(--sans);color:var(--g600)}
+
 /* The arithmetic, in the order it happens: what it lists for, what today takes
    off, what tax adds, what the wallet covers, what leaves her account. One grey
    block, per the board — on a sheet this short the receipt needs an edge or it
