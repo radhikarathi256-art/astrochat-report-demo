@@ -2186,7 +2186,7 @@ function offer3Card() {
   // Kundli Milan does not sell a book here. It sells the one number she came
   // for, and the book turns up later on the detail page where there is room to
   // explain it.
-  if (milanSell(r)) return milanCard(r, 'chat');
+  if (milanSell(r)) return milanCard(r);
   // The whole card is the link to the detail page; only Buy Now jumps the
   // queue straight to payment.
   return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '">' +
@@ -2291,10 +2291,10 @@ function scoreDial(sc) {
    the line under it names what the bite is. The button goes to the detail
    page, not to the pay sheet: she has just been given a result, and the next
    thing she is owed is the reading of it, not a price. */
-function milanCard(r, where) {
+function milanCard(r) {
   var m = state.matched && r.matched;
   var c = r.card;
-  return '<div class="gn gn-' + where + (m ? ' gn-done' : '') +
+  return '<div class="gn gn-chat' + (m ? ' gn-done' : '') +
       '" role="button" tabindex="0" data-pick="' + r.id + '">' +
     '<div class="gn-top">' +
       (m ? scoreDial(m.score)
@@ -2311,55 +2311,6 @@ function milanCard(r, where) {
         (m ? 'data-pick="' : 'data-buy="') + r.id + '">' +
         (m ? c.ctaPost : c.ctaPre) + '</button>' +
     '</div>' +
-  '</div>';
-}
-
-/* The same offer where History shows it, per 3077:159093 — not the chat card
-   shrunk down, but a message from Hemali: her face, her rate, and the pitch
-   in a peach bubble with the book leaning out of it. */
-function histCard(r) {
-  // The rate pills are off in 3111:201206 — this card sells the report, and a
-  // per-minute price next to her name sells the chat instead.
-  return '<div class="hw" role="button" tabindex="0" data-pick="' + r.id + '">' +
-    '<div class="hw-top">' +
-      '<span class="hw-av"><img src="assets/hemali.png" alt=""><i></i></span>' +
-      '<span class="hw-who">' +
-        '<span class="hw-line"><b>Astro Hemali</b></span>' +
-        '<small>' + (milanSell(r) ? 'Read from both your charts'
-                                 : 'Made from your birth chart') + '</small>' +
-      '</span>' +
-    '</div>' +
-    // Her face stays, the bubble goes. The credibility on this card is that a
-    // person read two charts, and that is exactly what the row above says; what
-    // sits under it is the number, not a book she has not bought.
-    (milanSell(r) ? milanCard(r, 'hist') :
-    '<div class="hw-bub">' +
-      '<div class="hw-row">' +
-        '<span class="hw-tx">' +
-          '<b>Mansi, ' + esc(r.t2 || r.t + ' Report') + '</b>' +
-          '<small>' + r.learn.length + ' questions answered</small>' +
-        '</span>' +
-        // Shut, with its page block showing on the right — the same object the
-        // chat offer sells, at rest.
-        '<span class="hw-bkw" aria-hidden="true">' +
-          '<span class="hw-leaf"' +
-            (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
-          '<span class="hw-cov">' +
-            (r.art
-              ? '<img class="hw-bk" src="' + r.art.closed + '" alt="">'
-              // No painted cover yet: the drawn one stands in, so the hinge
-              // never swings an empty frame over the leaf.
-              : drawnFace(r, 'hw-bk bk3-face')) +
-            '<span class="hw-back"' +
-              (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
-          '</span>' +
-        '</span>' +
-      '</div>' +
-      // Partner and Career have nothing free to give here, so the label stays
-      // neutral rather than borrowing a promise they cannot keep. Kundli Milan
-      // never reaches this line - it gets the dial card instead.
-      '<button class="hw-go" type="button" data-pick="' + r.id + '">Learn More</button>' +
-    '</div>') +
   '</div>';
 }
 
@@ -2470,9 +2421,11 @@ function renderHistCard() {
     return;
   }
   if (!show3) return;
-  // The board at 3077:159093 shows this as a message from Hemali, not a second
-  // storefront: her face, her rate, and the pitch in a peach bubble.
-  $('#tlChapCard').innerHTML = histCard(leadReport());
+  // The chat's own card, not a second design of the same offer. History had
+  // Hemali's face over a peach bubble with the book leaning out of it: a
+  // different object selling the same thing, which made the two surfaces read
+  // as two products. One widget, two places.
+  $('#tlChapCard').innerHTML = offer3Card();
 }
 
 /* Tomorrow's reason to return: the free chat and the next coin. */

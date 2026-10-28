@@ -876,97 +876,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   .of3-go{width:auto;flex:1}
 }
 
-/* The same offer where History shows it, per 3077:159093 — not the chat card
-   shrunk down, but a message from Hemali: her face, her rate, and the pitch in
-   a peach bubble with the book leaning out of it. */
-.hw{padding:8px;border-radius:18px;background:#fff;
-  box-shadow:0 10px 26px -14px rgba(16,24,40,.3),0 0 0 1px rgba(16,24,40,.05)}
-.hw-top{display:flex;align-items:center;gap:10px;padding:2px 2px 0}
-.hw-av{position:relative;flex:none;width:50px;height:50px}
-.hw-av img{width:50px;height:50px;border-radius:50%;object-fit:cover;display:block}
-/* 3077:159498 puts the online dot at x:36.6, y:0 of the 50px avatar — top
-   right, riding the rim, not tucked into the bottom corner. */
-.hw-av i{position:absolute;right:2px;top:0;width:11px;height:11px;
-  border-radius:50%;background:#027A48;box-shadow:0 0 0 1.5px #fff}
-.hw-who{flex:1;min-width:0}
-.hw-line{display:flex;align-items:baseline;gap:6px}
-.hw-line b{font:600 16px/22px var(--sans);color:var(--g700)}
-.hw-who small{display:block;margin-top:1px;font:400 12px/18px var(--sans);
-  color:var(--g600)}
-/* The notch makes it her message rather than a panel that happens to sit below
-   her name. */
-.hw-bub{position:relative;margin-top:24px;padding:12px;border-radius:12px;
-  background:#FDF0EB}
-/* Vector 954 is a symmetric 15x14 wedge pointing up, not the right-angled
-   corner this used to cut. Centred on the avatar above it: her face sits 2px
-   into the bubble and is 50px wide, so its middle is 27px in and the 15px
-   wedge starts 7.5px before that. Off-centre it pointed at her shoulder. */
-.hw-bub::before{content:'';position:absolute;left:19.5px;top:-13px;width:15px;height:14px;
-  background:#FDF0EB;clip-path:polygon(50% 0,100% 100%,0 100%)}
-.hw-row{position:relative;display:flex;align-items:center;gap:12px}
-.hw-tx{flex:1;min-width:0}
-/* 206px is the frame's own measure — it is what breaks the title onto two
-   lines and keeps it clear of the book. */
-.hw-tx b{display:block;max-width:206px;font:600 14px/20px var(--sans);
-  color:var(--g700)}
-.hw-tx small{display:block;margin-top:2px;font:400 12px/18px var(--sans);
-  color:var(--g600)}
-/* Figma 3111:201226 — a 59x89 board leaning 27px out of the bubble's top edge,
-   which is what the eye lands on. Same hardbound object as the chat card and
-   the same tease: it comes ajar far enough to show paper, holds, then shuts.
-   Only the report hero falls all the way flat. */
-.hw-bkw{position:absolute;right:-3px;top:-27px;width:126px;height:89px;
-  perspective:460px}
-/* The right-hand page, with the page block showing past the board's fore-edge. */
-.hw-leaf{position:absolute;left:62px;right:0;top:3px;bottom:3px;
-  border-radius:1px 3px 3px 1px;overflow:hidden;
-  background:linear-gradient(90deg,var(--pap-lt) 0,var(--pap) 58%,var(--pap-dk) 88%,var(--pap) 100%);
-  background-size:200% 100%;background-position:right center;background-repeat:no-repeat;
-  /* As on the offer card: the inline art replaces the gradient, so the page
-     needs an opaque ground of its own or the keyed-out margins show through. */
-  background-color:var(--pap);
-  box-shadow:0 7px 13px -7px rgba(74,24,8,.38)}
-/* One soft gradient, not ruled hairlines. At this size the stripes never read
-   as a block of paper — they read as a glitch across the fore-edge. */
-.hw-leaf::after{content:'';position:absolute;right:0;top:0;bottom:0;width:8px;
-  background:linear-gradient(90deg,rgba(255,249,252,0),var(--pap-dk))}
-.hw-cov{position:absolute;left:59px;top:0;width:59px;height:89px;
-  transform-origin:left center;transform-style:preserve-3d;
-  box-shadow:4px 0 5px -3px rgba(74,24,8,.5),
-    -4px 7px 14px -6px rgba(74,24,8,.4);
-  animation:bookAjar 3.6s cubic-bezier(.33,1,.68,1) .55s infinite}
-.hw-bk,.hw-back{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;backface-visibility:hidden}
-.hw-bk{border-radius:2px 4px 4px 2px}
-.hw-back{transform:rotateY(180deg);border-radius:4px 2px 2px 4px;
-  background:var(--pap) no-repeat left center;background-size:200% 100%}
-/* Spine crease when shut, gutter when flat. */
-.hw-bkw::after{content:'';position:absolute;left:57px;top:0;bottom:0;width:8px;
-  z-index:3;pointer-events:none;
-  background:linear-gradient(90deg,rgba(94,36,16,.42) 0,rgba(122,46,14,.06) 48%,
-    rgba(255,255,255,.26) 72%,rgba(122,46,14,.18) 100%)}
-@media (prefers-reduced-motion:reduce){
-  .hw-cov{animation:none}
-}
-.hw-go{display:block;width:100%;height:36px;margin-top:10px;border:0;
-  border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;
-  font:600 14px/20px var(--sans);
-  box-shadow:0 1px 2px rgba(16,24,40,.05)}
-
 /* ---------- Guna dial card · chat + History ----------
    The Kundli Milan offer where the product is a number, not a book. No cover,
    no price row, no rating: a ring, two names and one button. The only art is
    the ring, and the ring is the argument - empty it asks, full it shows the
    bite that 8 missing points takes out of 36.
 
-   One rule-set, two homes. In the chat it is the card itself, so it carries
-   the white and the shadow; inside a History row it is the bubble, so it drops
-   both and takes the peach the bubble had. */
+   One rule-set, two homes - the chat thread and the History row - and the same
+   white card in both, because it is the same offer in both. */
 .gn{position:relative;align-self:stretch;width:100%;cursor:pointer;
   padding:14px;border-radius:16px}
 .gn-chat{margin-top:22px;background:#fff;
   box-shadow:0 12px 28px -12px rgba(122,46,14,.22),0 0 0 1px rgba(16,24,40,.04)}
-.gn-hist{margin-top:12px;background:var(--brand50)}
 .gn-top{display:flex;align-items:center;gap:13px}
 /* Square box, round ring. The figure is centred over the SVG rather than
    drawn in it, because an SVG text node will not take the UI font and the one
