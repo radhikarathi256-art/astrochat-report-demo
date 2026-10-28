@@ -950,6 +950,65 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 14px/20px var(--sans);
   box-shadow:0 1px 2px rgba(16,24,40,.05)}
 
+/* ---------- Guna dial card · chat + History ----------
+   The Kundli Milan offer where the product is a number, not a book. No cover,
+   no price row, no rating: a ring, two names and one button. The only art is
+   the ring, and the ring is the argument - empty it asks, full it shows the
+   bite that 8 missing points takes out of 36.
+
+   One rule-set, two homes. In the chat it is the card itself, so it carries
+   the white and the shadow; inside a History row it is the bubble, so it drops
+   both and takes the peach the bubble had. */
+.gn{position:relative;align-self:stretch;width:100%;cursor:pointer;
+  padding:14px;border-radius:16px}
+.gn-chat{margin-top:22px;background:#fff;
+  box-shadow:0 12px 28px -12px rgba(122,46,14,.22),0 0 0 1px rgba(16,24,40,.04)}
+.gn-hist{margin-top:12px;background:var(--brand50)}
+.gn-top{display:flex;align-items:center;gap:13px}
+/* Square box, round ring. The figure is centred over the SVG rather than
+   drawn in it, because an SVG text node will not take the UI font and the one
+   thing on this card that has to look like the rest of the app is the number. */
+.gn-dial{position:relative;flex:none;width:68px;height:68px;
+  display:flex;align-items:center;justify-content:center}
+.gn-num{display:flex;align-items:baseline;justify-content:center;gap:1px}
+.gn-dial svg{position:absolute;inset:0;width:68px;height:68px;
+  /* Twelve o'clock, clockwise. A score that starts filling from the right edge
+     reads as a pie chart; from the top it reads as progress. */
+  transform:rotate(-90deg)}
+.gn-dial circle{fill:none;stroke-width:5;stroke-linecap:round}
+.gn-trk{stroke:#F6D6C8}
+.gn-arc{stroke:var(--brand)}
+/* 20, not 24. Two digits and a /36 have to live on one line inside a ring, and
+   at 24 the pair was wider than the chord and ran out over the stroke. */
+.gn-dial b{font:700 20px/22px var(--sans);letter-spacing:-.02em;color:var(--g900)}
+/* Grey while it is a question, brand once it is an answer — the ring and the
+   figure arrive in the same colour so they read as one object. */
+.gn-done .gn-dial b{color:var(--brand)}
+.gn-dial small{font:500 11px/15px var(--sans);color:var(--g500)}
+.gn-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.gn-tx strong{font:600 15px/22px var(--sans);color:var(--g900)}
+.gn-tx span{font:400 13px/18px var(--sans);color:var(--g600)}
+/* What the free calculation covers, in three words each. Pills rather than a
+   sentence, because she is meant to recognise them, not read them. */
+.gn-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.gn-chips i{font-style:normal;padding:3px 9px;border-radius:99px;
+  background:#fff;border:1px solid #F6D6C8;
+  font:500 12px/18px var(--sans);color:var(--w900)}
+.gn-hist .gn-chips i{background:#fff}
+.gn-foot{margin-top:14px}
+.gn-go{display:block;width:100%;height:42px;border:0;border-radius:10px;
+  background:var(--brand);color:#fff;cursor:pointer;
+  font:600 15px/22px var(--sans);
+  box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.gn-go:active{background:var(--brand-dk)}
+/* Underlined and small, directly under the button it is not competing with.
+   A second filled button here would turn one decision into two. */
+.gn-more{display:block;width:100%;margin-top:9px;padding:0;border:0;
+  background:none;cursor:pointer;text-decoration:underline;
+  text-underline-offset:2px;
+  font:500 13px/18px var(--sans);color:var(--g600)}
+.gn-more:active{color:var(--g900)}
+
 /* Day 4 says it is the last ask in words, never in colour — escalating the
    pixels is how you teach people to stop looking. */
 .of3-foot.last,.ex-sub.last{color:#B54708;font-weight:600}

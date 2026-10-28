@@ -308,18 +308,23 @@ var REPORTS = [
        pitched to someone who has named him in the chat - and saying so out loud
        is what separates it from an ad. She told Hemali about him; Hemali is
        answering about him. */
+    /* No "report" anywhere in the thread. In the chat what she is being
+       offered is a match between two charts, and naming a product next to it
+       makes the free thing look like the bait on a hook. The word the bubble
+       uses when it has to name the paid half is analysis, which is what she
+       would call it anyway. */
     pitch: [
-      'Mansi, you mentioned him in the chat. Do you want the Kundli Milan report done for the two of you?',
-      'Learn how many of the 36 gunas match, whether either of you is Manglik, and the window the marriage can actually happen in.',
+      'Mansi, you mentioned him in the chat. Do you want me to match the two charts for the two of you?',
+      'I will tell you how many of the 36 gunas match, whether either of you is Manglik, and the window the marriage can actually happen in.',
       // Not "buy" — the button under this one is free now. Asking for money in
       // the same breath as asking for his birth time makes the typing feel
       // like part of the price.
-      'Give me his birth details and I will match the two charts for you now. The full report is there if you want the whole of it.'
+      'Give me his birth details and I will match the two charts for you now. The full reading is there if you want the whole of it.'
     ],
     pitchLong: [
-      'Mansi, you mentioned him today, so I put both charts in front of me after we finished and made you the Kundli Milan report.',
-      'Learn your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
-      'Give me his birth details and the match is yours free. The full report, remedies and all, is a complete sample away - open on another chart, so you can see how deep it goes before you decide.'
+      'Mansi, you mentioned him today, so I put both charts in front of me after we finished and matched them.',
+      'Your real guna score out of 36 and which gunas are missing, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
+      'Give me his birth details and the score is yours free. The full analysis, remedies and all, is a complete sample away - open on another chart, so you can see how deep it goes before you decide.'
     ],
     /* The page after the form. Everything here replaces its plain counterpart
        once both charts exist, which is the whole reason the details come
@@ -365,6 +370,27 @@ var REPORTS = [
       ],
       licons: ['block', 'beads', 'spark', 'people', 'coin', 'rings',
                'home', 'shield', 'cal', 'arrow', 'sun', 'list']
+    },
+    /* The two surfaces that sell this one without the word report. In the chat
+       and in History the product is a number out of 36, and a second noun
+       standing next to it only splits her attention: a score is something she
+       wants, a report is something she has to be sold. So these two places
+       show the dial and nothing else, and the word analysis carries whatever
+       the dial cannot.
+
+       One widget, two states. Before the form it is an empty ring - a ? over
+       /36 - with the three things the match is read on under it. After the
+       form the same ring holds 28 and the line under the names becomes the
+       gap, which is the only part of a 28 worth paying for. She watches one
+       object fill in rather than meeting a second card that claims to be about
+       the same two people. */
+    guna: {
+      pre: '36 gunas, read off both charts. Free',
+      chips: ['Ashta Koot', 'Manglik', 'Nadi'],
+      post: 'All 8 open points are Nadi. Your full analysis is ready',
+      cta: 'Calculate Guna Match',
+      cta2: 'Buy Now',
+      more: 'Learn more about it'
     },
     /* The rose this card has always worn. Kundli Milan is the one report whose
        hero art is warmer than its book - the painting is gold and brown, the
@@ -1590,6 +1616,12 @@ function submitMatch() {
      she sees is the number she just earned sitting above the price. */
   state.pick = 'marriage';
   renderReport();
+  /* The two surfaces that carry the dial are repainted now, not next time the
+     day changes. She leaves the chat with a question mark and comes back to a
+     28 in the same widget - that is the whole point of it being the same
+     widget, and it only works if the number is already there when she looks. */
+  renderChat();
+  renderHistCard();
   show('report', 'fade');
   later(openPay, 260);
 }
@@ -1937,6 +1969,10 @@ function offer3Card() {
   // the follow-up, and two follow-ups in a row is one too many.
   if (state.paid) return '';
   var r = leadReport();
+  // Kundli Milan does not sell a book here. It sells the one number she came
+  // for, and the book turns up later on the detail page where there is room to
+  // explain it.
+  if (gunaSell(r)) return gunaCard(r, 'chat');
   // The whole card is the link to the detail page; only Buy Now jumps the
   // queue straight to payment.
   return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '">' +
@@ -1989,6 +2025,79 @@ function offer3Card() {
    price and a Buy Now, this one is a free calculation she has not run yet. */
 function matchFirst(r) { return !!r.needsMatch && !state.matched && !owns(r.id); }
 
+/* True on the two surfaces that should be selling a score rather than a book.
+   Once she owns it the book is the honest picture again - there is a thing to
+   open - so this falls away and the ordinary card comes back. */
+function gunaSell(r) { return !!(r.guna && r.needsMatch && !owns(r.id)); }
+
+/* Both names, whichever pair the app is entitled to use. Before the form the
+   only name it has for him is the one she said in the chat, which is why the
+   card can say "Mansi and Rahul" at all; after the form it uses what she
+   actually typed, so a correction on the pay sheet shows up here too. */
+function gunaNames() {
+  var her = 'Mansi';
+  var him = state.suggested || 'him';
+  if (state.matched) {
+    her = ($('#gName').value || '').trim().split(' ')[0] || her;
+    him = state.boy || him;
+  }
+  return her + ' \u0026 ' + him;
+}
+
+/* The dial card. One widget, two states, used by the chat offer and the
+   History row - so the number she unlocked in the chat is the same object she
+   finds in History later, not a second card about the same two people.
+
+   The ring is the whole argument. Empty it is a question with a free answer
+   under it; full it is 28 with a visible bite out of it, and the bite is what
+   the money is for. r=26 gives a 163.4 circumference, so the arc is just that
+   times the fraction - no magic numbers to drift when the score changes. */
+function gunaCard(r, where) {
+  var m = state.matched && r.matched;
+  var g = r.guna;
+  var C = 2 * Math.PI * 28;
+  var pct = m ? m.score.n / m.score.of : 0;
+  return '<div class="gn gn-' + where + (m ? ' gn-done' : '') +
+      '" role="button" tabindex="0" data-pick="' + r.id + '">' +
+    '<div class="gn-top">' +
+      '<span class="gn-dial">' +
+        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+          '<circle class="gn-trk" cx="32" cy="32" r="28"></circle>' +
+          // Left out entirely at zero rather than drawn with a zero-length
+          // dash: a round cap on nothing still paints a dot, and a dot at
+          // twelve o'clock on an empty ring looks like a score of about one.
+          (m ? '<circle class="gn-arc" cx="32" cy="32" r="28" ' +
+            'stroke-dasharray="' + (C * pct).toFixed(1) + ' ' + C.toFixed(1) + '"></circle>' : '') +
+        '</svg>' +
+        // The pair is wrapped so it can be centred in the ring as one object
+        // while the two of them sit on a shared baseline inside it. Baseline
+        // alignment on the dial itself pins the line box to the top, which put
+        // the /36 out over the stroke where the chord is narrowest.
+        '<span class="gn-num"><b>' + (m ? m.score.n : '?') + '</b>' +
+        '<small>/' + (m ? m.score.of : 36) + '</small></span>' +
+      '</span>' +
+      '<span class="gn-tx">' +
+        '<strong>' + esc(gunaNames()) + '</strong>' +
+        '<span>' + esc(m ? g.post : g.pre) + '</span>' +
+      '</span>' +
+    '</div>' +
+    // Only while the dial is empty. They are a promise about what the free
+    // calculation covers, and once the number is on the ring the promise has
+    // been kept - leaving them up turns them into decoration.
+    (m ? '' : '<div class="gn-chips">' +
+      g.chips.map(function (c) { return '<i>' + esc(c) + '</i>'; }).join('') + '</div>') +
+    '<div class="gn-foot">' +
+      '<button class="gn-go" type="button" data-buy="' + r.id + '">' +
+        (m ? g.cta2 : g.cta) + '</button>' +
+      // Underneath, and quiet. The decision is Buy Now; this is the way out for
+      // the one person in ten who wants to read what she is buying first, and
+      // giving it equal weight would make the pair look like a choice.
+      (m ? '<button class="gn-more" type="button" data-pick="' + r.id + '">' +
+             g.more + '</button>' : '') +
+    '</div>' +
+  '</div>';
+}
+
 /* The same offer where History shows it, per 3077:159093 — not the chat card
    shrunk down, but a message from Hemali: her face, her rate, and the pitch
    in a peach bubble with the book leaning out of it. */
@@ -2000,9 +2109,14 @@ function histCard(r) {
       '<span class="hw-av"><img src="assets/hemali.png" alt=""><i></i></span>' +
       '<span class="hw-who">' +
         '<span class="hw-line"><b>Astro Hemali</b></span>' +
-        '<small>Made from your birth chart</small>' +
+        '<small>' + (gunaSell(r) ? 'Read from both your charts'
+                                 : 'Made from your birth chart') + '</small>' +
       '</span>' +
     '</div>' +
+    // Her face stays, the bubble goes. The credibility on this card is that a
+    // person read two charts, and that is exactly what the row above says; what
+    // sits under it is the number, not a book she has not bought.
+    (gunaSell(r) ? gunaCard(r, 'hist') :
     '<div class="hw-bub">' +
       '<div class="hw-row">' +
         '<span class="hw-tx">' +
@@ -2025,14 +2139,11 @@ function histCard(r) {
           '</span>' +
         '</span>' +
       '</div>' +
-      /* Learn More is what a button says when it has nothing to offer. For
-         Kundli Milan there is something free on the other side of this tap -
-         the guna score - and naming it is the difference between an ad and an
-         offer. The other two reports have nothing free to give, so they keep
-         the neutral label rather than borrowing a promise they cannot keep. */
-      '<button class="hw-go" type="button" data-pick="' + r.id + '">' +
-        (matchFirst(r) ? 'Get Free Compatibility Score' : 'Learn More') + '</button>' +
-    '</div>' +
+      // Partner and Career have nothing free to give here, so the label stays
+      // neutral rather than borrowing a promise they cannot keep. Kundli Milan
+      // never reaches this line - it gets the dial card instead.
+      '<button class="hw-go" type="button" data-pick="' + r.id + '">Learn More</button>' +
+    '</div>') +
   '</div>';
 }
 
