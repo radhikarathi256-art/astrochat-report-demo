@@ -1131,6 +1131,99 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .pk-note{margin:16px;padding:11px 12px;border-radius:10px;background:#F9FAFB;
   font:400 12px/18px var(--sans);color:var(--g600)}
 
+/* ---------- App menu · the real hamburger ----------
+   LxCKwlbqHUN45c7CxFAWov 1418:17033: a peach name block, hairline rows with
+   outlined brand icons, then the logout button and the legal foot. */
+.menu-scr{background:#fff}
+.mn-head{flex:none;display:flex;align-items:flex-start;gap:12px;
+  padding:calc(var(--sbh) + 16px) 16px 18px;background:#FDF4EF}
+.mn-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mn-who b{font:700 22px/30px var(--sans);color:var(--g900)}
+.mn-who small{font:400 14px/20px var(--sans);color:var(--g600)}
+.mn-list{list-style:none;margin:0;padding:0}
+.mn-row{display:flex;align-items:center;gap:13px;width:100%;height:56px;
+  padding:0 16px;border:0;background:none;cursor:pointer;text-align:left;
+  border-bottom:1px solid var(--g100)}
+.mn-row:active{background:var(--g50)}
+.mn-row i{flex:none;display:flex;width:24px;height:24px;color:var(--brand)}
+.mn-row i svg{width:24px;height:24px}
+.mn-row b{flex:1;min-width:0;font:400 16px/24px var(--sans);color:var(--g800);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* The count, in the brand wash rather than in red. It is a number of things
+   she owns, which is good news; a red dot would make it an unread badge. */
+.mn-n{flex:none;min-width:22px;padding:0 6px;border-radius:99px;
+  background:var(--brand50);color:var(--w900);text-align:center;
+  font:700 12px/22px var(--sans)}
+.mn-tag{flex:none;padding:2px 9px;border-radius:99px;background:var(--brand50);
+  font:600 12px/18px var(--sans);color:var(--brand)}
+.mn-row em{flex:none;font-style:normal;font:400 19px/19px var(--sans);
+  color:var(--g300)}
+/* Quieter than Logout and set apart from the list, because it is the only
+   thing on this screen that is not the product. */
+.mn-demo{display:block;margin:20px 16px 0;width:calc(100% - 32px);height:40px;
+  border:1px dashed var(--g300);border-radius:10px;background:none;cursor:pointer;
+  font:500 13px/20px var(--sans);color:var(--g500)}
+.mn-out{display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:12px 16px 0;width:calc(100% - 32px);height:48px;border-radius:10px;
+  border:1px solid var(--brand);background:#fff;cursor:pointer;
+  font:600 16px/24px var(--sans);color:var(--brand)}
+/* The column, so the grey foot can be pushed to the bottom edge rather than
+   stopping wherever the list happens to end and leaving a white band under it
+   that reads as the page having failed to load the rest of itself. */
+.menu-scr .scroll{display:flex;flex-direction:column}
+.mn-foot{margin-top:auto;background:var(--g50);
+  padding:18px 16px calc(28px + var(--sab,env(safe-area-inset-bottom,0px)))}
+.mn-foot p{margin:0;font:400 13px/20px var(--sans);color:var(--g600)}
+.mn-foot a{color:var(--brand);text-decoration:none}
+.mn-links{margin-top:14px;display:flex;gap:22px}
+.mn-links a{color:var(--g700);text-decoration:underline;text-underline-offset:2px}
+.mn-ver{margin-top:14px;color:var(--g400)}
+
+/* ---------- My Reports ---------- */
+.topnav-pad{flex:none;width:36px}
+.mine-list{padding:8px 0}
+.mine-row{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;
+  border:0;background:none;cursor:pointer;text-align:left;
+  border-bottom:1px solid var(--g100)}
+.mine-row:active{background:var(--g50)}
+/* Smaller than the shop's 88px. This is a list of things she has, so the row
+   is the unit and the cover is the thumbnail; at shop size three of them fill
+   the screen and the shelf stops looking like a shelf. */
+.mine-row .bkt,.mine-row .bk3{flex:none;align-self:flex-start;margin:0;
+  width:56px;height:84px;--bw:56px;--bh:84px}
+.mine-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mine-tx b{font:600 15px/21px var(--sans);color:var(--g900)}
+.mine-tx small{font:500 13px/18px var(--sans);color:var(--s700)}
+.mine-tx em{font-style:normal;font:400 12px/17px var(--sans);color:var(--g500)}
+.mine-chev{flex:none;font-style:normal;font:400 20px/20px var(--sans);color:var(--g300)}
+.mine-note{margin:16px;padding:11px 12px;border-radius:10px;background:var(--g50);
+  font:400 12px/18px var(--sans);color:var(--g600)}
+/* Empty, and saying so once rather than filling the screen with regret. The
+   strip of three underneath is the actual content of this state. */
+.mine-empty{display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:40px 32px 28px;text-align:center}
+.mine-empty i{display:flex;width:44px;height:44px;margin-bottom:6px;
+  align-items:center;justify-content:center;border-radius:50%;
+  background:var(--brand50);color:var(--brand)}
+.mine-empty i svg{width:24px;height:24px}
+.mine-empty b{font:600 17px/24px var(--sans);color:var(--g900)}
+.mine-empty span{font:400 14px/20px var(--sans);color:var(--g600)}
+/* The rail itself is the house default now, so the empty shelf adds nothing
+   but the room above it. */
+.mine-up{padding-top:8px}
+
+/* ---------- Today · the owner's line to her shelf ----------
+   One hairline row at the bottom of the page, in grey. Everything above it on
+   Today is selling; this is the one thing that is not, and it has to look it. */
+.my-strip{display:flex;align-items:center;gap:10px;width:calc(100% - 32px);
+  margin:4px 16px 0;padding:12px 14px;border-radius:12px;
+  border:1px solid var(--g200);background:#fff;cursor:pointer;text-align:left}
+.my-strip:active{background:var(--g50)}
+.my-strip i{flex:none;display:flex;width:20px;height:20px;color:var(--brand)}
+.my-strip i svg{width:20px;height:20px}
+.my-strip span{flex:1;min-width:0;font:500 14px/20px var(--sans);color:var(--g700)}
+.my-strip em{flex:none;font-style:normal;font:400 18px/18px var(--sans);color:var(--g300)}
+
 /* ---------- Day 1 · the reminder opt-in ----------
    Sits after the end-of-chat notice, in the system voice's position but warmer:
    it is the one ask of the day, made right after she has read her own chapter. */
@@ -2003,10 +2096,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .rs{position:relative;overflow:hidden;padding:24px 20px 92px}
 .rp .rp-secs > .carousel-wrap{padding:24px 0}
 .rp .rp-secs > .carousel-wrap .lbl{padding:0 20px 12px}
-/* The cards take the label's margin now. Nothing runs off the edge any more —
-   when this was a sideways rail the covers were meant to bleed, so the strip
-   was laid out flush and only the eyebrow was inset. */
-.rp .rp-secs > .carousel-wrap .carousel{padding:0 20px}
+/* The wrap is already flush to both edges here, so the rail has nothing to
+   bleed out of — it only insets to the section's own 20px, which is where the
+   eyebrow above it starts. */
+.rp .rp-secs > .carousel-wrap .carousel{margin:0;padding:0 20px 10px}
 .rp .rp-secs > .upsell{border:0}
 /* A dot and a quiet grey label. It names the section; it is not the headline. */
 /* The eyebrow carries a glyph now rather than a dot. Fifteen sections is past
@@ -2316,12 +2409,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tagged p{margin:10px 0 0;font:400 16px/24px var(--sans);color:var(--g600)}
 .carousel-wrap{padding:8px 0 0}
 .carousel-wrap .lbl{padding:0 0 12px;margin:0}
-/* A stack, not a scroller. There are only ever two other reports, so a
-   sideways rail was a gesture that led to nothing — and at two per row each
-   card got 159px, which is narrower than the titles these books have. Down the
-   page they get the whole column, and nothing is hidden off the edge. */
-.carousel{display:flex;flex-direction:column;gap:20px;
-  overflow:visible;margin:0;padding:0}
+/* A sideways rail, on every surface that pitches a report. The stack it
+   replaced gave each book the full column, but it also gave the pitch the
+   weight of the page it was sitting at the bottom of: three full-width rows of
+   cover, title, rating, price and button read as the page's own content rather
+   than as an aside. A rail is one gesture, one height, and the same shape
+   wherever she meets it — the report page, the end of a bought report, and the
+   empty shelf.
+   `--crg` is the host's own side gutter: the rail bleeds out of it by that much
+   and pads back in by the same, so the first cover starts on the page's text
+   edge and the last one runs off the screen rather than stopping short of it. */
+.carousel{--crg:16px;display:flex;flex-direction:row;gap:14px;
+  margin:0 calc(var(--crg) * -1);padding:2px var(--crg) 10px;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
 /* Figma 3169:202620 — 159px card, 16px corners, g200 hairline, 12px padding,
    8px between rows. Each upsell gets the same cover, price pattern and button
    as the report being sold above it; a title and a bare ₹49 gave the reader
@@ -2330,38 +2432,26 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the title, the rating and the price stacked under it — the hairline and the
    12px of padding only shrank the one thing that sells a book, which is the
    book. Everything below still starts on the cover's own left edge. */
-.carousel .pcard{width:100%;background:none;
-  border:0;border-radius:0;padding:0;
-  display:flex;align-items:flex-start;gap:14px;text-align:left}
-/* The column beside the cover. `min-width:0` is what lets the long titles wrap
-   instead of forcing the row wider than the screen — without it the flex item
-   sizes to its longest word and the cover gets squeezed. */
-.carousel .pcard .pc-txt{flex:1;min-width:0;align-self:stretch;
+.carousel .pcard{flex:none;width:148px;background:none;
+  border:0;border-radius:0;padding:0;scroll-snap-align:start;
+  display:flex;flex-direction:column;align-items:stretch;gap:12px;text-align:left}
+/* The column under the cover. `min-width:0` is what lets the long titles wrap
+   instead of forcing the card wider than its track. */
+.carousel .pcard .pc-txt{flex:1 1 auto;min-width:0;
   display:flex;flex-direction:column;align-items:stretch;gap:6px}
-/* 118x154, up from 76x99. With the card gone there is no padding to fit inside
-   and the cover can take the full column, which is what the board does — at 76
-   the artwork was a stamp and the title was doing the recognising. Left, not
-   centred: the title, the rating, the price and the button underneath all
-   start on the same edge, and a book floating in the middle of them was the
-   only thing on the card lined up with nothing. Both upsells are carousels —
-   the one on the report page and the one ending a bought report — so this
-   lands on both. */
-/* 177, not 154. The covers are 400x600 and the face paints them with
-   `cover`, so a box at 0.77 was cutting a sixth of the painting off the top
-   and bottom — on Career & Money that took the title band with it. 118/177 is
-   the artwork's own 2:3, so nothing is cropped and the extra height is the
-   book standing taller rather than more card. */
-/* 88x132, down from 96x144 and 118x177 before that. Still the artwork's own
-   2:3, so nothing is cropped; smaller because the cover no longer carries the
-   card on its own — it has a title, a rating and a price beside it at full
-   width now rather than squeezed underneath.
-   The height is also what sets the hole above the price. The foot is pinned to
-   the bottom by `margin-top:auto`, so the column's spare room is the gap, and
-   the column is as tall as the cover: 12px off the cover is 12px off the gap,
-   and the price row still lands on the book's own baseline. Taking it out of
-   the margin instead would have unpinned them. */
-.carousel .pcard .bkt,.carousel .pcard .bk3{flex:none;align-self:flex-start;margin:0;
-  width:88px;height:132px;--bw:88px;--bh:132px}
+/* 104x156, the artwork's own 2:3 so the 400x600 cover is not cropped by the
+   `cover` paint. Centred over its own column: on the rail the cover is the
+   width of the card rather than a thumbnail beside it, so it can be bigger
+   than the 88 it was in the stack even though the card is half as wide. */
+.carousel .pcard .bkt,.carousel .pcard .bk3{flex:none;align-self:center;margin:0;
+  width:104px;height:156px;--bw:104px;--bh:156px}
+/* Price over button, not beside it. The row layout belongs to a full-width
+   card; in 148px the ₹49 and the Buy now collided. `margin-top:auto` still
+   pins the pair to the foot, so a one-line title and a two-line one end level. */
+.carousel .pcard .pc-foot{flex-direction:column;align-items:stretch;gap:8px;
+  margin-top:auto}
+.carousel .pcard .pc-pr{justify-content:flex-start;margin-right:0}
+.carousel .pcard .pc-btn{justify-content:center;width:100%}
 /* The name of the report is the strongest thing on the card. At 400/16 in g700
    it weighed the same as its own one-line description, so the pair read as two
    sentences rather than as a title and a subtitle. */

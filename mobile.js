@@ -38,9 +38,14 @@
     drawer.setAttribute('aria-hidden', 'true');
     setTimeout(function () { scrim.hidden = true; }, 240); }
 
-  // Capture, so this runs before app.js's own delegated click handler.
+  /* The hamburger belongs to the app now - it opens the app's own menu screen,
+     where My Reports lives. The demo switcher it used to open is still here and
+     still the only way to change day or touchpoint on a phone, so it keeps a
+     trigger: the last row of that menu. Taking the demo's controls away to make
+     room for the product's would have made the prototype undriveable on the
+     device it is meant to be shown on. */
   document.addEventListener('click', function (e) {
-    if (e.target.closest('.js-ham')) { e.stopPropagation(); e.preventDefault(); open(); }
+    if (e.target.closest('#drDemo')) { e.preventDefault(); open(); }
   }, true);
   scrim.addEventListener('click', close);
   $('drClose').addEventListener('click', close);

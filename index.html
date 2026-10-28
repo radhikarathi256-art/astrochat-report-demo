@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=20261028120337">
+<link rel="manifest" href="manifest.webmanifest?v=20261028122001">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261028120337">
-<link rel="stylesheet" href="mobile.css?v=20261028120337">
+<link rel="stylesheet" href="styles.css?v=20261028122001">
+<link rel="stylesheet" href="mobile.css?v=20261028122001">
 </head>
 <body>
 
@@ -135,7 +135,7 @@
     <!-- ===================== R.1 · Today · reply + report ===================== -->
     <section class="screen on" id="today-a" data-screen="today-a">
       <header class="head hero-head">
-        <button class="ic-btn js-ham" type="button" aria-label="Demo menu">
+        <button class="ic-btn" type="button" data-go="menu" aria-label="Menu">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none"><path d="M1.14258 13.7139C0.511589 13.7141 0 14.2264 0 14.8574C0.000150681 15.4883 0.511681 15.9998 1.14258 16H18.2861C18.9171 15.9998 19.4286 15.4884 19.4287 14.8574C19.4287 14.2263 18.9172 13.714 18.2861 13.7139H1.14258ZM1.14258 6.85645C0.511681 6.85667 0.000150681 7.36908 0 8C0.000150681 8.63091 0.511681 9.14235 1.14258 9.14258H18.2861C18.9171 9.14243 19.4286 8.63096 19.4287 8C19.4286 7.36904 18.9171 6.8566 18.2861 6.85645H1.14258ZM1.14258 0C0.511589 0.000225688 0 0.512511 0 1.14355C0.000377655 1.77428 0.511822 2.28591 1.14258 2.28613H18.2861C18.917 2.28598 19.4283 1.77432 19.4287 1.14355C19.4287 0.512465 18.9172 0.000150794 18.2861 0H1.14258Z" fill="#1D2939"/></svg>
         </button>
         <div class="head-name"><small>Namaste</small><b>Mansi</b></div>
@@ -260,6 +260,20 @@
           </div>
           </section>
         </div>
+        <!-- Owners only, and deliberately the quietest thing on the page. The
+             report she has paid for lives in a menu she has no reason to open,
+             so Today owes her one line at the bottom that says where it went.
+             Any louder and it would be Today selling her something she has
+             already bought. -->
+        <button class="my-strip" type="button" id="myStrip" data-go="mine" hidden>
+          <i aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4.6h5.4c1.3 0 2.1.8 2.1 2.1V19c0-1-.8-1.8-1.8-1.8H4zM20 4.6h-5.4c-1.3 0-2.1.8-2.1 2.1V19c0-1 .8-1.8 1.8-1.8H20z"/>
+            </svg>
+          </i>
+          <span id="myStripTx"></span>
+          <em aria-hidden="true">›</em>
+        </button>
         <div class="pad-nav"></div>
       </div>
 
@@ -610,7 +624,7 @@
     <!-- ===================== R.5 / R.6 · Timeline ===================== -->
     <section class="screen" id="timeline" data-screen="timeline">
       <header class="head compact">
-        <button class="ic-btn js-ham" type="button" aria-label="Demo menu">
+        <button class="ic-btn" type="button" data-go="menu" aria-label="Menu">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none"><path d="M1.14258 13.7139C0.511589 13.7141 0 14.2264 0 14.8574C0.000150681 15.4883 0.511681 15.9998 1.14258 16H18.2861C18.9171 15.9998 19.4286 15.4884 19.4287 14.8574C19.4287 14.2263 18.9172 13.714 18.2861 13.7139H1.14258ZM1.14258 6.85645C0.511681 6.85667 0.000150681 7.36908 0 8C0.000150681 8.63091 0.511681 9.14235 1.14258 9.14258H18.2861C18.9171 9.14243 19.4286 8.63096 19.4287 8C19.4286 7.36904 18.9171 6.8566 18.2861 6.85645H1.14258ZM1.14258 0C0.511589 0.000225688 0 0.512511 0 1.14355C0.000377655 1.77428 0.511822 2.28591 1.14258 2.28613H18.2861C18.917 2.28598 19.4283 1.77432 19.4287 1.14355C19.4287 0.512465 18.9172 0.000150794 18.2861 0H1.14258Z" fill="#1D2939"/></svg>
         </button>
         <div class="head-name"><small>Namaste</small><b>Mansi</b></div>
@@ -819,6 +833,55 @@
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10h13m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
+      </div>
+    </section>
+
+    <!-- ===================== M.1 · App menu =====================
+         The real hamburger, not the demo one — LxCKwlbqHUN45c7CxFAWov
+         1418:17033. Everything here except My Reports and the demo row is the
+         live app's own menu, left inert: the point of drawing it in full is
+         that My Reports has to look like one row among the eight she already
+         knows, and a two-item menu would not have told us whether it does. -->
+    <section class="screen menu-scr" id="menu" data-screen="menu">
+      <header class="mn-head">
+        <span class="mn-who"><b>Hello, Mansi</b><small>+91 98670 82142</small></span>
+        <button class="ic-btn" type="button" data-back aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4l12 12M16 4L4 16" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+      <div class="scroll" data-scroll>
+        <ul class="mn-list" id="mnList"></ul>
+        <!-- The demo's own controls, kept reachable now that the hamburger
+             above belongs to the app. On a phone this is the only way to change
+             day or touchpoint, so it cannot simply be dropped. -->
+        <button class="mn-demo" type="button" id="drDemo">Demo controls</button>
+        <button class="mn-out" type="button" data-toast="Logout is not part of this demo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5H8a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h6"/><path d="M11 12h10m0 0-3.2-3.2M21 12l-3.2 3.2"/></svg>
+          Logout</button>
+        <div class="mn-foot">
+          <p>Contact us:<br><a href="#" onclick="return false">help@astrochat.com</a></p>
+          <p class="mn-links"><a href="#" onclick="return false">Terms &amp; Conditions</a><a href="#" onclick="return false">Privacy Policy</a></p>
+          <p class="mn-ver">Version 9.36.2</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== M.2 · My Reports =====================
+         Purchased only. A shelf that mixes bought and unbought is a shop with
+         her name on it, and then "My Reports" means nothing. Empty, it says so
+         and puts the three on one horizontal strip - an empty page that only
+         apologises is a dead end. -->
+    <section class="screen" id="mine" data-screen="mine">
+      <header class="topnav">
+        <button class="ic-btn" type="button" data-back aria-label="Back">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2>My Reports</h2>
+        <span class="topnav-pad"></span>
+      </header>
+      <div class="scroll" data-scroll>
+        <div id="mineBody"></div>
+        <div class="pad-nav"></div>
       </div>
     </section>
 
@@ -1037,8 +1100,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=20261028120337"></script>
-<script src="app.js?v=20261028120337"></script>
-<script src="mobile.js?v=20261028120337"></script>
+<script src="data.js?v=20261028122001"></script>
+<script src="app.js?v=20261028122001"></script>
+<script src="mobile.js?v=20261028122001"></script>
 </body>
 </html>

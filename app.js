@@ -792,6 +792,10 @@ function onEnter(id) {
   if (id === 'read') { startAsk(); } else { stopAsk(); }
   // Pay is a sheet, not a screen, so leaving any screen cancels a pay in flight.
   stopPay();
+  // Both are built from what she owns, which changes under them, so they are
+  // painted on the way in rather than kept in step from every pay path.
+  if (id === 'menu') renderMenu();
+  if (id === 'mine') renderMine();
   if (id === 'timeline' && !state.paid) return;
 }
 
@@ -1264,8 +1268,9 @@ function renderRead() {
       // reports, then the chat where the questions it raised get spent.
       '<div class="carousel-wrap">' +
         '<p class="lbl">MORE ON YOUR CHART</p>' +
-        // Two cards, so they split the row the way the sell page's do rather
-        // than sitting at a fixed width with nothing to scroll to.
+        // The same rail as the sell page's and the empty shelf's. Two cards
+        // here rather than three, so nothing scrolls - but the shape she
+        // learned on the other two surfaces is the shape she meets again.
         '<div class="carousel fill">' +
           REPORTS.filter(function (x) { return x.id !== state.pick; })
             .map(upsellCard).join('') +
@@ -1558,6 +1563,106 @@ function stopPay() {
   if (btn) btn.classList.remove('pressed', 'busy');
 }
 
+/* --------------------------------------------------------------- app menu
+   The real hamburger, drawn from LxCKwlbqHUN45c7CxFAWov 1418:17033. Eight of
+   these nine rows are the live app's and stay inert; the ninth is the one this
+   work adds. It is drawn in full rather than as a two-item stub because the
+   only question worth asking of My Reports is whether it reads as a normal
+   part of the menu she already has, and a stub cannot answer that.
+
+   It sits second, under Chat History. Both are things of hers, so they belong
+   together, and the top of the list is where she looks for her own stuff.
+   First would have read as a banner for a feature rather than as a row. */
+var BOOK_IC = '<path d="M4 4.6h5.4c1.3 0 2.1.8 2.1 2.1V19c0-1-.8-1.8-1.8-1.8H4zM20 4.6h-5.4c-1.3 0-2.1.8-2.1 2.1V19c0-1 .8-1.8 1.8-1.8H20z"/>';
+var MENU = [
+  { l: 'Chat History', nav: 'timeline',
+    d: '<path d="M12 20.6a8.6 8.6 0 1 0-7.5-4.4L3.4 20.6l4.4-1.1a8.6 8.6 0 0 0 4.2 1.1Z"/><path d="M8.4 12h.01M12 12h.01M15.6 12h.01"/>' },
+  { l: 'My Reports', go: 'mine', d: BOOK_IC },
+  { l: 'Wallet Transactions', k: 'case' },
+  { l: 'My Astrologers',      k: 'people' },
+  { l: 'Kundali Report',      k: 'chart' },
+  { l: 'Kundali Matchmaking', k: 'rings' },
+  { l: 'Horoscope',           k: 'sun' },
+  { l: 'Panchang',            k: 'cal' },
+  { l: 'Free Tarot',          k: 'spark', tag: 'New!' }
+];
+function renderMenu() {
+  var n = state.owned.length;
+  $('#mnList').innerHTML = MENU.map(function (m) {
+    // Only the rows that go somewhere get a destination. The rest carry the
+    // demo's standard refusal, which is honest about why nothing happened.
+    var act = m.go  ? 'data-go="' + m.go + '"'
+            : m.nav ? 'data-nav="' + m.nav + '"'
+            : 'data-toast="' + esc(m.l) + ' is not part of this demo"';
+    return '<li><button class="mn-row" type="button" ' + act + '>' +
+      '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
+        'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
+        'stroke-linejoin="round">' + (m.d || LI_ICON[m.k]) + '</svg></i>' +
+      '<b>' + esc(m.l) + '</b>' +
+      // The count, only once there is one. A "0" next to My Reports would be
+      // the menu telling her she has nothing every time she opens it.
+      (m.go === 'mine' && n ? '<span class="mn-n">' + n + '</span>' : '') +
+      (m.tag ? '<span class="mn-tag">' + esc(m.tag) + '</span>' : '') +
+      '<em aria-hidden="true">\u203a</em>' +
+    '</button></li>';
+  }).join('');
+}
+
+/* ----------------------------------------------------------- my reports
+   Purchased only, newest first. The record to read is `buys` rather than
+   `owned`: a quarterly report bought twice is two things she can open, and a
+   shelf that silently collapses them is a shelf that lost one.
+
+   Empty, it is still a page with something on it. The three reports go on the
+   same horizontal strip the detail page uses for its upsells - an empty state
+   whose only content is an apology sends her back to where she came from with
+   nothing, and this is a page she reached by looking for something to read. */
+function renderMine() {
+  var host = $('#mineBody');
+  if (!state.buys.length) {
+    host.innerHTML =
+      '<div class="mine-empty">' +
+        '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
+          'stroke="currentColor" stroke-width="1.4" stroke-linecap="round" ' +
+          'stroke-linejoin="round">' + BOOK_IC + '</svg></i>' +
+        '<b>Nothing on your shelf yet</b>' +
+        '<span>Anything you buy opens here, in your language, forever.</span>' +
+      '</div>' +
+      '<div class="r2-block mine-up">' +
+        '<h2 class="r2-h">Written On Your Chart</h2>' +
+        '<div class="carousel fill">' + REPORTS.map(upsellCard).join('') + '</div>' +
+      '</div>';
+    return;
+  }
+  host.innerHTML = '<div class="mine-list">' + state.buys.map(function (b) {
+    var r = reportById(b.id);
+    return '<button class="mine-row" type="button" data-open-rep="' + r.id + '">' +
+      book3d(r) +
+      '<span class="mine-tx">' +
+        '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+        // The edition for the one report that has them, the time for the rest.
+        // Either way the line answers "which of these is which", which is the
+        // only thing a shelf of similar-looking books has to answer.
+        '<small>' + esc(b.ed || ('Bought ' + b.time)) + '</small>' +
+        '<em>' + r.pages + ' pages \u00b7 ' + r.learn.length + ' questions answered</em>' +
+      '</span>' +
+      '<i class="mine-chev" aria-hidden="true">\u203a</i>' +
+    '</button>';
+  }).join('') + '</div>' +
+  '<p class="mine-note">Every report stays here in the language you chose and in English.</p>';
+}
+
+/* Today's one line for owners. Hidden until there is something behind it, so
+   it is never a door onto an empty room. */
+function renderMyStrip() {
+  var n = state.owned.length;
+  $('#myStrip').hidden = !n;
+  if (!n) return;
+  $('#myStripTx').textContent = n === 1
+    ? 'Your report is in My Reports'
+    : 'Your ' + n + ' reports are in My Reports';
+}
+
 /* ------------------------------------------------------------- what she owns
    `owned` answers "can she read it", which is what the buttons need; `buys` is
    the record, one entry per payment, so a quarterly report bought twice leaves
@@ -1587,7 +1692,7 @@ function pay() {
   paintBought();
   // Every sell surface retires into the follow-up: read, chat, remedies, other reports.
   renderDayToday(); renderChat(); renderHistCard(); renderTpTabs(); renderRead();
-  renderReport(); renderBuys();
+  renderReport(); renderBuys(); renderMyStrip();
   toast('Payment successful', 'success');
   // Matching needs a second chart before anything can be written, so it stops
   // here for his details. The other two are read off a chart the app already
@@ -2858,6 +2963,7 @@ function restart() {
   renderTpTabs();
   renderHistCard();
   renderBuys();
+  renderMyStrip();
   armIntroSheet();
   resetTimeline();
   applyPaidTimeline();
