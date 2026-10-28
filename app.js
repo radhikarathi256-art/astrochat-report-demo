@@ -598,7 +598,13 @@ var state = {
      in - which is the right order for sunk cost, where paying first and then
      being given homework is a bill after the bill. */
   matched: false,
-  boy: 'Rahul',
+  /* Who the match was actually run against, and who the chat guessed it would
+     be. Two fields, not one, because the guess has to survive her overruling
+     it: if she matches against someone else and then comes back to redo it,
+     the form should still offer the name Hemali heard rather than the name
+     that was just rejected. */
+  boy: '',
+  suggested: 'Rahul',
   /* The morning's report is waiting in History — the dot on the nav says so,
      and visiting History clears it. */
   histDot: true,
@@ -1454,8 +1460,24 @@ function pay() {
    price than after it. So the gate sits here rather than in six places. */
 function startBuy() {
   var r = reportById(state.pick);
-  if (r.needsMatch && !state.matched) { show('match', 'fade'); return; }
+  if (r.needsMatch && !state.matched) { openMatch(state.suggested); return; }
   openPay();
+}
+
+/* The form, opened either with the chat's guess in it or empty. `name` is a
+   suggestion and nothing more: it is the man she happened to mention to
+   Hemali, which is a good first guess and a bad assumption, because the match
+   a family asks for is often against somebody else entirely. So it arrives
+   typed in, labelled as a guess, and deletable like any other value. */
+function openMatch(name) {
+  ['bName', 'bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+  clearMatchErr();
+  $('#bName').value = name || '';
+  var hint = $('#mtHint');
+  hint.hidden = !name;
+  hint.textContent = 'We have filled in ' + name + ' from your chat with Hemali. ' +
+    'Change it if you meant someone else.';
+  show('match', 'fade');
 }
 
 /* The making run, pulled out of pay() so the matching form can call it when it
@@ -2211,6 +2233,12 @@ function renderReport() {
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
   if (m) $('#r2Title').textContent = m.tl(state.boy);
+  // Offered for as long as the match is unpaid. Once the report has been
+  // bought it is a document about two named people and rerunning it is not a
+  // correction any more, so the way out goes.
+  var redo = $('#r2Redo');
+  redo.hidden = !m || owns(r.id);
+  if (m) redo.textContent = 'Not ' + state.boy + '? Match with someone else';
   $('#r2Lead').textContent = m ? m.lead(state.boy)
     : r.s + '. Astro Hemali makes it from your birth chart.';
   // Two kinds of chip, drawn as one until now. The first are what only this
@@ -2469,7 +2497,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#r2Redo,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -2496,6 +2524,9 @@ document.addEventListener('click', function (e) {
   }
 
   if (t.classList.contains('rsc-go')) { startBuy(); return; }
+  // Back to an empty form carrying the chat's guess again, not the name she
+  // is in the middle of replacing.
+  if (t.id === 'r2Redo') { state.matched = false; openMatch(state.suggested); return; }
 
   if (t.id === 'mtGo') { submitMatch(); return; }
 

@@ -1606,6 +1606,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:0 24px;height:44px;font:600 14px/42px var(--sans);color:var(--brand);
   text-align:center}
 .r2-samp:active{background:var(--brand50)}
+/* A text link, not a second outlined button. There is already one of those
+   underneath it for the sample, and two bordered boxes in a column would make
+   correcting the name look as important as reading the report. Underlined
+   rather than coloured, because it belongs to the result above it and not to
+   the brand. */
+.r2-redo{display:block;margin:12px auto 0;padding:4px 6px;cursor:pointer;
+  border:0;background:none;text-decoration:underline;text-underline-offset:3px;
+  font:500 14px/20px var(--sans);color:var(--g600)}
+.r2-redo:active{color:var(--g900)}
 
 /* ---------- Sticky buy bar · 3111:200974 ----------
    White, not a gradient. Measured off the board: 10/0/12/0 with a 10px gap,
@@ -2422,6 +2431,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .mt-h{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;
   font:700 18px/26px var(--sans);color:var(--g900)}
 .mt-h + .mt-card{margin-bottom:26px}
+/* Sits between the heading and the card, so it is read before the name it is
+   explaining rather than found underneath it. */
+.mt-hint{margin:-4px 0 10px;font:400 13px/19px var(--sans);color:var(--g500)}
+.mt-hint + .mt-card{margin-bottom:26px}
 /* Where her half came from, said once and quietly. Without it a form that is
    already filled in looks like someone else's data. */
 .mt-h small{font:500 12px/18px var(--sans);color:var(--g500)}
