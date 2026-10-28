@@ -265,11 +265,20 @@ var REPORTS = [
       { s: 4, n: 'Pooja N., Bhopal',  q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' },
       { s: 5, n: 'Isha G., Lucknow',  q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
     ],
-    /* Twelve, and the first one is the score. The old eight opened on "Am I
-       Manglik" — a dosha check — which is the thing she is afraid of rather
-       than the thing she is buying, and it buried the guna count at number
-       seven. These lead with the number, then break compatibility into the
-       four parts people actually argue about, then name the three doshas
+    /* Twelve, and the top three are score, verdict, breakdown — in that order,
+       because the chat card only shows three and those three have to answer
+       "what do I get" on their own. They used to be score-and-what-it-means
+       followed by how-many-gunas-match, which is one fact written twice: both
+       lines are the number, so the card looked like it was padding, and
+       neither line said the thing she actually wants, which is whether this
+       marriage works. That is its own line now and it is second, between the
+       figure and the gunas that produced it.
+
+       The old eight opened on "Am I Manglik" — a dosha check — which is the
+       thing she is afraid of rather than the thing she is buying, and it
+       buried the guna count at number seven. These lead with the number, then
+       break compatibility into the parts people actually argue about, then
+       name the three doshas
        instead of saying "which doshas you have", because a woman who has been
        told she is Manglik is scanning for that word and will not find it in
        an abstraction.
@@ -279,21 +288,21 @@ var REPORTS = [
        "12 questions answered". Eight lines made the longest book look like the
        thinnest. */
     learn: [
-      'Your real compatibility score, and what it means for the two of you',
-      'How many of the 36 gunas match, and which ones do not',
+      'Your guna match score, out of 36',
+      'Whether the two of you are actually compatible, or only on paper',
+      'Which of the 36 gunas match, and which do not',
       'How well you match on temperament and daily life',
       'How you match on money, spending and saving',
       'What the two charts say about closeness and intimacy',
       'How the two families are likely to get along',
       'Whether you are Manglik, and how strongly',
-      'Nadi, Kaal Sarp and the other doshas in both charts',
-      'Whether those doshas can be cancelled, and what it takes',
+      'Nadi, Kaal Sarp and the other doshas, and whether they cancel',
       'When the marriage happens, and the best window for it',
       'Whether money changes for you after marriage',
       'The specific remedies that strengthen this match'
     ],
-    licons: ['chart', 'list', 'people', 'coin', 'rings', 'home',
-             'spark', 'block', 'shield', 'cal', 'arrow', 'beads'],
+    licons: ['chart', 'rings', 'list', 'people', 'coin', 'sun',
+             'home', 'spark', 'block', 'cal', 'arrow', 'beads'],
     /* The trigger for this one is a person, not a planet. Kundli Milan is the
        only report of the three that needs a second chart, so it is only ever
        pitched to someone who has named him in the chat - and saying so out loud
