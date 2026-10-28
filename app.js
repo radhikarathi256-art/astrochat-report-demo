@@ -2466,6 +2466,21 @@ function setLead(id) {
   restart();
 }
 
+/* A demo control, not a feature. The wallet is normally whatever the daily
+   reward has added up to by the day being shown, so there is no way to stand
+   on the pay sheet and watch the three endings it has - pays the whole bill,
+   pays part of it, pays none of it - without replaying five days three times.
+   Set in place rather than through restart(), because the point of it is to
+   change the number on a sheet that is already open. */
+function setWallet(n) {
+  state.wallet = n;
+  $$('.switcher [data-wset]').forEach(function (b) {
+    b.classList.toggle('on', +b.getAttribute('data-wset') === n);
+  });
+  paintWallet();
+  paintPaySum();
+}
+
 /* ---------------------------------------------------------------- reset */
 function restart() {
   clearTimers();
@@ -2473,6 +2488,8 @@ function restart() {
   hidePush();
   state.answered = false;
   state.wallet = WALLET_AT[state.day];
+  // The day owns the balance again, so the override stops being highlighted.
+  $$('.switcher [data-wset]').forEach(function (b) { b.classList.remove('on'); });
   state.lang = 'en';
   state.langFrom = 'sample';
   state.paid = false;
@@ -2530,7 +2547,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -2633,6 +2650,7 @@ document.addEventListener('click', function (e) {
 
   if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day')); return; }
   if (t.hasAttribute('data-lead')) { setLead(t.getAttribute('data-lead')); return; }
+  if (t.hasAttribute('data-wset')) { setWallet(+t.getAttribute('data-wset')); return; }
 
   // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
   // on the daily reward board. Your Experts stays on screen above it.

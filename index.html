@@ -18,7 +18,7 @@
      The manifest deliberately carries NO theme_color: that key, not the
      manifest itself, is what makes iOS 16.4+ paint its own opaque status bar
      and ignore black-translucent. -->
-<link rel="manifest" href="manifest.webmanifest?v=20261028101616">
+<link rel="manifest" href="manifest.webmanifest?v=20261028102802">
 <!-- PNG, not SVG. iOS ignores an SVG apple-touch-icon and SVG manifest icons
      outright, and an un-iconable manifest is one iOS can decline — dropping the
      app back onto the legacy apple-* path, which is the path that hands it a
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Infant:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261028101616">
-<link rel="stylesheet" href="mobile.css?v=20261028101616">
+<link rel="stylesheet" href="styles.css?v=20261028102802">
+<link rel="stylesheet" href="mobile.css?v=20261028102802">
 </head>
 <body>
 
@@ -59,6 +59,18 @@
     <button type="button" data-lead="partner" class="on">Partner</button>
     <button type="button" data-lead="marriage">Kundli Milan</button>
     <button type="button" data-lead="career">Career</button>
+  </div>
+  <hr>
+  <!-- The bill is ₹49 + ₹9 GST = ₹58, and the wallet comes off it, so three
+       balances are three different last lines on the pay sheet: pays the lot,
+       pays part, pays nothing. The daily reward normally sets this per day,
+       which is why the amounts here are the ones that sit either side of ₹58
+       rather than round numbers. Picking a day puts it back. -->
+  <b class="sw-lbl">Wallet balance · pay sheet</b>
+  <div class="sw-lead">
+    <button type="button" data-wset="0">₹0</button>
+    <button type="button" data-wset="29">₹29</button>
+    <button type="button" data-wset="200">₹200</button>
   </div>
   <hr>
   <button type="button" id="restart" class="ghost">Restart demo</button>
@@ -1005,8 +1017,8 @@
 </div><!-- /.phone -->
 </main>
 
-<script src="data.js?v=20261028101616"></script>
-<script src="app.js?v=20261028101616"></script>
-<script src="mobile.js?v=20261028101616"></script>
+<script src="data.js?v=20261028102802"></script>
+<script src="app.js?v=20261028102802"></script>
+<script src="mobile.js?v=20261028102802"></script>
 </body>
 </html>
