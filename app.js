@@ -401,7 +401,19 @@ var REPORTS = [
        used to wear belonged to the book, which is already in the picture a few
        pixels to the right. Two different warms touching looked like a mistake. */
     tint: 'linear-gradient(94deg,#3E2211 0%,#633618 40%,#A8835F 74%,#fff 100%)',
-    push: 'Mansi, I have both charts open. Your 36-guna score is ready \u2014 Kundli Milan is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    /* Two states, because a push that says the score is ready before she has
+       given his birth details is a lie she can check in one tap - and the tap
+       lands on an empty ring. Before the form the notification sells the free
+       match; after it, it sells the eight points the match could not account
+       for. Neither says report: this is the one offer where the thing she came
+       for is a number, and a price next to a product name is what she swipes
+       away. The money only turns up once there is a 28 to spend it on. */
+    push: 'Mansi, give me his birth details and I will match all 36 gunas for the two of you \u2014 free \u2728',
+    pushDone: 'Mansi, all 8 of your missing gunas are Nadi. The full reading of your 28 is \u20b949 today instead of \u20b9499 \u2728',
+    /* The toast is four words wide, so it gets the number and the price and
+       nothing else. */
+    toast: 'Hemali can match your 36 gunas \u00b7 Free',
+    toastDone: 'Hemali has read your 28 of 36 \u00b7 \u20b949',
     tkt: { t: 'Your Kundli Milan is ready', s: 'The 36-guna score for the two of you' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
@@ -771,12 +783,26 @@ function toast(msg, kind) {
    stops being a nudge. */
 function repToastDays() { return state.day === 1 || state.day === 3; }
 
+/* The two one-line surfaces that reach her outside the app. Both read the same
+   pair of fields, so a report that has something different to say before and
+   after the match says it in both places or in neither, and the two can never
+   drift apart. Partner and Career have one state and keep the generic line. */
+function toastLine() {
+  var r = leadReport();
+  if (state.matched && r.toastDone) return r.toastDone;
+  if (!state.matched && r.toast) return r.toast;
+  return 'Hemali made your ' + r.t + ' Report \u00b7 \u20b949';
+}
+function pushLine() {
+  var r = leadReport();
+  return (state.matched && r.pushDone) ? r.pushDone : r.push;
+}
+
 function showRepToast() {
   if (state.paid || state.repToastSeen || !repToastDays()) return;
   var el = $('#repToast');
   if (!el) return;
-  var r = leadReport();
-  $('#repToastLine').textContent = 'Hemali made your ' + r.t + ' Report · ₹49';
+  $('#repToastLine').textContent = toastLine();
   state.repToastSeen = true;
   reveal(el);
 }
@@ -2697,7 +2723,7 @@ function restart() {
 /* ---------------------------------------------------------------- push note */
 function showPush() {
   var el = $('#pushNote');
-  $('#pushText').textContent = leadReport().push;
+  $('#pushText').textContent = pushLine();
   el.hidden = false;
   requestAnimationFrame(function () { el.classList.add('on'); });
   later(hidePush, 6000);
