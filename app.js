@@ -105,7 +105,7 @@ var REPORTS = [
     // `tl` is the sell page's own headline, Figma 3186:204216 — it names both
     // halves of what the report answers, which "Your Partner Prediction" does
     // not. Reports without one fall back to "Your " + t.
-    tl: 'Your Future Partner & Marriage Prediction',
+    tl: 'Your Future Partner & Marriage Prediction Report',
     why: 'Learn how Rahu is blocking you from meeting him',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // Partner is the one report whose art is photographed rather than painted:
@@ -232,7 +232,7 @@ var REPORTS = [
        if asked what she wants from it, so the last line before the button
        names it and says it is hers. Out of 36 is in the sentence because 28
        means nothing without the scale. */
-    why: 'Get your 36-guna compatibility score with him',
+    why: 'Add both birth details and get your 36-guna compatibility score',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
@@ -1373,7 +1373,7 @@ function openPay() {
 
   // The sheet names the purchase. `tl` is the long sell-page headline, so the
   // title here is the same one she tapped Buy Now under.
-  $('#paysName').textContent = r.tl || 'Your ' + r.t;
+  $('#paysName').textContent = r.tl || 'Your ' + r.t + ' Report';
   $('#paysMeta').textContent = r.pages + ' pages · One-time payment · Made for your chart';
 
   /* The score strip. It needs a report that has a matched state and a match
@@ -1541,16 +1541,15 @@ function submitMatch() {
   // forgetting what she just typed.
   state.boy = $('#bName').value.trim().split(' ')[0] || 'him';
   state.matched = true;
-  // Back to the detail page rather than on to a score screen of its own. The
-  // number is not a destination - on a page by itself it is a result she has
-  // finished reading, and the only thing left to do with it is leave. On the
-  // detail page it is the subject the whole page is now about: the same
-  // title, chips, hook and pointer list she saw before, rewritten around her
-  // 28. One page that changes is a stronger argument than two pages where the
-  // first hands off to the second.
+  /* Straight through to the sheet, with the score on it. Sending her back to
+     the detail page first would make her tap Buy on a page that has nothing
+     new on it, which reads as the form having done nothing. The detail page is
+     restored underneath so the back gesture lands somewhere sensible, but what
+     she sees is the number she just earned sitting above the price. */
   state.pick = 'marriage';
   renderReport();
   show('report', 'fade');
+  later(openPay, 260);
 }
 
 /* ------------------------------------------------------------- journey */
@@ -1590,7 +1589,7 @@ function renderBuys() {
         '<div class="rep-top">' + book3d(r) +
           '<div>' +
             '<p class="eyebrow">Made by Astro Hemali for you</p>' +
-            '<b>' + esc(r.t2 || 'Your ' + r.t) + '</b>' +
+            '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
             '<p class="rep-status green">' + (b.ed ? esc(b.ed) : 'Ready to read') + '</p>' +
           '</div>' +
         '</div>' +
@@ -1639,11 +1638,11 @@ function paintHeroVideo(r, src) {
 function paintBought() {
   var r = reportById(state.pick);
   var t = boughtTitle();
-  $('#r2Title').textContent   = r.tl || 'Your ' + t;
-  $('#pushReadyTitle').textContent = 'Your ' + t + ' is ready';
+  $('#r2Title').textContent   = r.tl || 'Your ' + t + ' Report';
+  $('#pushReadyTitle').textContent = 'Your ' + t + ' Report is ready';
   // The timeline card is the one surface with room for the report's full name,
   // and it is the card she taps to read — so it says the whole thing.
-  $('#repTitle').textContent  = r.t2 || 'Your ' + t;
+  $('#repTitle').textContent  = r.t2 || 'Your ' + t + ' Report';
   $('#repThumb').innerHTML    = book3d(r);
   $('#bookTitle').textContent = t;
 }
@@ -1828,7 +1827,7 @@ function upsellCard(x) {
     // their whole title on the jacket — so this card was the one place the
     // artwork said "Your Future Partner" and the line under it said something
     // else. Everywhere else a cover sits beside a name already uses t2.
-    '<b>' + esc(x.t2 || x.t) + '</b>' +
+    '<b>' + esc(x.t2 || x.t + ' Report') + '</b>' +
     // The one number that decides between two books nobody has heard of. The
     // card showed a title, a promise and a price — the same three things on
     // both — so there was nothing on it to choose by.
@@ -1902,7 +1901,7 @@ function offer3Card() {
     // Inline, because the colour belongs to the report rather than to the card
     // and there is exactly one of these on screen at a time.
     '<div class="of3-head" style="background:' + r.tint + '">' +
-      '<div class="of3-ttl">' + esc(r.t2 || r.t) + '</div>' +
+      '<div class="of3-ttl">' + esc(r.t2 || r.t + ' Report') + '</div>' +
       // The green dot is switched off in the frame, and rightly so: it says
       // "live" next to a rating, which is the one thing a rating is not.
       '<div class="of3-badge">' +
@@ -1965,7 +1964,7 @@ function histCard(r) {
     '<div class="hw-bub">' +
       '<div class="hw-row">' +
         '<span class="hw-tx">' +
-          '<b>Mansi, ' + esc(r.t2 || r.t) + '</b>' +
+          '<b>Mansi, ' + esc(r.t2 || r.t + ' Report') + '</b>' +
           '<small>' + r.learn.length + ' questions answered</small>' +
         '</span>' +
         // Shut, with its page block showing on the right — the same object the
@@ -2221,12 +2220,17 @@ function renderPicker() {
    pointers. */
 function renderReport() {
   var r = reportById(state.pick);
-  // Once the second chart is in, this page is about her match rather than
-  // about a book, so the four surfaces that carry the argument - title,
-  // subheader, chips, pointer list - swap to the matched set. Everything else
-  // on the page is the same: the cover, the sample, the reviews and the price
-  // do not change just because we now know his birth time.
-  var m = (r.matched && state.matched) ? r.matched : null;
+  /* Generic, always, including after the match has been run. This page used to
+     rewrite itself around her 28 and it was the wrong place for it: a detail
+     page is the shop window, and a shop window that has already handed over
+     the headline number has nothing left to sell. It is also the one surface
+     she can reach without having said anything to Hemali - from Timeline, from
+     a push, from History - so personalising it meant the app naming a man she
+     had not named to it yet.
+
+     So the number moves to the pay sheet, where it is read with a price next
+     to it, and this page keeps one job: tell her what a milan answers, and
+     point at the form. See `paysGuna` in openPay. */
   // The pick has just changed, so every surface that names the report she is
   // buying — this title included — has to be rewritten with it.
   paintBought();
@@ -2258,14 +2262,12 @@ function renderReport() {
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
-  if (m) $('#r2Title').textContent = m.tl(state.boy);
-  // Offered for as long as the match is unpaid. Once the report has been
-  // bought it is a document about two named people and rerunning it is not a
-  // correction any more, so the way out goes.
-  var redo = $('#r2Redo');
-  redo.hidden = !m || owns(r.id);
-  if (m) redo.textContent = 'Not ' + state.boy + '? Match with someone else';
-  $('#r2Lead').textContent = m ? m.lead(state.boy)
+  /* The one line that changes on this page, and it changes by report and not
+     by state: Kundli Milan needs two charts, so saying so here is the page
+     being honest about what the button is going to ask for rather than a
+     form appearing out of nowhere after the tap. */
+  $('#r2Lead').textContent = r.needsMatch
+    ? r.s + '. Add both sets of birth details and Astro Hemali reads the two charts together.'
     : r.s + '. Astro Hemali makes it from your birth chart.';
   // Two kinds of chip, drawn as one until now. The first are what only this
   // report has; the last three are true of everything we sell. Flat grey pills
@@ -2285,12 +2287,12 @@ function renderReport() {
         CHIP_IC[kind] + '</svg>' + esc(label) + '</span>';
   }
   $('#r2Chips').innerHTML =
-    (m ? m.chips : r.chips).map(function (c) { return chip(c, 'key'); }).join('') +
+    r.chips.map(function (c) { return chip(c, 'key'); }).join('') +
     chip(r.pages + ' pages', 'pages') + chip('Shareable', 'share') + chip('Private', 'lock');
-  var learn  = m ? m.learn  : r.learn;
-  var licons = m ? m.licons : r.licons;
+  var learn  = r.learn;
+  var licons = r.licons;
   $('#r2Learn').innerHTML =
-    '<h2 class="r2-h">' + esc(m ? m.head : 'What You Will Get') + '</h2>' +
+    '<h2 class="r2-h">' + esc(r.needsMatch ? 'What The Milan Answers' : 'What You Will Get') + '</h2>' +
     '<ul class="r2-learn">' +
       learn.map(function (x, i) {
         // Falls back to the tick if a report is ever short an icon key, so a
@@ -2313,7 +2315,7 @@ function renderReport() {
   markSnappedReview($('#r2Revs'));
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
     .map(upsellCard).join('');
-  $('#r2Why').textContent = m ? m.why : r.why;
+  $('#r2Why').textContent = r.why;
   // The board says "Buy Now" and nothing else. The price is already sitting
   // beside the button, so repeating ₹49 inside it only crowds the line.
   // Once it is hers the bar stops being a shop. A price next to a book she has
@@ -2327,7 +2329,11 @@ function renderReport() {
   $('#r2Price').hidden = mine;
   $('#r2Again').hidden = !repeat;
   $('#r2Again').textContent = 'Buy ' + editionLabel(r);
-  $('#r2Cta').textContent = mine ? 'Read Report' : 'Buy Now';
+  /* Buy Now is a lie on a button that opens a form. Matching asks for a second
+     chart first, so the button says so, and the price beside it is the honest
+     version of what the next two taps cost. */
+  $('#r2Cta').textContent = mine ? 'Read Report'
+    : matchFirst(r) ? 'Enter Details \u0026 Get Report' : 'Buy Now';
   $('#r2Cta').classList.toggle('outline', repeat);
   $('#r2Cta').classList.toggle('primary', !repeat);
 }
@@ -2523,7 +2529,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#r2Redo,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -2552,7 +2558,6 @@ document.addEventListener('click', function (e) {
   if (t.classList.contains('rsc-go')) { startBuy(); return; }
   // Back to an empty form carrying the chat's guess again, not the name she
   // is in the middle of replacing.
-  if (t.id === 'r2Redo') { state.matched = false; openMatch(state.suggested); return; }
 
   if (t.id === 'mtGo') { submitMatch(); return; }
 
