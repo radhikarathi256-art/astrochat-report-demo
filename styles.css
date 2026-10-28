@@ -2614,7 +2614,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   box-shadow:0 1px 2px rgba(16,24,40,.06)}
 .pg-dial b{font:700 22px/24px var(--sans);letter-spacing:-.02em;color:var(--brand)}
 .pg-dial small{font:500 10px/14px var(--sans);color:var(--g500)}
-.pg-txt{min-width:0;display:flex;flex-direction:column;gap:2px}
+.pg-txt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+/* The same word, in the same place, in the same colour as the language row's
+   Change three lines below — one affordance taught once. Aligned to the names
+   rather than centred in the block, because it is a control over the line
+   above it and floating it against the two-line reason underneath would make
+   it look like it edits that instead. */
+.pg-edit{flex:none;align-self:flex-start;margin:-2px -4px 0 4px;padding:2px 4px;
+  border:0;background:none;cursor:pointer;
+  font:600 14px/20px var(--sans);color:var(--brand)}
+.pg-edit:active{opacity:.6}
 .pg-txt strong{font:600 14px/20px var(--sans);color:var(--g900)}
 /* The unresolved 8, in two lines. It is the reason she is on this sheet, so it
    gets the room a one-line truncation would take from it. */

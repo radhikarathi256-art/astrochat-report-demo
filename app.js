@@ -1505,7 +1505,13 @@ function pay() {
    price than after it. So the gate sits here rather than in six places. */
 function startBuy() {
   var r = reportById(state.pick);
-  if (r.needsMatch && !owns(r.id)) { openMatch(); return; }
+  /* The form only while there is nothing to show. Once her answers are in,
+     the sheet already carries both names and the score they produced, so
+     reopening eight fields to confirm what is printed two lines above the
+     price is a step that reads as the app not trusting her. The correction
+     she might want is still one tap away - the Edit on the sheet - which is
+     the right weight for something she will almost never do. */
+  if (r.needsMatch && !state.matched) { openMatch(); return; }
   openPay();
 }
 
@@ -2019,7 +2025,13 @@ function histCard(r) {
           '</span>' +
         '</span>' +
       '</div>' +
-      '<button class="hw-go" type="button" data-pick="' + r.id + '">Learn More</button>' +
+      /* Learn More is what a button says when it has nothing to offer. For
+         Kundli Milan there is something free on the other side of this tap -
+         the guna score - and naming it is the difference between an ad and an
+         offer. The other two reports have nothing free to give, so they keep
+         the neutral label rather than borrowing a promise they cannot keep. */
+      '<button class="hw-go" type="button" data-pick="' + r.id + '">' +
+        (matchFirst(r) ? 'Get Free Compatibility Score' : 'Learn More') + '</button>' +
     '</div>' +
   '</div>';
 }
@@ -2369,13 +2381,12 @@ function renderReport() {
      is the other mistake: a button that only promises a form reads as one more
      step before the real one, and she is being asked to pay the price sitting
      next to it. So the button says both, in the order they happen. */
-  /* Enter the first time, Confirm after. The same screen is doing a different
-     job once her answers are in it, and a button still saying Enter would read
-     as the app having lost them. */
+  /* Only while the form is still coming. Once her details are in, the tap
+     goes straight to the sheet and the button is a plain Buy Now again -
+     promising a form she is no longer being shown would be the opposite
+     mistake. */
   $('#r2Cta').textContent = mine ? 'Read Report'
-    : !r.needsMatch ? 'Buy Now'
-    : state.matched ? 'Confirm Details \u0026 Buy Now'
-    : 'Enter Details \u0026 Buy Now';
+    : matchFirst(r) ? 'Enter Details \u0026 Buy Now' : 'Buy Now';
   $('#r2Cta').classList.toggle('outline', repeat);
   $('#r2Cta').classList.toggle('primary', !repeat);
 }
@@ -2588,7 +2599,7 @@ function hidePush() {
 
 /* ---------------------------------------------------------------- wiring */
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
@@ -2615,8 +2626,10 @@ document.addEventListener('click', function (e) {
   }
 
   if (t.classList.contains('rsc-go')) { startBuy(); return; }
-  // Back to an empty form carrying the chat's guess again, not the name she
-  // is in the middle of replacing.
+  /* The sheet goes away before the form arrives. Leaving it open underneath
+     would put a price behind a screen that is free, and submitMatch reopens
+     it anyway once there is a new number to put on it. */
+  if (t.id === 'paysGunaEdit') { closeSheet(); later(openMatch, 240); return; }
 
   if (t.id === 'mtGo') { submitMatch(); return; }
 
