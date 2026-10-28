@@ -187,7 +187,12 @@ var REPORTS = [
        card's white on the right, the same shape for every report - only the hue
        moves, so the card is recognisably the same card and still arrives in the
        colour of the book it is selling. */
-    tint: 'linear-gradient(94deg,#8A4038 0%,#A04F43 40%,#DCA498 74%,#fff 100%)',
+    /* Sampled off r2-hero.mp4, not picked by eye: the film averages #E0AEAB
+       and bottoms out at #7B3B3A, so the card is built from its own darkest
+       value and opens toward its average. Darker than it was, because the
+       title is white and the old mid-tone had it sitting on a tint rather
+       than on ink. */
+    tint: 'linear-gradient(94deg,#5A2B2B 0%,#7B3B3A 40%,#C68E8C 74%,#fff 100%)',
     /* The +15 min notification on day 1. Same three beats as the chat pitch,
        squeezed into one line: why now, what she gets, what it costs. */
     push: 'Mansi, Rahu is in your seventh house. That is the block. Your Partner Prediction is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
@@ -356,7 +361,11 @@ var REPORTS = [
        hero art is warmer than its book - the painting is gold and brown, the
        cover is rose - and the cover is what the card is showing, so the cover
        wins. */
-    tint: 'linear-gradient(94deg,#8E2449 0%,#A33056 40%,#D4859F 74%,#fff 100%)',
+    /* Off hero-marriage.mp4 rather than off the cover. The film is lamplight
+       and brass - average #AD8965, darkest #532E16 - and the rose this card
+       used to wear belonged to the book, which is already in the picture a few
+       pixels to the right. Two different warms touching looked like a mistake. */
+    tint: 'linear-gradient(94deg,#3E2211 0%,#633618 40%,#A8835F 74%,#fff 100%)',
     push: 'Mansi, I have both charts open. Your 36-guna score is ready \u2014 Kundli Milan is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
     tkt: { t: 'Your Kundli Milan is ready', s: 'The 36-guna score for the two of you' },
     /* Gun Milan is the number this report is bought for, so it is the number on
@@ -441,7 +450,10 @@ var REPORTS = [
     /* Amber, off the stairs and the stacked coins in the career painting. The
        warmest of the three, which is right for the only report that is sold on
        a month rather than on a person. */
-    tint: 'linear-gradient(94deg,#8A4E1C 0%,#A5631F 40%,#D9A86B 74%,#fff 100%)',
+    /* Off hero-career.mp4, which is a pale sand #E3D3C5 all the way through.
+       Its own average is far too light to put white type on, so the card takes
+       the hue and drops the value: the same sand, lit from much further away. */
+    tint: 'linear-gradient(94deg,#4A352A 0%,#6B4F3E 40%,#BCA38C 74%,#fff 100%)',
     push: 'Mansi, October is almost gone and nothing has moved. Your next three months, read month by month \u2014 \u20b949 today instead of \u20b9499 \ud83d\udcd6',
     tkt: { t: 'Your Career report is ready', s: 'November, December and January, month by month' },
     /* Career is bought for timing, so the months are the headline. The year
@@ -1484,23 +1496,38 @@ function pay() {
    price than after it. So the gate sits here rather than in six places. */
 function startBuy() {
   var r = reportById(state.pick);
-  if (r.needsMatch && !state.matched) { openMatch(state.suggested); return; }
+  if (r.needsMatch && !owns(r.id)) { openMatch(); return; }
   openPay();
 }
 
-/* The form, opened either with the chat's guess in it or empty. `name` is a
-   suggestion and nothing more: it is the man she happened to mention to
-   Hemali, which is a good first guess and a bad assumption, because the match
-   a family asks for is often against somebody else entirely. So it arrives
-   typed in, labelled as a guess, and deletable like any other value. */
-function openMatch(name) {
-  ['bName', 'bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+/* The form, every time Buy is tapped — not only the first time. Skipping it
+   once the details are in looks like efficiency and is actually the one place
+   this flow can take money for the wrong chart: the guna score is computed off
+   four fields about a man, and the man can change between one tap and the
+   next. A family puts a second rishta in front of her, she comes back, taps
+   Buy, and a flow that remembers too well sells her a report about the
+   previous one. Letting her see the four values before the price costs one
+   extra tap and is the whole difference between a form and a receipt.
+
+   So it is prefilled, never blank twice. The first open takes the chat's guess
+   at his name, labelled as a guess; every open after that takes what she last
+   typed, labelled as the thing she is confirming. */
+function openMatch() {
   clearMatchErr();
-  $('#bName').value = name || '';
   var hint = $('#mtHint');
-  hint.hidden = !name;
-  hint.textContent = 'We have filled in ' + name + ' from your chat with Hemali. ' +
-    'Change it if you meant someone else.';
+  if (state.matched) {
+    // Her own values, left exactly where she put them. Nothing is cleared:
+    // changing one name should not cost her his birth time as well.
+    hint.hidden = false;
+    hint.textContent = 'These are the details you entered last time. ' +
+      'Check them, or change them to match someone else.';
+  } else {
+    ['bName', 'bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+    $('#bName').value = state.suggested || '';
+    hint.hidden = !state.suggested;
+    hint.textContent = 'We have filled in ' + state.suggested +
+      ' from your chat with Hemali. Change it if you meant someone else.';
+  }
   show('match', 'fade');
 }
 
@@ -2333,8 +2360,13 @@ function renderReport() {
      is the other mistake: a button that only promises a form reads as one more
      step before the real one, and she is being asked to pay the price sitting
      next to it. So the button says both, in the order they happen. */
+  /* Enter the first time, Confirm after. The same screen is doing a different
+     job once her answers are in it, and a button still saying Enter would read
+     as the app having lost them. */
   $('#r2Cta').textContent = mine ? 'Read Report'
-    : matchFirst(r) ? 'Enter Details \u0026 Buy Now' : 'Buy Now';
+    : !r.needsMatch ? 'Buy Now'
+    : state.matched ? 'Confirm Details \u0026 Buy Now'
+    : 'Enter Details \u0026 Buy Now';
   $('#r2Cta').classList.toggle('outline', repeat);
   $('#r2Cta').classList.toggle('primary', !repeat);
 }

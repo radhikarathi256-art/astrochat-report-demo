@@ -684,11 +684,31 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    and the cover stands in the light rather than being cut out of the dark.
    Radius only on the top corners — the bottom of this block is the middle of
    the card, and rounding it there would have drawn a seam. */
-.of3-head{display:flex;flex-direction:column;justify-content:flex-start;gap:7px;
+.of3-head{position:relative;isolation:isolate;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:7px;
   min-height:103px;padding:14px 16px;border-radius:20px 20px 0 0;
   /* The fallback only. The live colour arrives inline from the report being
-     pitched, so the card turns up in the shade of the book it is selling. */
-  background:linear-gradient(94deg,#8E2449 0%,#A33056 40%,#D4859F 74%,#fff 100%)}
+     pitched, and it is sampled from that report's own film — darkest value on
+     the left, the film's average at 74% — so the card turns up in the light
+     the hero was shot in rather than in a brand pink. */
+  background:linear-gradient(94deg,#3E2211 0%,#633618 40%,#A8835F 74%,#fff 100%)}
+/* Grain, because a two-stop gradient across 360px bands. The film next to it
+   has sensor noise in every frame, so a perfectly smooth ramp beside it reads
+   as the flat thing, not the clean one — the noise is what makes the colour
+   look photographed rather than filled.
+
+   feTurbulence rather than a PNG: it is a few hundred bytes inline, it cannot
+   404, and it tiles at any size. Overlay keeps it a modulation of the gradient
+   instead of grey dust on top of it, and the mask fades it out before the
+   right-hand end, where the ramp reaches the card's own white and grain would
+   just look like dirt. z-index -1 inside an isolated parent puts it over the
+   background and under the title. */
+.of3-head::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-radius:inherit;opacity:.22;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:140px 140px;
+  -webkit-mask-image:linear-gradient(94deg,#000 0%,#000 46%,transparent 76%);
+  mask-image:linear-gradient(94deg,#000 0%,#000 46%,transparent 76%)}
 /* Held off the book rather than running under it. */
 .of3-ttl{max-width:calc(100% - 118px);font:700 18px/28px var(--sans);color:#fff;
   letter-spacing:-.01em}
