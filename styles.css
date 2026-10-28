@@ -165,7 +165,10 @@ img{display:block}
 .chip.samp{border-color:#F6C3AE;background:#fff;color:var(--brand)}
 
 /* ---------- Bottom nav ---------- */
-.bnav{flex:none;position:relative;z-index:12;display:grid;grid-template-columns:repeat(4,1fr);
+/* Columns off the item count rather than a hard 4, so adding Reports did not
+   mean a second number to keep in step with the NAV array. */
+.bnav{flex:none;position:relative;z-index:12;display:grid;
+  grid-auto-flow:column;grid-auto-columns:1fr;
   border-top:1px solid var(--g200);background:#fff;padding:8px 0 calc(8px + var(--sab,env(safe-area-inset-bottom,0px)))}
 .bnav button{position:relative;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;
   font:500 12px/16px var(--sans);color:var(--g500);padding:2px 0}

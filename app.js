@@ -944,16 +944,26 @@ function renderLadder() {
 }
 
 /* ---------------------------------------------------------------- content: bottom nav */
+// An open book. Declared here rather than beside the menu it was written for,
+// because the nav is built at load and would otherwise read it before it exists.
+var BOOK_IC = '<path d="M4 4.6h5.4c1.3 0 2.1.8 2.1 2.1V19c0-1-.8-1.8-1.8-1.8H4zM20 4.6h-5.4c-1.3 0-2.1.8-2.1 2.1V19c0-1 .8-1.8 1.8-1.8H20z"/>';
 var NAV_ICONS = {
   today: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   experts: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M2.8 20c.5-3.3 3.1-5.4 6.2-5.4S14.7 16.7 15.2 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M16.2 5.3a3.2 3.2 0 010 5.6M18 14.9c2 .8 3.2 2.7 3.5 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   timeline: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 4v16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="7" cy="8" r="2.2" fill="#fff" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="17" r="2.2" fill="#fff" stroke="currentColor" stroke-width="1.6"/><path d="M12 8h8M12 17h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-  explore: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15.2 8.8-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
+  explore: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15.2 8.8-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  mine: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + BOOK_IC + '</svg>'
 };
+/* Reports is a tab, not only a menu row. A bought report is the one thing in
+   this app she comes back for weeks later, and a shelf buried two taps inside
+   a hamburger is a shelf she forgets she has. It sits next to History because
+   the two are the same question - what do I already have - asked of chats and
+   of books. */
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
   { id: 'timeline', label: 'History' },
+  { id: 'mine', label: 'Reports' },
   { id: 'explore', label: 'Explore' }
 ];
 
@@ -966,6 +976,11 @@ function renderNav() {
              // The board uses a counter, not a dot: a number says how much is
              // waiting, which is the only part a dot cannot say.
              (n.id === 'timeline' && state.histDot ? '<i class="ncount">1</i>' : '') +
+             // How many books are on the shelf, on the tab itself. A count she
+             // can read without opening it is the whole reason the tab is worth
+             // a slot; with nothing bought the tab is still there, quiet.
+             (n.id === 'mine' && state.owned.length
+               ? '<i class="ncount">' + state.owned.length + '</i>' : '') +
              '<span>' + n.label + '</span></button>';
     }).join('');
   });
@@ -1573,7 +1588,6 @@ function stopPay() {
    It sits second, under Chat History. Both are things of hers, so they belong
    together, and the top of the list is where she looks for her own stuff.
    First would have read as a banner for a feature rather than as a row. */
-var BOOK_IC = '<path d="M4 4.6h5.4c1.3 0 2.1.8 2.1 2.1V19c0-1-.8-1.8-1.8-1.8H4zM20 4.6h-5.4c-1.3 0-2.1.8-2.1 2.1V19c0-1 .8-1.8 1.8-1.8H20z"/>';
 var MENU = [
   { l: 'Chat History', nav: 'timeline',
     d: '<path d="M12 20.6a8.6 8.6 0 1 0-7.5-4.4L3.4 20.6l4.4-1.1a8.6 8.6 0 0 0 4.2 1.1Z"/><path d="M8.4 12h.01M12 12h.01M15.6 12h.01"/>' },
@@ -1619,6 +1633,16 @@ function renderMenu() {
    nothing, and this is a page she reached by looking for something to read. */
 function renderMine() {
   var host = $('#mineBody');
+  // Whatever is not on the shelf yet, pitched the same way in both states.
+  var left = REPORTS.filter(function (x) { return !owns(x.id); });
+  var rest = left.length
+    ? '<div class="r2-block mine-up">' +
+        '<h2 class="r2-h">' +
+          (state.buys.length ? 'Also Written On Your Chart' : 'Written On Your Chart') +
+        '</h2>' +
+        '<div class="carousel fill">' + left.map(upsellCard).join('') + '</div>' +
+      '</div>'
+    : '';
   if (!state.buys.length) {
     host.innerHTML =
       '<div class="mine-empty">' +
@@ -1627,11 +1651,7 @@ function renderMine() {
           'stroke-linejoin="round">' + BOOK_IC + '</svg></i>' +
         '<b>Nothing on your shelf yet</b>' +
         '<span>Anything you buy opens here, in your language, forever.</span>' +
-      '</div>' +
-      '<div class="r2-block mine-up">' +
-        '<h2 class="r2-h">Written On Your Chart</h2>' +
-        '<div class="carousel fill">' + REPORTS.map(upsellCard).join('') + '</div>' +
-      '</div>';
+      '</div>' + rest;
     return;
   }
   host.innerHTML = '<div class="mine-list">' + state.buys.map(function (b) {
@@ -1649,7 +1669,12 @@ function renderMine() {
       '<i class="mine-chev" aria-hidden="true">\u203a</i>' +
     '</button>';
   }).join('') + '</div>' +
-  '<p class="mine-note">Every report stays here in the language you chose and in English.</p>';
+  '<p class="mine-note">Every report stays here in the language you chose and in English.</p>' +
+  // The rest of the shelf, on the same rail as the empty state's. Someone who
+  // has read one is the person most likely to take a second, and this is the
+  // page she opens to re-read - the only surface in the app she returns to
+  // weeks later with a book already in her hands.
+  rest;
 }
 
 /* Today's one line for owners. Hidden until there is something behind it, so
@@ -1692,7 +1717,7 @@ function pay() {
   paintBought();
   // Every sell surface retires into the follow-up: read, chat, remedies, other reports.
   renderDayToday(); renderChat(); renderHistCard(); renderTpTabs(); renderRead();
-  renderReport(); renderBuys(); renderMyStrip();
+  renderReport(); renderBuys(); renderMyStrip(); renderNav();
   toast('Payment successful', 'success');
   // Matching needs a second chart before anything can be written, so it stops
   // here for his details. The other two are read off a chart the app already
@@ -2964,6 +2989,7 @@ function restart() {
   renderHistCard();
   renderBuys();
   renderMyStrip();
+  renderNav();
   armIntroSheet();
   resetTimeline();
   applyPaidTimeline();
@@ -3300,6 +3326,10 @@ document.addEventListener('click', function (e) {
     var nav = t.getAttribute('data-nav');
     if (nav === 'today')    { state.stack = []; show(state.entry, 'fade'); return; }
     if (nav === 'timeline') { state.stack = []; state.histDot = false; renderNav(); show('timeline', 'fade'); return; }
+    // A tab, so it clears the stack the way the other tabs do - arriving here
+    // from four screens deep and then backing out through them would not be
+    // the bottom nav.
+    if (nav === 'mine')     { state.stack = []; show('mine', 'fade'); return; }
     toast(t.textContent.trim() + ' is not part of this demo');
     return;
   }
