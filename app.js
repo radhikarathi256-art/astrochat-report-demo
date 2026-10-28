@@ -1494,7 +1494,9 @@ function startMaking() {
    is missing; a live one can be the thing that finds it — and it marks one
    field, not four, because four red boxes is a page saying everything is wrong
    instead of a form saying look here. */
-var MATCH_FIELDS = ['bName', 'bDob', 'bPlace', 'bTime', 'gName', 'gDob', 'gPlace', 'gTime'];
+/* Reading order, not form order: the error lands on the first box she can see
+   is empty, so date and time come before place now that they share a row. */
+var MATCH_FIELDS = ['bName', 'bDob', 'bTime', 'bPlace', 'gName', 'gDob', 'gTime', 'gPlace'];
 function clearMatchErr() {
   MATCH_FIELDS.forEach(function (id) { $('#' + id).closest('.fld').classList.remove('err'); });
 }
@@ -1510,9 +1512,9 @@ function submitMatch() {
       return;
     }
   }
-  // His name is used by name from here on — the score screen is about the two
-  // of them, and "your match" where a name could stand is the app forgetting
-  // what she just typed.
+  // His name is used by name from here on. Everything downstream is about the
+  // two of them, and "your match" where a name could stand is the app
+  // forgetting what she just typed.
   state.boy = $('#bName').value.trim().split(' ')[0] || 'him';
   state.matched = true;
   // Back to the detail page rather than on to a score screen of its own. The
