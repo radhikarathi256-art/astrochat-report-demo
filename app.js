@@ -1644,8 +1644,8 @@ function renderMenu() {
    things the app is doing, so they are a plain card with a progress line and
    no face on them: nobody is talking, something is being made. */
 var HIST_COPY = {
-  partner:  'Discover the love meant for you',
-  marriage: 'Get your Guna score out of 36',
+  partner:  'Discover the Love Meant for You',
+  marriage: 'Get Guna score out of 36',
   career:   'Made from your birth chart'
 };
 /* "Oct – Dec 2026" -> "From Oct to Dec". Built off QUARTERS rather than typed,
@@ -1660,20 +1660,24 @@ function histTitle(r) {
   return (r.t2 || 'Your ' + r.t + ' Report').replace(/\s*Report$/, '');
 }
 
-/* Hemali saying something, with the book in her hand. */
+/* Hemali saying something, with the book leaning out of the top of the bubble.
+   The book is positioned rather than laid out, because in the board it breaks
+   the bubble's edge on two sides — that overhang is the whole effect. */
 function histSaid(r, sub, body, actions) {
   return '<article class="hw hw-said" data-pick="' + r.id + '">' +
     '<header class="hw-who">' +
       '<span class="hw-av"><img src="assets/hemali.png" alt="">' +
         '<i class="hw-dot" aria-hidden="true"></i></span>' +
-      '<span class="hw-nm"><b>Astro Hemali</b><small>' + esc(sub) + '</small></span>' +
+      '<span class="hw-nm">' +
+        '<span class="hw-top"><b>Astro Hemali</b>' +
+          '<span class="hw-rate"><s>₹20/min</s><em>₹10/min</em></span></span>' +
+        '<small>' + esc(sub) + '</small>' +
+      '</span>' +
     '</header>' +
     '<div class="hw-bub">' +
       '<span class="hw-tail" aria-hidden="true"></span>' +
-      '<div class="hw-row">' +
-        '<span class="hw-tx">' + body + '</span>' +
-        book3d(r) +
-      '</div>' +
+      book3d(r) +
+      '<div class="hw-tx">' + body + '</div>' +
       '<div class="hw-acts">' + actions + '</div>' +
     '</div>' +
   '</article>';
@@ -2574,20 +2578,18 @@ function segueCard() {
     '</div>';
 }
 
-/* History is the brief's third surface — the same three reports, and once
-   bought the purchased report stays here for good (tlReport). */
+/* History is the brief's third surface, with its own four-state widget rather
+   than the chat's sell card: offer, being written, just-ready, bought-before.
+   One pitch, not a catalogue — what she has bought, plus the single report the
+   chat is actually selling her, which is the one the conversation's theme
+   picked. Three offers stacked would be a shop. */
 function renderHistCard() {
-  // Once the nudging stops the reports do not disappear — they become a
-  // shelf. Nothing asks; the row is simply still there when the problem
-  // arrives, which for a report is often weeks later.
-  // History has its own widget, not the chat card. Four states per report -
-  // offer, being written, ready to read, and bought-before - and all three
-  // reports stay on the list for good, bought ones first.
   $('#tlChap').hidden = false;
-  var mine = REPORTS.filter(function (x) { return owns(x.id); });
-  var left = REPORTS.filter(function (x) { return !owns(x.id); });
+  var list = REPORTS.filter(function (x) { return owns(x.id); });
+  var lead = leadReport();
+  if (lead && !owns(lead.id)) list.push(lead);
   $('#tlChapCard').innerHTML = '<div class="hw-list">' +
-    mine.concat(left).map(histWidget).join('') + '</div>';
+    list.map(histWidget).join('') + '</div>';
 }
 
 /* Tomorrow's reason to return: the free chat and the next coin. */
