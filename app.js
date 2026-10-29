@@ -1687,13 +1687,11 @@ function histSaid(r, sub, body, actions) {
 function histMaking(r, ready) {
   return '<article class="hw hw-make' + (ready ? ' is-ready' : '') + '">' +
     '<div class="hw-card">' +
-      '<div class="hw-row">' +
-        '<span class="hw-tx"><b>' + esc(histTitle(r)) + '</b>' +
-          '<small>' + esc(r.cadence === 'quarterly'
-            ? editionLabel(r) + ' \u00b7 Astro Hemali'
-            : 'Report by Astro Hemali') + '</small></span>' +
-        book3d(r) +
-      '</div>' +
+      // No subtitle here. The timeline underneath already says who is writing
+      // it and what happens next, so a line naming the astrologer again was
+      // the card saying the same thing twice.
+      book3d(r) +
+      '<div class="hw-tx"><b>' + esc(histTitle(r)) + '</b></div>' +
       '<ol class="hw-steps">' +
         '<li class="on"><b>Writing your report</b>' +
           '<small>Astro Hemali is reading your chart</small></li>' +

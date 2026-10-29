@@ -1138,7 +1138,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    even on the lines the book does not reach. The 59 is the book's room — the
    row keeps that height whether the title runs to one line or two, so the
    board below it always clears the book's bottom edge. */
-.hw-said .hw-tx{width:185px;max-width:100%;min-height:59px;justify-content:center}
+.hw-said .hw-tx{width:194px;max-width:100%;min-height:59px;justify-content:center}
+/* 48 is two lines, and it is also the height that drops the timeline below the
+   book's bottom edge — so a one-line title cannot pull the board up into it. */
+.hw-card .hw-tx{width:196px;max-width:100%;min-height:48px;justify-content:center}
 .hw-tx b{font:600 16px/24px var(--sans);color:var(--g700)}
 .hw-tx small{font:400 12px/18px var(--sans);color:var(--g600)}
 .hw-ok{font:600 14px/20px var(--sans);color:var(--s700);font-style:normal}
@@ -1154,9 +1157,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .hw-cta.off{border-color:var(--g100);background:#fff;color:var(--g300);cursor:default}
 /* ---------- the writing state ----------
    No face and no bubble: this is the app at work, not Hemali talking. */
-.hw-card{display:flex;flex-direction:column;gap:16px;padding:12px;
+.hw-card{position:relative;display:flex;flex-direction:column;gap:16px;padding:12px;
   border-radius:12px;background:linear-gradient(180deg,#FDF0EB 0%,#FFFFFF 100%)}
 .hw-card .hw-tx b{font:600 16px/24px var(--sans);color:var(--g700)}
+/* The button sits straight in the card's column, where the flex:1 it needs
+   inside a row of two would collapse its height to nothing. */
+.hw-card>.hw-cta{flex:none}
 /* Two stops on one line. The line is drawn behind the dots and clipped to the
    gap between them, so it cannot outrun the list when the copy wraps. */
 .hw-steps{position:relative;list-style:none;margin:0;padding:0;
@@ -1172,10 +1178,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .hw-steps li small{display:block;font:400 13px/18px var(--sans);color:var(--g600)}
 /* The book keeps the same hinge it has everywhere else in the app. */
 .hw .bkt{flex:none;width:61px;height:89px}
-/* In the speech-bubble states the book is not in the flow: it leans out of the
-   top-right corner and overhangs the bubble on both edges. */
-.hw-said .hw-bub{overflow:visible}
-.hw-said .bkt{position:absolute;right:9px;top:-15px;z-index:3}
+/* The book is never in the flow. It leans out of the top-right corner of
+   whichever panel it belongs to and overhangs it on both edges — out of the
+   bubble when Hemali is talking, out of the card while the report is being
+   written. Same offsets either way. */
+.hw-said .hw-bub,.hw-make .hw-card{overflow:visible}
+.hw-said .bkt,.hw-make .bkt{position:absolute;right:9px;top:-15px;z-index:3}
 .hw .bkt-cov{z-index:2;transform-origin:left center;transform-style:preserve-3d;
   box-shadow:2px 0 0 rgba(74,24,8,.45),6px 3px 9px -3px rgba(74,24,8,.45);
   animation:bookAjar 3.6s cubic-bezier(.33,1,.68,1) .7s infinite}
