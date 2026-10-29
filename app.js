@@ -232,7 +232,7 @@ var REPORTS = [
     id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'How well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
     // No "Your" on this one: the book belongs to two people, and the cover
     // does not claim it for either of them.
-    t2: 'Kundli Milan Marriage Compatibility Report',
+    t2: 'Kundali Milan, Compatibility Report',
     cadence: 'once',
     // The one report with a second person in it, so the one report that has to
     // ask. Board 1321:37310 — his four fields empty, hers written in.
@@ -491,7 +491,7 @@ var REPORTS = [
     id: 'career', t: 'Career, Money & Next 3 Months', s: 'When to switch and when money moves', pages: 34, rating: '4.6', sold: 71250,
     // "Quarterly" up front, because the thing that makes this report different
     // from the other two is that it runs out and is bought again.
-    t2: 'Quarterly Career & Money Forecast Report',
+    t2: 'Quarterly Career & Money Forecast',
     // A quarter at a time. The report is a window rather than a reading, so it
     // runs out: once this one is hers she can read it, and she can also buy the
     // next three months. Every repeat buy is its own row in history.
@@ -806,7 +806,7 @@ function onEnter(id) {
   // painted on the way in rather than kept in step from every pay path.
   if (id === 'menu') renderMenu();
   if (id === 'mine') renderMine();
-  if (id === 'timeline' && !state.paid) return;
+  if (id === 'timeline') renderHistCard();
 }
 
 /* ---------------------------------------------------------------- wallet */
@@ -964,16 +964,13 @@ var NAV_ICONS = {
   explore: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15.2 8.8-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
   mine: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + BOOK_IC + '</svg>'
 };
-/* Reports is a tab, not only a menu row. A bought report is the one thing in
-   this app she comes back for weeks later, and a shelf buried two taps inside
-   a hamburger is a shelf she forgets she has. It sits next to History because
-   the two are the same question - what do I already have - asked of chats and
-   of books. */
+/* No Reports tab. History already answers "what do I have" for chats, and the
+   report widget lives inside it, so a second shelf tab was the same answer
+   twice. */
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
   { id: 'timeline', label: 'History' },
-  { id: 'mine', label: 'Reports' },
   { id: 'explore', label: 'Explore' }
 ];
 
@@ -986,11 +983,6 @@ function renderNav() {
              // The board uses a counter, not a dot: a number says how much is
              // waiting, which is the only part a dot cannot say.
              (n.id === 'timeline' && state.histDot ? '<i class="ncount">1</i>' : '') +
-             // How many books are on the shelf, on the tab itself. A count she
-             // can read without opening it is the whole reason the tab is worth
-             // a slot; with nothing bought the tab is still there, quiet.
-             (n.id === 'mine' && state.owned.length
-               ? '<i class="ncount">' + state.owned.length + '</i>' : '') +
              '<span>' + n.label + '</span></button>';
     }).join('');
   });
@@ -1713,6 +1705,9 @@ function histMaking(r, ready) {
   '</article>';
 }
 
+/* How long the just-read card holds before it starts selling the next one. */
+var READY_HOLD = 15 * 60 * 1000;
+
 /* Which of the four a report is in right now. */
 function histWidget(r) {
   var b = state.buys.filter(function (x) { return x.id === r.id; })[0];
@@ -1723,13 +1718,13 @@ function histWidget(r) {
         esc(r.cadence === 'quarterly' ? quarterCta(QUARTERS[0]) : 'Learn More') +
       '</button>');
   }
-  // Still being written. The progress line is the whole card until it lands.
+  // Still being written. Quick, but the progress line is the whole card until
+  // it lands.
   if (!b.ready) return histMaking(r, false);
-  // Landed today, and there is nothing else to sell: the finished line stays
-  // up, with the Read Report it was promising now live.
-  if (b.day === state.day && !r.needsMatch && r.cadence !== 'quarterly') {
-    return histMaking(r, true);
-  }
+  // Just landed. For the next fifteen minutes the card has one job and one
+  // button: read the thing she just paid for. Nothing is sold over the top of
+  // a report she has not opened yet.
+  if (!b.aged) return histMaking(r, true);
   // Landed, and there is a reason to come back for another. The progress line
   // has done its job, so Hemali takes the card back and offers the next one.
   var again = r.needsMatch
@@ -1797,11 +1792,17 @@ function pay() {
   // this payment just bought rather than the one after it.
   var ed = editionLabel(r);
   if (!owns(r.id)) state.owned.push(r.id);
-  // `day` and `ready` are what History reads: a report bought today is being
-  // written, and only stops being written once Hemali has finished with it.
-  var buy = { id: r.id, ed: ed, time: nowStamp(), day: state.day, ready: false };
+  // The two flags History reads. Writing the report is quick; the ready card
+  // then holds for fifteen minutes before it settles into the state that can
+  // be bought again.
+  var buy = { id: r.id, ed: ed, time: nowStamp(), day: state.day,
+              ready: false, aged: false };
   state.buys.unshift(buy);
-  later(function () { buy.ready = true; renderMine(); }, 6000);
+  var repaint = function () { renderMine(); renderHistCard(); };
+  later(function () {
+    buy.ready = true; repaint();
+    later(function () { buy.aged = true; repaint(); }, READY_HOLD);
+  }, 6000);
   state.wallet -= payUsed();
   paintWallet();
   paintBought();
@@ -2310,25 +2311,46 @@ function benefits(r) {
   }).join('') + '</div>';
 }
 
-/* The lotus-temple rosette behind the book: three rings of nine petals and a
-   seed, drawn rather than shipped so it recolours per report and costs nothing
-   to download. Unique gradient id per card — `url(#id)` resolves document-wide
-   and a shared one would paint all three cards in the first one's colour. */
+/* The lotus-temple rosette behind the book, lifted out of Figma rather than
+   redrawn: one exported petal path per ring, repeated nine times at 40 degrees,
+   which is how the original is built. Centre of the flower is (112.587, 40) in
+   the exported coordinates, so the viewBox is offset to put it in the middle.
+   Only the three gradient stops change per report. Gradient ids are unique per
+   card because `url(#id)` resolves document-wide and a shared id would paint
+   all three cards in the first one's colour. */
+var MOTIF_C = [112.587, 40];
+var MOTIF_RINGS = [
+  // [petal path, ring opacity, light-source centre]
+  ['M112.587 40.0002C148.312 28.0979 166.473 -21.7998 148.909 -59.7951C111.032 -41.979 92.8703 7.91871 112.587 40.0002Z', .5, [183.112, 191.242]],
+  ['M112.587 40.0004C138.153 21.8087 138.153 -19.4913 112.587 -42.5996C87.02 -19.4913 87.02 21.8087 112.587 40.0004Z', .75, [230.587, 158]],
+  ['M112.587 39.9999C135.372 34.8987 145.126 8.10183 132.093 -13.5939C108.164 -5.35097 98.4111 21.4459 112.587 39.9999Z', 1, [183.112, 191.242]]
+];
 function sellMotif(r) {
-  var s = skin(r), id = 'mot-' + r.id, g = '';
-  [[22, 106], [19, 83], [15, 57]].forEach(function (p) {
-    var w = p[0], h = p[1];
-    var d = 'M0 0C' + w + ' ' + (-h * .28) + ' ' + w + ' ' + (-h * .68) + ' 0 ' + (-h) +
-            'C' + (-w) + ' ' + (-h * .68) + ' ' + (-w) + ' ' + (-h * .28) + ' 0 0Z';
-    for (var i = 0; i < 9; i++) g += '<path d="' + d + '" transform="rotate(' + (i * 40) + ')"/>';
+  var s = skin(r), base = 'mot-' + r.id;
+  var stops = '<stop stop-color="' + s.m[0] + '"/>' +
+              '<stop offset=".55" stop-color="' + s.m[1] + '"/>' +
+              '<stop offset="1" stop-color="' + s.m[2] + '"/>';
+  var defs = '', body = '';
+  MOTIF_RINGS.forEach(function (ring, n) {
+    var id = base + '-' + n;
+    defs += '<radialGradient id="' + id + '" cx="0" cy="0" r="1" ' +
+      'gradientUnits="userSpaceOnUse" gradientTransform="translate(' +
+      ring[2][0] + ' ' + ring[2][1] + ') scale(116.033)">' + stops + '</radialGradient>';
+    var petals = '';
+    for (var i = 0; i < 9; i++) {
+      petals += '<path d="' + ring[0] + '" transform="rotate(' + (i * 40) + ' ' +
+        MOTIF_C[0] + ' ' + MOTIF_C[1] + ')"/>';
+    }
+    body += '<g opacity="' + ring[1] + '" fill="url(#' + id + ')">' + petals + '</g>';
   });
-  return '<svg class="of3-motif" viewBox="-118 -118 236 236" aria-hidden="true">' +
-    '<defs><radialGradient id="' + id + '">' +
-      '<stop offset="0" stop-color="' + s.m[0] + '"/>' +
-      '<stop offset=".55" stop-color="' + s.m[1] + '"/>' +
-      '<stop offset="1" stop-color="' + s.m[2] + '"/>' +
-    '</radialGradient></defs>' +
-    '<g fill="url(#' + id + ')">' + g + '<circle r="15.5"/></g></svg>';
+  defs += '<radialGradient id="' + base + '-s" cx="0" cy="0" r="1" ' +
+    'gradientUnits="userSpaceOnUse" gradientTransform="translate(' +
+    MOTIF_C[0] + ' ' + MOTIF_C[1] + ') scale(116.033)">' + stops + '</radialGradient>';
+  body += '<circle cx="' + MOTIF_C[0] + '" cy="' + MOTIF_C[1] + '" r="15.733" ' +
+    'fill="url(#' + base + '-s)"/>';
+  return '<svg class="of3-motif" viewBox="' + (MOTIF_C[0] - 118) + ' ' +
+    (MOTIF_C[1] - 118) + ' 236 236" fill="none" aria-hidden="true">' +
+    '<defs>' + defs + '</defs>' + body + '</svg>';
 }
 
 /* The hinged hardback, shared by every sell surface so the book opens the same
@@ -2382,7 +2404,7 @@ function offer3Card() {
       (ask
         ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
             'Learn More</button>'
-        : '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
+        : '<div class="of3-price"><i>90% OFF</i><span><b>₹49</b><s>₹499</s></span></div>' +
           '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
     '</div>' +
   '</div>';
@@ -2558,28 +2580,14 @@ function renderHistCard() {
   // Once the nudging stops the reports do not disappear — they become a
   // shelf. Nothing asks; the row is simply still there when the problem
   // arrives, which for a report is often weeks later.
-  var shelf = !state.paid && pmQuiet();
-  var show3 = !state.paid && !!pmSurf().hist;
-  $('#tlChap').hidden = !(show3 || shelf);
-  if (shelf) {
-    $('#tlChapCard').innerHTML =
-      '<div class="rep-top quiet">' +
-        '<img src="assets/book.svg" alt="">' +
-        '<div>' +
-          '<p class="eyebrow">Saved on your chart</p>' +
-          '<b>3 reports</b>' +
-          '<p class="rep-status">' + REPORTS.map(function (x) { return x.t; }).join(' · ') + '</p>' +
-        '</div>' +
-        '<button class="lnk-btn" type="button" data-go="picker">View</button>' +
-      '</div>';
-    return;
-  }
-  if (!show3) return;
-  // The chat's own card, not a second design of the same offer. History had
-  // Hemali's face over a peach bubble with the book leaning out of it: a
-  // different object selling the same thing, which made the two surfaces read
-  // as two products. One widget, two places.
-  $('#tlChapCard').innerHTML = offer3Card();
+  // History has its own widget, not the chat card. Four states per report -
+  // offer, being written, ready to read, and bought-before - and all three
+  // reports stay on the list for good, bought ones first.
+  $('#tlChap').hidden = false;
+  var mine = REPORTS.filter(function (x) { return owns(x.id); });
+  var left = REPORTS.filter(function (x) { return !owns(x.id); });
+  $('#tlChapCard').innerHTML = '<div class="hw-list">' +
+    mine.concat(left).map(histWidget).join('') + '</div>';
 }
 
 /* Tomorrow's reason to return: the free chat and the next coin. */
