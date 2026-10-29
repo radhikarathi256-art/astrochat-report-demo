@@ -83,7 +83,11 @@ var LI_ICON = {
   arrow: '<path d="M3 18.7 9.2 11.5a1.7 1.7 0 0 1 2.4-.1l2 1.8a1.7 1.7 0 0 0 2.4-.1L21 5.6"/><path d="M21.3 10.4V5.3h-5.1"/>',
   people:'<path d="M9 11.2a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z"/><path d="M15.8 17.6c0 2.1-3 3.4-6.8 3.4s-6.8-1.3-6.8-3.4 3-3.4 6.8-3.4 6.8 1.3 6.8 3.4Z"/><path d="M16.2 4.6a3.6 3.6 0 0 1 0 6M18.2 13.6c2.1.4 3.6 1.4 3.6 2.7 0 1-.9 1.9-2.3 2.4"/>',
   list:  '<path d="M9 6.6h11.6M9 12h11.6M9 17.4h11.6"/><path d="M4.1 7.4a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 12.8a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 18.2a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z"/>',
-  beads: '<path d="M12 18.4a7.4 7.4 0 1 0 0-14.8 7.4 7.4 0 0 0 0 14.8Z" stroke-dasharray="1.4 4.2"/><path d="M12 22.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"/>'
+  beads: '<path d="M12 18.4a7.4 7.4 0 1 0 0-14.8 7.4 7.4 0 0 0 0 14.8Z" stroke-dasharray="1.4 4.2"/><path d="M12 22.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"/>',
+  // Guna matching is a weighing, so it gets the scales rather than a tick.
+  scale: '<path d="M12 3.6v17M7.4 20.4h9.2"/><path d="M4.2 6.6 19.8 5"/><path d="M4.2 6.6 1.6 13h5.2zM19.8 5l-2.6 6.4h5.2z"/>',
+  // The fourth chip on every sell card: what is still behind the paywall.
+  plus:  '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M8.3 12h7.4M12 8.3v7.4"/>'
 };
 /* `s` is the one line under every cover — on the upsell card, on the picker,
    on the tile, and as the opening of the sell page's lead. Three books wrote it
@@ -226,6 +230,9 @@ var REPORTS = [
     // subtitle did not already say; Kundli Milan is the word she would use
     // herself, and it is what the cover says.
     id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'How well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
+    // No "Your" on this one: the book belongs to two people, and the cover
+    // does not claim it for either of them.
+    t2: 'Kundli Milan Marriage Compatibility Report',
     cadence: 'once',
     // The one report with a second person in it, so the one report that has to
     // ask. Board 1321:37310 — his four fields empty, hers written in.
@@ -482,6 +489,9 @@ var REPORTS = [
     // thing lands soon, so the horizon goes in the name instead of sitting in
     // the subtitle where it read as one more topic.
     id: 'career', t: 'Career, Money & Next 3 Months', s: 'When to switch and when money moves', pages: 34, rating: '4.6', sold: 71250,
+    // "Quarterly" up front, because the thing that makes this report different
+    // from the other two is that it runs out and is bought again.
+    t2: 'Quarterly Career & Money Forecast Report',
     // A quarter at a time. The report is a window rather than a reading, so it
     // runs out: once this one is hers she can read it, and she can also buy the
     // next three months. Every repeat buy is its own row in history.
@@ -1631,50 +1641,126 @@ function renderMenu() {
    same horizontal strip the detail page uses for its upsells - an empty state
    whose only content is an apology sends her back to where she came from with
    nothing, and this is a page she reached by looking for something to read. */
-function renderMine() {
-  var host = $('#mineBody');
-  // Whatever is not on the shelf yet, pitched the same way in both states.
-  var left = REPORTS.filter(function (x) { return !owns(x.id); });
-  var rest = left.length
-    ? '<div class="r2-block mine-up">' +
-        '<h2 class="r2-h">' +
-          (state.buys.length ? 'Also Written On Your Chart' : 'Written On Your Chart') +
-        '</h2>' +
-        '<div class="carousel fill">' + left.map(upsellCard).join('') + '</div>' +
-      '</div>'
-    : '';
-  if (!state.buys.length) {
-    host.innerHTML =
-      '<div class="mine-empty">' +
-        '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
-          'stroke="currentColor" stroke-width="1.4" stroke-linecap="round" ' +
-          'stroke-linejoin="round">' + BOOK_IC + '</svg></i>' +
-        '<b>Nothing on your shelf yet</b>' +
-        '<span>Anything you buy opens here, in your language, forever.</span>' +
-      '</div>' + rest;
-    return;
+/* ------------------------------------------------- the History widget
+   Figma 3696:8360. One card per report, and the card is the report's whole
+   life: the pitch before she owns it, the writing while Hemali is reading the
+   chart, the live Read Report the moment it lands, and the re-buy once the
+   edition it covers has passed.
+
+   Two shapes, not four. Offer and Past are things Hemali says, so they come
+   out of her mouth — avatar, name, speech bubble. Writing and Ready are
+   things the app is doing, so they are a plain card with a progress line and
+   no face on them: nobody is talking, something is being made. */
+var HIST_COPY = {
+  partner:  'Discover the love meant for you',
+  marriage: 'Get your Guna score out of 36',
+  career:   'Made from your birth chart'
+};
+/* "Oct – Dec 2026" -> "From Oct to Dec". Built off QUARTERS rather than typed,
+   so the button can never name a window the edition does not cover. */
+function quarterCta(q) {
+  var p = q.split('\u2013');
+  return 'From ' + p[0].trim().split(' ')[0] + ' to ' + p[1].trim().split(' ')[0];
+}
+/* The bubble's own title drops the trailing "Report": the book is lying next
+   to the words, so the word is already on screen once. */
+function histTitle(r) {
+  return (r.t2 || 'Your ' + r.t + ' Report').replace(/\s*Report$/, '');
+}
+
+/* Hemali saying something, with the book in her hand. */
+function histSaid(r, sub, body, actions) {
+  return '<article class="hw hw-said" data-pick="' + r.id + '">' +
+    '<header class="hw-who">' +
+      '<span class="hw-av"><img src="assets/hemali.png" alt="">' +
+        '<i class="hw-dot" aria-hidden="true"></i></span>' +
+      '<span class="hw-nm"><b>Astro Hemali</b><small>' + esc(sub) + '</small></span>' +
+    '</header>' +
+    '<div class="hw-bub">' +
+      '<span class="hw-tail" aria-hidden="true"></span>' +
+      '<div class="hw-row">' +
+        '<span class="hw-tx">' + body + '</span>' +
+        book3d(r) +
+      '</div>' +
+      '<div class="hw-acts">' + actions + '</div>' +
+    '</div>' +
+  '</article>';
+}
+
+/* The app working, with no one talking over it. */
+function histMaking(r, ready) {
+  return '<article class="hw hw-make' + (ready ? ' is-ready' : '') + '">' +
+    '<div class="hw-card">' +
+      '<div class="hw-row">' +
+        '<span class="hw-tx"><b>' + esc(histTitle(r)) + '</b>' +
+          '<small>' + esc(r.cadence === 'quarterly'
+            ? editionLabel(r) + ' \u00b7 Astro Hemali'
+            : 'Report by Astro Hemali') + '</small></span>' +
+        book3d(r) +
+      '</div>' +
+      '<ol class="hw-steps">' +
+        '<li class="on"><b>Writing your report</b>' +
+          '<small>Astro Hemali is reading your chart</small></li>' +
+        '<li' + (ready ? ' class="on"' : '') + '><b>Ready to read</b>' +
+          '<small>' + (ready ? 'Open it whenever you like'
+                             : 'We\u2019ll notify you when it\u2019s ready') + '</small></li>' +
+      '</ol>' +
+      (ready
+        ? '<button class="hw-cta ghost" type="button" data-open-rep="' + r.id + '">' +
+            'Read Report</button>'
+        : '<span class="hw-cta off" aria-disabled="true">Read Report</span>') +
+    '</div>' +
+  '</article>';
+}
+
+/* Which of the four a report is in right now. */
+function histWidget(r) {
+  var b = state.buys.filter(function (x) { return x.id === r.id; })[0];
+  if (!b) {
+    return histSaid(r, HIST_COPY[r.id] || HIST_COPY.career,
+      '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>',
+      '<button class="hw-cta" type="button" data-pick="' + r.id + '">' +
+        esc(r.cadence === 'quarterly' ? quarterCta(QUARTERS[0]) : 'Learn More') +
+      '</button>');
   }
-  host.innerHTML = '<div class="mine-list">' + state.buys.map(function (b) {
-    var r = reportById(b.id);
-    return '<button class="mine-row" type="button" data-open-rep="' + r.id + '">' +
-      book3d(r) +
-      '<span class="mine-tx">' +
-        '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
-        // The edition for the one report that has them, the time for the rest.
-        // Either way the line answers "which of these is which", which is the
-        // only thing a shelf of similar-looking books has to answer.
-        '<small>' + esc(b.ed || ('Bought ' + b.time)) + '</small>' +
-        '<em>' + r.pages + ' pages \u00b7 ' + r.learn.length + ' questions answered</em>' +
-      '</span>' +
-      '<i class="mine-chev" aria-hidden="true">\u203a</i>' +
-    '</button>';
-  }).join('') + '</div>' +
-  '<p class="mine-note">Every report stays here in the language you chose and in English.</p>' +
-  // The rest of the shelf, on the same rail as the empty state's. Someone who
-  // has read one is the person most likely to take a second, and this is the
-  // page she opens to re-read - the only surface in the app she returns to
-  // weeks later with a book already in her hands.
-  rest;
+  // Still being written. The progress line is the whole card until it lands.
+  if (!b.ready) return histMaking(r, false);
+  // Landed today, and there is nothing else to sell: the finished line stays
+  // up, with the Read Report it was promising now live.
+  if (b.day === state.day && !r.needsMatch && r.cadence !== 'quarterly') {
+    return histMaking(r, true);
+  }
+  // Landed, and there is a reason to come back for another. The progress line
+  // has done its job, so Hemali takes the card back and offers the next one.
+  var again = r.needsMatch
+    ? { cta: 'Match Again', sub: 'Bought ' + b.time + ' \u00b7 Match someone else anytime' }
+    : r.cadence === 'quarterly'
+      ? { cta: quarterCta(QUARTERS[Math.min(state.buys.filter(function (x) {
+            return x.id === r.id; }).length, QUARTERS.length - 1)]),
+          sub: 'Last bought ' + b.time }
+      : null;
+  if (!again) {
+    return histSaid(r, 'Made from your birth chart',
+      '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+      '<em class="hw-ok">Ready to read</em>',
+      '<button class="hw-cta" type="button" data-open-rep="' + r.id + '">Read Report</button>');
+  }
+  return histSaid(r, 'Made from your birth chart',
+    '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+    '<small>' + esc(again.sub) + '</small>',
+    '<button class="hw-cta ghost" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
+    '<button class="hw-cta" type="button" data-buy="' + r.id + '">' + esc(again.cta) + '</button>');
+}
+
+function renderMine() {
+  // One widget per report, what she owns first. The old shelf rows and the
+  // upsell rail said the same two things in two different shapes; the widget
+  // says both in one, so the page is a single column of cards.
+  var mine = REPORTS.filter(function (x) { return owns(x.id); });
+  var left = REPORTS.filter(function (x) { return !owns(x.id); });
+  $('#mineBody').innerHTML = '<div class="hw-list">' +
+    mine.concat(left).map(histWidget).join('') + '</div>' +
+    '<p class="mine-note">Every report stays here in the language you chose and in English.</p>';
 }
 
 /* Today's one line for owners. Hidden until there is something behind it, so
@@ -1711,7 +1797,11 @@ function pay() {
   // this payment just bought rather than the one after it.
   var ed = editionLabel(r);
   if (!owns(r.id)) state.owned.push(r.id);
-  state.buys.unshift({ id: r.id, ed: ed, time: nowStamp() });
+  // `day` and `ready` are what History reads: a report bought today is being
+  // written, and only stops being written once Hemali has finished with it.
+  var buy = { id: r.id, ed: ed, time: nowStamp(), day: state.day, ready: false };
+  state.buys.unshift(buy);
+  later(function () { buy.ready = true; renderMine(); }, 6000);
   state.wallet -= payUsed();
   paintWallet();
   paintBought();
@@ -2174,60 +2264,124 @@ function sellCard(r) {
   '</button>';
 }
 
-/* The PM brief's offer as it lands in the chat, built to the board at
-   3088:160535: a 288-wide bubble, the painted banner carrying the title and
-   the rating, the book standing proud of the top-right corner, then the
-   pointers and one price row. */
+/* Figma 3726:8279 — each report's own light. The dark banner is gone: the
+   whole card is now a wash in the book's colour, left to right, with the
+   temple motif rising behind the cover and a fade bringing the bottom back to
+   something text can sit on. Two inks per skin, because the title carries the
+   card and everything under it steps back one notch without leaving the hue. */
+var SELL_SKIN = {
+  partner:  { g: ['#FDEEF0 0%', '#F7CDD3 45%', '#E2A4BB 78%', '#D292B0 100%'],
+              m: ['#FDEEF1', '#ECB8C8', '#D292B0'], fade: '253,240,242',
+              ink: '#6B1D45', ink2: '#7A2E57' },
+  marriage: { g: ['#FCF3E6 0%', '#F0DCBC 45%', '#DCB987 78%', '#C99B68 100%'],
+              m: ['#FDF3E2', '#E8C899', '#C99B68'], fade: '252,244,232',
+              ink: '#7A4527', ink2: '#7A4527' },
+  career:   { g: ['#EEF2FB 0%', '#D6E0F5 42%', '#E9DCC0 74%', '#F6D58E 100%'],
+              m: ['#FFF6DC', '#F6D58E', '#E8B54A'], fade: '241,244,251',
+              ink: '#1F2A5C', ink2: '#3B4677' }
+};
+function skin(r) { return SELL_SKIN[r.id] || SELL_SKIN.partner; }
+
+/* The same three questions `learn` opens with, cut to two words a line so four
+   of them tile in a 2x2 without a single one wrapping to three. The long
+   sentences still run the detail page; this is the shop window. */
+var SELL_BLURBS = {
+  partner:  [['user', "Partner's\nimage"], ['pin', 'Where you\nwill meet'],
+             ['people', 'Your first\nmeeting']],
+  marriage: [['chart', 'Guna score\nout of 36'], ['scale', 'Real match\nor on paper'],
+             ['list', 'Which gunas\nmatch']],
+  career:   [['spark', 'Your big\ntheme'], ['cal', 'Best dates\nfor a raise'],
+             ['case', 'Job or\nbusiness']]
+};
+
+/* Three chips off the report, then one that counts what is still behind the
+   paywall and reads as a link, because that is what it is. */
+function benefits(r) {
+  var list = (SELL_BLURBS[r.id] || SELL_BLURBS.partner).slice(0, 3);
+  var rest = Math.max(0, r.learn.length - 3);
+  var cells = list.concat([['plus', rest + ' more\nanswers']]);
+  return '<div class="of3-ben">' + cells.map(function (c, i) {
+    return '<span class="bn' + (i === 3 ? ' bn-more' : '') + '">' +
+      '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
+        'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" ' +
+        'stroke-linejoin="round">' + (LI_ICON[c[0]] || LI_ICON.plus) + '</svg></i>' +
+      '<b>' + esc(c[1]).replace('\n', '<br>') + '</b>' +
+    '</span>';
+  }).join('') + '</div>';
+}
+
+/* The lotus-temple rosette behind the book: three rings of nine petals and a
+   seed, drawn rather than shipped so it recolours per report and costs nothing
+   to download. Unique gradient id per card — `url(#id)` resolves document-wide
+   and a shared one would paint all three cards in the first one's colour. */
+function sellMotif(r) {
+  var s = skin(r), id = 'mot-' + r.id, g = '';
+  [[22, 106], [19, 83], [15, 57]].forEach(function (p) {
+    var w = p[0], h = p[1];
+    var d = 'M0 0C' + w + ' ' + (-h * .28) + ' ' + w + ' ' + (-h * .68) + ' 0 ' + (-h) +
+            'C' + (-w) + ' ' + (-h * .68) + ' ' + (-w) + ' ' + (-h * .28) + ' 0 0Z';
+    for (var i = 0; i < 9; i++) g += '<path d="' + d + '" transform="rotate(' + (i * 40) + ')"/>';
+  });
+  return '<svg class="of3-motif" viewBox="-118 -118 236 236" aria-hidden="true">' +
+    '<defs><radialGradient id="' + id + '">' +
+      '<stop offset="0" stop-color="' + s.m[0] + '"/>' +
+      '<stop offset=".55" stop-color="' + s.m[1] + '"/>' +
+      '<stop offset="1" stop-color="' + s.m[2] + '"/>' +
+    '</radialGradient></defs>' +
+    '<g fill="url(#' + id + ')">' + g + '<circle r="15.5"/></g></svg>';
+}
+
+/* The hinged hardback, shared by every sell surface so the book opens the same
+   way in the chat as it does in History. */
+function sellBook(r) {
+  return '<span class="of3-bkw" aria-hidden="true">' +
+    '<span class="of3-leaf"' +
+      (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+    '<span class="of3-cov">' +
+      '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+      '<span class="of3-back"' +
+        (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+    '</span>' +
+  '</span>';
+}
+
+/* The offer as it lands in the chat, built to Figma 3726:8279. */
 function offer3Card() {
   // Once she owns one, the offer leaves the thread entirely — segueCard() is
   // the follow-up, and two follow-ups in a row is one too many.
   if (state.paid) return '';
   var r = leadReport();
-  // Kundli Milan does not sell a book here. It sells the one number she came
-  // for, and the book turns up later on the detail page where there is room to
-  // explain it.
-  if (milanSell(r)) return milanCard(r);
+  var s = skin(r);
+  // Kundli Milan still cannot be bought off a chart the app already holds, so
+  // it does not put a price next to a Buy Now. It sends her to the page where
+  // the second birth chart gets asked for. Same card, different last line.
+  var ask = matchFirst(r);
   // The whole card is the link to the detail page; only Buy Now jumps the
   // queue straight to payment.
-  return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '">' +
-    // Inline, because the colour belongs to the report rather than to the card
-    // and there is exactly one of these on screen at a time.
-    '<div class="of3-head" style="background:' + r.tint + '">' +
-      '<div class="of3-ttl">' + esc(r.t2 || r.t + ' Report') + '</div>' +
-      // The green dot is switched off in the frame, and rightly so: it says
-      // "live" next to a rating, which is the one thing a rating is not.
-      '<div class="of3-badge">' +
-        // Star inside the `b`, not beside it. As a sibling it took the badge's
-        // 8px gap — the same distance as the separator — so 4.7 and its star
-        // looked no more related to each other than to the reader count.
-        '<b>' + r.rating + STAR + '</b>' +
-        '<i class="of3-sep"></i>' +
-        '<b>' + inr(r.sold) + ' readers</b>' +
-      '</div>' +
+  return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '" ' +
+      'style="--s-grad:linear-gradient(90deg,' + s.g.join(',') + ');' +
+      '--s-ink:' + s.ink + ';--s-ink2:' + s.ink2 + ';--s-fade:' + s.fade + '">' +
+    // Wash, rosette and fade all live behind one clipped layer, so the book can
+    // still stand proud of the top edge without being guillotined by it.
+    '<span class="of3-bg" aria-hidden="true">' + sellMotif(r) +
+      '<span class="of3-veil"></span></span>' +
+    sellBook(r) +
+    '<div class="of3-ttl">' + esc(r.t2 || r.t + ' Report') + '</div>' +
+    // The green dot is switched off in the frame, and rightly so: it says
+    // "live" next to a rating, which is the one thing a rating is not.
+    '<div class="of3-badge">' +
+      // Star inside the `b`, not beside it. As a sibling it took the badge's
+      // 8px gap — the same distance as the separator — so 4.7 and its star
+      // looked no more related to each other than to the reader count.
+      '<b>' + r.rating + STAR + '</b>' +
+      '<i class="of3-sep"></i>' +
+      '<b>' + inr(r.sold) + ' readers</b>' +
     '</div>' +
-    // Stands proud of the top-right corner and hinges on its spine, so the
-    // card has one thing moving and it is the thing being sold.
-    '<span class="of3-bkw" aria-hidden="true">' +
-      '<span class="of3-leaf"' +
-        (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
-      '<span class="of3-cov">' +
-        '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
-        '<span class="of3-back"' +
-          (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
-      '</span>' +
-    '</span>' +
-    '<div class="of3-pts">' + pointers(r, 3) + '</div>' +
-    // Kundli Milan asks before it sells. It is the one report that cannot be
-    // written off a chart the app already holds, so the first thing it needs
-    // from her is his birth details - and a price next to a Buy Now is the
-    // wrong way to ask for twenty seconds of typing. The foot becomes the
-    // question instead: calculate the match, free, and the number comes back
-    // on the other side of it. The price arrives once there is something to
-    // put it against.
-    '<div class="of3-foot' + (matchFirst(r) ? ' of3-foot-ask' : '') + '">' +
-      (matchFirst(r)
-        ? '<button class="of3-go wide" type="button" data-buy="' + r.id + '">' +
-            'Calculate Guna Match \u00b7 Free</button>'
+    benefits(r) +
+    '<div class="of3-foot' + (ask ? ' of3-foot-ask' : '') + '">' +
+      (ask
+        ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
+            'Learn More</button>'
         : '<div class="of3-price"><span><b>₹49</b><s>₹499</s></span><i>90% OFF</i></div>' +
           '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
     '</div>' +
