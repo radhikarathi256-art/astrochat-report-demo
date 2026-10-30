@@ -842,12 +842,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    three neighbours rather than a different shape. */
 .of3-ben .bn > i > svg.ic-cuphot{width:24px;height:24px}
 .of3-ben .bn > b{min-width:0;font:500 14px/20px var(--sans);color:var(--s-ink2)}
-/* The fourth cell is a link, so it is underlined like one. */
-.of3-ben .bn-more > b{text-decoration:underline;text-underline-offset:2px}
+/* The fourth cell is no longer drawn as a link. Figma 3707:10251 is still *named*
+   "more answers (link)" but its text is the same Inter Medium `#7a2e57` as the
+   other three — once the dashed Learn-more link moved under the grid there were
+   two links in one block, and the chip is a count, not a destination. */
 /* The link under the grid: the card's one admission that the four questions
    are a sample of the report rather than the whole of it. Figma 3824:203353 —
-   Brand/700, and a dashed rule rather than a solid underline, which is what
-   separates a thing you can open from the plain underline on the fourth chip. */
+   Brand/700, and a dashed rule, which is now the only underline on the card. */
 .of3-more{position:relative;z-index:1;display:inline-flex;align-items:center;gap:2px;
   margin-top:12px;font:600 14px/20px var(--sans);color:#BC3606;cursor:pointer;
   border-bottom:1px dashed #BC3606}
