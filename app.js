@@ -66,8 +66,12 @@ var STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="' 
 var STAR_OFF = '<svg class="star star-off" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_D + '"/></svg>';
 
 var LI_ICON = {
-  user:  '<path d="M12 10.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M20.5 17.5c0 2.5-3.8 4-8.5 4s-8.5-1.5-8.5-4 3.8-4 8.5-4 8.5 1.5 8.5 4Z"/>',
-  pin:   '<path d="M12 13.1a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Z"/><path d="M3.9 9c1.9-7.9 14.3-7.9 16.2 0 1.15 4.7-1.8 8.6-4.5 11.1a4.9 4.9 0 0 1-7.2 0C5.7 17.6 2.75 13.7 3.9 9Z"/>',
+  // solar/user-rounded-linear, as drawn. The head is a true r=4 circle on 12,6
+  // and the shoulders are Solar's own curve — the old pair was a smaller head
+  // over a wider body, which at 20px read as a different icon altogether.
+  user:  '<path d="M16 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/><path d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z"/>',
+  // solar/map-point-linear.
+  pin:   '<path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M3.622 10.396C2.896 5.91 6.49 2 11.03 2h1.94c4.54 0 8.134 3.91 7.408 8.396-.513 3.17-2.482 6.054-4.785 8.044-1.59 1.373-2.385 2.06-3.593 2.06s-2.003-.687-3.593-2.06c-2.303-1.99-4.272-4.874-4.785-8.044Z"/>',
   cup:   '<path d="M6.3 3.4h11.4v4.9c0 3.6-2.6 6.2-5.7 6.2s-5.7-2.6-5.7-6.2z"/><path d="M17.9 4.7h1.3a2.1 2.1 0 0 1 0 4.2h-1.1M6.1 4.7H4.8a2.1 2.1 0 0 0 0 4.2h1.1"/><path d="M12 14.5v3.3M8.2 20.8h7.6a3.1 3.1 0 0 0-3.1-3h-1.4a3.1 3.1 0 0 0-3.1 3Z"/>',
   cal:   '<path d="M7.8 2.5v2.4M16.2 2.5v2.4"/><path d="M2.8 12.6c0-4.1 0-6.1 1.2-7.4C5.2 4 7.2 4 11.2 4h1.6c4 0 6 0 7.2 1.2 1.2 1.3 1.2 3.3 1.2 7.4v.9c0 4.1 0 6.1-1.2 7.4-1.2 1.2-3.2 1.2-7.2 1.2h-1.6c-4 0-6 0-7.2-1.2-1.2-1.3-1.2-3.3-1.2-7.4z"/><path d="M3.2 9h17.6"/>',
   block: '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M5.5 5.5 18.5 18.5"/>',
@@ -81,13 +85,17 @@ var LI_ICON = {
   case:  '<path d="M2.6 14.2c0-3.4 0-5.1 1-6.1 1-1.1 2.7-1.1 6.1-1.1h4.6c3.4 0 5.1 0 6.1 1.1 1 1 1 2.7 1 6.1 0 3.4 0 5.1-1 6.1-1 1.1-2.7 1.1-6.1 1.1H9.7c-3.4 0-5.1 0-6.1-1.1-1-1-1-2.7-1-6.1Z"/><path d="M16.2 6.8c0-1.4 0-2.1-.4-2.6-.5-.9-1.5-.9-2.4-.9h-2.8c-.9 0-1.9 0-2.4.9-.4.5-.4 1.2-.4 2.6"/><path d="M2.8 12.9h18.4"/>',
   eye:   '<path d="M3.3 13.4c-.4-.6-.6-1-.6-1.4 0-.4.2-.8.6-1.4C4.9 8.3 8.1 4.6 12 4.6s7.1 3.7 8.7 6c.4.6.6 1 .6 1.4 0 .4-.2.8-.6 1.4-1.6 2.3-4.8 6-8.7 6s-7.1-3.7-8.7-6Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>',
   arrow: '<path d="M3 18.7 9.2 11.5a1.7 1.7 0 0 1 2.4-.1l2 1.8a1.7 1.7 0 0 0 2.4-.1L21 5.6"/><path d="M21.3 10.4V5.3h-5.1"/>',
-  people:'<path d="M9 11.2a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z"/><path d="M15.8 17.6c0 2.1-3 3.4-6.8 3.4s-6.8-1.3-6.8-3.4 3-3.4 6.8-3.4 6.8 1.3 6.8 3.4Z"/><path d="M16.2 4.6a3.6 3.6 0 0 1 0 6M18.2 13.6c2.1.4 3.6 1.4 3.6 2.7 0 1-.9 1.9-2.3 2.4"/>',
+  // solar/users-two-linear — two whole figures, the smaller one behind and to
+  // the right, not one figure with half of another cropped off its shoulder.
+  people:'<path d="M18 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M21 17c0 1.657-2.239 3-5 3s-5-1.343-5-3 2.239-3 5-3 5 1.343 5 3Z"/><path d="M13 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/><path d="M16 17c0 2.21-3.134 4-7 4s-7-1.79-7-4 3.134-4 7-4 7 1.79 7 4Z"/>',
   list:  '<path d="M9 6.6h11.6M9 12h11.6M9 17.4h11.6"/><path d="M4.1 7.4a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 12.8a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 18.2a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z"/>',
   beads: '<path d="M12 18.4a7.4 7.4 0 1 0 0-14.8 7.4 7.4 0 0 0 0 14.8Z" stroke-dasharray="1.4 4.2"/><path d="M12 22.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"/>',
   // Guna matching is a weighing, so it gets the scales rather than a tick.
   scale: '<path d="M12 3.6v17M7.4 20.4h9.2"/><path d="M4.2 6.6 19.8 5"/><path d="M4.2 6.6 1.6 13h5.2zM19.8 5l-2.6 6.4h5.2z"/>',
   // The fourth chip on every sell card: what is still behind the paywall.
-  plus:  '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M8.3 12h7.4M12 8.3v7.4"/>'
+  // solar/add-circle-linear — a full r=10 circle, so it fills its 20px box the
+  // way the three icons beside it do.
+  plus:  '<path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/><path d="M15 12H9M12 9v6"/>'
 };
 /* `s` is the one line under every cover — on the upsell card, on the picker,
    on the tile, and as the opening of the sell page's lead. Three books wrote it
@@ -2304,8 +2312,10 @@ function benefits(r) {
   var cells = list.concat([['plus', rest + ' more\nanswers']]);
   return '<div class="of3-ben">' + cells.map(function (c, i) {
     return '<span class="bn' + (i === 3 ? ' bn-more' : '') + '">' +
+      // 1.5 is Solar's own stroke at a 24 viewBox; 1.6 was a sixteenth heavier
+      // than the Figma icons at every size the card is ever drawn at.
       '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
-        'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" ' +
+        'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
         'stroke-linejoin="round">' + (LI_ICON[c[0]] || LI_ICON.plus) + '</svg></i>' +
       '<b>' + esc(c[1]).replace('\n', '<br>') + '</b>' +
     '</span>';
