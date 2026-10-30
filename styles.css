@@ -860,7 +860,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .of3-got .of3-go{flex:none;width:100%}
 /* The hairline above the price is gone — Figma dropped it when the learn-more
    link gained its own dashed rule, because two rules in 40px of card read as a
-   table. The price now ends the card on the bottom fade alone. */
+   table. The price now ends the card on the bottom fade alone.
    Partner (3726:8258) shows an 18 gap above the Buy row and hides the 16, but
    Kundli and Career hide the 18 and show the 16, so 18 is a leftover toggle on
    one variant rather than a rule. 16 everywhere. */
