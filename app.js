@@ -73,7 +73,9 @@ var LI_ICON = {
   // solar/map-point-linear.
   pin:   '<path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M3.622 10.396C2.896 5.91 6.49 2 11.03 2h1.94c4.54 0 8.134 3.91 7.408 8.396-.513 3.17-2.482 6.054-4.785 8.044-1.59 1.373-2.385 2.06-3.593 2.06s-2.003-.687-3.593-2.06c-2.303-1.99-4.272-4.874-4.785-8.044Z"/>',
   cup:   '<path d="M6.3 3.4h11.4v4.9c0 3.6-2.6 6.2-5.7 6.2s-5.7-2.6-5.7-6.2z"/><path d="M17.9 4.7h1.3a2.1 2.1 0 0 1 0 4.2h-1.1M6.1 4.7H4.8a2.1 2.1 0 0 0 0 4.2h1.1"/><path d="M12 14.5v3.3M8.2 20.8h7.6a3.1 3.1 0 0 0-3.1-3h-1.4a3.1 3.1 0 0 0-3.1 3Z"/>',
-  cal:   '<path d="M7.8 2.5v2.4M16.2 2.5v2.4"/><path d="M2.8 12.6c0-4.1 0-6.1 1.2-7.4C5.2 4 7.2 4 11.2 4h1.6c4 0 6 0 7.2 1.2 1.2 1.3 1.2 3.3 1.2 7.4v.9c0 4.1 0 6.1-1.2 7.4-1.2 1.2-3.2 1.2-7.2 1.2h-1.6c-4 0-6 0-7.2-1.2-1.2-1.3-1.2-3.3-1.2-7.4z"/><path d="M3.2 9h17.6"/>',
+  // solar/calendar-mark-linear. The mark is the point of it: "best dates" is one
+  // day ringed on a month, so a bare calendar says the wrong thing.
+  cal:   '<path d="M7.8 2.5v2.4M16.2 2.5v2.4"/><path d="M2.8 12.6c0-4.1 0-6.1 1.2-7.4C5.2 4 7.2 4 11.2 4h1.6c4 0 6 0 7.2 1.2 1.2 1.3 1.2 3.3 1.2 7.4v.9c0 4.1 0 6.1-1.2 7.4-1.2 1.2-3.2 1.2-7.2 1.2h-1.6c-4 0-6 0-7.2-1.2-1.2-1.3-1.2-3.3-1.2-7.4z"/><path d="M3.2 9h17.6"/><path d="M8 14.2h3.2a1.2 1.2 0 0 1 1.2 1.2v2.3a1.2 1.2 0 0 1-1.2 1.2H8a1.2 1.2 0 0 1-1.2-1.2v-2.3A1.2 1.2 0 0 1 8 14.2Z"/>',
   block: '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M5.5 5.5 18.5 18.5"/>',
   rings: '<path d="M8.6 18.2a6.2 6.2 0 1 0 0-12.4 6.2 6.2 0 0 0 0 12.4Z"/><path d="M15.4 18.2a6.2 6.2 0 1 0 0-12.4 6.2 6.2 0 0 0 0 12.4Z"/>',
   shield:'<path d="M3.7 11.4c0-3.4 0-5.1.4-5.7.4-.5 2-1.1 5.2-2.2l.6-.2c1-.4 1.5-.6 2.1-.6s1.1.2 2.1.6l.6.2c3.2 1.1 4.8 1.7 5.2 2.2.4.6.4 2.3.4 5.7 0 .5 0 1.1 0 1.6-.1 6-5.5 8.4-7 9-.4.2-.9.2-1.3 0-1.6-.6-6.9-3-7-9 0-.5 0-1.1 0-1.6Z"/>',
@@ -95,7 +97,16 @@ var LI_ICON = {
   // The fourth chip on every sell card: what is still behind the paywall.
   // solar/add-circle-linear — a full r=10 circle, so it fills its 20px box the
   // way the three icons beside it do.
-  plus:  '<path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/><path d="M15 12H9M12 9v6"/>'
+  plus:  '<path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/><path d="M15 12H9M12 9v6"/>',
+  // solar/cup-hot-linear. The first meeting is a cup of coffee, not a crowd —
+  // `people` said "two of you" where the line already says it, and said nothing
+  // about where. Drawn at 24 rather than 20, see .ic-cuphot.
+  cuphot:'<path d="M17 9h1a3 3 0 0 1 0 6h-1"/><path d="M3 10c0-.943 0-1.414.293-1.707C3.586 8 4.057 8 5 8h10c.943 0 1.414 0 1.707.293C17 8.586 17 9.057 17 10v3a7 7 0 1 1-14 0v-3Z"/><path d="M2 21h16"/><path d="M7.5 2c-.5.5-.5 1.5 0 2s.5 1.5 0 2M11 2c-.5.5-.5 1.5 0 2s.5 1.5 0 2"/>',
+  // solar/pie-chart-linear — the guna score is 36 parts of a whole, so it gets
+  // the shape that says "out of" rather than the bar chart that says "over time".
+  pie:   '<path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/><path d="M12 2v10h10"/>',
+  // solar/heart-linear.
+  heart: '<path d="M12 5.5C9.8 3.3 6.5 3.5 4.8 5.6c-1.7 2.1-1.4 5.3.6 7.3l6.6 6.6 6.6-6.6c2-2 2.3-5.2.6-7.3-1.7-2.1-5-2.3-7.2-.1Z"/>'
 };
 /* `s` is the one line under every cover — on the upsell card, on the picker,
    on the tile, and as the opening of the sell page's lead. Three books wrote it
@@ -2296,10 +2307,15 @@ function skin(r) { return SELL_SKIN[r.id] || SELL_SKIN.partner; }
    of them tile in a 2x2 without a single one wrapping to three. The long
    sentences still run the detail page; this is the shop window. */
 var SELL_BLURBS = {
+  // The icons are Figma's own picks, which are not the obvious ones: a cup for
+  // the first meeting rather than two people (the line already says "your"), a
+  // pie for a score out of 36 rather than a bar chart, a heart for whether the
+  // match is real, and a shield for the doshas because a dosha is a thing you
+  // are protected from, not a list.
   partner:  [['user', "Partner's\nimage"], ['pin', 'Where you\nwill meet'],
-             ['people', 'Your first\nmeeting']],
-  marriage: [['chart', 'Guna score\nout of 36'], ['scale', 'Real match\nor on paper'],
-             ['list', 'Which gunas\nmatch']],
+             ['cuphot', 'Your first\nmeeting']],
+  marriage: [['pie', 'Guna score\nout of 36'], ['heart', 'Real match\nor on paper'],
+             ['shield', 'Dosha and\nremedies']],
   career:   [['spark', 'Your big\ntheme'], ['cal', 'Best dates\nfor a raise'],
              ['case', 'Job or\nbusiness']]
 };
@@ -2314,9 +2330,10 @@ function benefits(r) {
     return '<span class="bn' + (i === 3 ? ' bn-more' : '') + '">' +
       // 1.5 is Solar's own stroke at a 24 viewBox; 1.6 was a sixteenth heavier
       // than the Figma icons at every size the card is ever drawn at.
-      '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
-        'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
-        'stroke-linejoin="round">' + (LI_ICON[c[0]] || LI_ICON.plus) + '</svg></i>' +
+      '<i aria-hidden="true"><svg class="ic-' + c[0] + '" viewBox="0 0 24 24" ' +
+        'fill="none" stroke="currentColor" stroke-width="1.5" ' +
+        'stroke-linecap="round" stroke-linejoin="round">' +
+        (LI_ICON[c[0]] || LI_ICON.plus) + '</svg></i>' +
       '<b>' + esc(c[1]).replace('\n', '<br>') + '</b>' +
     '</span>';
   }).join('') + '</div>';
@@ -2421,7 +2438,7 @@ function offer3Card() {
         // so, and it is the only wording on the card that admits there is more
         // behind it than the grid shows. Not on Kundli Milan: that card's whole
         // button already reads Learn More.
-        (ask ? '' : '<span class="of3-more">Learn more about this report' + CHEV_R + '</span>') +
+        (ask ? '' : '<span class="of3-more">Learn More about this Report' + CHEV_R + '</span>') +
         '<div class="of3-foot' + (ask ? ' of3-foot-ask' : '') + '">' +
           (ask
             ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
