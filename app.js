@@ -1669,8 +1669,7 @@ function histSaid(r, sub, body, actions) {
       '<span class="hw-av"><img src="assets/hemali.png" alt="">' +
         '<i class="hw-dot" aria-hidden="true"></i></span>' +
       '<span class="hw-nm">' +
-        '<span class="hw-top"><b>Astro Hemali</b>' +
-          '<span class="hw-rate"><s>₹20/min</s><em>₹10/min</em></span></span>' +
+        '<span class="hw-top"><b>Astro Hemali</b></span>' +
         '<small>' + esc(sub) + '</small>' +
       '</span>' +
     '</header>' +
