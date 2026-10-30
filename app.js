@@ -2370,9 +2370,6 @@ function sellBook(r) {
 
 /* The offer as it lands in the chat, built to Figma 3726:8279. */
 function offer3Card() {
-  // Once she owns one, the offer leaves the thread entirely — segueCard() is
-  // the follow-up, and two follow-ups in a row is one too many.
-  if (state.paid) return '';
   var r = leadReport();
   var s = skin(r);
   // Kundli Milan still cannot be bought off a chart the app already holds, so
@@ -2400,16 +2397,34 @@ function offer3Card() {
       '<i class="of3-sep"></i>' +
       '<b>' + inr(r.sold) + ' readers</b>' +
     '</div>' +
-    benefits(r) +
-    '<div class="of3-foot' + (ask ? ' of3-foot-ask' : '') + '">' +
-      (ask
-        ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
-            'Learn More</button>'
-        : '<div class="of3-price"><i>90% OFF</i><span><s>₹499</s><b>₹49</b></span></div>' +
-          '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
-    '</div>' +
+    // Bought: the card stays in the thread and stops selling. No questions, no
+    // price, no hairline — she has already read the pitch and paid it, so all
+    // that is left is the door into the thing she owns.
+    (owns(r.id)
+      ? '<div class="of3-got">' +
+          '<b>\u2713 Bought \u00b7 Ready to read</b>' +
+          '<button class="of3-go" type="button" data-open-rep="' + r.id + '">' +
+            'Read Report</button>' +
+        '</div>'
+      : benefits(r) +
+        // The four questions are a sample, not the contents page. The link says
+        // so, and it is the only wording on the card that admits there is more
+        // behind it than the grid shows. Not on Kundli Milan: that card's whole
+        // button already reads Learn More.
+        (ask ? '' : '<span class="of3-more">Learn more about this report' + CHEV_R + '</span>') +
+        '<div class="of3-foot' + (ask ? ' of3-foot-ask' : '') + '">' +
+          (ask
+            ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
+                'Learn More</button>'
+            : '<div class="of3-price"><i>90% OFF</i><span><s>₹499</s><b>₹49</b></span></div>' +
+              '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
+        '</div>') +
   '</div>';
 }
+
+var CHEV_R = '<svg class="of3-more-c" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+  '<path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" stroke-width="1.6" ' +
+  'stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 /* True while a report still owes a second chart. Every sell surface asks it,
    because the question they put to her changes shape: the other two are a
