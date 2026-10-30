@@ -719,7 +719,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* A step back from the title without leaving its hue — the rating and the
    reader count are the caption to the name, not a second claim. */
 .of3-badge b{display:flex;align-items:center;gap:4px;
-  font:500 14px/20px var(--sans);color:var(--s-ink2)}
+  font:500 14px/20px var(--sans);color:var(--s-ink2);opacity:.84}
 .of3-sep{flex:none;width:1px;height:6px;background:var(--s-ink2);opacity:.35}
 /* The hinge. Perspective on the wrapper, the cover pivoting on its spine over
    a page leaf, so there is paper in the gap instead of a hole. */
@@ -823,8 +823,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Four questions in a 2x2 rather than a column of three. The column kept the
    card tall and still only ever showed three; the grid shows the same three
    plus the count of what is behind the paywall, in less height. */
+/* Figma 3726:8260 sets 20 here, but 20 above a 12 row gap makes the band under
+   the badge read as a break in the card rather than a breath — the grid looks
+   like a second card. 12 matches the gap between the grid's own rows, so the
+   four questions and the line that introduces them belong to one block. */
 .of3-ben{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;
-  gap:12px;margin-top:20px}
+  gap:12px;margin-top:12px}
 .of3-ben .bn{display:flex;align-items:center;gap:10px;min-width:0}
 /* The glyph on its own tinted tile. It is the report's ink at 12%, so the four
    marks read as one set and none of them competes with the Buy Now. */
