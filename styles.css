@@ -1431,13 +1431,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* ---------- R.2 Report page ---------- */
 /* The hero photo fades into white, so the card below it has no visible seam. */
+/* Figma 3755:8067 — 360x407 above the status bar, and nothing in it but the
+   film. It was 500 and carried two washes over the picture; at that height the
+   hero was most of the first screen and the title card only arrived on a
+   scroll. 93px off brings the name of the report back above the fold. */
 .r2-hero{position:relative;display:flex;flex-direction:column;align-items:center;
-  /* The book starts this far down, and that is what sets the height of the
-     picture above it. 144 rather than 104: at the shorter height the couple
-     were packed against the book with nothing over their heads, and the arch
-     they are standing in had no room to be an arch. The extra 40px is all
-     air above the faces, which is the difference between a crop and a frame. */
-  padding:calc(var(--sbh) + 144px) 12px 28px;
+  padding:calc(var(--sbh) + 144px) 12px 17px;
   border-radius:0 0 24px 24px;overflow:hidden;background:var(--rose)}
 /* The couple behind the curtain, framed so both heads clear the book entirely.
    The source is a 720x1280 portrait clip with its audio track removed from the
@@ -1462,7 +1461,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The numbers above belong to the Partner footage, not to the slot — they were
    measured against that frame. A second clip with a different composition has
    to be framed on its own, so each one carries its crop. */
-.r2-vid.vid-partner{object-position:50% 62%;transform:translateY(-74px) scale(1.25)}
+/* Re-framed for the 407 hero. The scale stays — it is what makes the two of
+   them people rather than figures in a wide shot, and dropping it put 97px of
+   curtain between the arch and their heads where Figma has 47. Only the
+   translate changes: the cover crop is driven by the width, so the film is
+   450x800 either way, and -2 rather than -74 is what holds the couple exactly
+   where they were: a shorter hero takes 93 more off the top through
+   object-position alone, so the translate has to give nearly all of it back.
+   Figma's own still is stretched 1.37x wide; the clip is not, because a
+   stretched person reads as a mistake rather than as a crop. */
+.r2-vid.vid-partner{object-position:50% 62%;transform:translateY(-2px) scale(1.25)}
 /* Kundali Milan is a tall 720x1280 with the two of them filling it: heads at
    about a seventh down, the joined hands at two fifths. Anchored to the top so
    the crop comes off the bottom, where there is only cloth — faces and hands
@@ -1483,21 +1491,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .r2-hero.has-bg{background-color:#fff;background-size:cover;
   background-position:50% 8%;background-repeat:no-repeat}
 .r2-hero.has-bg .r2-vid{display:none}
-.r2-hero.has-bg::after{content:none}
-/* The wash over the video is what keeps the cover legible: the rose lifted
-   through the middle of the frame, so the artwork sits on a settled ground
-   rather than on top of a moving picture. Same stacking level as the video and
-   later in the tree, so it paints over it without a z-index race. */
-.r2-hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(60% 36% at 50% 70%,rgba(237,212,212,.92) 0,rgba(237,212,212,0) 72%),
-    linear-gradient(180deg,rgba(230,199,200,.5) 0,rgba(230,199,200,0) 13%)}
-/* The wash used to start at 30% and take most of the couple with it. It now
-   only softens the last fifth, where the hero meets the white page. The top
-   half is left alone entirely — that is where the two heads are, and any veil
-   over them is the difference between a couple and a smudge. */
+/* The rose wash that used to sit over the middle of the frame is gone. It was
+   there to settle the artwork behind the standing cover, and the cover left; on
+   a clip that is already soft it only took the colour out of the couple. The
+   hero is the film and the one fade that joins it to the card — Figma 3755:8067
+   has exactly these two layers and nothing else. */
 .r2-hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,0) 72%,rgba(255,255,255,.92) 100%)}
+  background:linear-gradient(180deg,rgba(255,255,255,0) 80.24%,#fff 100%)}
 /* Sticky, and the same height as the reader's header so the two flows share one
    silhouette. The negative margin is what puts the hero back underneath it:
    the nav keeps its place in flow for stickiness, then gives the space back. */
@@ -1534,9 +1534,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    so the two of them were arguing over the same part of the picture. The film
    is the first impression and the book is the object sitting on it; the object
    has to be the smaller of the two for that to read. */
+/* Figma 3785:11537 — the spread sits at y281 and measures 163x108.7, which is
+   the 201x134 component at 81%. The hero lost 93px and the book had to come
+   down with it; left at full size it filled the shorter frame edge to edge and
+   the couple behind it had nowhere to stand. */
 .r2-bookwrap{position:relative;z-index:5;display:flex;justify-content:center;
-  margin:200px 0 -14px}
-.r2-bookwrap .bkt,.r2-bookwrap .bk3{width:107px;height:142px}
+  margin:131px 0 0}
+.r2-bookwrap .bkt,.r2-bookwrap .bk3{width:87px;height:115px}
 /* The page block, the back board and the standing shadow all come off here.
    This is the one place the book lies open: the box ends up twice the spread's
    width, so a fore-edge pinned to its right stands on its own in mid-air, and a
@@ -1566,7 +1570,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    It opens once. A book that keeps shutting itself on the page where she is
    deciding to buy it is withholding the thing she came to look at, so the
    swing runs a single time and the spread simply stays open. */
-.r2-bookwrap .bkt{--lay:.94;--layx:50px;perspective:1100px;transform-origin:center;
+.r2-bookwrap .bkt{--lay:.94;--layx:40px;perspective:1100px;transform-origin:center;
   animation:bookLayHold 1.9s cubic-bezier(.33,1,.68,1) .9s both}
 /* What the book was missing was not detail but contact: a 252x167 painting with
    no shadow is a sticker on the hero, not an object lying on it. Two marks fix
@@ -1577,8 +1581,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    134px wrapper, y 5 to 172).
    First the contact shadow: an ellipse under the spread, tucked inside the
    painted edges so it reads as the book's own weight. */
-.r2-bookwrap::after{content:'';position:absolute;z-index:4;left:-30px;width:168px;
-  bottom:3px;height:18px;border-radius:50%;
+.r2-bookwrap::after{content:'';position:absolute;z-index:4;left:-24px;width:136px;
+  bottom:3px;height:15px;border-radius:50%;
   background:radial-gradient(50% 50% at 50% 50%,rgba(74,24,8,.34) 0,rgba(74,24,8,0) 72%);
   filter:blur(5px);opacity:0;
   animation:bookSeat .5s ease-out 2.5s forwards}
@@ -1586,7 +1590,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    is the darkest part of an open book. A narrow band of multiply over the
    middle, with no hard edge on either side of it. */
 .r2-bookwrap::before{content:'';position:absolute;z-index:6;pointer-events:none;
-  left:50%;width:27px;margin-left:-13.5px;top:10px;bottom:13px;
+  left:50%;width:22px;margin-left:-11px;top:8px;bottom:11px;
   mix-blend-mode:multiply;opacity:0;
   background:linear-gradient(90deg,rgba(142,97,72,0) 0,rgba(142,97,72,.3) 44%,
     rgba(142,97,72,.36) 50%,rgba(142,97,72,.3) 56%,rgba(142,97,72,0) 100%);
@@ -1658,7 +1662,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    air. The book keeps its position; the heading starts below where the book
    ends instead of behind it. 44 and not 52 — at 52 the clearance read as a gap
    between the book and its own title rather than the title breathing. */
-.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-36px auto -20px;
+.r2-card{position:relative;z-index:4;width:calc(100% - 32px);margin:-33px auto -20px;
   background:#fff;border-radius:20px;padding:44px 16px 16px;text-align:center}
 /* Figma 3186:204216 — Inter Bold 20/30 on #1d2939, centred, in a 290 box.
    It stays centred and it stays alone: this is the title on the cover of the
@@ -1850,9 +1854,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ---------- Sticky buy bar · 3111:200974 ----------
    White, not a gradient. Measured off the board: 10/0/12/0 with a 10px gap,
    the "why" line edge to edge on #F9FAFB, then price and button inset 16. */
+/* Figma 3755:8114 — the bar casts upward instead of being ruled off. A 1px line
+   says the page ends here; a shadow says the page carries on underneath, which
+   is the truth on a screen you can still scroll. The hairline survives as the
+   first, tight shadow so the edge stays crisp against white sections. */
 .buybar{flex:none;position:relative;z-index:12;display:flex;flex-direction:column;gap:0;
   padding:0 0 calc(12px + var(--sab,env(safe-area-inset-bottom,0px)));
-  background:#fff;border-top:1px solid var(--g200)}
+  background:#fff;
+  box-shadow:0 -1px 0 rgba(16,24,40,.06),0 -10px 10px rgba(16,24,40,.14)}
 /* The argument for the price, Airbnb's "Rare find!" bar: a flat tinted band
    edge to edge, sitting flush on the top rule with the price row beneath it.
    It had a radius and a border before, which made a floating chip of a line
@@ -1876,7 +1885,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .buybar .price small i{grid-column:1/-1;justify-self:start;margin-top:-1px;
   padding:2px 5px;border-radius:5px;font:400 12px/18px var(--sans);
   background:linear-gradient(90deg,#ECFDF3 0%,#D1FADF 100%);color:#027A48}
-.buy-row .btn{height:40px;border-radius:12px;font:400 16px/24px var(--sans)}
+.buy-row .btn{height:40px;border-radius:12px;font:400 16px/24px var(--sans);
+  box-shadow:0 1px 1px rgba(16,24,40,.06)}
 /* With the price gone the row is only buttons, and the 16px gap that separated
    a number from a button is too much between two buttons. */
 .buy-row.owned{gap:10px}
