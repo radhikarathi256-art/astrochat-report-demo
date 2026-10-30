@@ -2405,7 +2405,7 @@ function offer3Card() {
       (ask
         ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
             'Learn More</button>'
-        : '<div class="of3-price"><i>90% OFF</i><span><b>₹49</b><s>₹499</s></span></div>' +
+        : '<div class="of3-price"><i>90% OFF</i><span><s>₹499</s><b>₹49</b></span></div>' +
           '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
     '</div>' +
   '</div>';
