@@ -2290,16 +2290,23 @@ function sellCard(r) {
    temple motif rising behind the cover and a fade bringing the bottom back to
    something text can sit on. Two inks per skin, because the title carries the
    card and everything under it steps back one notch without leaving the hue. */
+/* Figma `bg` frames 3705:10229 / 10263 / 10297. The wash is far paler than it
+   reads in isolation: it starts tinted at the left, where the title is, and is
+   effectively white by the right-hand end, where the book stands. The old ramp
+   went the other way — it kept getting *darker* towards the cover, so the book
+   was cut out of a dark field instead of standing in the light, and the card
+   competed with the chat bubble above it. `sh` is the drop shadow, which is warm
+   brown on the two pink skins and a cool grey-blue on Career. */
 var SELL_SKIN = {
-  partner:  { g: ['#FDEEF0 0%', '#F7CDD3 45%', '#E2A4BB 78%', '#D292B0 100%'],
-              m: ['#FDEEF1', '#ECB8C8', '#D292B0'], fade: '253,240,242',
-              ink: '#6B1D45', ink2: '#7A2E57' },
-  marriage: { g: ['#FCF3E6 0%', '#F0DCBC 45%', '#DCB987 78%', '#C99B68 100%'],
-              m: ['#FDF3E2', '#E8C899', '#C99B68'], fade: '252,244,232',
-              ink: '#7A4527', ink2: '#7A4527' },
-  career:   { g: ['#EEF2FB 0%', '#D6E0F5 42%', '#E9DCC0 74%', '#F6D58E 100%'],
-              m: ['#FFF6DC', '#F6D58E', '#E8B54A'], fade: '241,244,251',
-              ink: '#1F2A5C', ink2: '#3B4677' }
+  partner:  { g: ['#FCEEF1 0%', '#FDF4F5 45%', '#FFF9FA 78%', '#FFFCFC 100%'],
+              m: ['#FDEEF1', '#ECB8C8', '#D292B0'], fade: '255,252,252',
+              sh: 'rgba(122,46,14,.22)', ink: '#6B1D45', ink2: '#7A2E57' },
+  marriage: { g: ['#FBF0E4 0%', '#FCF5EC 45%', '#FEFAF5 78%', '#FFFDFA 100%'],
+              m: ['#FDF3E2', '#E8C899', '#C99B68'], fade: '255,253,250',
+              sh: 'rgba(122,46,14,.22)', ink: '#7A4527', ink2: '#7A4527' },
+  career:   { g: ['#EDF1FA 0%', '#F4F6FC 42%', '#FAFAFC 74%', '#FFFDF8 100%'],
+              m: ['#FFF6DC', '#F6D58E', '#E8B54A'], fade: '255,253,248',
+              sh: '#D8DFEF', ink: '#1F2A5C', ink2: '#3B4677' }
 };
 function skin(r) { return SELL_SKIN[r.id] || SELL_SKIN.partner; }
 
@@ -2407,6 +2414,7 @@ function offer3Card() {
   // queue straight to payment.
   return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '" ' +
       'style="--s-grad:linear-gradient(90deg,' + s.g.join(',') + ');' +
+      '--s-sh:' + s.sh + ';' +
       '--s-ink:' + s.ink + ';--s-ink2:' + s.ink2 + ';--s-fade:' + s.fade + '">' +
     // Wash, rosette and fade all live behind one clipped layer, so the book can
     // still stand proud of the top edge without being guillotined by it.

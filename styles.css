@@ -675,29 +675,43 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   /* No overflow:hidden — the book stands 12px proud of the top edge and would
      be guillotined by it. `.of3-bg` does the clipping for everything else. */
   padding:22px 16px 16px;border-radius:20px;background:var(--s-grad);
-  box-shadow:0 12px 28px -12px rgba(122,46,14,.22),0 0 0 1px rgba(16,24,40,.04)}
-/* Edge to edge, dark pink into white. The painted banner was a second picture
-   on a card that already has one — the book — and the two of them were
-   competing for the same corner, with the title caught in the middle of both.
-   Colour behind the words puts the only artwork back where it belongs.
-   The dark end is on the left because that is where the reading starts, and it
-   holds through 40% so the title and the rating both sit on ink dark enough to
-   take white. Past that it opens to the card's own white, which is why the
-   block has no bottom edge to draw: the right-hand side simply becomes the card,
-   and the cover stands in the light rather than being cut out of the dark.
-   Radius only on the top corners — the bottom of this block is the middle of
-   the card, and rounding it there would have drawn a seam. */
+  /* Figma gives the two pink skins a warm brown shadow and Career a cool
+     grey-blue one, so the colour is a property of the skin rather than a
+     constant. The 1px hairline that used to ride with it is gone: the card now
+     carries a 6px white border of its own, and a dark line immediately outside
+     a white edge drew a seam rather than an outline. */
+  box-shadow:0 12px 28px -12px var(--s-sh,rgba(122,46,14,.22))}
+/* Edge to edge, left to right — but only just. Figma's wash starts tinted where
+   the title is and is white by the right-hand end, where the book stands; the
+   ramp used to run the other way, getting *darker* towards the cover, so the
+   book was cut out of a dark field instead of standing in the light and the
+   whole card shouted over the chat bubble above it. Four stops rather than two
+   because the interesting part is the first half; past 78% it is the card's own
+   white and there is nothing left to say. */
 /* The wash's furniture, clipped to the card's own radius. */
 .of3-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:20px;
   pointer-events:none}
+/* Figma 3729:10220 — a 6px white border inset on the card, drawn above the
+   wash and the rosette. It is what turns the tint into a card sitting on the
+   chat sheet rather than a coloured panel bleeding to its own corners, and it
+   is why the motif can run off the top edge without looking like a mistake.
+   An inset ring rather than a real border so it costs the layout nothing. */
+.of3-bg::after{content:"";position:absolute;inset:0;border-radius:20px;
+  box-shadow:inset 0 0 0 6px #fff}
 /* Figma puts the rosette 144 from the left of a 328 card and 78 above its top,
    so it rises out from behind the book's spine. Pinned to the right edge
    instead of the left, because the card is fluid and the book is not. */
+/* Figma 3705:10230 carries the whole rosette at 35%. It used to run at full
+   strength because it was fighting a dark wash; against the pale one it is the
+   loudest thing on the card unless it is held back. */
 .of3-motif{position:absolute;right:-52px;top:-78px;width:236px;height:236px;
-  display:block}
-/* The lower two-thirds brought back to something text can sit on, without
-   flattening the wash it is sitting in. */
-.of3-veil{position:absolute;left:0;right:0;bottom:0;height:240px;
+  display:block;opacity:.35}
+/* Figma 3704:10189 — pinned to y112, 258 tall, which on a 363 card means it is
+   clipped before it reaches its own last stop. Anchored to the top rather than
+   the bottom on purpose: 112 is the line under the rating, so the fade always
+   starts exactly where the questions start, whichever of the three heights the
+   card happens to be. Bottom-anchored it drifted with the variant. */
+.of3-veil{position:absolute;left:0;right:0;top:112px;height:258px;
   background:linear-gradient(180deg,rgba(var(--s-fade),0) 0%,
     rgba(var(--s-fade),.75) 45%,rgba(var(--s-fade),.95) 100%)}
 /* Grain, because a two-stop gradient across 360px bands. The film next to it
