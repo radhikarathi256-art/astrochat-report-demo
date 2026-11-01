@@ -1948,6 +1948,9 @@ function submitMatch() {
   // her own score turns the free thing she agreed to into a bill. The page is
   // now carrying the match itself, so the reading happens first and the price
   // waits at the bottom where she can get to it when she wants it.
+  // From the top: the form is now the way in to this page, so she has not seen
+  // its cover yet and must not land halfway down it.
+  $('#report [data-scroll]').scrollTop = 0;
   show('report', 'fade');
 }
 
@@ -3234,6 +3237,24 @@ document.addEventListener('click', function (e) {
   if (t.hasAttribute('data-pick')) {
     state.pick = t.getAttribute('data-pick');
     renderReport();
+    /* Kundli Milan takes the form first, every time, and the detail page after
+       it. The other two reports are about her alone, so their page can make its
+       case straight away; this one is about two people and the second of them
+       is only ever whoever she last typed in. Opening the page before asking
+       would mean printing a guna score, a verdict and a price for a man the app
+       picked out of a chat transcript — and a family can put a second rishta in
+       front of her between one visit and the next, so remembering is exactly
+       the wrong default. Asking costs twenty seconds and is the difference
+       between a reading and a horoscope-shaped coincidence. Once she owns it
+       the report is already made, so there is nothing left to ask. */
+    var pr = reportById(state.pick);
+    if (pr.needsMatch && !owns(pr.id)) {
+      // `openMatch` shows rather than goes, so the push is ours to make — else
+      // the back arrow on the form skips whatever she tapped it from.
+      state.stack.push(state.screen);
+      openMatch();
+      return;
+    }
     // The rail at the foot of this page picks too, so it can already be the
     // current screen. `go` would push it onto its own back stack, so only the
     // scroll comes back to the hero — otherwise she lands mid-way down a
