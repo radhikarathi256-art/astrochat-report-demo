@@ -508,7 +508,7 @@ var REPORTS = [
        Both Today surfaces read this pair, so there is one sentence to change
        rather than two to keep in step. */
     tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'Match birth charts and get your compatibility report' },
-    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Birth charts matched \u2014 get your compatibility report' },
+    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Birth charts matched. Get your compatibility report' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -600,7 +600,7 @@ var REPORTS = [
        Its own average is far too light to put white type on, so the card takes
        the hue and drops the value: the same sand, lit from much further away. */
     tint: 'linear-gradient(94deg,#4A352A 0%,#6B4F3E 40%,#BCA38C 74%,#fff 100%)',
-    push: 'Mansi, October is almost gone and nothing has moved. Your next three months, read month by month \u2014 \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    push: 'Mansi, October is almost gone and nothing has moved. Your next three months, read month by month. \u20b949 today instead of \u20b9499 \ud83d\udcd6',
     tkt: { t: 'Your Career report is ready', s: 'A report on November, December and January, month by month' },
     /* Career is bought for timing, so the months are the headline. The year
        sits under them rather than inside the range, which keeps the figure to
@@ -1504,13 +1504,13 @@ function openRep(id) {
    exists because she read it, which is the whole reason this bar is here. */
 var ASKS = {
   partner: [
-    'My report says north-west — how far is that?',
+    'My report says north-west. How far is that?',
     'The image in my report, is that how he looks?',
     'Chapter 3 says Rahu is blocking it. For how long?',
     'My report gives a 2027 window. Can I move it?'
   ],
   marriage: [
-    'My report says low Manglik — does that need a remedy?',
+    'My report says low Manglik. Does that need a remedy?',
     '28 of 36 gunas in my report. Is that enough?',
     'My report puts the window in late 2027. Why then?',
     'The in-laws chapter says six months. Six months of what?'
@@ -1519,7 +1519,7 @@ var ASKS = {
     'My report says March for the switch. Which week?',
     'It says my work is invisible, not weak. How do I fix that?',
     'My report says job, not business, this year. Why?',
-    'Saturn on my tenth lord — is that the slow year it means?'
+    'Saturn is on my tenth lord. Is that the slow year it means?'
   ]
 };
 
@@ -2986,7 +2986,7 @@ function renderGuideTile() {
     '<button class="tile" type="button" data-go="read">' +
       book3d(reportById(state.pick)) +
       '<span class="tt"><b>' + esc(boughtTitle()) + '</b>' +
-        '<small>Full report open \u2713 \u2014 ask Hemali for the remedies</small></span>' +
+        '<small>Your full report is open. Ask Hemali for the remedies</small></span>' +
       '<i class="tag green">Ready</i>' +
       '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
     '</button>';
