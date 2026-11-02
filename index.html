@@ -333,7 +333,10 @@
             <i class="r2-div"></i>
             <div><b id="r2Reads">13,000</b><small>Reads</small></div>
             <i class="r2-div"></i>
-            <div><b>One-time</b><small>Payment</small></div>
+            <!-- The third stat is the one that differs per report: Partner is
+                 bought once, a Milan can be re-run against anyone, and a Career
+                 edition covers a named quarter. One column, three answers. -->
+            <div><b id="r2Type">One-time</b><small id="r2TypeL">Payment</small></div>
           </div>
         </div>
 
@@ -377,7 +380,11 @@
         <!-- Not "what readers say": what they found. The quotes that work are
              the ones naming a thing the report called before it happened. -->
         <div class="r2-block">
-          <h2 class="r2-h">What Users Found</h2>
+          <h2 class="r2-h" id="r2RevH">What Users Found</h2>
+          <!-- The rating again, here rather than only in the stat bar: by the
+               time she reaches the quotes the bar is five screens behind her,
+               and a number is what turns four strangers into a sample. -->
+          <p class="rv-sum" id="r2RevSum"></p>
           <!-- No count line and no "show all" button. The board has both
                because that product has thousands of reviews; we have four, and
                a door marked "all reviews" that opens onto the same four is

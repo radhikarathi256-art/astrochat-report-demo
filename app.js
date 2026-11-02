@@ -59,12 +59,6 @@ var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
    own viewBox so nothing has to be nudged at all. */
 var STAR_D = 'M12 3.05 14.9 8.95l6.5.95-4.7 4.6 1.1 6.45L12 17.9 6.2 20.95l1.1-6.45-4.7-4.6 6.5-.95z';
 var STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_D + '"/></svg>';
-/* The unearned half of a review score. Same outline as the filled one so a row
-   of five reads as five of one thing — the glyph pair did not, because ☆ is not
-   ★ hollowed out, it is a separate drawing with its own width, which is what
-   made four-star rows sit a little wider than five-star rows. */
-var STAR_OFF = '<svg class="star star-off" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_D + '"/></svg>';
-
 var LI_ICON = {
   // solar/user-rounded-linear, as drawn. The head is a true r=4 circle on 12,6
   // and the shoulders are Solar's own curve — the old pair was a smaller head
@@ -129,7 +123,7 @@ var REPORTS = [
     // halves of what the report answers, which "Your Partner Prediction" does
     // not. Reports without one fall back to "Your " + t.
     tl: 'Your Future Partner & Marriage Prediction Report',
-    why: 'Learn how Rahu is blocking you from meeting him',
+    why: 'See the year your chart points to for marriage',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // Partner is the one report whose art is photographed rather than painted:
     // Figma 3311:6840 for the cover and 3254:6840 for the open spread, exported
@@ -153,30 +147,33 @@ var REPORTS = [
     // therefore an argument for none of them. The chips say the same terms in
     // a tenth of the height and do not pretend to be a sales point.
     chips: ['Partner image', 'Birth chart analysis'],
+    // The third stat column. Partner is bought once and that is the fact worth
+    // printing beside a price.
+    stat3: { v: 'One-time', l: 'Payment' },
+    // The line under the title, as the promise rather than as a description.
+    lead: 'See who you will marry, and when you will meet them',
     // Quotes that name something the report called before it happened. A quote
     // that only says "very good" proves nothing and sells nothing.
     revs: [
-      { s: 5, n: 'Priya S., Jaipur', q: 'It said my partner would be from a creative field. Six months later I got a rishta from a graphic designer.' },
-      { s: 5, n: 'Neha K., Indore',  q: 'The part about meeting through people who already know me is exactly how it happened.' },
-      { s: 4, n: 'Ritu M., Nashik',  q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' },
-      { s: 5, n: 'Sneha V., Kolkata', q: 'I showed the partner image to my mother before the first meeting. She went quiet when she saw him.' }
+      { n: 'Priya S., Jaipur', t: "Partner's field matched", q: 'It said my partner would be from a creative field. Six months later I got a rishta from a graphic designer.' },
+      { n: 'Neha K., Indore',  t: 'How we met matched', q: 'The part about meeting through people who already know me is exactly how it happened.' },
+      { n: 'Ritu M., Nashik',  t: 'Pattern named', q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' },
+      { n: 'Sneha V., Kolkata', t: 'Partner image matched', q: 'I showed the partner image to my mother before the first meeting. She went quiet when she saw him.' }
     ],
     /* Figma 3111:201622 — eight, and the top three said in the frame's own
        words. The chat card shows three and counts "+5"; History counts all
        eight. Both numbers come from this one list, so they cannot drift. */
     learn: [
-      'Image of your future partner',
-      'How and where you will meet',
-      'What your first meeting looks like',
-      'When real love arrives in this life',
-      'What is blocking that person from reaching you now',
-      'Love or arranged, what the chart says',
-      'The kind of wrong people you keep attracting',
-      'What to do each day so that person comes closer'
+      'What will my future partner look like, and what will they do?',
+      'Where and how will we meet?',
+      'When will I get married?',
+      'Love or arranged, what does my chart say?',
+      'What is delaying my marriage right now?',
+      'What can I do to meet them sooner?'
     ],
     // Parallel to `learn`, one key per line. Kept as its own list rather than
     // folded into the strings so the copy stays copy and stays translatable.
-    licons: ['user', 'pin', 'cup', 'cal', 'block', 'rings', 'shield', 'sun'],
+    licons: ['user', 'pin', 'cal', 'rings', 'block', 'sun'],
     /* What Hemali says in the chat just before the card. It has to live on the
        report, not in the day's script: the line names a house and a planet, so
        a script that hard-codes "Saturn, your tenth house" while the card under
@@ -285,11 +282,14 @@ var REPORTS = [
       heroPos: '50% 70%'
     },
     chips: ['36 guna match', 'Dosha check'],
+    // A Milan can be run again against anyone, which is the one thing about it
+    // worth saying twice.
+    stat3: { v: 'Unlimited', l: 'Type' },
     revs: [
-      { s: 5, n: 'Anjali D., Surat',  q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
-      { s: 5, n: 'Kavya R., Chennai', q: 'The low-Manglik reading saved me months of panic. Two astrologers had said the opposite.' },
-      { s: 4, n: 'Pooja N., Bhopal',  q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' },
-      { s: 5, n: 'Isha G., Lucknow',  q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
+      { n: 'Anjali D., Surat',  t: 'Timing matched', q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
+      { n: 'Kavya R., Chennai', t: 'Manglik doubt cleared', q: 'The low-Manglik reading saved me months of panic. Two astrologers had said the opposite.' },
+      { n: 'Pooja N., Bhopal',  t: 'In-laws matched', q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' },
+      { n: 'Isha G., Lucknow',  t: 'Guna count matched', q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
     ],
     /* Twelve, and the top three are score, verdict, breakdown — in that order,
        because the chat card only shows three and those three have to answer
@@ -415,24 +415,18 @@ var REPORTS = [
          weakest thing a sentence can end on when the report is the thing being
          sold. Say what Nadi costs her, say it is survivable, and stop. Three
          wrapped lines became two. */
-      why: 'Nadi is the one families refuse over. Yours can be cancelled \u2014 the remedy is inside.',
+      why: 'Get the remedy written for your Nadi dosha',
       head: 'What Your 28 Does Not Tell You',
+      lead: 'Both charts are in. See what your 28 really means.',
       learn: [
-        'Why all 8 missing points are Nadi, and what Nadi actually governs',
-        'Whether your Nadi dosha is cancelled, and the exact remedy if it is not',
-        'Whether he is Manglik, and how strongly',
-        'How the two of you match on temperament and daily life',
-        'How you match on money, spending and saving',
-        'What the two charts say about closeness and intimacy',
-        'How your family and his are likely to get along',
-        'Kaal Sarp and the other doshas sitting in both charts',
-        'When the marriage happens, and the best window for it',
-        'Whether money changes for you after marriage',
-        'The specific remedies that strengthen this match',
-        'What to tell the families when they ask about the guna count'
+        'Why are 8 of our points missing, and is it serious?',
+        'Can our Nadi dosha be cancelled?',
+        'Is he Manglik, and how strongly?',
+        'How well do we match on money, temper and family?',
+        'When is the best time for our marriage?',
+        'Which remedies will make our match stronger?'
       ],
-      licons: ['block', 'beads', 'spark', 'people', 'coin', 'rings',
-               'home', 'shield', 'cal', 'arrow', 'sun', 'list']
+      licons: ['chart', 'shield', 'spark', 'coin', 'cal', 'beads']
     },
     /* Chat and History, the two places she is met by name. Everywhere else
        this is "Kundli Milan Marriage Compatibility Report" and nothing more,
@@ -515,7 +509,7 @@ var REPORTS = [
     // runs out: once this one is hers she can read it, and she can also buy the
     // next three months. Every repeat buy is its own row in history.
     cadence: 'quarterly',
-    why: 'Learn how Saturn is slowing down your next move',
+    why: 'See the weeks this quarter that are best to ask for a raise',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
     art: {
@@ -537,23 +531,25 @@ var REPORTS = [
       heroPos: '50% 0%'
     },
     chips: ['Switch timing', 'Raise window'],
+    // An edition covers a named quarter, so the third column is the window she
+    // is buying rather than how she pays for it.
+    stat3: { v: 'Oct\u2013Dec', l: 'Months' },
+    lead: 'Know your best weeks this quarter for a raise, a switch and money',
     revs: [
-      { s: 5, n: 'Shruti B., Pune',   q: 'It named March as the switch month. I got the offer on the 11th of March.' },
-      { s: 5, n: 'Meera T., Gurgaon', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
-      { s: 4, n: 'Divya S., Kochi',   q: 'Saturn watching the tenth lord explained a slow year I had been blaming myself for.' },
-      { s: 5, n: 'Tanvi A., Jaipur',  q: 'It said job, not business, for this year. I had almost put in my notice to start something.' }
+      { n: 'Shruti B., Pune',   t: 'Month matched', q: 'It named March as the switch month. I got the offer on the 11th of March.' },
+      { n: 'Meera T., Gurgaon', t: 'Work read matched', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
+      { n: 'Divya S., Kochi',   t: 'Slow year explained', q: 'Saturn watching the tenth lord explained a slow year I had been blaming myself for.' },
+      { n: 'Tanvi A., Jaipur',  t: 'Job over business', q: 'It said job, not business, for this year. I had almost put in my notice to start something.' }
     ],
     learn: [
-      'The one big career theme of the next three months',
-      'The best dates to ask for a raise or pitch an idea',
-      'Business or a job, what the chart says',
-      'What your boss actually thinks about you',
-      'What to change at work, and how to make your work visible',
-      'The right month for a job switch',
-      'How likely a raise is in this job',
-      'Colours, directions and mantras for success at work'
+      'Is a raise or promotion coming this quarter?',
+      'Which weeks are best to ask for a raise or switch jobs?',
+      'Should I stay, switch, or start my own work?',
+      'What does my boss really think of me?',
+      'Will my money grow, and where should I be careful?',
+      'What small steps will speed up my growth?'
     ],
-    licons: ['spark', 'cal', 'case', 'user', 'eye', 'arrow', 'coin', 'sun'],
+    licons: ['spark', 'cal', 'case', 'user', 'coin', 'arrow'],
     /* Career has no person to name and no question she asked, so its trigger is
        the calendar: the month is running out and nothing has moved. That is the
        one thing about work she is already thinking when the message arrives,
@@ -2933,32 +2929,38 @@ function renderReport() {
      did the thing, which is the cheapest way to make a product feel unattended.
      The line becomes the handover into the panel below it instead. */
   var matched = !!(state.matched && r.matched);
-  $('#r2Lead').textContent = !r.needsMatch
-    ? r.s + '. Astro Hemali makes it from your birth chart.'
-    : matched
-      ? 'Both charts are in. Here is how the two of you match, and the one thing holding it back.'
-      : r.s + '. Add both sets of birth details and Astro Hemali reads the two charts together.';
+  /* Each report now carries its own line, written as the promise. The generic
+     "Astro Hemali makes it from your birth chart" was true of all three and so
+     argued for none of them, and it spent the one line above the chips saying
+     how the report is made rather than what it answers. Kundli Milan keeps a
+     second line for the state before the form, because there the honest
+     promise is still a request. */
+  $('#r2Lead').textContent = matched ? r.matched.lead
+    : r.needsMatch
+      ? r.s + '. Add both sets of birth details and Astro Hemali reads the two charts together.'
+      : r.lead;
+  // The third stat column, the only one that differs between reports.
+  $('#r2Type').textContent = r.stat3.v;
+  $('#r2TypeL').textContent = r.stat3.l;
   renderMatchPanel(r, matched);
   // Two kinds of chip, drawn as one until now. The first are what only this
   // report has; the last three are true of everything we sell. Flat grey pills
   // made "36 guna match" look like the word "Private", so the report's own
   // terms take the brand tint and a star, and the standard three stay quiet
   // with the drawing that says which of them it is.
-  var CHIP_IC = {
-    key:   '<path d="M6 1 7.3 4.5 10.8 5.8 7.3 7.1 6 10.6 4.7 7.1 1.2 5.8 4.7 4.5z"/>',
-    pages: '<path d="M2 2.2h3c.7 0 1 .4 1 1V10c0-.5-.4-.9-.9-.9H2zM10 2.2H7c-.7 0-1 .4-1 1V10c0-.5.4-.9.9-.9H10z"/>',
-    share: '<path d="M9 1.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8M3 4.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8M9 7.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8M4.3 5.4l3.4-1.7M4.3 6.6l3.4 1.7"/>',
-    lock:  '<path d="M2.7 5.3h6.6v5H2.7zM4.3 5.3V3.7a1.7 1.7 0 0 1 3.4 0v1.6"/>'
-  };
-  function chip(label, kind) {
-    return '<span class="' + (kind === 'key' ? 'ch-key' : 'ch-std') + '">' +
+  /* Only the report's own terms. "42 pages", "Shareable" and "Private" are
+     true of everything we sell, so three of the five chips under the promise
+     were arguing for nothing and pushed the real two — "36 guna match",
+     "Dosha check" — onto a line of their own. The standard terms are still
+     said, in the privacy line on the pay sheet, where they answer a question
+     she is actually asking. */
+  var CHIP_STAR = '<path d="M6 1 7.3 4.5 10.8 5.8 7.3 7.1 6 10.6 4.7 7.1 1.2 5.8 4.7 4.5z"/>';
+  $('#r2Chips').innerHTML = r.chips.map(function (c) {
+    return '<span class="ch-key">' +
       '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1" ' +
         'stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">' +
-        CHIP_IC[kind] + '</svg>' + esc(label) + '</span>';
-  }
-  $('#r2Chips').innerHTML =
-    r.chips.map(function (c) { return chip(c, 'key'); }).join('') +
-    chip(r.pages + ' pages', 'pages') + chip('Shareable', 'share') + chip('Private', 'lock');
+        CHIP_STAR + '</svg>' + esc(c) + '</span>';
+  }).join('');
   /* Post-match the twelve pointers are the same twelve, but they are answering
      a different question. Before the form the list is what a milan covers;
      after it, with a 28 and a locked Nadi sitting above it, the list is what
@@ -2966,9 +2968,14 @@ function renderReport() {
      the matched set. */
   var learn  = (matched && r.matched.learn)  || r.learn;
   var licons = (matched && r.matched.licons) || r.licons;
+  /* "Find Answers To", and the list under it is questions in her words rather
+     than contents in ours. A line that reads "Business or a job, what the
+     chart says" is a chapter title; "Should I stay, switch, or start my own
+     work?" is the thing she was already turning over, and the report is the
+     answer to it. */
   $('#r2Learn').innerHTML =
     '<h2 class="r2-h">' + esc(matched ? r.matched.head
-      : r.needsMatch ? 'What The Milan Answers' : 'What You Will Get') + '</h2>' +
+      : r.needsMatch ? 'What The Milan Answers' : 'Find Answers To') + '</h2>' +
     '<ul class="r2-learn">' +
       learn.map(function (x, i) {
         // Falls back to the tick if a report is ever short an icon key, so a
@@ -2981,12 +2988,31 @@ function renderReport() {
           '</svg></i>' + esc(x) + '</li>';
       }).join('') +
     '</ul>';
+  /* Figma 3814:11864. The five stars are gone from the card: every one of the
+     four was five, so the row was decoration that said nothing and it sat
+     above the quote, which is the only part anyone reads. A person reads the
+     card instead — initials, name, city — then what they said, then the one
+     thing the report called before it happened, as a tag. The rating itself
+     moved up under the heading, where it covers all four at once. */
   $('#r2Revs').innerHTML = r.revs.map(function (v) {
+    var who = v.n.split(',');
+    var nm = who[0].trim(), city = (who[1] || '').trim();
+    // Initials off the printed name rather than a stored field, so a review
+    // can never disagree with its own avatar.
+    var ini = nm.split(/\s+/).map(function (w) { return w[0]; })
+      .join('').replace(/\./g, '').slice(0, 2).toUpperCase();
     return '<div class="review">' +
-      '<i class="rv-stars">' + STAR.repeat(v.s) + STAR_OFF.repeat(5 - v.s) + '</i>' +
-      '<p>\u201c' + esc(v.q) + '\u201d</p>' +
-      '<b>' + esc(v.n) + '</b></div>';
+      '<span class="rv-q" aria-hidden="true">\u201d</span>' +
+      '<span class="rv-who"><span class="rv-av">' + esc(ini) + '</span>' +
+        '<span class="rv-nm"><b>' + esc(nm) + '</b><small>' + esc(city) + '</small></span></span>' +
+      '<p>' + esc(v.q) + '</p>' +
+      (v.t ? '<em class="rv-tag">' + esc(v.t) + '</em>' : '') +
+    '</div>';
   }).join('');
+  /* The rating again, over the quotes. Five screens below the stat bar a
+     number is what turns four strangers into a sample. */
+  $('#r2RevSum').innerHTML = STAR + '<b>' + esc(r.rating) + '</b>' +
+    '<span>\u00b7 ' + inr(r.sold) + ' readers</span>';
   // The strip starts parked on the first card, so that one is already snapped.
   markSnappedReview($('#r2Revs'));
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
