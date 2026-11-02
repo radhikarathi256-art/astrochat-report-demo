@@ -1112,55 +1112,129 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:400 12px/18px var(--sans);color:var(--g600)}
 
 /* ---------- App menu · the real hamburger ----------
-   LxCKwlbqHUN45c7CxFAWov 1418:17033: a peach name block, hairline rows with
-   outlined brand icons, then the logout button and the legal foot. */
+   Figma 3922:11037. Three warm cards on white: her own things as tiles, the
+   free things in a block of their own, then the two rows that are neither.
+   The nine-row list this replaced gave My Reports and Panchang the same
+   weight, which is the one thing a menu must not do. */
 .menu-scr{background:#fff}
-.mn-head{flex:none;display:flex;align-items:flex-start;gap:12px;
-  padding:calc(var(--sbh) + 16px) 16px 18px;background:#FDF4EF}
+.mn-head{flex:none;display:flex;align-items:center;gap:12px;
+  padding:calc(var(--sbh) + 16px) 16px 16px;background:#FAF7F3}
+/* Her initial. The header is the only place in the app that says who is
+   signed in, and a letter does that faster than the number under it. */
+.mn-av{flex:none;display:grid;place-items:center;width:48px;height:48px;
+  border-radius:50%;background:#fff;font:700 20px/1 var(--sans);color:#7A4A1E}
 .mn-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.mn-who b{font:700 22px/30px var(--sans);color:var(--g900)}
+.mn-who b{font:700 20px/28px var(--sans);color:var(--g900)}
 .mn-who small{font:400 14px/20px var(--sans);color:var(--g600)}
-.mn-list{list-style:none;margin:0;padding:0}
-.mn-row{display:flex;align-items:center;gap:13px;width:100%;height:56px;
-  padding:0 16px;border:0;background:none;cursor:pointer;text-align:left;
-  border-bottom:1px solid var(--g100)}
+
+/* The column, so the warm foot can be pushed to the bottom edge rather than
+   stopping wherever the list happens to end and leaving a white band under it
+   that reads as the page having failed to load the rest of itself. */
+.menu-scr .scroll{display:flex;flex-direction:column;padding-top:16px}
+
+/* Three tiles, equal thirds. */
+.mn-tiles{display:grid;grid-template-columns:repeat(3,1fr);margin:0 16px;
+  padding:16px 4px 14px;border-radius:16px;background:#FAF7F3}
+.mn-tile,.mn-tool{display:flex;flex-direction:column;align-items:center;gap:8px;
+  border:0;background:none;cursor:pointer;padding:0 4px;text-align:center}
+.mn-tile i,.mn-tool i{position:relative;flex:none;display:grid;place-items:center;
+  width:52px;height:52px;border-radius:16px;background:#fff;color:var(--brand)}
+.mn-tile svg{width:28px;height:28px}
+.mn-tile span{font:500 14px/20px var(--sans);color:#1D2939}
+/* The count, as a counter on the tile rather than as a number in a row. It is
+   good news — things she owns — so it keeps the brand orange and is only ever
+   drawn once there is something to count. */
+.mn-n{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;
+  padding:0 5px;border-radius:9px;background:#F06A3A;color:#fff;
+  display:grid;place-items:center;font:600 11px/18px var(--sans)}
+
+/* The free block: the one thing with a daily reset on a card, the four
+   evergreen tools on a strip under it. */
+.mn-free{margin:4px 16px 0;padding:14px 12px 16px;border-radius:16px;
+  background:#FAF7F3}
+.mn-free h2{margin:0 0 12px;font:600 16px/24px var(--sans);color:var(--g900)}
+.mn-ftc{display:flex;align-items:center;gap:12px;
+  padding:10px 12px 10px 8px;border-radius:14px;background:#fff}
+/* Three cards fanned, drawn rather than imported: at 56px the art is three
+   rounded rectangles and a tilt, and a sprite for that is a request. */
+.mn-fti{position:relative;flex:none;width:56px;height:54px}
+.mn-fti i{position:absolute;top:7px;left:16px;width:24px;height:36px;
+  border-radius:4px;background:#F7E3CE;box-shadow:0 0 0 1px #E8C9A6}
+.mn-fti i:first-child{transform:rotate(-18deg) translateX(-9px)}
+.mn-fti i:last-child{transform:rotate(18deg) translateX(9px)}
+.mn-fti i:nth-child(2){background:#FBEFE1}
+.mn-ft{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mn-ftop{display:flex;align-items:center;gap:8px}
+.mn-ftop b{font:600 16px/24px var(--sans);color:var(--g900)}
+.mn-tag{flex:none;padding:0 8px;border-radius:9px;background:#F06A3A;
+  font:600 12px/18px var(--sans);color:#fff;font-style:normal}
+.mn-ft small{font:400 14px/20px var(--sans);color:var(--g600)}
+.mn-ftc.done .mn-ft small{color:#027A48;font-weight:500}
+.mn-ftb{flex:none;height:36px;padding:0 14px;border:0;border-radius:12px;
+  background:#EF6939;cursor:pointer;font:600 14px/20px var(--sans);color:#fff}
+.mn-ftb.ghost{background:#fff;color:var(--g700);box-shadow:inset 0 0 0 1px var(--g300)}
+.mn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px}
+.mn-tool{padding:4px 2px}
+.mn-tool svg{width:26px;height:26px}
+.mn-tool span{font:500 12px/16px var(--sans);color:#1D2939}
+
+/* The two rows that are neither hers nor free. No hairlines: with everything
+   above them in cards, a ruled list of two read as the start of a table that
+   never arrived. */
+.mn-list{list-style:none;margin:14px 0 0;padding:0}
+.mn-row{display:flex;align-items:center;gap:13px;width:100%;height:44px;
+  padding:0 16px;border:0;background:none;cursor:pointer;text-align:left}
 .mn-row:active{background:var(--g50)}
 .mn-row i{flex:none;display:flex;width:24px;height:24px;color:var(--brand)}
 .mn-row i svg{width:24px;height:24px}
-.mn-row b{flex:1;min-width:0;font:400 16px/24px var(--sans);color:var(--g800);
+.mn-row b{flex:1;min-width:0;font:400 16px/24px var(--sans);color:#1D2939;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* The count, in the brand wash rather than in red. It is a number of things
-   she owns, which is good news; a red dot would make it an unread badge. */
-.mn-n{flex:none;min-width:22px;padding:0 6px;border-radius:99px;
-  background:var(--brand50);color:var(--w900);text-align:center;
-  font:700 12px/22px var(--sans)}
-.mn-tag{flex:none;padding:2px 9px;border-radius:99px;background:var(--brand50);
-  font:600 12px/18px var(--sans);color:var(--brand)}
-.mn-row em{flex:none;font-style:normal;font:400 19px/19px var(--sans);
+.mn-row em{flex:none;font-style:normal;font:400 20px/20px var(--sans);
   color:var(--g300)}
-/* Quieter than Logout and set apart from the list, because it is the only
-   thing on this screen that is not the product. */
-.mn-demo{display:block;margin:20px 16px 0;width:calc(100% - 32px);height:40px;
-  border:1px dashed var(--g300);border-radius:10px;background:none;cursor:pointer;
-  font:500 13px/20px var(--sans);color:var(--g500)}
-.mn-out{display:flex;align-items:center;justify-content:center;gap:8px;
-  margin:12px 16px 0;width:calc(100% - 32px);height:48px;border-radius:10px;
-  border:1px solid var(--brand);background:#fff;cursor:pointer;
-  font:600 16px/24px var(--sans);color:var(--brand)}
-/* The column, so the grey foot can be pushed to the bottom edge rather than
-   stopping wherever the list happens to end and leaving a white band under it
-   that reads as the page having failed to load the rest of itself. */
-.menu-scr .scroll{display:flex;flex-direction:column}
-.mn-foot{margin-top:auto;background:var(--g50);
-  padding:18px 16px calc(28px + var(--sab,env(safe-area-inset-bottom,0px)))}
-.mn-foot p{margin:0;font:400 13px/20px var(--sans);color:var(--g600)}
-.mn-foot a{color:var(--brand);text-decoration:none}
-.mn-links{margin-top:14px;display:flex;gap:22px}
+
+.mn-end{margin-top:auto;background:#FAF7F3;
+  padding:16px 16px calc(24px + var(--sab,env(safe-area-inset-bottom,0px)))}
+.mn-end p{margin:0;font:400 13px/20px var(--sans);color:var(--g600)}
+.mn-end a{color:var(--brand);text-decoration:none}
+.mn-links{margin-top:12px;display:flex;align-items:center;gap:20px}
 .mn-links a{color:var(--g700);text-decoration:underline;text-underline-offset:2px}
-.mn-ver{margin-top:14px;color:var(--g400)}
+/* The only thing on this screen that is not the product, so it is a glyph at
+   the end of the legal line rather than a button with a name. */
+.mn-demo{margin-left:auto;flex:none;display:grid;place-items:center;
+  width:32px;height:32px;border:0;border-radius:16px;background:#fff;
+  cursor:pointer;color:var(--g500)}
+.mn-demo svg{width:16px;height:16px}
+.mn-ver{margin-top:12px;font-size:12px;line-height:16px;color:var(--g400)}
 
 /* ---------- My Reports ---------- */
-.topnav-pad{flex:none;width:36px}
+/* Figma 3923:11037. Empty, it is still a page with something on it: the three
+   reports go on the strip the detail page uses, because an empty state whose
+   only content is an apology sends her back with nothing. */
+.mine-empty{display:flex;flex-direction:column;align-items:center;
+  padding:40px 32px 28px;text-align:center}
+.mine-empty i{display:grid;place-items:center;width:44px;height:44px;
+  margin-bottom:12px;border-radius:22px;background:#FDF0EB;color:var(--brand)}
+.mine-empty i svg{width:24px;height:24px}
+.mine-empty b{font:600 17px/24px var(--sans);color:var(--g900)}
+.mine-empty p{margin:6px 0 0;font:400 14px/20px var(--sans);color:var(--g600)}
+/* A bought report is a flat row. The Hemali card is how an unbought one is
+   pitched, and wearing it on her own shelf made the thing she paid for this
+   morning look like an advert for itself. */
+.mine-list{display:flex;flex-direction:column}
+.mrow{display:flex;align-items:center;gap:14px;width:100%;
+  padding:14px 16px 15px;border:0;background:none;cursor:pointer;text-align:left}
+.mrow:active{background:var(--g50)}
+.mr-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mr-tx b{font:600 15px/21px var(--sans);color:var(--g900)}
+/* Green, and the only green on the page: this line's one job is to say the
+   thing is already hers. */
+.mr-tx em{font-style:normal;font:500 13px/18px var(--sans);color:#027A48}
+.mr-tx s{text-decoration:none;font:400 12px/17px var(--sans);color:#667085}
+.mr-ch{flex:none;display:flex;width:20px;height:20px;color:var(--g300)}
+.mr-ch svg{width:20px;height:20px}
+.mine-notew{padding:12px 16px 0}
+.mine-note{margin:0;padding:11px 12px;border-radius:10px;background:#FAF7F3;
+  font:400 12px/18px var(--sans);color:var(--g600)}
 /* ---------- History widget (Figma 3696:8360) ----------
    A column of one card per report. The card is white and the colour lives
    inside it, so three of them stacked read as one list rather than as three
@@ -1257,41 +1331,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 @media (prefers-reduced-motion:reduce){
   .hw .bkt-cov{animation:none}
 }
-.mine-list{padding:8px 0}
-.mine-row{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;
-  border:0;background:none;cursor:pointer;text-align:left;
-  border-bottom:1px solid var(--g100)}
-.mine-row:active{background:var(--g50)}
 /* Smaller than the shop's 88px. This is a list of things she has, so the row
    is the unit and the cover is the thumbnail; at shop size three of them fill
-   the screen and the shelf stops looking like a shelf. */
-.mine-row .bkt,.mine-row .bk3{flex:none;align-self:flex-start;margin:0;
-  width:56px;height:84px;--bw:56px;--bh:84px}
-.mine-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.mine-tx b{font:600 15px/21px var(--sans);color:var(--g900)}
-.mine-tx small{font:500 13px/18px var(--sans);color:var(--s700)}
-.mine-tx em{font-style:normal;font:400 12px/17px var(--sans);color:var(--g500)}
-.mine-chev{flex:none;font-style:normal;font:400 20px/20px var(--sans);color:var(--g300)}
-/* The shelf of what she has not bought. Padded to the page's own 16 so the
-   covers line up with the widgets above, and a hairline off the top because
-   the last widget is a card and this is not. */
-.mine-also{margin:4px 16px 0;padding-top:16px;border-top:1px solid var(--g200)}
-.mine-also:first-child{margin-top:12px;border-top:0;padding-top:0}
-.mine-note{margin:16px;padding:11px 12px;border-radius:10px;background:var(--g50);
-  font:400 12px/18px var(--sans);color:var(--g600)}
-/* Empty, and saying so once rather than filling the screen with regret. The
-   strip of three underneath is the actual content of this state. */
-.mine-empty{display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:40px 32px 28px;text-align:center}
-.mine-empty i{display:flex;width:44px;height:44px;margin-bottom:6px;
-  align-items:center;justify-content:center;border-radius:50%;
-  background:var(--brand50);color:var(--brand)}
-.mine-empty i svg{width:24px;height:24px}
-.mine-empty b{font:600 17px/24px var(--sans);color:var(--g900)}
-.mine-empty span{font:400 14px/20px var(--sans);color:var(--g600)}
-/* The rail itself is the house default now, so the empty shelf adds nothing
-   but the room above it. */
-.mine-up{padding-top:8px}
+   the screen and the shelf stops looking like a shelf. The flip animation is
+   scoped to `.urow`, so these stand still — nothing is being sold here. */
+.mrow .bkt,.mrow .bk3{flex:none;align-self:flex-start;margin:0;
+  width:58px;height:84px;--bw:58px;--bh:84px}
+/* The shelf of what she has not bought, under its own heading. */
+.mine-also{padding-top:16px}
 
 /* ---------- Today · the owner's line to her shelf ----------
    One hairline row at the bottom of the page, in grey. Everything above it on
@@ -1771,6 +1818,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the heading nearly as loud as the name of the report. */
 .r2-h{display:flex;align-items:baseline;margin:0 0 8px;
   font:700 18px/25px var(--sans);letter-spacing:-.01em;color:var(--g900)}
+/* Review and testimonial blocks have a warm background. */
+.r2-revblock{background:#FAF6EF}
 
 /* PM track: what the report answers, as her own questions. It stands in for the
    chapter ladder, because a ladder with nothing shut is only a contents page. */
@@ -2349,7 +2398,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    exact lines that make it readable. */
 .rs-kun{display:flex;flex-direction:column;align-items:center;gap:14px}
 .kun{position:relative;width:240px;max-width:100%;aspect-ratio:1;
-  border-radius:4px;background:#F9FAFB}
+  border-radius:4px;background:#FAF6EF}
 .kun svg{position:absolute;inset:0;width:100%;height:100%}
 .kh{position:absolute;transform:translate(-50%,-50%);text-align:center;
   white-space:nowrap}

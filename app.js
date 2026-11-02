@@ -725,6 +725,9 @@ var state = {
   /* One row per purchase, newest first, so a repeat buy of a quarterly report
      leaves its own mark instead of overwriting the first one. */
   buys: [],
+  // Whether today's three tarot cards have been picked. The menu's one card
+  // with a daily reset, and the only thing in there that changes.
+  tarot: false,
   screen: 'today-a',
   stack: [],
   sheet: null,
@@ -1623,35 +1626,77 @@ function stopPay() {
    It sits second, under Chat History. Both are things of hers, so they belong
    together, and the top of the list is where she looks for her own stuff.
    First would have read as a banner for a feature rather than as a row. */
-var MENU = [
-  { l: 'Chat History', nav: 'timeline',
-    d: '<path d="M12 20.6a8.6 8.6 0 1 0-7.5-4.4L3.4 20.6l4.4-1.1a8.6 8.6 0 0 0 4.2 1.1Z"/><path d="M8.4 12h.01M12 12h.01M15.6 12h.01"/>' },
-  { l: 'My Reports', go: 'mine', d: BOOK_IC },
-  { l: 'Wallet Transactions', k: 'case' },
-  { l: 'My Astrologers',      k: 'people' },
-  { l: 'Kundali Report',      k: 'chart' },
-  { l: 'Kundali Matchmaking', k: 'rings' },
-  { l: 'Horoscope',           k: 'sun' },
-  { l: 'Panchang',            k: 'cal' },
-  { l: 'Free Tarot',          k: 'spark', tag: 'New!' }
+var CHAT_IC = '<path d="M12 20.6a8.6 8.6 0 1 0-7.5-4.4L3.4 20.6l4.4-1.1a8.6 8.6 0 0 0 4.2 1.1Z"/><path d="M8.4 12h.01M12 12h.01M15.6 12h.01"/>';
+/* Figma 3922:11037. The three tiles at the top are the three places her own
+   things live. My Reports is the middle one and carries the count, because the
+   only question this menu has to answer quickly is "where is the thing I paid
+   for". */
+var MN_TILES = [
+  { l: 'Chat History',        nav: 'timeline', d: CHAT_IC },
+  { l: 'My Reports',          go: 'mine',      d: BOOK_IC, count: true },
+  { l: 'Wallet Transactions', k: 'case' }
 ];
+/* The four evergreen tools. They never change state, so they are a strip of
+   icons rather than four more rows arguing for attention. */
+var MN_TOOLS = [
+  { l: 'Kundali Report',  k: 'chart' },
+  { l: 'Kundali Matching', k: 'rings' },
+  { l: 'Horoscope',       k: 'sun' },
+  { l: 'Panchang',        k: 'cal' }
+];
+var MN_ROWS = [
+  { l: 'My Astrologers', d: '<path d="M15.5 8.4a3.4 3.4 0 1 1-6.8 0 3.4 3.4 0 0 1 6.8 0Z"/><path d="M18.6 9.6a2.4 2.4 0 1 0-1.8-4.4"/><path d="M4.2 19.4c0-2.8 3.5-4.4 7.9-4.4s7.9 1.6 7.9 4.4"/><path d="M20.8 17.9c0-1.7-1-2.9-2.8-3.5"/>' },
+  { l: 'Logout',         d: '<path d="M14 4.5H8a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h6"/><path d="M11 12h10m0 0-3.2-3.2M21 12l-3.2 3.2"/>' }
+];
+function mnIcon(m, sw) {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' +
+    (m.d || LI_ICON[m.k]) + '</svg>';
+}
+// Only the rows that go somewhere get a destination. The rest carry the demo's
+// standard refusal, which is honest about why nothing happened.
+function mnAct(m) {
+  return m.go  ? 'data-go="' + m.go + '"'
+       : m.nav ? 'data-nav="' + m.nav + '"'
+       : 'data-toast="' + esc(m.l) + ' is not part of this demo"';
+}
 function renderMenu() {
   var n = state.owned.length;
-  $('#mnList').innerHTML = MENU.map(function (m) {
-    // Only the rows that go somewhere get a destination. The rest carry the
-    // demo's standard refusal, which is honest about why nothing happened.
-    var act = m.go  ? 'data-go="' + m.go + '"'
-            : m.nav ? 'data-nav="' + m.nav + '"'
-            : 'data-toast="' + esc(m.l) + ' is not part of this demo"';
-    return '<li><button class="mn-row" type="button" ' + act + '>' +
-      '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
-        'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
-        'stroke-linejoin="round">' + (m.d || LI_ICON[m.k]) + '</svg></i>' +
+  $('#mnTiles').innerHTML = MN_TILES.map(function (m) {
+    return '<button class="mn-tile" type="button" ' + mnAct(m) + '>' +
+      '<i>' + mnIcon(m) +
+        // The count, only once there is one. A "0" on My Reports would be the
+        // menu telling her she has nothing every time she opens it.
+        (m.count && n ? '<b class="mn-n">' + n + '</b>' : '') +
+      '</i><span>' + esc(m.l) + '</span></button>';
+  }).join('');
+  $('#mnGrid').innerHTML = MN_TOOLS.map(function (m) {
+    return '<button class="mn-tool" type="button" ' + mnAct(m) + '>' +
+      '<i>' + mnIcon(m, 1.3) + '</i><span>' + esc(m.l) + '</span></button>';
+  }).join('');
+  /* Two states, and the second one is the point of the card: once she has
+     picked today's three the card stops asking and says when the next set
+     lands, so the menu is never selling her a thing she has already had. */
+  var done = state.tarot;
+  $('#mnTarot').innerHTML =
+    '<div class="mn-ftc' + (done ? ' done' : '') + '">' +
+      '<span class="mn-fti" aria-hidden="true"><i></i><i></i><i></i></span>' +
+      '<span class="mn-ft">' +
+        '<span class="mn-ftop"><b>Free Tarot</b>' +
+          (done ? '' : '<em class="mn-tag">New</em>') + '</span>' +
+        '<small>' + (done
+          ? '\u2713 Done today. New cards tomorrow'
+          : 'Pick 3 cards today') + '</small>' +
+      '</span>' +
+      (done
+        ? '<button class="mn-ftb ghost" type="button" data-toast="Your three cards are in History">View</button>'
+        : '<button class="mn-ftb" type="button" data-tarot>Try</button>') +
+    '</div>';
+  $('#mnList').innerHTML = MN_ROWS.map(function (m) {
+    return '<li><button class="mn-row" type="button" ' + mnAct(m) + '>' +
+      '<i aria-hidden="true">' + mnIcon(m) + '</i>' +
       '<b>' + esc(m.l) + '</b>' +
-      // The count, only once there is one. A "0" next to My Reports would be
-      // the menu telling her she has nothing every time she opens it.
-      (m.go === 'mine' && n ? '<span class="mn-n">' + n + '</span>' : '') +
-      (m.tag ? '<span class="mn-tag">' + esc(m.tag) + '</span>' : '') +
       '<em aria-hidden="true">\u203a</em>' +
     '</button></li>';
   }).join('');
@@ -1787,15 +1832,56 @@ function renderMine() {
      card as the one she paid for this morning, so three reports read as three
      purchases. The rest now sit under their own heading, in the row she has
      already met at the foot of the detail page. */
-  var mine = REPORTS.filter(function (x) { return owns(x.id); });
+  /* One row per payment, newest first. A quarterly report bought twice is two
+     things she can open, so the record to read is `buys` rather than `owned` —
+     a shelf that silently collapses them is a shelf that lost one. */
+  var mine = state.buys.map(function (b) {
+    var r = reportById(b.id);
+    return r ? mineRow(r, b) : '';
+  }).join('');
   var left = REPORTS.filter(function (x) { return !owns(x.id); });
   $('#mineBody').innerHTML =
-    (mine.length ? '<div class="hw-list">' + mine.map(histWidget).join('') + '</div>' : '') +
+    (mine
+      ? '<div class="mine-list">' + mine + '</div>' +
+        '<div class="mine-notew"><p class="mine-note">Every report stays here in ' +
+          'the language you chose and in English.</p></div>'
+      : '<div class="mine-empty">' +
+          '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
+            'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
+            'stroke-linejoin="round">' + BOOK_IC + '</svg></i>' +
+          '<b>Nothing on your shelf yet</b>' +
+          '<p>Anything you buy opens here, in your language, forever.</p>' +
+        '</div>') +
+    /* Not "You May Also Like" — on her own shelf the other three are not
+       recommendations, they are the rest of what her chart already says. The
+       "Also" only appears once there is something above to be also to. */
     (left.length
-      ? '<div class="mine-also"><h2 class="r2-h">You May Also Like</h2>' +
+      ? '<div class="r2-block mine-also"><h2 class="r2-h">' +
+          (mine ? 'Also Written On Your Chart' : 'Written On Your Chart') + '</h2>' +
           '<div class="ur-list">' + left.map(upsellRow).join('') + '</div></div>'
-      : '') +
-    '<p class="mine-note">Every report stays here in the language you chose and in English.</p>';
+      : '');
+}
+
+/* Figma 3924:15332. A bought report is a flat row, not a Hemali card: the card
+   is how an unbought one is pitched, and wearing it on the shelf made the thing
+   she paid for this morning look like an advert for itself. Cover, name, when
+   she got it, how much is in it, chevron. */
+function mineRow(r, b) {
+  return '<button class="mrow" type="button" data-open-rep="' + r.id + '">' +
+    book3d(r) +
+    '<span class="mr-tx">' +
+      '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+      // The edition for the one report that has editions, otherwise the stamp.
+      // Both are green: this line's job is to say the thing is hers.
+      '<em>' + esc(b.ed || 'Bought ' + b.time) + '</em>' +
+      '<s>' + ((r.learn && r.learn.length) || 6) + ' questions answered</s>' +
+    '</span>' +
+    '<i class="mr-ch" aria-hidden="true">' +
+      '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M7.5 4.5 13 10l-5.5 5.5"/></svg>' +
+    '</i>' +
+  '</button>';
 }
 
 /* Today's one line for owners. Hidden until there is something behind it, so
@@ -3369,8 +3455,17 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],.rsc-go');
   if (!t) return;
+
+  // Today's three cards, picked. The card flips to its done state and stays
+  // there for the rest of the demo day.
+  if (t.hasAttribute('data-tarot')) {
+    state.tarot = true;
+    renderMenu();
+    toast('Your three cards are in History', 'success');
+    return;
+  }
 
   /* The jump index. scrollIntoView does nothing here — the sample scrolls
      inside its own [data-scroll] and the whole phone is under a transform, so

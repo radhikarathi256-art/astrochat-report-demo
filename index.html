@@ -918,23 +918,38 @@
          knows, and a two-item menu would not have told us whether it does. -->
     <section class="screen menu-scr" id="menu" data-screen="menu">
       <header class="mn-head">
+        <span class="mn-av" aria-hidden="true">M</span>
         <span class="mn-who"><b>Hello, Mansi</b><small>+91 98670 82142</small></span>
         <button class="ic-btn" type="button" data-back aria-label="Close menu">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4l12 12M16 4L4 16" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </header>
       <div class="scroll" data-scroll>
+        <!-- The three things of hers, as tiles rather than as rows. A flat list
+             of nine made My Reports the second line of a column she scans past;
+             as a tile it is one of three places she keeps her own stuff, and the
+             count sits on it. -->
+        <div class="mn-tiles" id="mnTiles"></div>
+        <section class="mn-free">
+          <h2>Free for you</h2>
+          <!-- The one free thing with a daily reset gets the card; the four
+               evergreen tools share the strip under it. -->
+          <div id="mnTarot"></div>
+          <div class="mn-grid" id="mnGrid"></div>
+        </section>
         <ul class="mn-list" id="mnList"></ul>
-        <!-- The demo's own controls, kept reachable now that the hamburger
-             above belongs to the app. On a phone this is the only way to change
-             day or touchpoint, so it cannot simply be dropped. -->
-        <button class="mn-demo" type="button" id="drDemo">Demo controls</button>
-        <button class="mn-out" type="button" data-toast="Logout is not part of this demo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5H8a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h6"/><path d="M11 12h10m0 0-3.2-3.2M21 12l-3.2 3.2"/></svg>
-          Logout</button>
-        <div class="mn-foot">
-          <p>Contact us:<br><a href="#" onclick="return false">help@astrochat.com</a></p>
-          <p class="mn-links"><a href="#" onclick="return false">Terms &amp; Conditions</a><a href="#" onclick="return false">Privacy Policy</a></p>
+        <div class="mn-end">
+          <p>Contact us: <a href="#" onclick="return false">help@astrochat.com</a></p>
+          <p class="mn-links">
+            <a href="#" onclick="return false">Terms &amp; Conditions</a>
+            <a href="#" onclick="return false">Privacy Policy</a>
+            <!-- The demo's own controls. On a phone this is the only way to
+                 change day or touchpoint, so it cannot simply be dropped — but
+                 it is not the product, so it shrinks to a glyph in the foot. -->
+            <button class="mn-demo" type="button" id="drDemo" aria-label="Demo controls">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M2.5 4.5h11M2.5 11.5h11"/><circle cx="6" cy="4.5" r="1.5" fill="#fff"/><circle cx="10.5" cy="11.5" r="1.5" fill="#fff"/></svg>
+            </button>
+          </p>
           <p class="mn-ver">Version 9.36.2</p>
         </div>
       </div>
@@ -951,7 +966,6 @@
           <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <h2>My Reports</h2>
-        <span class="topnav-pad"></span>
       </header>
       <div class="scroll" data-scroll>
         <div id="mineBody"></div>
