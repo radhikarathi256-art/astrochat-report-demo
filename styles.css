@@ -5,8 +5,9 @@
 :root{
   --brand:#F06A3A; --brand-dk:#D9572A; --brand50:#FDF0EB;
   /* Brand/500 as the library actually holds it — read off Tarot 1418:17428,
-     where the one orange thing in the menu foot is this and not --brand. */
-  --brand500:#EF6939;
+     where the one orange thing in the menu foot is this and not --brand.
+     Brand/100 is the library's own, from the Hackfest file's bound styles. */
+  --brand500:#EF6939; --brand100:#FCE1D7;
   --g900:#101828; --g800:#1D2939; --g700:#344054; --g600:#475467; --g500:#667085; --g400:#98A2B3;
   --g300:#D0D5DD; --g200:#EAECF0; --g100:#F2F4F7; --g50:#F9FAFB;
   --w900:#7A2E0E; --w700:#B54708; --w500:#F79009; --w100:#FEF0C7; --w50:#FFFAEB; --w25:#FFFCF5;
@@ -1153,13 +1154,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    The nine-row list this replaced gave My Reports and Panchang the same
    weight, which is the one thing a menu must not do. */
 .menu-scr{background:#fff}
-/* Grey/100 top and bottom, white in between. The cream it replaces gave the
-   menu three warm fills of its own that nothing else in the app has, so the
-   cards never read as cards — they read as one beige page. The status bar is
-   part of this: `.sbar` is transparent and the header paints behind it, so the
-   strip takes this fill too. */
+/* Brand/50 band at the top, Grey/100 at the foot, white in between. The cream
+   it replaces gave the menu three warm fills of its own that nothing else in
+   the app has, so the cards never read as cards — they read as one beige page.
+   The status bar is part of this band: `.sbar` is transparent and the header
+   paints behind it, so the strip takes this fill too. */
 .mn-head{flex:none;display:flex;align-items:center;gap:12px;
-  padding:calc(var(--sbh) + 16px) 16px 16px;background:var(--g100)}
+  padding:calc(var(--sbh) + 16px) 16px 16px;background:var(--brand50)}
 .mn-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .mn-who b{font:700 20px/28px var(--sans);color:var(--g900)}
 .mn-who small{font:400 14px/20px var(--sans);color:var(--g600)}
@@ -1177,11 +1178,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:#fff}
 .mn-tile,.mn-tool{display:flex;flex-direction:column;align-items:center;gap:8px;
   border:0;background:none;cursor:pointer;padding:0 4px;text-align:center}
-/* Line icons in Brand/500, each on a neutral disc — the same shape the four
+/* Line icons in Brand/500, each on a Brand/50 disc — the same shape the four
    Offerings icons underneath already have, so the two strips read as one kind
-   of thing rather than as icons and pictures. */
+   of thing rather than as icons and pictures. Grey discs made these three the
+   switched-off row of the two; Brand/100 made them loud enough to outrank the
+   Offerings art they sit above. */
 .mn-tile i{position:relative;flex:none;display:grid;place-items:center;
-  width:52px;height:52px;border-radius:50%;background:var(--g100);
+  width:52px;height:52px;border-radius:50%;background:var(--brand50);
   color:var(--brand500)}
 .mn-tile svg{width:28px;height:28px}
 /* Two lines, always. "Chat History" breaking where it likes next to a
