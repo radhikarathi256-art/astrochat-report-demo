@@ -2708,71 +2708,146 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* ---------- R.4b Kundali Milan details ---------- */
 #match{background:#fff}
-#match .scroll{padding:20px 16px 0}
-/* The two halves are headings on the page, not titles inside the cards: the
-   card is one person, and a label printed on its own lid would make the two
-   boxes read as sections of a single form rather than as two people. */
-.mt-h{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;
-  font:700 18px/26px var(--sans);color:var(--g900)}
-.mt-h + .mt-card{margin-bottom:26px}
-/* Sits between the heading and the card, so it is read before the name it is
-   explaining rather than found underneath it. */
-.mt-hint{margin:-4px 0 10px;font:400 13px/19px var(--sans);color:var(--g500)}
-.mt-hint + .mt-card{margin-bottom:26px}
-/* Where her half came from, said once and quietly. Without it a form that is
-   already filled in looks like someone else's data. */
-.mt-h small{font:500 12px/18px var(--sans);color:var(--g500)}
-.mt-card{padding:16px;border:1px solid var(--g200);border-radius:14px;background:#fff}
-/* Notched outline: the label sits on the border rather than above it, so four
-   fields stack in the height three would otherwise need and every box still
-   says what it is once it has something in it. A placeholder alone disappears
-   the moment she types, which is exactly when she is checking her own work. */
-.fld{position:relative;display:block;margin-top:18px}
-.fld:first-child{margin-top:0}
-.fld > span{position:absolute;top:-7px;left:11px;z-index:1;padding:0 5px;
-  background:#fff;font:400 12px/14px var(--sans);color:var(--g500);pointer-events:none;
-  transition:opacity .15s ease}
-/* Empty, there is no notch — only the grey prompt inside the box, which is how
-   the live details form reads (517:21478). A label on a box with nothing in it
-   says the same word twice; it earns its place the moment the placeholder
-   leaves and the value needs naming. */
+/* Figma 3805:11118 `Content` — 16 all round, 16 at the top, 12 between blocks. */
+#match .scroll{padding:16px 16px 0}
+.mt-sec{display:flex;flex-direction:column;gap:12px}
+/* Figma 3805:11130 is a 16-tall spacer frame between the two people. The two
+   halves are not two cards any more — hers collapses to a receipt — so the
+   only thing separating them is air, and 28 of it. */
+.mt-sec-girl{margin-top:28px}
+/* The heading and its chip on one line: the chip is the heading's status, and
+   under it it would read as the first row of the section. */
+.mt-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0}
+.mt-h h3{margin:0;font:600 16px/26px var(--sans);color:var(--g900)}
+/* Figma 3807:11156 / 3807:11158. A count, not a warning — Warning/50 behind
+   Warning/700, which is the house's "unfinished", and the same pill in green
+   the moment it is done. Two states of one object, so the eye can compare the
+   two sections without reading either. */
+.mt-chip{display:inline-flex;align-items:center;gap:4px;flex:none;
+  padding:3px 8px;border-radius:999px;font:500 12px/18px var(--sans)}
+.mt-chip-todo{background:#FFF1EA;color:#B84A17}
+.mt-chip-ok{background:#E7F7EC;color:#168045}
+.mt-chip svg{display:block}
+/* Figma 3805:11124 — 16 between the three groups inside a person. */
+.mt-grp{display:flex;flex-direction:column;gap:16px}
+/* Name and its line of provenance: 6, because the sentence belongs to the box
+   above it and not to the row below. */
+.mt-name{display:flex;flex-direction:column;gap:6px}
+/* Date, time and the escape hatch under them: 10. */
+.mt-time{display:flex;flex-direction:column;gap:10px}
+.mt-city{position:relative}
+/* Figma 3805:11277. Also the note under her expanded fields. */
+.mt-help{margin:0;font:400 12px/18px var(--sans);color:var(--g500)}
+/* Notched outline, Material's: the label sits on the border rather than above
+   it, so the box still says what it is once there is a value in it. Empty, the
+   notch is gone and the same word is inside the box — a label on an empty box
+   says it twice. */
+.fld{position:relative;display:block}
+.fld > span{position:absolute;top:-9px;left:12px;z-index:2;padding:0 4px;
+  background:#fff;font:400 12px/18px var(--sans);color:var(--g500);pointer-events:none;
+  transition:opacity .15s ease,color .15s ease}
 .fld input:placeholder-shown ~ span{opacity:0}
-.fld input{width:100%;height:52px;padding:0 44px 0 15px;
-  border:1px solid var(--g300);border-radius:10px;background:#fff;
-  font:400 16px/24px var(--sans);color:var(--g900);
+/* Figma: 56 tall, 1px Gray/300, r12, value Body large 16/24 in Gray/800. */
+.fld input{width:100%;height:56px;padding:0 16px;
+  border:1px solid var(--g300);border-radius:12px;background:#fff;
+  font:400 16px/24px var(--sans);color:#1D2939;
   appearance:none;outline:none;transition:border-color .18s ease,box-shadow .18s ease}
-/* The prompt is the only thing in an empty box, so it has to be readable
-   rather than a hint — g400 on white was close to a disabled field. */
-.fld input::placeholder{color:var(--g500)}
+/* The prompt is the only thing in an empty box, so it is the label's own words
+   at the label's own weight, not a hint. Gray/500, same as the notch. */
+.fld input::placeholder{color:var(--g500);opacity:1}
 .fld input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand50)}
-.fld-ic{position:absolute;right:14px;top:50%;margin-top:-10px;line-height:0;pointer-events:none}
-/* Date and time, halved. The row owns the vertical rhythm so the two boxes in
-   it sit level with each other rather than each keeping its own top margin. */
-.fld-row{display:flex;gap:10px;margin-top:18px}
-.fld-row:first-child{margin-top:0}
-.fld-row > .fld{flex:1 1 0;min-width:0;margin-top:0}
-/* The one place the notch is permanent. Everywhere else an empty box says what
-   it is in its own placeholder, but here the placeholder has to be the format
-   - DD/MM/YYYY - so without the label a calendar and a clock side by side are
-   two boxes of punctuation. Half width also leaves no room for a sentence. */
-.fld-row > .fld input:placeholder-shown ~ span{opacity:1}
-/* 44px of right padding was clearing an icon in a full-width box. At half
-   width it eats the value, and neither a date nor a time needs the room. */
-.fld-row > .fld input{padding-right:38px}
-.fld-row > .fld .fld-ic{right:11px}
-/* The one empty field, pointed at. Get Report stays live and does the finding,
-   and it marks a single box at a time — four red outlines is a page telling
-   her she got everything wrong rather than a form telling her where to look. */
-.fld.err > span{color:#B42318}
-.fld.err input{border-color:#D92D20;box-shadow:0 0 0 3px #FEE4E2}
-.fld.err input:focus{box-shadow:0 0 0 3px #FEE4E2}
-.pad-cta{height:28px}
-/* Sits on the page, not over it. The last field needs to be reachable with the
+/* Figma wraps every field icon in a 48 box with a 24 glyph, which is what puts
+   the glyph 12 from the edge rather than hard against it. */
+.fld-ic{position:absolute;right:12px;top:50%;width:24px;height:24px;margin-top:-12px;
+  line-height:0;color:#667085;pointer-events:none}
+.fld-ic-err{display:none}
+.fld-lead input{padding-left:48px}
+.fld-ic-lead{left:12px;right:auto}
+/* Date and time, halved. 12 between them, per Figma 3805:11126. */
+.fld-row{display:flex;gap:12px}
+.fld-row > .fld{flex:1 1 0;min-width:0}
+/* The one empty field, pointed at — and only one. Four red outlines is a page
+   telling her she got everything wrong rather than a form telling her where to
+   look. The calendar gives way to the alert, because a red box with a calendar
+   still in it reads as a broken date picker. */
+.fld.err input{border-color:#F04438;color:#F04438}
+.fld.err input::placeholder{color:#F04438}
+.fld.err > span{color:#F04438}
+.fld.err .fld-ic{display:none}
+.fld.err .fld-ic-err{display:block}
+/* Figma 3805:11254. 16 square at 1.5, which is the one control on this page
+   that is not a text box and has to look like it. */
+.mt-chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  font:400 13px/18px var(--sans);color:#4D576B}
+.mt-chk input{position:absolute;opacity:0;width:0;height:0}
+.mt-chk > i{flex:none;width:16px;height:16px;border:1.5px solid #99A1B0;border-radius:4px;
+  background:#fff;transition:background .15s ease,border-color .15s ease}
+.mt-chk input:checked + i{border-color:var(--brand);background:var(--brand) no-repeat center/11px 8px
+  url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='8' viewBox='0 0 11 8' fill='none'%3E%3Cpath d='M1 4.2 3.9 7 10 1' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.mt-chk input:focus-visible + i{box-shadow:0 0 0 3px var(--brand50)}
+/* Figma 3808:11263. Over the page rather than in it: a list that pushed the
+   form down would move the box she is typing in out from under her thumb. */
+.mt-sugg{position:absolute;left:0;right:0;top:64px;z-index:6;overflow:hidden;
+  border:1px solid var(--g200);border-radius:12px;background:#fff;
+  box-shadow:0 8px 24px rgba(15,23,41,.12)}
+.mt-sugg button{display:flex;align-items:center;gap:12px;width:100%;
+  padding:10px 16px;border:0;border-top:1px solid var(--g200);background:#fff;
+  text-align:left;cursor:pointer}
+.mt-sugg button:first-child{border-top:0;background:#FAFAFC}
+.mt-sugg svg{flex:none;color:#667085}
+.mt-sugg b{display:block;font:400 15px/20px var(--sans);color:var(--g900)}
+/* The typed part in semibold, so the list reads as a narrowing of what she has
+   already said rather than as four new words. */
+.mt-sugg b i{font-style:normal;font-weight:600}
+.mt-sugg small{display:block;font:400 13px/18px var(--sans);color:var(--g500)}
+/* Figma 3808:11292. Most of India is villages, and a search that silently has
+   no answer for hers is where this form loses her. */
+.mt-sugg p{margin:0;padding:10px 16px;border-top:1px solid var(--g200);
+  background:#FAFAFC;font:400 12px/18px var(--sans);color:var(--g500)}
+/* Figma 3805:11258 — her half, answered, as a receipt rather than six boxes
+   she has to read to discover they are already right. */
+.mt-sum{display:flex;align-items:center;gap:12px;padding:14px;
+  border:1px solid var(--g200);border-radius:12px;background:#FAFAFC}
+.mt-av{flex:none;display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:20px;background:#FFF0E6;
+  font:600 16px/22px var(--sans);color:var(--brand)}
+.mt-sum-i{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mt-sum-i p{margin:0;font:400 13px/18px var(--sans);color:var(--g500)}
+.mt-sum-n{display:flex;align-items:center;gap:6px}
+.mt-sum-n b{font:600 15px/21px var(--sans);color:var(--g900)}
+/* Whose chart this is, in one word. Without it the card is just a second
+   person, and she has to work out which one is her. */
+.mt-sum-n em{padding:1px 6px;border-radius:4px;background:#EDF0F5;
+  font:500 11px/15px var(--sans);font-style:normal;color:var(--g500)}
+.mt-edit,.mt-done{flex:none;padding:0;border:0;background:none;cursor:pointer;
+  font:600 14px/20px var(--sans);color:var(--brand)}
+/* Sits on the page, not over it. The last field has to be reachable with the
    keyboard up, and a floating bar on a form is one more thing covering the
-   thing it is asking about. */
-.mt-foot{flex:none;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+   thing it is asking about. Figma 3805:11140: 10 above, 20 below. */
+.mt-foot{flex:none;position:relative;display:flex;flex-direction:column;gap:10px;
+  padding:10px 16px calc(20px + env(safe-area-inset-bottom));
   background:#fff;border-top:1px solid var(--g200)}
-.mt-foot .btn{width:100%;height:52px}
+/* Figma 3805:11269. Eight birth details is the most invasive thing this flow
+   asks for; the line costs nothing and answers the question she is holding. */
+.mt-priv{display:flex;align-items:center;justify-content:center;gap:6px;margin:0;
+  font:400 12px/17px var(--sans);color:var(--g500)}
+.mt-priv svg{flex:none}
+/* Figma `_Button base` — 44 tall (px18 py10 on a 24 line), r12, Shadow/xs. */
+.mt-foot .btn{width:100%;height:44px;border-radius:12px;
+  font:600 16px/24px var(--sans);box-shadow:0 1px 2px rgba(16,24,40,.05)}
+/* Gray/300 on Gray/300: the chip overhead already counts the gaps down in the
+   open, so the button is allowed to say "not yet" and let the count say where.
+   It is still tappable — tapping marks the first blank and names it, which is
+   the one thing a dead button must not do silently. */
+.mt-foot .btn[aria-disabled="true"]{background:var(--g300);border-color:var(--g300);color:#fff}
+/* Figma 3809:11437 — above the bar, not in it, so the bar keeps its height. */
+.mt-toast{position:absolute;left:16px;right:16px;bottom:calc(100% + 12px);
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;
+  background:#1D2939;font:500 14px/20px var(--sans);color:#fff;
+  opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease}
+.mt-toast svg{flex:none}
+.mt-toast.on{opacity:1;transform:translateY(0)}
+.pad-cta{height:28px}
 
 /* ---------- Scrim + sheets ---------- */
 .scrim{position:absolute;inset:0;z-index:70;background:rgba(16,24,40,.45);opacity:0;transition:opacity .22s ease}

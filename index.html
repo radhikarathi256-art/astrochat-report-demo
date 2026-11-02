@@ -462,93 +462,160 @@
 
       <div class="scroll" data-scroll>
         <!-- His half is empty and comes first, because it is the only part of
-             this screen that is actually work. -->
-        <h3 class="mt-h">Enter Boy's Details</h3>
-        <!-- Shown only when the chat put a name in the box. It says where the
-             name came from and that it can go, which is the difference
-             between a form that remembered something helpful and a form that
-             has decided who she is marrying. -->
-        <p class="mt-hint" id="mtHint" hidden></p>
-        <!-- Empty, the box carries one grey prompt and nothing else; the
-             notched label only appears once there is a value to label, which
-             is how the live app's own details form behaves (517:21478). The
-             input comes before the label in the markup so `placeholder-shown`
-             can reach it with a plain sibling selector. -->
-        <div class="mt-card">
-          <label class="fld">
-            <input type="text" id="bName" autocomplete="off" placeholder="Enter Name">
-            <span>Name</span>
-          </label>
-          <!-- Side by side, because neither is typed. Both open the OS dial
-               picker, so the box is a display of a value and not a place to
-               write one, and a display does not need a whole row. Four stacked
-               rows per person made eight rows on the screen and the second
-               person started below the fold; three makes both cards visible at
-               once, which is what tells her the work is nearly nothing. -->
-          <div class="fld-row">
-            <label class="fld">
-              <input type="text" id="bDob" inputmode="numeric" autocomplete="off" placeholder="DD/MM/YYYY">
-              <span>Date of Birth</span>
-              <i class="fld-ic" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.75" width="15" height="13.75" rx="2.5" stroke="#475467" stroke-width="1.4"/><path d="M2.5 8.125h15M6.875 2.5v2.5M13.125 2.5v2.5" stroke="#475467" stroke-width="1.4" stroke-linecap="round"/></svg>
-              </i>
-            </label>
-            <label class="fld">
-              <input type="text" id="bTime" autocomplete="off" placeholder="HH:MM">
-              <span>Time of Birth</span>
-              <i class="fld-ic" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#475467" stroke-width="1.4"/><path d="M10 5.625V10l2.8 2.8" stroke="#475467" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </i>
-            </label>
+             this screen that is actually work. Hers is already answered and
+             collapses to a line, so the page opens on three blanks rather than
+             on eight boxes, six of which are filled in. -->
+        <div class="mt-sec">
+          <div class="mt-h">
+            <h3>Boy&rsquo;s details</h3>
+            <!-- A count, not a warning. It names how much is left in the one
+                 unit she cares about, and it is the same chip that turns green
+                 on her own half, so the two sections can be compared at a
+                 glance without reading either of them. -->
+            <span class="mt-chip mt-chip-todo" id="mtBoyChip">3 details left</span>
           </div>
-          <label class="fld">
-            <input type="text" id="bPlace" autocomplete="off" placeholder="Enter Place of Birth">
-            <span>Place of Birth</span>
-          </label>
+          <div class="mt-grp">
+            <div class="mt-name">
+              <label class="fld">
+                <input type="text" id="bName" autocomplete="off" placeholder="Name">
+                <span>Name</span>
+              </label>
+              <!-- Shown only when the chat put a name in the box. It says where
+                   the name came from and that it can go, which is the
+                   difference between a form that remembered something helpful
+                   and a form that has decided who she is marrying. -->
+              <p class="mt-help" id="mtHint" hidden></p>
+            </div>
+            <div class="mt-time">
+              <!-- Side by side, because neither is typed. Both open a picker, so
+                   the box displays a value rather than taking one, and a
+                   display does not need a whole row. -->
+              <div class="fld-row">
+                <label class="fld">
+                  <input type="text" id="bDob" inputmode="numeric" autocomplete="off" placeholder="Date of Birth">
+                  <span>Date of Birth</span>
+                  <i class="fld-ic" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                  </i>
+                  <i class="fld-ic fld-ic-err" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F04438"/><path d="M12 7v6M12 16.2v.1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                  </i>
+                </label>
+                <label class="fld">
+                  <input type="text" id="bTime" autocomplete="off" placeholder="Time of Birth">
+                  <span>Time of Birth</span>
+                  <i class="fld-ic" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </i>
+                  <i class="fld-ic fld-ic-err" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F04438"/><path d="M12 7v6M12 16.2v.1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                  </i>
+                </label>
+              </div>
+              <!-- The one field she may genuinely not have. Without this she
+                   either abandons the form or invents a time, and an invented
+                   time produces a real-looking score that is wrong. -->
+              <label class="mt-chk">
+                <input type="checkbox" id="bNoTime">
+                <i aria-hidden="true"></i>
+                <span>I don&rsquo;t know the exact birth time</span>
+              </label>
+            </div>
+            <div class="mt-city">
+              <label class="fld fld-lead">
+                <input type="text" id="bPlace" autocomplete="off" placeholder="Birth City">
+                <span>Birth city</span>
+                <i class="fld-ic fld-ic-lead" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 3.8 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </i>
+                <i class="fld-ic fld-ic-err" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F04438"/><path d="M12 7v6M12 16.2v.1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                </i>
+              </label>
+              <!-- Over the page, not in it: a list that pushed the rest of the
+                   form down would move the thing she is typing under her
+                   thumb. -->
+              <div class="mt-sugg" id="mtSugg" hidden></div>
+            </div>
+          </div>
         </div>
 
-        <!-- Hers arrives written in. It is the same four fields and they are
-             all still editable: the chart is hers to correct, and a locked
-             box would make her go hunting for a profile screen to fix a typo
-             the report is about to be built on. -->
-        <h3 class="mt-h">Enter Girl's Details <small>From your profile</small></h3>
-        <div class="mt-card">
-          <label class="fld">
-            <input type="text" id="gName" autocomplete="off" placeholder="Enter Name" value="Mansi Sharma">
-            <span>Name</span>
-          </label>
-          <div class="fld-row">
-            <label class="fld">
-              <input type="text" id="gDob" inputmode="numeric" autocomplete="off" placeholder="DD/MM/YYYY" value="30/10/1996">
-              <span>Date of Birth</span>
-              <i class="fld-ic" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.75" width="15" height="13.75" rx="2.5" stroke="#475467" stroke-width="1.4"/><path d="M2.5 8.125h15M6.875 2.5v2.5M13.125 2.5v2.5" stroke="#475467" stroke-width="1.4" stroke-linecap="round"/></svg>
-              </i>
-            </label>
-            <label class="fld">
-              <input type="text" id="gTime" autocomplete="off" placeholder="HH:MM" value="04:20">
-              <span>Time of Birth</span>
-              <i class="fld-ic" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#475467" stroke-width="1.4"/><path d="M10 5.625V10l2.8 2.8" stroke="#475467" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </i>
-            </label>
+        <!-- Hers arrives answered, so it arrives as a receipt. The fields are
+             still there behind Edit — the chart is hers to correct, and a
+             locked box would send her hunting for a profile screen to fix a
+             typo the report is about to be built on. -->
+        <div class="mt-sec mt-sec-girl">
+          <div class="mt-h">
+            <h3>Girl&rsquo;s details</h3>
+            <span class="mt-chip mt-chip-ok" id="mtGirlChip">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6.3 4.7 8.5 9.5 3.7" stroke="#168045" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Added
+            </span>
+            <button class="mt-done" type="button" id="mtGirlDone" hidden>Done</button>
           </div>
-          <label class="fld">
-            <input type="text" id="gPlace" autocomplete="off" placeholder="Enter Place of Birth" value="Pune, Maharashtra">
-            <span>Place of Birth</span>
-          </label>
+          <div class="mt-sum" id="mtGirlSum">
+            <span class="mt-av" aria-hidden="true">M</span>
+            <div class="mt-sum-i">
+              <p class="mt-sum-n"><b>Mansi Sharma</b><em>You</em></p>
+              <p id="mtGirlWhen">30 Oct 1996 &middot; 4:20 AM</p>
+              <p id="mtGirlWhere">Pune, Maharashtra</p>
+            </div>
+            <button class="mt-edit" type="button" id="mtGirlEdit">Edit</button>
+          </div>
+          <div class="mt-grp" id="mtGirlForm" hidden>
+            <label class="fld">
+              <input type="text" id="gName" autocomplete="off" placeholder="Name" value="Mansi Sharma">
+              <span>Name</span>
+            </label>
+            <div class="fld-row">
+              <label class="fld">
+                <input type="text" id="gDob" inputmode="numeric" autocomplete="off" placeholder="Date of Birth" value="30/10/1996">
+                <span>Date of Birth</span>
+                <i class="fld-ic" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </i>
+              </label>
+              <label class="fld">
+                <input type="text" id="gTime" autocomplete="off" placeholder="Time of Birth" value="04:20">
+                <span>Time of Birth</span>
+                <i class="fld-ic" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </i>
+              </label>
+            </div>
+            <label class="fld fld-lead">
+              <input type="text" id="gPlace" autocomplete="off" placeholder="Birth City" value="Pune, Maharashtra">
+              <span>Birth city</span>
+              <i class="fld-ic fld-ic-lead" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 3.8 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </i>
+            </label>
+            <p class="mt-help">Changes here also update your profile.</p>
+          </div>
         </div>
         <div class="pad-cta"></div>
       </div>
 
-      <!-- Live from the first frame. A greyed-out button makes her hunt for
-           what is missing; a live one can point at it. -->
       <div class="mt-foot">
-        <!-- Not "Get Report" any more. The form is free and what it returns
-             first is the number, so the button promises the number. Naming the
-             price here instead would be asking for money in exchange for
-             typing, which is the whole thing this reorder removed. -->
-        <button class="btn primary" type="button" id="mtGo">See Your Compatibility</button>
+        <!-- Above the bar rather than in it, so the bar keeps its height and
+             the message arrives over the page it is about. -->
+        <div class="mt-toast" id="mtToast" hidden>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#F04438"/><path d="M12 7v6M12 16.2v.1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+          <span></span>
+        </div>
+        <!-- Eight birth details is the most invasive thing this flow asks for.
+             The line costs nothing and answers the question she is actually
+             holding while she types. -->
+        <p class="mt-priv">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5" stroke="#667085" stroke-width="1.7"/><path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="#667085" stroke-width="1.7" stroke-linecap="round"/></svg>
+          Used only to make your report. Never shared.
+        </p>
+        <!-- Dead until the form is complete. The live-button-that-points-at-the
+             gap was the right call when the gaps were invisible; now the chip
+             overhead counts them down in the open, so the button can say "not
+             yet" and the count says where. Tapping it anyway still marks the
+             first blank and names it. -->
+        <button class="btn primary" type="button" id="mtGo" aria-disabled="true">See Your Compatibility</button>
       </div>
     </section>
 

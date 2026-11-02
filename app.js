@@ -1873,21 +1873,148 @@ function startBuy() {
    typed, labelled as the thing she is confirming. */
 function openMatch() {
   clearMatchErr();
+  hideMatchToast();
+  // Her half always arrives closed. It is already answered, and six filled
+  // boxes at the top of a form are six things to read before finding the three
+  // that are actually blank.
+  girlEdit(false);
   var hint = $('#mtHint');
   if (state.matched) {
     // Her own values, left exactly where she put them. Nothing is cleared:
     // changing one name should not cost her his birth time as well.
     hint.hidden = false;
     hint.textContent = 'These are the details you entered last time. ' +
-      'Check them, or change them to match someone else.';
+      'Change them to match someone else.';
   } else {
-    ['bName', 'bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+    ['bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+    $('#bNoTime').checked = false;
     $('#bName').value = state.suggested || '';
     hint.hidden = !state.suggested;
-    hint.textContent = 'We have filled in ' + state.suggested +
-      ' from your chat with Hemali. Change it if you meant someone else.';
+    hint.textContent = 'From your chat with Hemali. Change it if needed.';
   }
+  syncMatch();
   show('match', 'fade');
+}
+
+/* Which of his four the form is still waiting on. The time stops counting the
+   moment she says she does not know it — the checkbox is an answer, and a form
+   that keeps asking after being answered is not listening. */
+function matchMissing() {
+  var need = ['bName', 'bDob', 'bPlace'];
+  if (!$('#bNoTime').checked) need.splice(2, 0, 'bTime');
+  return need.filter(function (id) { return !$('#' + id).value.trim(); });
+}
+
+/* One pass that repaints everything downstream of a keystroke: the count in
+   his chip, the dead-or-alive button, and the time box when the checkbox takes
+   it out of play. Called on every input rather than wired field by field,
+   because the three of them are one fact shown three ways. */
+function syncMatch() {
+  var miss = matchMissing();
+  var chip = $('#mtBoyChip');
+  if (miss.length) {
+    chip.className = 'mt-chip mt-chip-todo';
+    chip.textContent = miss.length + (miss.length === 1 ? ' detail left' : ' details left');
+  } else {
+    chip.className = 'mt-chip mt-chip-ok';
+    chip.innerHTML = CHIP_TICK + 'Added';
+  }
+  var noTime = $('#bNoTime').checked;
+  var bt = $('#bTime');
+  bt.disabled = noTime;
+  bt.closest('.fld').style.opacity = noTime ? '.45' : '';
+  if (noTime) { bt.value = ''; clearFldErr(bt); }
+  /* `aria-disabled`, not `disabled`. A truly disabled button swallows the
+     click, and the one thing this button must not do is nothing: tapping it
+     with a blank left is how she asks the form what it is still waiting for. */
+  var go = $('#mtGo');
+  go.setAttribute('aria-disabled', miss.length > 0 ? 'true' : 'false');
+}
+
+var CHIP_TICK = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" ' +
+  'aria-hidden="true"><path d="M2.5 6.3 4.7 8.5 9.5 3.7" stroke="#168045" ' +
+  'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* Her card swaps for her fields in place. A sheet or a second screen would
+   make correcting a typo feel like leaving the form she is in the middle of. */
+function girlEdit(on) {
+  $('#mtGirlSum').hidden = on;
+  $('#mtGirlForm').hidden = !on;
+  $('#mtGirlChip').hidden = on;
+  $('#mtGirlDone').hidden = !on;
+  if (!on) {
+    // Back to the receipt, carrying whatever she just changed.
+    $('#mtGirlWhen').textContent = prettyDob($('#gDob').value) + ' · ' +
+      prettyTime($('#gTime').value);
+    $('#mtGirlWhere').textContent = $('#gPlace').value.trim() || '—';
+    $('#mtGirlSum').querySelector('b').textContent = $('#gName').value.trim() || '—';
+    $('#mtGirlSum').querySelector('.mt-av').textContent =
+      ($('#gName').value.trim()[0] || 'M').toUpperCase();
+  }
+}
+
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/* 30/10/1996 -> 30 Oct 1996. The receipt is read, not parsed, so it gets the
+   month as a word; the field stays numeric because that is what she types. */
+function prettyDob(v) {
+  var p = (v || '').split(/[\/\-.]/);
+  if (p.length !== 3) return v || '—';
+  var m = parseInt(p[1], 10);
+  return p[0] + ' ' + (MONTHS[m - 1] || p[1]) + ' ' + p[2];
+}
+function prettyTime(v) {
+  var p = (v || '').split(':');
+  if (p.length !== 2) return v || '—';
+  var h = parseInt(p[0], 10), ap = h < 12 ? 'AM' : 'PM';
+  return ((h % 12) || 12) + ':' + p[1] + ' ' + ap;
+}
+
+/* A short list of real places, because the point of the state is that the one
+   she wants may not be in it — see the line under the list. */
+var CITIES = [
+  ['Pune', 'Maharashtra, India'], ['Punalur', 'Kerala, India'],
+  ['Punganur', 'Andhra Pradesh, India'], ['Punjai Puliampatti', 'Tamil Nadu, India'],
+  ['Mumbai', 'Maharashtra, India'], ['Delhi', 'Delhi, India'],
+  ['Jaipur', 'Rajasthan, India'], ['Patna', 'Bihar, India'],
+  ['Lucknow', 'Uttar Pradesh, India'], ['Indore', 'Madhya Pradesh, India'],
+  ['Nagpur', 'Maharashtra, India'], ['Nashik', 'Maharashtra, India']
+];
+function citySuggest(q) {
+  var box = $('#mtSugg');
+  q = (q || '').trim();
+  if (q.length < 2) { box.hidden = true; return; }
+  var hits = CITIES.filter(function (c) {
+    return c[0].toLowerCase().indexOf(q.toLowerCase()) === 0;
+  }).slice(0, 4);
+  if (!hits.length) { box.hidden = true; return; }
+  box.innerHTML = hits.map(function (c) {
+    return '<button type="button" data-city="' + esc(c[0]) + ', ' +
+        esc(c[1].split(',')[0]) + '">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+        '<path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" ' +
+          'stroke-width="1.6"/><path d="M3.6 10.4C2.9 5.9 6.5 2 11 2h2c4.5 0 8.1 3.9 7.4 ' +
+          '8.4-.5 3.2-2.5 6.1-4.8 8-1.6 1.4-2.4 2.1-3.6 2.1s-2-.7-3.6-2.1c-2.3-1.9-4.3-4.8-4.8-8Z" ' +
+          'stroke="currentColor" stroke-width="1.6"/></svg>' +
+      '<span><b><i>' + esc(c[0].slice(0, q.length)) + '</i>' + esc(c[0].slice(q.length)) +
+        '</b><small>' + esc(c[1]) + '</small></span></button>';
+  }).join('') + '<p>Village not listed? Pick the nearest town or city.</p>';
+  box.hidden = false;
+}
+
+function showMatchToast(msg) {
+  var t = $('#mtToast');
+  t.querySelector('span').textContent = msg;
+  t.hidden = false;
+  later(function () { t.classList.add('on'); }, 10);
+  clearTimeout(t._t);
+  t._t = setTimeout(hideMatchToast, 4000);
+}
+function hideMatchToast() {
+  var t = $('#mtToast');
+  t.classList.remove('on');
+  clearTimeout(t._t);
+  t._t = setTimeout(function () { t.hidden = true; }, 220);
 }
 
 /* The making run, pulled out of pay() so the matching form can call it when it
@@ -1900,28 +2027,42 @@ function startMaking() {
 }
 
 /* ---------------------------------------------------------------- R.4b matching form
-   The button never greys out. A disabled CTA makes her hunt the page for what
-   is missing; a live one can be the thing that finds it — and it marks one
-   field, not four, because four red boxes is a page saying everything is wrong
-   instead of a form saying look here. */
+   The button greys out, because the chip above the fields now counts the gaps
+   down in the open and the count says where. But it stays tappable: a dead
+   button that does nothing when pressed is a form refusing to explain itself,
+   so the tap still marks the first blank and names it in a toast. One field,
+   not four — four red boxes is a page saying everything is wrong instead of a
+   form saying look here. */
 /* Reading order, not form order: the error lands on the first box she can see
    is empty, so date and time come before place now that they share a row. */
 var MATCH_FIELDS = ['bName', 'bDob', 'bTime', 'bPlace', 'gName', 'gDob', 'gTime', 'gPlace'];
-function clearMatchErr() {
-  MATCH_FIELDS.forEach(function (id) { $('#' + id).closest('.fld').classList.remove('err'); });
-}
+/* What the toast calls each one. "Fill this in to continue" was the same
+   sentence wherever she stood, which meant the toast could be read without
+   telling her anything the red box had not already said. */
+var MATCH_LABELS = {
+  bName: "the boy's name", bDob: "the boy's date of birth",
+  bTime: "the boy's time of birth", bPlace: "the boy's birth city",
+  gName: 'your name', gDob: 'your date of birth',
+  gTime: 'your time of birth', gPlace: 'your birth city'
+};
+function clearFldErr(el) { el.closest('.fld').classList.remove('err'); }
+function clearMatchErr() { MATCH_FIELDS.forEach(function (id) { clearFldErr($('#' + id)); }); }
 function submitMatch() {
   clearMatchErr();
   for (var i = 0; i < MATCH_FIELDS.length; i++) {
-    var el = $('#' + MATCH_FIELDS[i]);
+    var id = MATCH_FIELDS[i], el = $('#' + id);
+    // Her half is only on the page when it is open; closed, it is a receipt of
+    // values that are already good, so there is nothing there to be empty.
+    if (el.disabled || el.offsetParent === null) continue;
     if (!el.value.trim()) {
       el.closest('.fld').classList.add('err');
       el.scrollIntoView({ block: 'center', behavior: 'smooth' });
       el.focus({ preventScroll: true });
-      toast('Fill this in to continue');
+      showMatchToast('Please add ' + MATCH_LABELS[id]);
       return;
     }
   }
+  hideMatchToast();
   // His name is used by name from here on. Everything downstream is about the
   // two of them, and "your match" where a name could stand is the app
   // forgetting what she just typed.
@@ -3184,6 +3325,39 @@ function hidePush() {
 }
 
 /* ---------------------------------------------------------------- wiring */
+/* The form's own listeners. Delegated off `#match` rather than hung on eight
+   inputs, because three of those inputs are inside a block that is `hidden`
+   until she taps Edit. */
+$('#match').addEventListener('input', function (e) {
+  var el = e.target;
+  if (el.tagName !== 'INPUT') return;
+  // Typing in a box the form complained about is the correction; the red goes
+  // with the first keystroke, not when she tries the button again.
+  clearFldErr(el);
+  if (el.id === 'bPlace') citySuggest(el.value);
+  syncMatch();
+});
+$('#match').addEventListener('change', function (e) {
+  if (e.target.id === 'bNoTime') syncMatch();
+});
+$('#match').addEventListener('click', function (e) {
+  var city = e.target.closest('[data-city]');
+  if (city) {
+    $('#bPlace').value = city.getAttribute('data-city');
+    $('#mtSugg').hidden = true;
+    clearFldErr($('#bPlace'));
+    syncMatch();
+    return;
+  }
+  if (e.target.closest('#mtGirlEdit')) { girlEdit(true); return; }
+  if (e.target.closest('#mtGirlDone')) { girlEdit(false); return; }
+});
+// Tapping away from the city box puts the list away. A list that outlives the
+// field it belongs to ends up floating over her half of the form.
+$('#match').addEventListener('focusout', function (e) {
+  if (e.target.id === 'bPlace') later(function () { $('#mtSugg').hidden = true; }, 160);
+});
+
 document.addEventListener('click', function (e) {
   var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],.rsc-go');
   if (!t) return;
