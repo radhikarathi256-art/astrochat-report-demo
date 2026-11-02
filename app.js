@@ -1698,8 +1698,12 @@ function renderMenu() {
       '</i><span>' + esc(m.l) + '</span></button>';
   }).join('');
   $('#mnGrid').innerHTML = MN_TOOLS.map(function (m) {
+    // Broken at the space rather than left to the column width. 8140:3889 puts
+    // all four of these on two lines; "Get Kundli" is the one short enough to
+    // fit on one, and on one line it sat a line higher than its neighbours.
     return '<button class="mn-tool" type="button" ' + mnAct(m) + '>' +
-      '<i>' + mnIcon(m) + '</i><span>' + esc(m.l) + '</span></button>';
+      '<i>' + mnIcon(m) + '</i><span>' + esc(m.l).replace(' ', '<br>') +
+      '</span></button>';
   }).join('');
   /* Two states, and the second one is the point of the card: once she has
      picked today's three the card stops asking and says when the next set
