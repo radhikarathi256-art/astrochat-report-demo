@@ -1780,15 +1780,22 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    squeeze the drawing. Top-aligned, not centred: on a wrapped line a centred
    icon floats into the gap between the two lines and loses the row it belongs
    to. The 2px nudge drops it onto the first line's optical middle. */
-.r2-learn li{display:flex;gap:10px;font:400 15px/22px var(--sans);color:var(--g800)}
+.r2-learn li{display:flex;gap:12px;font:400 16px/24px var(--sans);color:var(--g800)}
 /* g400, and not brand: nine brand-orange drawings down the left of a white page
    turn a contents list into a rash, and the one orange thing on this screen
    should stay the buy button. Two steps lighter than the sentence it labels,
    which is the whole of the reference — the drawing is where the eye re-enters
    the list, not a thing to be read, and at g600 eight of them were competing
    with the words for first look. */
-.r2-learn li > i{flex:none;margin-top:2px;width:20px;height:20px;color:var(--g400)}
-.r2-learn li > i > svg{display:block;width:20px;height:20px}
+.r2-learn li > i{flex:none;width:24px;height:24px;color:var(--g400)}
+.r2-learn li > i > svg{display:block;width:24px;height:24px}
+/* Solar's duotone, so colour means something here that it did not when these
+   were stroked: the solid half is the subject and the 55% half is the thing it
+   sits in. Brass rather than g400 because a filled drawing at grey-400 reads as
+   disabled, and brass is the one metal already on this page — the foil on the
+   covers and the stars. It is not the brand orange, so the buy button is still
+   the only orange thing in view. */
+.li-gold{color:#8A7560}
 /* The handover, said plainly and once: the pages below are somebody else's
    chart, so the depth reads as proof rather than as her own reading. */
 .r2-sampnote{margin:6px 0 0;font:400 14px/21px var(--sans);color:var(--g600)}
@@ -1881,6 +1888,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:400 14px/20px var(--sans);color:var(--g500)}
 .rv-sum .star{width:14px;height:14px}
 .rv-sum b{font-weight:600;color:var(--g700)}
+/* Figma 3913:14854 — the Mandala line motif, 112 square at 60%, bled off the
+   top-right corner so only about half of it is on the page. Decoration, so it
+   is a background rather than an element: nothing to read, nothing to hit, and
+   it cannot end up in the tab order. The block clips it, which is what puts a
+   broken edge at the corner instead of a whole circle floating there. */
+.r2-revblock{position:relative;overflow:hidden}
+/* ::after, not ::before — ::before on this block is already the hairline rule
+   that divides it from the one above. */
+.r2-revblock::after{content:"";position:absolute;top:-40px;right:-36px;
+  width:112px;height:112px;opacity:.6;pointer-events:none;
+  background:url(assets/mandala.svg) center/contain no-repeat}
+.r2-revblock > *{position:relative}
 
 /* ---------- What the report is: description, chips, the sample door ---------- */
 /* The one block on this page that stays on the title card's axis rather than
