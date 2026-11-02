@@ -1307,9 +1307,9 @@ function renderRead() {
         // The same rail as the sell page's and the empty shelf's. Two cards
         // here rather than three, so nothing scrolls - but the shape she
         // learned on the other two surfaces is the shape she meets again.
-        '<div class="carousel fill">' +
+        '<div class="ur-list">' +
           REPORTS.filter(function (x) { return x.id !== state.pick; })
-            .map(upsellCard).join('') +
+            .map(upsellRow).join('') +
         '</div>' +
       '</div>';
   // No "Continue with Astro Hemali" button under it: the ask bar is pinned to
@@ -1768,13 +1768,19 @@ function histWidget(r) {
 }
 
 function renderMine() {
-  // One widget per report, what she owns first. The old shelf rows and the
-  // upsell rail said the same two things in two different shapes; the widget
-  // says both in one, so the page is a single column of cards.
+  /* What she owns is the page; what she does not is the shelf under it. Run as
+     one list of widgets, a report she has never heard of wore the same Hemali
+     card as the one she paid for this morning, so three reports read as three
+     purchases. The rest now sit under their own heading, in the row she has
+     already met at the foot of the detail page. */
   var mine = REPORTS.filter(function (x) { return owns(x.id); });
   var left = REPORTS.filter(function (x) { return !owns(x.id); });
-  $('#mineBody').innerHTML = '<div class="hw-list">' +
-    mine.concat(left).map(histWidget).join('') + '</div>' +
+  $('#mineBody').innerHTML =
+    (mine.length ? '<div class="hw-list">' + mine.map(histWidget).join('') + '</div>' : '') +
+    (left.length
+      ? '<div class="mine-also"><h2 class="r2-h">You May Also Like</h2>' +
+          '<div class="ur-list">' + left.map(upsellRow).join('') + '</div></div>'
+      : '') +
     '<p class="mine-note">Every report stays here in the language you chose and in English.</p>';
 }
 
@@ -2345,64 +2351,32 @@ function book3d(r) {
   '</span>';
 }
 
-/* Figma 3169:202620 — the upsell card, one component used both at the foot of
-   the report page and at the end of the reader. Cover, title, the one-line
-   promise, price with the saving as its own chip, then Buy now on the bottom
-   edge. Both call sites render the identical card; only the list differs. */
-function upsellCard(x) {
-  // An owned card opens the report rather than its sales page. The label says
-  // Read Report, and a button that says read and then shows a cover with a
-  // price under it has not read anything.
-  return '<button class="pcard" type="button" ' +
-      (owns(x.id) ? 'data-open-rep="' : 'data-pick="') + x.id + '">' +
+/* Figma 3811:11554 `Upsell row · Detail` — the rail is now a list. Two covers
+   side by side each wanted 104px and a stacked price under it, which made the
+   foot of the page nearly a screen tall for the two books she did not come
+   for. Laid on its side the same offer is 155: a small standing book, the
+   title, the rating, then the price with a *secondary* Buy Now, so the sticky
+   bar below stays the only orange button in view. The book keeps its flip —
+   it is the one thing on the row that says these are books — it is just
+   smaller. */
+function upsellRow(x) {
+  var own = owns(x.id);
+  return '<button class="urow" type="button" ' +
+      (own ? 'data-open-rep="' : 'data-pick="') + x.id + '">' +
     book3d(x) +
-    // Everything but the cover, in one column beside it. The card lies on its
-    // side now: two books stacked one above the other, each a cover with its
-    // own facts to the right, instead of two narrow columns side by side.
-    // Side by side, a title as long as "Kundli Milan Marriage Compatibility"
-    // had 159px to live in and took three lines, which pushed its rating, its
-    // promise and its price out of step with the card next to it. Full width
-    // the same title takes two, and the two cards cannot disagree about
-    // heights because they no longer share a row.
-    '<span class="pc-txt">' +
-    // The long name, because the book is right above it. Partner is the only
-    // report whose short name is shorter than its cover — the other two put
-    // their whole title on the jacket — so this card was the one place the
-    // artwork said "Your Future Partner" and the line under it said something
-    // else. Everywhere else a cover sits beside a name already uses t2.
-    '<b>' + esc(x.t2 || x.t + ' Report') + '</b>' +
-    // The one number that decides between two books nobody has heard of. The
-    // card showed a title, a promise and a price — the same three things on
-    // both — so there was nothing on it to choose by.
-    // The star is its own element so it can take the rating gold. Sharing the
-    // line's colour made it ink-black here while the same star was gold on the
-    // sell page and in the reviews.
-    '<span class="pc-rt">' + STAR + ' ' + esc(x.rating) +
-      ' <s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
-    // No promise line. This card is a cross-sell at the foot of a page that
-    // has already sold one of these books, so its job is to name the other
-    // two and price them, not to pitch them a second time — the pitch is one
-    // tap away on the page it opens. Two lines of grey between the rating and
-    // the price only pushed the price down and made the card a paragraph.
-    // Once it is hers the card stops selling. The price row goes — a discount
-    // beside a book she has already paid for is the page asking a second
-    // time — and the button becomes the way back into it. Career keeps a price
-    // because its quarter runs out, so there is a real next edition to buy.
-      // Price and button on one line, because the column is wide enough to
-      // hold both now. Stacked, they made a card on its side as tall as the
-      // upright one was and gave the row no footing.
-      '<span class="pc-foot">' +
-        (owns(x.id) && x.cadence !== 'quarterly' ? '' :
-          '<span class="pc-pr">' +
-            // Struck price first, then what it costs. Read left to right that
-            // is the sentence the discount actually makes — it was 499, it is
-            // 49 — and the number she pays is the one the eye stops on,
-            // because it is the last and the largest. The other way round the
-            // 499 trailed the 49 like a footnote.
-            '<i><s>\u20b9499</s><em>\u20b949</em></i>' +
-            '<span class="pc-off">90% OFF</span>' +
-          '</span>') +
-        '<span class="pc-btn">' + (owns(x.id) ? 'Read Report' : 'Buy now') + '</span>' +
+    '<span class="ur-txt">' +
+      // The long name, because the cover beside it is now too small to read.
+      '<b>' + esc(x.t2 || x.t + ' Report') + '</b>' +
+      '<span class="ur-rt">' + STAR + '<em>' + esc(x.rating) + '</em>' +
+        '<s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
+      '<span class="ur-foot">' +
+        // An owned row stops quoting a price — except Career, whose quarter
+        // runs out, so there is a real next edition to sell. The empty span
+        // keeps `space-between` pushing the button right either way.
+        (own && x.cadence !== 'quarterly' ? '<span></span>' :
+          '<span class="ur-pr"><b>\u20b949</b><s>\u20b9499</s>' +
+            '<em>90% off</em></span>') +
+        '<span class="ur-btn">' + (own ? 'Read Report' : 'Buy Now') + '</span>' +
       '</span>' +
     '</span>' +
   '</button>';
@@ -3016,7 +2990,7 @@ function renderReport() {
   // The strip starts parked on the first card, so that one is already snapped.
   markSnappedReview($('#r2Revs'));
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
-    .map(upsellCard).join('');
+    .map(upsellRow).join('');
   /* Pre-match the hook promises the score, which is the right promise while
      the score is still the unknown. Post-match that promise has been kept, so
      the line over the button has to be about what is still shut - which is

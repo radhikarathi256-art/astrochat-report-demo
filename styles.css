@@ -574,19 +574,21 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   background:radial-gradient(ellipse at center,
     color-mix(in srgb,var(--cva,#C98B9B) 42%,transparent) 0,transparent 70%)}
 .bkt-leaf,.bkt-back,.bkt-pg,.bk3-leaf,.bk3-spine{display:none}
-/* The upsells are the same object at thumbnail size, filling about four fifths
-   of the slot so the turn has room to read. */
-.pcard .bkt,.pcard .bk3{--bk-d:8px;width:64px;height:87px;margin-bottom:10px}
+/* The upsells are the same object at thumbnail size. Figma 3811:11485 puts the
+   book at 58x84 beside the title now rather than 104 above it, so the depth
+   comes down with it — 8px of board on a 58px cover is the same slab 8px was
+   on a 64px one, near enough, and the turn still reads. */
+.urow .bkt,.urow .bk3{--bk-d:8px;width:58px;height:84px;--bw:58px;--bh:84px}
 /* And they tease: the board lifts off its spine far enough to show paper, holds
    the glance, and shuts. Not the full 180 the hero does — at 64px that reads as
    a flicker rather than a book. The wrapper keeps the standard 800px so the
    turn matches every other copy; the tease happens inside it. */
-.pcard .bkt{perspective:800px}
+.urow .bkt{perspective:800px}
 /* What the tease opens onto. A blank cream card here undid the case binding the
    moment the cover lifted, so this is the inside of the book: the back board
    standing as a dark rim around the text block — the squares a hardback has —
    then the leaves stacking up as fine lines along the fore-edge. */
-.pcard .bkt-leaf{display:block;position:absolute;inset:0;z-index:0;
+.urow .bkt-leaf{display:block;position:absolute;inset:0;z-index:0;
   /* Pushed back to just in front of the rear board, so the loose leaves have
      somewhere to stack between it and the cover. Flat at z=0 it sat in the
      cover's own plane and every page landed behind it. */
@@ -608,7 +610,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    pixel and a half each, which is what a riffled block does anyway, and gives
    three edges the eye can actually count. Each sits inside the boards, the
    square a case binding leaves round its text block. */
-.pcard .bkt-pg{display:block;position:absolute;z-index:1;
+.urow .bkt-pg{display:block;position:absolute;z-index:1;
   top:calc(1px + var(--i) * 1px);bottom:calc(1px + var(--i) * 1px);
   left:2px;right:calc(var(--i) * 1.6px);border-radius:1px 2px 2px 1px;
   transform:translateZ(calc(var(--i) * -2px));
@@ -617,7 +619,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* And the topmost leaf carries the rest of the ream as a band of fine lines
    down its fore-edge, so the block reads as hundreds of pages rather than the
    three that are actually drawn. */
-.pcard .bkt-pg[style*="--i:1"]{background:
+.urow .bkt-pg[style*="--i:1"]{background:
   repeating-linear-gradient(90deg,rgba(120,96,70,.3) 0 .5px,rgba(120,96,70,0) .5px 2px)
     right center/9px 100% no-repeat,
   linear-gradient(90deg,#EFE6D6 0,#FFFDF8 9%,#FFFDF8 84%,#E3D7C0 100%)}
@@ -625,20 +627,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    gone — the case now has a real back board and a real page block, so a painted
    stripe down the left was a second, flatter spine drawn over the first. What
    is left is the board's own edge and the shadow it throws onto the open page. */
-.pcard .bkt-cov{z-index:2;transform-origin:left center;transform-style:preserve-3d;
+.urow .bkt-cov{z-index:2;transform-origin:left center;transform-style:preserve-3d;
   box-shadow:2px 0 0 rgba(74,24,8,.5),
     7px 3px 11px -3px rgba(74,24,8,.5);
   animation:bookAjar 3.6s cubic-bezier(.33,1,.68,1) .7s infinite}
 /* One at a time: the second book waits out the first one's tease rather than
    both cards fanning open together, which read as a glitch. Scaled with the
    cycle — this is 0.7s + 0.5 of a 3.6s loop, as 4.2 was of a 6s one. */
-.pcard:nth-of-type(2n) .bkt-cov{animation-delay:2.5s}
-.pcard .bkt-face{backface-visibility:hidden}
-.pcard .bkt-back{display:block;position:absolute;inset:0;
+.urow:nth-of-type(2n) .bkt-cov{animation-delay:2.5s}
+.urow .bkt-face{backface-visibility:hidden}
+.urow .bkt-back{display:block;position:absolute;inset:0;
   transform:rotateY(180deg);backface-visibility:hidden;border-radius:6px 2px 2px 6px;
   background:#FFFDF8 no-repeat left center;background-size:200% 100%}
 @media (prefers-reduced-motion:reduce){
-  .pcard .bkt-cov{animation:none}
+  .urow .bkt-cov{animation:none}
 }
 .sell-hd{position:relative;z-index:2;flex:1;min-width:0;display:block}
 .sell-t{display:block;font:700 20px/24px var(--serif);color:var(--g900)}
@@ -1274,6 +1276,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .mine-tx small{font:500 13px/18px var(--sans);color:var(--s700)}
 .mine-tx em{font-style:normal;font:400 12px/17px var(--sans);color:var(--g500)}
 .mine-chev{flex:none;font-style:normal;font:400 20px/20px var(--sans);color:var(--g300)}
+/* The shelf of what she has not bought. Padded to the page's own 16 so the
+   covers line up with the widgets above, and a hairline off the top because
+   the last widget is a card and this is not. */
+.mine-also{margin:4px 16px 0;padding-top:16px;border-top:1px solid var(--g200)}
+.mine-also:first-child{margin-top:12px;border-top:0;padding-top:0}
 .mine-note{margin:16px;padding:11px 12px;border-radius:10px;background:var(--g50);
   font:400 12px/18px var(--sans);color:var(--g600)}
 /* Empty, and saying so once rather than filling the screen with regret. The
@@ -1504,6 +1511,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    instead of two thirds. What leaves the frame is curtain. */
 .r2-vid{position:absolute;inset:0;z-index:0;width:100%;height:100%;
   object-fit:cover;pointer-events:none;transform-origin:50% 0}
+/* Both couple films were graded so soft they arrived as sepia: a red lehenga
+   and a maroon sherwani both sampled out at around 12% saturation, which is
+   why the hero read as an old photograph rather than as the day it is selling.
+   The lift is deliberately uneven — saturate alone turned the skin orange, so
+   a touch of contrast puts the darks back under it and brightness gives back
+   the stop that contrast takes. Career is excluded on purpose: its clip is a
+   pale sand #E3D3C5 by design and boosting it only yellows the cloud. */
+.r2-vid.vid-partner,.r2-vid.vid-marriage{
+  filter:saturate(1.45) contrast(1.06) brightness(1.02)}
 /* The numbers above belong to the Partner footage, not to the slot — they were
    measured against that frame. A second clip with a different composition has
    to be framed on its own, so each one carries its crop. */
@@ -2184,10 +2200,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .rs{position:relative;overflow:hidden;padding:24px 20px 92px}
 .rp .rp-secs > .carousel-wrap{padding:24px 0}
 .rp .rp-secs > .carousel-wrap .lbl{padding:0 20px 12px}
-/* The wrap is already flush to both edges here, so the rail has nothing to
-   bleed out of — it only insets to the section's own 20px, which is where the
-   eyebrow above it starts. */
-.rp .rp-secs > .carousel-wrap .carousel{margin:0;padding:0 20px 10px}
+/* The wrap is flush to both edges here, so the list insets to the section's
+   own 20px, which is where the eyebrow above it starts. */
+.rp .rp-secs > .carousel-wrap .ur-list{padding:0 20px}
 .rp .rp-secs > .upsell{border:0}
 /* A dot and a quiet grey label. It names the section; it is not the headline. */
 /* The eyebrow carries a glyph now rather than a dot. Fifteen sections is past
@@ -2497,83 +2512,46 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tagged p{margin:10px 0 0;font:400 16px/24px var(--sans);color:var(--g600)}
 .carousel-wrap{padding:8px 0 0}
 .carousel-wrap .lbl{padding:0 0 12px;margin:0}
-/* A sideways rail, on every surface that pitches a report. The stack it
-   replaced gave each book the full column, but it also gave the pitch the
-   weight of the page it was sitting at the bottom of: three full-width rows of
-   cover, title, rating, price and button read as the page's own content rather
-   than as an aside. A rail is one gesture, one height, and the same shape
-   wherever she meets it — the report page, the end of a bought report, and the
-   empty shelf.
-   `--crg` is the host's own side gutter: the rail bleeds out of it by that much
-   and pads back in by the same, so the first cover starts on the page's text
-   edge and the last one runs off the screen rather than stopping short of it. */
-.carousel{--crg:16px;display:flex;flex-direction:row;gap:14px;
-  margin:0 calc(var(--crg) * -1);padding:2px var(--crg) 10px;
-  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none}
-.carousel::-webkit-scrollbar{display:none}
-/* Figma 3169:202620 — 159px card, 16px corners, g200 hairline, 12px padding,
-   8px between rows. Each upsell gets the same cover, price pattern and button
-   as the report being sold above it; a title and a bare ₹49 gave the reader
-   nothing to recognise. */
-/* No card around it. Board 3353:14332 sets the cover loose on the page with
-   the title, the rating and the price stacked under it — the hairline and the
-   12px of padding only shrank the one thing that sells a book, which is the
-   book. Everything below still starts on the cover's own left edge. */
-.carousel .pcard{flex:none;width:148px;background:none;
-  border:0;border-radius:0;padding:0;scroll-snap-align:start;
-  display:flex;flex-direction:column;align-items:stretch;gap:12px;text-align:left}
-/* The column under the cover. `min-width:0` is what lets the long titles wrap
-   instead of forcing the card wider than its track. */
-.carousel .pcard .pc-txt{flex:1 1 auto;min-width:0;
-  display:flex;flex-direction:column;align-items:stretch;gap:6px}
-/* 104x156, the artwork's own 2:3 so the 400x600 cover is not cropped by the
-   `cover` paint. Centred over its own column: on the rail the cover is the
-   width of the card rather than a thumbnail beside it, so it can be bigger
-   than the 88 it was in the stack even though the card is half as wide. */
-.carousel .pcard .bkt,.carousel .pcard .bk3{flex:none;align-self:center;margin:0;
-  width:104px;height:156px;--bw:104px;--bh:156px}
-/* Price over button, not beside it. The row layout belongs to a full-width
-   card; in 148px the ₹49 and the Buy now collided. `margin-top:auto` still
-   pins the pair to the foot, so a one-line title and a two-line one end level. */
-.carousel .pcard .pc-foot{flex-direction:column;align-items:stretch;gap:8px;
-  margin-top:auto}
-.carousel .pcard .pc-pr{justify-content:flex-start;margin-right:0}
-.carousel .pcard .pc-btn{justify-content:center;width:100%}
-/* The name of the report is the strongest thing on the card. At 400/16 in g700
-   it weighed the same as its own one-line description, so the pair read as two
-   sentences rather than as a title and a subtitle. */
-.carousel .pcard b{font:600 15px/21px var(--sans);color:var(--g900)}
-/* Sits straight under the title, the way the listing hangs its rating under
-   the name. The star carries the number; the read count trails it in grey so
-   one line does both jobs without becoming two. */
-.pc-rt{margin:-4px 0 0;display:flex;align-items:center;gap:4px;
-  font:600 13px/19px var(--sans);color:var(--g900)}
-.pc-rt s{text-decoration:none;font-weight:400;color:var(--g500)}
-/* The discount sits under the price as its own chip, which is how the sell card
-   and the chat card both show it — the saving is the reason, so it gets a line. */
-/* Price on the left, button on the right, on the bottom edge of the column.
-   `margin-top:auto` pins the pair to the foot so a one-line promise and a
-   two-line one still end at the cover's baseline. The price takes the spare
-   room, which puts the button hard right whether or not there is a price —
-   an owned card drops the price entirely. */
-.pc-foot{margin-top:auto;padding-top:4px;
-  display:flex;align-items:flex-end;justify-content:flex-end;gap:12px}
-.pc-pr{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin-right:auto}
-.pc-pr i{font-style:normal;display:flex;align-items:center;gap:6px}
-.pc-pr em{font-style:normal;font:600 18px/28px var(--sans);color:var(--s700)}
-/* Same spec as the chat card's, off the same Figma node. */
-.pc-pr s{font:500 14px/28px var(--sans);color:var(--g400)}
-.pc-off{margin-top:-1px;align-self:flex-start;border-radius:5px;padding:2px 5px;
-  background:linear-gradient(90deg,#ECFDF3 0,#FFFFFF 100%);
-  font:400 12px/18px var(--sans);color:var(--s700)}
-/* Sized to its label now rather than stretched across the card. Beside a price
-   it is one of two things on a line, and a full-width bar under a ₹49 read as
-   the whole card being a button. */
-.pc-btn{flex:none;height:40px;padding:0 20px;border-radius:12px;
-  display:grid;place-items:center;white-space:nowrap;
-  background:var(--brand);font:400 16px/24px var(--sans);color:#fff}
-.pcard:active .pc-btn{background:var(--brand-dk)}
+/* Figma 3811:11554 `Upsell row · Detail` — a list, not a rail. The rail was
+   one gesture and one height, but it also put two 104px covers at the foot of
+   a page that already has a book standing at the top of it, and the price had
+   to stack under the button to fit 148px of track. On its side each offer is
+   155 tall, nothing scrolls sideways, and the hairline between rows is all the
+   framing it needs. */
+.ur-list{display:flex;flex-direction:column}
+.urow{display:flex;gap:14px;align-items:flex-start;width:100%;
+  padding:16px 0;border:0;border-bottom:1px solid var(--g200);
+  background:none;text-align:left;cursor:pointer}
+.urow:last-child{border-bottom:0}
+/* The column beside the cover. `min-width:0` is what lets a title as long as
+   "Kundli Milan Marriage Compatibility Report" wrap instead of pushing the
+   price and the button off the row. */
+.ur-txt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+  align-items:stretch;gap:2px}
+.ur-txt > b{font:600 16px/24px var(--sans);color:var(--g900)}
+/* The one number that chooses between two books nobody has heard of. The star
+   is its own element so it can take the rating gold rather than the line's ink. */
+.ur-rt{display:flex;align-items:center;gap:4px;
+  font:400 14px/20px var(--sans);color:var(--g500)}
+.ur-rt .star{flex:none;width:13px;height:13px}
+.ur-rt em{font-style:normal;font-weight:600;color:var(--g700)}
+.ur-rt s{text-decoration:none}
+.ur-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-top:10px}
+/* One line, baselined: what it costs, what it cost, what that saves. The chip
+   the rail used belongs to a card with a column to itself. */
+.ur-pr{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+.ur-pr b{font:600 16px/24px var(--sans);color:var(--g900)}
+.ur-pr s{font:400 14px/20px var(--sans);color:var(--g400)}
+.ur-pr em{font-style:normal;font:600 14px/20px var(--sans);color:var(--s700)}
+/* Secondary, deliberately. A filled orange button here sat directly above the
+   sticky bar's filled orange button and the page then had two primary actions
+   arguing over which report she was buying. */
+.ur-btn{flex:none;display:grid;place-items:center;white-space:nowrap;
+  padding:8px 16px;border:1px solid var(--brand);border-radius:12px;background:#fff;
+  box-shadow:0 1px 2px rgba(16,24,40,.05);
+  font:600 16px/24px var(--sans);color:var(--brand)}
+.urow:active .ur-btn{background:var(--brand50)}
 
 /* ---------- R.5 / R.6 Timeline ---------- */
 .tl-head{padding:18px 16px 0}
