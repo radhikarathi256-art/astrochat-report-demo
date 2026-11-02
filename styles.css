@@ -22,8 +22,10 @@
      it sits in, so one rule serves the 11px sell line and the 16px stat block
      alike. `.star` is in the utilities block further down. */
   --purple:#6941C6; --purple50:#F4EBFF;
-  /* The report's own pinks. `dec1/dec2` are the motifs, pale then deep;
-     `decw1/decw2` are the two waves they sit on. */
+  /* `dec1/dec2` are the section motifs, pale then deep; `decw1/decw2` are the
+     two waves they sit on. These are only the fallback for anywhere outside a
+     report page — inside one, `.rp` mixes them out of that report's own arch,
+     so the decoration belongs to the book she opened. */
   --dec1:#FCCEEE; --dec2:#FAA7E0; --decw1:#FEF6FB; --decw2:#FDF2FA;
   /* The sell page's ground: a muted dusty rose rather than the pale peach it
      was. The book is the brightest thing on that screen and it needs the page
@@ -2105,7 +2107,18 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    near-white where a card covers it. */
 .rp{background:#F6EEF0;
   --arch-a:#B4536B; --arch-b:#D98C97; --arch-c:#F6E3DE;
-  --arch-in:#FFFFFF; --arch-in-sc:#E0B9C4}
+  --arch-in:#FFFFFF; --arch-in-sc:#E0B9C4;
+  /* The fourteen section motifs and the two hills under them used to be pink
+     on all three reports, so Career and Kundli Milan read as the partner book
+     with the pictures swapped. They are mixed out of the arch instead — the
+     same tones the cover and the hero film are painted in — so each report
+     carries one colour the whole way down. Declared once: custom properties
+     resolve where they are used, so the per-report arch below feeds these
+     without restating them three times. */
+  --dec1:color-mix(in srgb,var(--arch-b) 52%,#fff);
+  --dec2:var(--arch-b);
+  --decw1:color-mix(in srgb,var(--arch-c) 26%,#fff);
+  --decw2:color-mix(in srgb,var(--arch-c) 44%,#fff)}
 /* Marriage is gold, like its cover and its spread. */
 .rp[data-rep="marriage"]{background:#FBF4E7;
   --arch-a:#9A6B1E; --arch-b:#D7A94E; --arch-c:#F4E4BE; --arch-in-sc:#E9CE99}
