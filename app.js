@@ -1659,15 +1659,15 @@ var MN_TILES = [
   { l: 'My Reports',          go: 'mine',      d: MN_BOOK_IC, count: true },
   { l: 'Wallet Transactions', d: MN_CASE_IC }
 ];
-/* The four evergreen tools. They never change state, so they are a strip of
-   icons rather than four more rows arguing for attention. These four are not
-   line icons on the board at all — they are the app's own soft 3D peach
-   renders, exported from 3942:16013 and shipped as PNGs. */
+/* The four evergreen tools, as the Offerings block from the live app —
+   S1vM7htbaJ5ZOgT7XYWDAs 8140:3889. Names, order and artwork are that frame's,
+   exported node by node rather than redrawn: these four are the only icons in
+   the menu that are not line icons, because in the app they never were. */
 var MN_TOOLS = [
-  { l: 'Kundali Report',   img: 'tool-kundali' },
-  { l: 'Kundali Matching', img: 'tool-matching' },
-  { l: 'Horoscope',        img: 'tool-horoscope' },
-  { l: 'Panchang',         img: 'tool-panchang' }
+  { l: 'Daily Panchang',  img: 'off-panchang' },
+  { l: 'Get Kundli',      img: 'off-kundli' },
+  { l: 'Love Matching',   img: 'off-matching' },
+  { l: 'Daily Horoscope', img: 'off-horoscope' }
 ];
 var MN_ROWS = [
   { l: 'My Astrologers', d: '<path d="M12.2 8a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z"/><path d="M2.8 20c.5-3.3 3.1-5.4 6.2-5.4s5.7 2.1 6.2 5.4"/><path d="M16.2 5.3a3.2 3.2 0 0 1 0 5.6M18 14.9c2 .8 3.2 2.7 3.5 5.1"/>' },
@@ -2378,8 +2378,8 @@ function pointers(r, n) {
 /* 49 against 499, and what the 49 buys you forever. Said once per surface,
    directly under the list of questions it pays for. */
 function priceRow() {
-  return '<p class="of3-price"><s>₹499</s><b>₹49</b><i>90% OFF</i>' +
-    '<em>one-time · yours forever</em></p>';
+  return '<p class="of3-price"><b>₹49</b>' +
+    '<small><s>₹499</s><i>90% OFF</i></small></p>';
 }
 
 /* 1,28,880 -> "1,28,880". Indian grouping: last three, then pairs. */
@@ -2706,7 +2706,12 @@ function offer3Card() {
           (ask
             ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
                 'Learn More</button>'
-            : '<div class="of3-price"><i>90% OFF</i><span><s>₹499</s><b>₹49</b></span></div>' +
+            // Same block the detail page's buy bar uses, in the same order:
+            // what she pays leads, the cut explains it underneath. The chip
+            // used to sit on top, which read the discount out before there was
+            // a price for it to be a discount on.
+            : '<div class="of3-price"><b>₹49</b>' +
+                '<small><s>₹499</s><i>90% OFF</i></small></div>' +
               '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
         '</div>') +
   '</div>';
