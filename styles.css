@@ -1200,11 +1200,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   display:grid;place-items:center;font:600 11px/18px var(--sans)}
 
 /* The free block: the one thing with a daily reset on a card, the four
-   evergreen tools on a strip under it. Grey/100 ground, the same neutral as
-   the head and the foot, so the free things are visibly a block of the app's
-   rather than three more white cards. */
+   evergreen tools on a strip under it. Warm off-white rather than Grey/100 —
+   the four Offerings discs inside it are peach, and a cool grey ground turned
+   them slightly dirty. This sits under the brand without competing with the
+   Brand/50 band at the top. */
 .mn-free{margin:16px 16px 0;padding:14px 12px 16px;border-radius:16px;
-  background:var(--g100)}
+  background:#FAF7F3}
 .mn-free h2{margin:0 0 12px;font:600 16px/24px var(--sans);color:var(--g900)}
 .mn-ftc{display:flex;align-items:center;gap:12px;
   padding:10px 12px 10px 8px;border:1px solid var(--g300);border-radius:14px;
