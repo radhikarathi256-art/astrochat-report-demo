@@ -984,46 +984,93 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   box-shadow:0 1px 2px rgba(16,24,40,.05)}
 .gn-go:active{background:var(--brand-dk)}
 
-/* ---------- Koota panel · detail page, post-form ---------- */
-/* One bordered card rather than four stacked blocks. The score, the eight rows
-   and the finding are one reading and have to look like one object; split into
-   separate cards the page reads as three announcements about the same thing. */
-.km{margin-top:12px;border-radius:14px;border:1px solid #F0E3DC;background:#fff;
-  padding:16px;box-shadow:0 10px 24px -16px rgba(122,46,14,.28)}
-.km-top{display:flex;align-items:center;gap:14px}
-.km-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
-.km-tx strong{font:600 16px/22px var(--sans);color:var(--g900)}
-.km-tx span{font:400 13px/18px var(--sans);color:var(--g600)}
-.km-list{list-style:none;margin:16px 0 0;padding:14px 0 0;
-  border-top:1px solid var(--g100)}
-.km-list li{display:flex;align-items:center;gap:9px;height:34px}
-.km-list li+li{border-top:1px solid #F7F2EF}
-/* The icon carries the state and the row inherits from it, so a locked row is
-   grey end to end instead of a grey padlock next to black type pretending
-   nothing is missing. */
-.km-list i{flex:none;display:flex;width:18px;height:18px;border-radius:50%;
-  align-items:center;justify-content:center;background:var(--g100);color:var(--g500)}
-.km-list i svg{width:11px;height:11px}
-.km-list li.on i{background:#E6F6EE;color:var(--s700)}
-.km-list b{flex:1 1 auto;min-width:0;font:500 14px/20px var(--sans);color:var(--g500);
+/* ---------- Score card · detail page, post-form ---------- */
+/* Figma 3756:8129. A warm wash that burns off to white just past halfway — the
+   tint sits under the number, which is the thing being presented, and lets the
+   two buttons and the note below sit on plain paper. A flat beige card made the
+   white buttons on it look disabled. */
+.gm{border-radius:20px;border:1px solid #EAE1D4;
+  background:linear-gradient(135deg,#F6EBDD 0%,#FFFFFF 55%,#FFFFFF 100%)}
+.gm-top{display:flex;align-items:center;gap:16px;padding:20px 20px 16px}
+.gm-sc{flex:none;display:flex;flex-direction:column;gap:2px}
+.gm-pair{font:400 14px/20px var(--sans);color:#5B4636}
+.gm-sc b{font:700 26px/34px var(--sans);letter-spacing:-.01em;color:#7A4A1E}
+.gm-verdict{font:500 14px/20px var(--sans);color:#1D2939}
+/* 36 tall because the marker is 36 and has to sit anywhere along the track
+   without changing the height of the row under it. */
+.gm-prog{position:relative;flex:1 1 auto;min-width:0;height:36px}
+.gm-trk{position:absolute;left:0;right:0;top:50%;margin-top:-4px;height:8px;
+  border-radius:4px;background:#F1E9DD;overflow:hidden}
+.gm-trk i{display:block;height:100%;border-radius:4px;background:#C49A6C}
+/* The white ring is what separates the marker from its own fill — same colour
+   on same colour and the two read as one blob with a bulge on the end. */
+.gm-badge{position:absolute;top:0;display:flex;align-items:center;
+  justify-content:center;width:36px;height:36px;border-radius:50%;
+  background:#C49A6C;box-shadow:0 0 0 3px #fff}
+.gm-badge svg{width:20px;height:20px}
+/* Two equal halves. Neither is the primary action — that is the bar at the foot
+   of the page — so they match each other and are both lighter than it. */
+.gm-acts{display:flex;gap:12px;padding:0 20px 16px}
+.gm-act{flex:1 1 0;min-width:0;display:flex;align-items:center;
+  justify-content:center;gap:8px;height:44px;padding:0;cursor:pointer;
+  border:1px solid var(--g300);border-radius:12px;background:#fff;
+  font:600 14px/20px var(--sans);color:#1D2939}
+.gm-act svg{flex:none;width:18px;height:18px}
+.gm-act:active{background:#F9FAFB}
+.gm-div{height:1px;margin:0 20px;background:#EAE1D4}
+/* The finding, as a line rather than a panel. It was a tinted warning box
+   before, which made the one real problem in the reading look like a system
+   message about it. */
+.gm-note{display:flex;align-items:flex-start;gap:10px;margin:0;
+  padding:14px 20px 16px;font:400 13px/18px var(--sans);color:#5B4636}
+.gm-note i{flex:none;display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:50%;background:#FEF3E6;color:#93370D}
+.gm-note i svg{width:18px;height:18px}
+.gm-note span{flex:1 1 auto;min-width:0;padding-top:7px}
+
+/* ---------- Compatibility details sheet · board 3908:14788 ---------- */
+/* Spans the whole phone and draws nothing, exactly as .pay-sheet does, so the
+   close button lands in the one place the app puts a close button — top right
+   of the screen, on the blur. The white is the card inside it. */
+.sheet.guna-sheet{top:0;background:none;box-shadow:none;border-radius:0;
+  pointer-events:none;max-height:none;padding:0;overflow:visible;gap:0;
+  display:flex;flex-direction:column;justify-content:flex-end}
+.guna-sheet > *{pointer-events:auto}
+/* Capped here rather than on the sheet: the list is eight rows and a footnote,
+   and the bar under it has to stay on screen while they scroll. */
+.gs-card{display:flex;flex-direction:column;min-height:0;max-height:88%;
+  background:#fff;border-radius:24px 24px 0 0;overflow:hidden}
+.gs-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.gs-head{background:linear-gradient(135deg,#F6EBDD 0%,#FFFFFF 55%,#FFFFFF 100%);
+  padding:20px 20px 18px}
+/* A two-up segment, not a dropdown: there are exactly two, and a picker that
+   opens to reveal two options is a tap spent on nothing. */
+.gs-seg{display:flex;margin:0 20px 8px;padding:3px;border-radius:12px;
+  background:#F7F2EA}
+.gs-seg button{flex:1 1 0;height:38px;border:1px solid transparent;
+  border-radius:10px;background:none;cursor:pointer;
+  font:500 14px/20px var(--sans);color:#5B4636}
+.gs-seg button.on{border-color:#EAE1D4;background:#fff;font-weight:600;
+  color:#1D2939}
+.gs-rows{padding:4px 20px 8px}
+.gk{display:flex;align-items:center;gap:12px;height:48px}
+.gk i{flex:none;display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:10px;background:#F7F2EA;color:#7A4A1E}
+.gk i svg{width:18px;height:18px}
+.gk b{flex:1 1 auto;min-width:0;font:500 15px/22px var(--sans);color:#1D2939;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.km-list li.on b{color:var(--g900)}
-.km-list em{flex:none;font-style:normal;font:500 13px/18px var(--sans);
-  color:var(--g400)}
-.km-list li.on em{font-weight:600;color:var(--s700)}
-/* The one that failed, in the warning wash rather than in red. Red says error;
-   this is not an error, it is a finding she needs to keep reading about. */
-.km-bad{margin-top:14px;border-radius:12px;background:#FFF8EB;
-  border:1px solid #FDE8C8;padding:12px 14px}
-.km-bad-h{display:flex;align-items:baseline;gap:8px}
-.km-bad-h b{flex:1 1 auto;font:600 15px/22px var(--sans);color:var(--w900)}
-.km-bad-h em{flex:none;font-style:normal;font:700 15px/22px var(--sans);
-  color:var(--w700)}
-.km-bad p{margin:3px 0 0;font:400 13px/19px var(--sans);color:var(--w700)}
-/* Not in a box. The remedy is the page talking to her in its own voice about
-   what happens next, and putting it in a third tinted panel would make it look
-   like a fourth fact rather than the way out of the third one. */
-.km-rem{margin:12px 2px 0;font:400 13px/19px var(--sans);color:var(--g600)}
+.gk em{flex:none;font-style:normal;font:600 14px/22px var(--sans);color:#5B4636}
+/* Drained, not red. Zero is an absence, and the row saying so in the same grey
+   as its own number is the quietest way to say it. */
+.gk.off i{background:var(--g100);color:var(--g400)}
+.gk.off b,.gk.off em{color:#98A2B3}
+/* On the sheet the note is a footnote under a list she has just read, not the
+   one finding on a card, so it loses the tinted disc. */
+.guna-sheet .gm-note{padding:14px 20px 18px}
+.guna-sheet .gm-note i{width:18px;height:18px;border-radius:0;background:none;
+  color:#8A7560}
+.guna-sheet .gm-note span{padding-top:0}
+.guna-sheet .buybar{flex:none}
 
 /* Day 4 says it is the last ask in words, never in colour — escalating the
    pixels is how you teach people to stop looking. */

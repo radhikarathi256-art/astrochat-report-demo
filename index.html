@@ -1036,6 +1036,63 @@
     <button class="btn primary" type="button" id="showSample">Show sample in English</button>
   </div>
 
+  <!-- Compatibility details, board 3908:14788. Opened from "All 8 areas" on the
+       score card. The close button sits where the pay sheet's does — top of the
+       phone, on the blur, not on the white — because these are the two tall
+       sheets in the app and a cross that moves between them is a cross she has
+       to find twice.
+
+       It carries the sell bar too. This is the surface where she finds out that
+       one of the eight is at zero, which is the single most motivated moment in
+       the flow; closing the sheet to go and look for the button again is where
+       that moment gets spent. -->
+  <div class="sheet guna-sheet" id="sheet-guna" aria-hidden="true">
+    <button class="pays-x" type="button" data-close-sheet aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+
+    <!-- The white card is a child rather than the sheet itself, for the same
+         reason the pay sheet does it: the sheet has to span the whole phone so
+         the cross can ride at the top of the screen on the blur. -->
+    <div class="gs-card">
+    <div class="gs-body">
+      <!-- Same three lines as the card, so the sheet reads as that card
+           opened rather than as a second opinion about the same score. -->
+      <div class="gm-top gs-head"><div class="gm-sc" id="gunaHead"></div></div>
+
+      <!-- English by default, Sanskrit one tap away. The names are the reason
+           a 28 is unreadable to most people, and the Sanskrit is what she will
+           hear from everyone else about it, so both have to be here. -->
+      <div class="gs-seg" id="gunaSeg">
+        <button type="button" data-guna-lang="en" class="on">English</button>
+        <button type="button" data-guna-lang="sans">Sanskrit</button>
+      </div>
+
+      <div class="gs-rows" id="gunaRows"></div>
+      <div class="gm-div"></div>
+      <p class="gm-note" id="gunaFoot"></p>
+    </div>
+
+    <div class="buybar">
+      <p class="buy-why">
+        <i aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+               stroke-width="1.1" stroke-linejoin="round">
+            <rect x=".75" y=".75" width="14.5" height="14.5" rx="1.5"/>
+            <path d="M8 .75 15.25 8 8 15.25.75 8z"/>
+            <path d="M.75.75 15.25 15.25M15.25.75.75 15.25"/>
+          </svg>
+        </i>
+        <span id="gunaWhy"></span>
+      </p>
+      <div class="buy-row">
+        <div class="price"><b>₹49</b><small><s>₹499</s><i>90% OFF</i></small></div>
+        <button class="btn primary grow" type="button" id="gunaCta">Buy Now</button>
+      </div>
+    </div>
+    </div>
+  </div>
+
   <!-- R.10 · Pay sheet, board 3360:6875. Was a screen of its own, standing on a
        blurred copy of the report art. It is a sheet now, and the ground is
        literally whatever she was on — the detail page or the sample — dimmed

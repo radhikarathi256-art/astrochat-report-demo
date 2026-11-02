@@ -409,16 +409,22 @@ var REPORTS = [
          Two is enough to prove the match is real and specific to her, and
          the lock on the rest is then an obvious, honest door. Nadi is pulled
          out of the table on its own because it is the finding, not a row. */
+      /* `en` is the plain-English name the board's Compatibility details sheet
+         shows by default, with the Sanskrit behind a toggle — the eight kootas
+         are the one place the app has to say a word she may not know, and
+         "Yoni 4/4" tells her nothing that "Intimacy 4/4" does not tell her
+         better. The toggle exists because the Sanskrit is what she will hear
+         from everyone else about this score. */
       kootas: [
-        { n: 'Varna',        s: 1, of: 1, open: true },
-        { n: 'Vashya',       s: 2, of: 2, open: true },
-        { n: 'Tara',         s: 3, of: 3 },
-        { n: 'Yoni',         s: 4, of: 4 },
-        { n: 'Graha Maitri', s: 5, of: 5 },
-        { n: 'Gana',         s: 6, of: 6 },
-        { n: 'Bhakoot',      s: 7, of: 7 }
+        { n: 'Varna',        en: 'Work',          ic: 'work',  s: 1, of: 1, open: true },
+        { n: 'Vashya',       en: 'Influence',     ic: 'inf',   s: 2, of: 2, open: true },
+        { n: 'Tara',         en: 'Destiny',       ic: 'star',  s: 3, of: 3 },
+        { n: 'Yoni',         en: 'Intimacy',      ic: 'flame', s: 4, of: 4 },
+        { n: 'Graha Maitri', en: 'Compatibility', ic: 'rings', s: 5, of: 5 },
+        { n: 'Gana',         en: 'Temperament',   ic: 'face',  s: 6, of: 6 },
+        { n: 'Bhakoot',      en: 'Love',          ic: 'heart', s: 7, of: 7 }
       ],
-      nadi: { n: 'Nadi', s: 0, of: 8,
+      nadi: { n: 'Nadi', en: 'Health', ic: 'pulse', s: 0, of: 8,
               why: 'The heaviest of the eight, and the one families refuse over' },
       /* Named, not given. A remedy she can act on from this page is a page she
          never needs to buy anything from; a remedy that does not exist is the
@@ -757,6 +763,10 @@ var state = {
      in - which is the right order for sunk cost, where paying first and then
      being given homework is a bill after the bill. */
   matched: false,
+  /* Which names the Compatibility details sheet shows. English by default —
+     the Sanskrit is the thing she will hear from her family, not the thing she
+     can read. */
+  gunaSans: false,
   /* Who the match was actually run against, and who the chat guessed it would
      be. Two fields, not one, because the guess has to survive her overruling
      it: if she matches against someone else and then comes back to redo it,
@@ -3176,65 +3186,127 @@ function renderReport() {
   $('#r2Cta').classList.toggle('primary', !repeat);
 }
 
-/* Her result, on the page the form now returns to.
+/* Eight 18px line marks, one per koota, drawn rather than imported because the
+   board's own icon set is eight single-path glyphs and a sprite sheet for eight
+   paths is more plumbing than drawing. Keyed by `ic` on the data so the row and
+   its mark can never drift apart. */
+var KOOTA_ICONS = {
+  work:  '<rect x="2.5" y="5.5" width="13" height="9.5" rx="1.5"/><path d="M6.5 5.5V4a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 11.5 4v1.5"/>',
+  inf:   '<circle cx="9" cy="9" r="6.5"/><path d="M2.5 9h13M9 2.5c3.2 3.6 3.2 9.4 0 13M9 2.5c-3.2 3.6-3.2 9.4 0 13"/>',
+  star:  '<path d="M9 2.2l2 4.3 4.6.6-3.4 3.2.9 4.5L9 12.7l-4.1 2.1.9-4.5L2.4 7.1l4.6-.6z"/>',
+  flame: '<path d="M9 2.3c2.6 2.4 4.4 4.6 4.4 7.1a4.4 4.4 0 0 1-8.8 0c0-1.3.6-2.5 1.6-3.7.5 1 1.1 1.6 1.8 1.8-.2-2 .2-3.7 1-5.2z"/>',
+  rings: '<circle cx="6.6" cy="10.4" r="4.6"/><circle cx="11.4" cy="7.6" r="4.6"/>',
+  face:  '<circle cx="9" cy="9" r="6.5"/><path d="M6.4 11.2a3.4 3.4 0 0 0 5.2 0"/><path d="M6.8 6.9h.01M11.2 6.9h.01"/>',
+  heart: '<path d="M9 14.8S3 11.2 3 7.3A3.2 3.2 0 0 1 9 5.7a3.2 3.2 0 0 1 6 1.6c0 3.9-6 7.5-6 7.5z"/>',
+  pulse: '<path d="M2 9h3l2-4 2.6 8L12 9h4"/>',
+  /* The card's one finding. A shield with a bar through it, not the pulse the
+     Health row uses — on the card the line is a warning, in the list it is a
+     category. */
+  alert: '<path d="M9 2.4l5.2 2v4.3c0 3-2.1 5.5-5.2 6.6-3.1-1.1-5.2-3.6-5.2-6.6V4.4z"/>' +
+         '<path d="M9 6.3v4.1"/>'
+};
+function kootaIcon(name) {
+  return '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.3125" stroke-linecap="round" stroke-linejoin="round" ' +
+    'aria-hidden="true">' + (KOOTA_ICONS[name] || KOOTA_ICONS.star) + '</svg>';
+}
 
-   Two of the eight kootas are named and scored, five are shut, and Nadi is
-   lifted out below them. That split is the whole design of the teaser: showing
-   none makes the page a receipt for twenty seconds of typing, showing all eight
-   hands over the answer and leaves ₹49 buying adjectives. Two real rows prove
-   the reading exists and is about her charts specifically, and the five locks
-   are then a door she can see the shape of.
+/* The eight rows live behind "All 8 areas" rather than on the page, which is
+   the board's call and the right one: the page's job is the number and the one
+   finding that explains it, and a list of eight rows under a 28 makes her
+   audit arithmetic she has no way to check. The sheet is where the detail goes
+   for the person who wants it.
 
-   The locked rows keep their names. A row of "Locked / Locked / Locked" is a
-   paywall; "Yoni - locked" tells her there is a named thing she has not been
-   told, which is a different and much better kind of gap.
-
-   Nadi gets its own block because it is the finding rather than a row - it is
-   the only one at zero, it is the heaviest, and it is the reason the 28 is 28.
-   The remedy line directly under it is the release valve: the page is allowed
-   to leave her with a problem only if it also tells her the problem has a
-   known answer. */
+   So the card is a score, a bar, two doors and one sentence. The bar matters
+   more than it looks — "28 of 36" is a fraction she has to do in her head, and
+   the fill does it for her before she reads either number. The sentence is
+   Nadi, because it is the whole of the missing 8 and the reason to buy. */
 function renderMatchPanel(r, matched) {
   var box = $('#r2Match');
   box.hidden = !matched;
   if (!matched) { box.innerHTML = ''; return; }
   var m = r.matched, nd = m.nadi;
-  var TICK = '<path d="M2.5 6.4 5 8.9l4.5-5"/>';
-  var LOCK = '<path d="M2.8 5.4h6.4v5.1H2.8zM4.4 5.4V3.8a1.6 1.6 0 0 1 3.2 0v1.6"/>';
-  function ic(d) {
-    return '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
-      'stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" ' +
-      'aria-hidden="true">' + d + '</svg>';
-  }
+  var pct = Math.max(0, Math.min(1, m.score.n / m.score.of));
   box.innerHTML =
     '<h2 class="r2-h">Your Compatibility Score</h2>' +
-    '<div class="km">' +
-      '<div class="km-top">' + scoreDial(m.score) +
-        '<span class="km-tx">' +
-          '<strong>' + esc(gunaNames()) + '</strong>' +
-          '<span>' + m.score.n + ' of ' + m.score.of +
-            ' gunas matched across the eight kootas</span>' +
-        '</span>' +
-      '</div>' +
-      '<ul class="km-list">' +
-        m.kootas.map(function (k) {
-          return '<li' + (k.open ? ' class="on"' : '') + '>' +
-            '<i>' + ic(k.open ? TICK : LOCK) + '</i>' +
-            '<b>' + esc(k.n) + '</b>' +
-            '<em>' + (k.open ? k.s + '/' + k.of : 'Locked') + '</em>' +
-          '</li>';
-        }).join('') +
-      '</ul>' +
-      '<div class="km-bad">' +
-        '<div class="km-bad-h">' +
-          '<b>' + esc(nd.n) + '</b>' +
-          '<em>' + nd.s + ' of ' + nd.of + '</em>' +
+    '<div class="gm">' +
+      '<div class="gm-top">' +
+        '<div class="gm-sc">' +
+          '<span class="gm-pair">' + esc(gunaNames()) + '</span>' +
+          '<b>' + m.score.n + ' of ' + m.score.of + '</b>' +
+          '<span class="gm-verdict">' + esc(matchVerdict(pct)) + '</span>' +
         '</div>' +
-        '<p>' + esc(nd.why) + '. This is where all ' +
-          (m.score.of - m.score.n) + ' of your missing points are.</p>' +
+        /* The marker rides the end of the fill, inset by its own width so it
+           stays inside the track at 0 and at 36 instead of hanging off. */
+        '<div class="gm-prog">' +
+          '<span class="gm-trk"><i style="width:' + (pct * 100).toFixed(1) + '%"></i></span>' +
+          '<span class="gm-badge" style="left:calc((100% - 36px) * ' + pct.toFixed(4) + ')">' +
+            '<svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.5" ' +
+                 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+              '<path d="M10 16.1S4 12.4 4 8.4a3.3 3.3 0 0 1 6-1.7 3.3 3.3 0 0 1 6 1.7c0 4-6 7.7-6 7.7z"/>' +
+            '</svg>' +
+          '</span>' +
+        '</div>' +
       '</div>' +
-      '<p class="km-rem">' + esc(m.remedy) + '</p>' +
+      /* Labels only. Both of these are already short, literal descriptions of
+         what they do, and a mark in front of each would be decorating a
+         sentence that needs no help. */
+      '<div class="gm-acts">' +
+        '<button class="gm-act" type="button" id="r2Kootas">' +
+          'All ' + (m.kootas.length + 1) + ' areas</button>' +
+        '<button class="gm-act" type="button" id="r2MatchEdit">Edit details</button>' +
+      '</div>' +
+      '<div class="gm-div"></div>' +
+      '<p class="gm-note">' +
+        '<i aria-hidden="true">' + kootaIcon('alert') + '</i>' +
+        '<span>' + esc(nd.n) + ' is ' + nd.s + ' of ' + nd.of + ', the dosha ' +
+          'families worry about most. See if yours is cancelled.</span>' +
+      '</p>' +
     '</div>';
+}
+
+/* Words for the fraction, because 28 is only good or bad against a convention
+   she has no reason to know. The bands are the ones every Indian matchmaker
+   uses, so the verdict agrees with whatever her family will tell her. */
+function matchVerdict(pct) {
+  if (pct >= 0.89) return 'Excellent match';
+  if (pct >= 0.72) return 'Very good match';
+  if (pct >= 0.50) return 'Good match';
+  return 'Needs a closer look';
+}
+
+/* The board's Compatibility details, 3908:14788. Same score header as the card
+   so the sheet is visibly the same object opened up, then the eight rows, then
+   the one that failed restated at the foot — a sheet that ends on a row of
+   greyed-out type and nothing else leaves her with a problem and no exit, and
+   the bar under it is the exit. */
+function renderKootaSheet(r) {
+  var m = r.matched, nd = m.nadi, pct = m.score.n / m.score.of;
+  var rows = m.kootas.concat([nd]);
+  var sans = state.gunaSans;
+  $('#gunaHead').innerHTML =
+    '<span class="gm-pair">Compatibility score</span>' +
+    '<b>' + m.score.n + ' of ' + m.score.of + '</b>' +
+    '<span class="gm-verdict">' + esc(matchVerdict(pct)) + '</span>';
+  $('#gunaRows').innerHTML = rows.map(function (k) {
+    /* Zero is the only state worth colouring, and it is coloured by being
+       drained rather than by going red: nothing has gone wrong, there is just
+       nothing there. */
+    var dead = k.s === 0;
+    return '<div class="gk' + (dead ? ' off' : '') + '">' +
+      '<i>' + kootaIcon(k.ic) + '</i>' +
+      '<b>' + esc(sans ? k.n : k.en) + '</b>' +
+      '<em>' + k.s + ' / ' + k.of + '</em>' +
+    '</div>';
+  }).join('');
+  $('#gunaFoot').innerHTML =
+    '<i aria-hidden="true">' + kootaIcon(nd.ic) + '</i>' +
+    '<span>' + esc(sans ? nd.n : nd.en) + ' is ' + nd.s + ' of ' + nd.of +
+      '. Your report explains if it is cancelled, and the remedy.</span>';
+  $('#gunaWhy').textContent = m.why;
+  $('#gunaSeg').querySelectorAll('button').forEach(function (b) {
+    b.classList.toggle('on', (b.dataset.gunaLang === 'sans') === !!sans);
+  });
 }
 
 /* Per the board's J1: answering opens the reward sheet — coin, ladder with
@@ -3480,7 +3552,7 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],.rsc-go');
   if (!t) return;
 
   // Today's three cards, picked. The card flips to its done state and stays
@@ -3520,6 +3592,24 @@ document.addEventListener('click', function (e) {
      would put a price behind a screen that is free, and submitMatch reopens
      it anyway once there is a new number to put on it. */
   if (t.id === 'paysGunaEdit') { closeSheet(); later(openMatch, 240); return; }
+
+  // All 8 areas, off the score card.
+  if (t.id === 'r2Kootas') {
+    renderKootaSheet(reportById(state.pick));
+    openSheet('guna');
+    return;
+  }
+  // Edit details does what the pay sheet's Edit does, from the card instead.
+  if (t.id === 'r2MatchEdit') { openMatch(); return; }
+  /* The language flips in place. Closing and reopening the sheet to change a
+     word would lose her scroll position in a list of eight. */
+  if (t.hasAttribute('data-guna-lang')) {
+    state.gunaSans = t.getAttribute('data-guna-lang') === 'sans';
+    renderKootaSheet(reportById(state.pick));
+    return;
+  }
+  // Same bar, same job as the one on the page it opened from.
+  if (t.id === 'gunaCta') { closeSheet(); later(startBuy, 240); return; }
 
   if (t.id === 'mtGo') { submitMatch(); return; }
 
