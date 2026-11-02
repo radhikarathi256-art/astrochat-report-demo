@@ -508,7 +508,7 @@ var REPORTS = [
        Both Today surfaces read this pair, so there is one sentence to change
        rather than two to keep in step. */
     tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'A report on how well you match, and when you marry' },
-    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Your match report is read and waiting' },
+    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Both charts are read \u2014 your report is waiting' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -528,7 +528,7 @@ var REPORTS = [
     // says Career & Money; what people actually want to know is whether the
     // thing lands soon, so the horizon goes in the name instead of sitting in
     // the subtitle where it read as one more topic.
-    id: 'career', t: 'Career, Money & Next 3 Months', s: 'A report on when to switch and when money moves', pages: 34, rating: '4.6', sold: 71250,
+    id: 'career', t: 'Career, Money & Next 3 Months', s: 'A report on November, December and January, month by month', pages: 34, rating: '4.6', sold: 71250,
     // "Quarterly" up front, because the thing that makes this report different
     // from the other two is that it runs out and is bought again.
     t2: 'Quarterly Career & Money Forecast',
@@ -2572,7 +2572,13 @@ var SELL_BLURBS = {
              ['cuphot', 'Your first\nmeeting']],
   marriage: [['pie', 'Guna score\nout of 36'], ['heart', 'Real match\nor on paper'],
              ['shield', 'Dosha and\nremedies']],
-  career:   [['spark', 'Your big\ntheme'], ['cal', 'Best dates\nfor a raise'],
+  // Career's first chip is the quarter, per 3726:8272. "Your big theme" was
+  // the one chip on any of the three cards that did not name a thing she gets;
+  // the window is what makes this report different, and it is also the reason
+  // she will be back in three months. Named months rather than "Oct - Dec,
+  // month by month": the cell is two words wide, and that phrase took three
+  // lines and pushed the top row of the 2x2 out of line with the bottom.
+  career:   [['spark', 'Oct, Nov\nand Dec'], ['cal', 'Best dates\nfor a raise'],
              ['case', 'Job or\nbusiness']]
 };
 

@@ -1525,9 +1525,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    The lead is plain grey text, not a box. */
 .guide-lead{margin:-4px 0 0;font:400 12px/17px var(--sans);color:var(--g500)}
 .tiles{display:flex;flex-direction:column;gap:8px}
-/* Every tile is the same object — white, Gray/200, 16px radius, ~84px tall.
-   The report earns attention through its cover, not a coloured card. */
-.tile{text-align:left;width:100%;background:#fff;border:1px solid var(--g200);border-radius:16px;
+/* Every tile is the same object — white, 16px radius, ~84px tall. The report
+   earns attention through its cover, not a coloured card.
+   Gray/300, not Gray/200: these tiles sit on the page's own off-white, and at
+   200 the edge disappeared into it — the card read as loose text with a book
+   beside it rather than as one tappable object. */
+.tile{text-align:left;width:100%;background:#fff;border:1px solid var(--g300);border-radius:16px;
   padding:12px;display:flex;align-items:center;gap:12px;min-height:84px}
 .tile:active{background:var(--g50)}
 .tile img,.tile .ti{flex:none;width:56px;height:56px;object-fit:contain;margin:0}
