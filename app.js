@@ -147,7 +147,7 @@ function learnIcon(k) {
    joined by `and`, around 36 characters, no full stop (1844 adds one). */
 var REPORTS = [
   {
-    id: 'partner', t: 'Partner Prediction', s: 'Who they are, where you meet and when', pages: 38, rating: '4.7', sold: 13000,
+    id: 'partner', t: 'Partner Prediction', s: 'A report on who they are, where you meet and when', pages: 38, rating: '4.7', sold: 13000,
     // Read once. The chart it is drawn from does not move, so there is no
     // second edition to sell and every surface that sold it says Read Report
     // from the moment it is hers.
@@ -284,7 +284,7 @@ var REPORTS = [
     // Named for the thing people search for. "Marriage Report" said nothing the
     // subtitle did not already say; Kundli Milan is the word she would use
     // herself, and it is what the cover says.
-    id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'How well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
+    id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'A report on how well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
     // No "Your" on this one: the book belongs to two people, and the cover
     // does not claim it for either of them.
     t2: 'Kundali Milan, Compatibility Report',
@@ -522,7 +522,7 @@ var REPORTS = [
     // says Career & Money; what people actually want to know is whether the
     // thing lands soon, so the horizon goes in the name instead of sitting in
     // the subtitle where it read as one more topic.
-    id: 'career', t: 'Career, Money & Next 3 Months', s: 'When to switch and when money moves', pages: 34, rating: '4.6', sold: 71250,
+    id: 'career', t: 'Career, Money & Next 3 Months', s: 'A report on when to switch and when money moves', pages: 34, rating: '4.6', sold: 71250,
     // "Quarterly" up front, because the thing that makes this report different
     // from the other two is that it runs out and is bought again.
     t2: 'Quarterly Career & Money Forecast',
@@ -1635,31 +1635,38 @@ function stopPay() {
    It sits second, under Chat History. Both are things of hers, so they belong
    together, and the top of the list is where she looks for her own stuff.
    First would have read as a banner for a feature rather than as a row. */
-var CHAT_IC = '<path d="M12 20.6a8.6 8.6 0 1 0-7.5-4.4L3.4 20.6l4.4-1.1a8.6 8.6 0 0 0 4.2 1.1Z"/><path d="M8.4 12h.01M12 12h.01M15.6 12h.01"/>';
+/* Icon geometry below is exported straight out of 3921:15083 rather than
+   redrawn, so the menu is the board's own artwork at the board's own weight. */
+var CHAT_IC = '<path d="M14 24.03a10.03 10.03 0 1 0-8.75-5.13L3.97 24.03 9.1 22.75c1.5.84 3.18 1.28 4.9 1.28Z"/><path d="M9.8 14h.01M14 14h.01M18.2 14h.01"/>';
+var MN_BOOK_IC = '<path d="M4.67 5.37h6.3c1.51 0 2.45.93 2.45 2.45v14.35c0-1.17-.94-2.1-2.1-2.1h-6.65V5.37Zm18.66 0h-6.3c-1.51 0-2.45.93-2.45 2.45v14.35c0-1.17.94-2.1 2.1-2.1h6.65V5.37Z"/>';
+var MN_CASE_IC = '<path d="M4.08 8.75a3.5 3.5 0 0 1 3.5-3.5h11.67a2.33 2.33 0 0 1 2.34 2.33v1.75"/><path d="M4.08 8.75v.58m0 0v11.09a3.5 3.5 0 0 0 3.5 3.5h12.84a2.33 2.33 0 0 0 2.33-2.34v-9.91a2.33 2.33 0 0 0-2.33-2.34H4.08Z"/><path d="M18.67 16.57h.01"/>';
 /* Figma 3922:11037. The three tiles at the top are the three places her own
    things live. My Reports is the middle one and carries the count, because the
    only question this menu has to answer quickly is "where is the thing I paid
    for". */
 var MN_TILES = [
   { l: 'Chat History',        nav: 'timeline', d: CHAT_IC },
-  { l: 'My Reports',          go: 'mine',      d: BOOK_IC, count: true },
-  { l: 'Wallet Transactions', k: 'case' }
+  { l: 'My Reports',          go: 'mine',      d: MN_BOOK_IC, count: true },
+  { l: 'Wallet Transactions', d: MN_CASE_IC }
 ];
 /* The four evergreen tools. They never change state, so they are a strip of
-   icons rather than four more rows arguing for attention. */
+   icons rather than four more rows arguing for attention. These four are not
+   line icons on the board at all — they are the app's own soft 3D peach
+   renders, exported from 3942:16013 and shipped as PNGs. */
 var MN_TOOLS = [
-  { l: 'Kundali Report',  k: 'chart' },
-  { l: 'Kundali Matching', k: 'rings' },
-  { l: 'Horoscope',       k: 'sun' },
-  { l: 'Panchang',        k: 'cal' }
+  { l: 'Kundali Report',   img: 'tool-kundali' },
+  { l: 'Kundali Matching', img: 'tool-matching' },
+  { l: 'Horoscope',        img: 'tool-horoscope' },
+  { l: 'Panchang',         img: 'tool-panchang' }
 ];
 var MN_ROWS = [
-  { l: 'My Astrologers', d: '<path d="M15.5 8.4a3.4 3.4 0 1 1-6.8 0 3.4 3.4 0 0 1 6.8 0Z"/><path d="M18.6 9.6a2.4 2.4 0 1 0-1.8-4.4"/><path d="M4.2 19.4c0-2.8 3.5-4.4 7.9-4.4s7.9 1.6 7.9 4.4"/><path d="M20.8 17.9c0-1.7-1-2.9-2.8-3.5"/>' },
-  { l: 'Logout',         d: '<path d="M14 4.5H8a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h6"/><path d="M11 12h10m0 0-3.2-3.2M21 12l-3.2 3.2"/>' }
+  { l: 'My Astrologers', d: '<path d="M12.2 8a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z"/><path d="M2.8 20c.5-3.3 3.1-5.4 6.2-5.4s5.7 2.1 6.2 5.4"/><path d="M16.2 5.3a3.2 3.2 0 0 1 0 5.6M18 14.9c2 .8 3.2 2.7 3.5 5.1"/>' },
+  { l: 'Logout',         d: '<path d="M14 4.5H8a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h6"/><path d="M11 12h10m-3.2 3.2L21 12l-3.2-3.2"/>' }
 ];
-function mnIcon(m, sw) {
-  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-    'stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" ' +
+function mnIcon(m, sw, vb) {
+  if (m.img) return '<img src="img/' + m.img + '.png" alt="" aria-hidden="true">';
+  return '<svg viewBox="0 0 ' + (vb || 24) + ' ' + (vb || 24) + '" fill="none" ' +
+    'stroke="currentColor" stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" ' +
     'stroke-linejoin="round" aria-hidden="true">' +
     (m.d || LI_ICON[m.k]) + '</svg>';
 }
@@ -1674,7 +1681,7 @@ function renderMenu() {
   var n = state.owned.length;
   $('#mnTiles').innerHTML = MN_TILES.map(function (m) {
     return '<button class="mn-tile" type="button" ' + mnAct(m) + '>' +
-      '<i>' + mnIcon(m) +
+      '<i>' + mnIcon(m, 1.5, 28) +
         // The count, only once there is one. A "0" on My Reports would be the
         // menu telling her she has nothing every time she opens it.
         (m.count && n ? '<b class="mn-n">' + n + '</b>' : '') +
@@ -1682,7 +1689,7 @@ function renderMenu() {
   }).join('');
   $('#mnGrid').innerHTML = MN_TOOLS.map(function (m) {
     return '<button class="mn-tool" type="button" ' + mnAct(m) + '>' +
-      '<i>' + mnIcon(m, 1.3) + '</i><span>' + esc(m.l) + '</span></button>';
+      '<i>' + mnIcon(m) + '</i><span>' + esc(m.l) + '</span></button>';
   }).join('');
   /* Two states, and the second one is the point of the card: once she has
      picked today's three the card stops asking and says when the next set
@@ -1690,7 +1697,7 @@ function renderMenu() {
   var done = state.tarot;
   $('#mnTarot').innerHTML =
     '<div class="mn-ftc' + (done ? ' done' : '') + '">' +
-      '<span class="mn-fti" aria-hidden="true"><i></i><i></i><i></i></span>' +
+      '<img class="mn-fti" src="img/tarot.png" alt="" aria-hidden="true">' +
       '<span class="mn-ft">' +
         '<span class="mn-ftop"><b>Free Tarot</b>' +
           (done ? '' : '<em class="mn-tag">New</em>') + '</span>' +
@@ -3022,7 +3029,7 @@ function renderReport() {
       '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
         '<path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>' +
         '<circle cx="8" cy="8" r="1.9" stroke="currentColor" stroke-width="1.4"/></svg>' +
-      'Sample report</button>';
+      'See Sample report</button>';
   // Partner's hero moves; the other two are painted stills out of the same
   // board. `has-bg` is what stops the couple's clip and its rose wash from
   // showing through a ground that is neither pink nor about a couple.
