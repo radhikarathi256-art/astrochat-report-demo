@@ -507,8 +507,8 @@ var REPORTS = [
 
        Both Today surfaces read this pair, so there is one sentence to change
        rather than two to keep in step. */
-    tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'A report on how well you match, and when you marry' },
-    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Both charts are read \u2014 your report is waiting' },
+    tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'Match birth charts and get your compatibility report' },
+    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Birth charts matched \u2014 get your compatibility report' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
