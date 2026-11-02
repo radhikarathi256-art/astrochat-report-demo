@@ -47,6 +47,7 @@
 html,body{margin:0;padding:0;height:100%}
 body{
   font-family:var(--sans);color:var(--g700);background:#EDEFF3;
+  filter:saturate(0.95);
   -webkit-font-smoothing:antialiased;
   /* The demo chrome must never be the thing that scrolls — each screen scrolls on its own. */
   overflow:hidden;
@@ -1946,7 +1947,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* ::after, not ::before — ::before on this block is already the hairline rule
    that divides it from the one above. */
 .r2-revblock::after{content:"";position:absolute;top:-40px;right:-36px;
-  width:112px;height:112px;opacity:.6;pointer-events:none;
+  width:112px;height:112px;opacity:.8;pointer-events:none;
   background:url(assets/mandala.svg) center/contain no-repeat}
 .r2-revblock > *{position:relative}
 

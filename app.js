@@ -254,7 +254,10 @@ var REPORTS = [
     push: 'Mansi, Rahu is in your seventh house. That is the block. Your Partner Prediction is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
     /* The ticket stub on Today, day 2. It used to read "Your partner report is
        ready" off the raw id, which named a folder rather than a book. */
-    tkt: { t: 'Your Partner Prediction is ready', s: 'Who they are, and when you meet them' },
+    // The second line names the report. On Today this tile sits between a
+    // reward ladder and a tarot card, so a line that only promises an answer
+    // reads as another free thing — the word is what says it is a report.
+    tkt: { t: 'Your Partner Prediction is ready', s: 'A report on who they are, and when you meet them' },
     /* The keepsake at the top of a bought report: the one finding worth pinning
        to a wall, on the paper it was drawn on. Partner has a face to show, so
        the art box holds the sketch. The other two have no portrait to draw —
@@ -296,7 +299,7 @@ var REPORTS = [
        if asked what she wants from it, so the last line before the button
        names it and says it is hers. Out of 36 is in the sentence because 28
        means nothing without the scale. */
-    why: 'Add both birth details and get your 36-guna compatibility score',
+    why: 'Get the remedy written for your Nadi dosha',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
@@ -498,8 +501,8 @@ var REPORTS = [
 
        Both Today surfaces read this pair, so there is one sentence to change
        rather than two to keep in step. */
-    tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'How well you match, and when you marry' },
-    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Your match is read and waiting' },
+    tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'A report on how well you match, and when you marry' },
+    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Your match report is read and waiting' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -592,7 +595,7 @@ var REPORTS = [
        the hue and drops the value: the same sand, lit from much further away. */
     tint: 'linear-gradient(94deg,#4A352A 0%,#6B4F3E 40%,#BCA38C 74%,#fff 100%)',
     push: 'Mansi, October is almost gone and nothing has moved. Your next three months, read month by month \u2014 \u20b949 today instead of \u20b9499 \ud83d\udcd6',
-    tkt: { t: 'Your Career report is ready', s: 'November, December and January, month by month' },
+    tkt: { t: 'Your Career report is ready', s: 'A report on November, December and January, month by month' },
     /* Career is bought for timing, so the months are the headline. The year
        sits under them rather than inside the range, which keeps the figure to
        four characters and the same weight as the other two cards. */
@@ -1469,6 +1472,12 @@ function enterRead(lit) {
    report — she can own three now, so which one has to be set before it paints. */
 function openRep(id) {
   state.pick = id;
+  /* Reading it is what retires the "Ready to read" card. The fifteen-minute
+     hold exists for the person who pays and walks away; the moment she has
+     actually opened the thing, holding the card on "read this" is the app not
+     having noticed she did. Repainted on the way back, not now — swapping the
+     card under her finger as the reader opens is a flicker she would see. */
+  state.buys.forEach(function (b) { if (b.id === id) b.read = true; });
   paintBought();
   renderRead();
   renderReport();
@@ -1728,9 +1737,10 @@ var HIST_COPY = {
 };
 /* "Oct – Dec 2026" -> "From Oct to Dec". Built off QUARTERS rather than typed,
    so the button can never name a window the edition does not cover. */
-function quarterCta(q) {
+function quarterCta(q, verb) {
   var p = q.split('\u2013');
-  return 'From ' + p[0].trim().split(' ')[0] + ' to ' + p[1].trim().split(' ')[0];
+  return (verb || 'From') + ' ' + p[0].trim().split(' ')[0] +
+    ' to ' + p[1].trim().split(' ')[0];
 }
 /* The bubble's own title drops the trailing "Report": the book is lying next
    to the words, so the word is already on screen once. */
@@ -1771,10 +1781,14 @@ function histMaking(r, ready) {
       '<div class="hw-tx"><b>' + esc(histTitle(r)) + '</b></div>' +
       '<ol class="hw-steps">' +
         '<li class="on"><b>Writing your report</b>' +
-          '<small>Astro Hemali is reading your chart</small></li>' +
+          '<small>Reading your birth chart. Takes about 15 minutes.</small></li>' +
+        /* Once it has landed the second line stops describing the wait and
+           starts answering the question she is about to have: where does this
+           live now. It is the only place in the app that says it. */
         '<li' + (ready ? ' class="on"' : '') + '><b>Ready to read</b>' +
-          '<small>' + (ready ? 'Open it whenever you like'
-                             : 'We\u2019ll notify you when it\u2019s ready') + '</small></li>' +
+          '<small>' + (ready
+            ? 'Your reports are available in History and under My Reports in the (\u2630) menu.'
+            : 'We will notify you, once its ready') + '</small></li>' +
       '</ol>' +
       (ready
         ? '<button class="hw-cta ghost" type="button" data-open-rep="' + r.id + '">' +
@@ -1800,17 +1814,21 @@ function histWidget(r) {
   // Still being written. Quick, but the progress line is the whole card until
   // it lands.
   if (!b.ready) return histMaking(r, false);
-  // Just landed. For the next fifteen minutes the card has one job and one
-  // button: read the thing she just paid for. Nothing is sold over the top of
-  // a report she has not opened yet.
-  if (!b.aged) return histMaking(r, true);
-  // Landed, and there is a reason to come back for another. The progress line
-  // has done its job, so Hemali takes the card back and offers the next one.
+  /* Just landed. The card has one job and one button: read the thing she just
+     paid for. Nothing is sold over the top of a report she has not opened yet
+     — so this state ends either when she opens it or, for the person who paid
+     and walked away, after the fifteen-minute hold. */
+  if (!b.aged && !b.read) return histMaking(r, true);
+  // Read, or old enough. The progress line has done its job, so Hemali takes
+  // the card back and offers the next one.
   var again = r.needsMatch
     ? { cta: 'Match Again', sub: 'Bought ' + b.time + ' \u00b7 Match someone else anytime' }
     : r.cadence === 'quarterly'
+      // "Get Jan to Mar", not "From Oct to Dec": the offer card sells the
+      // window she is in, this one sells the next one, and the verb is what
+      // tells the two apart.
       ? { cta: quarterCta(QUARTERS[Math.min(state.buys.filter(function (x) {
-            return x.id === r.id; }).length, QUARTERS.length - 1)]),
+            return x.id === r.id; }).length, QUARTERS.length - 1)], 'Get'),
           sub: 'Last bought ' + b.time }
       : null;
   if (!again) {
