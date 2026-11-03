@@ -633,10 +633,11 @@ var REPORTS = [
     // Milan gold, Wealth blue. No painted cover yet, so `book3d` draws the
     // wash version from these two stops.
     cover: { a: '#9B6CD1', b: '#4A2A7A', ink: '#EDE2FA', motif: 'heart' },
-    // Hero only: the painting is done, the covers are not. Everything that
-    // prints a book asks `hasCover` rather than `r.art`, so this report shows
-    // its hero on the sell page and the drawn wash everywhere else.
+    // Hero and cover, no spread yet. Which is why "has art" is three questions
+    // here and not one: `hasCover` prints the book, `hasSpread` opens it, and
+    // this report answers yes to the first and no to the second.
     art: {
+      closed: 'assets/cover-relation.jpg?v=1',
       hero: 'assets/bg-relation.jpg?v=1',
       // The frame is tall and the whole point of it is the two heads touching,
       // so the crop holds the upper middle rather than the centre.
@@ -693,11 +694,12 @@ function reportById(id) {
   return REPORTS[0];
 }
 
-/* "Has art" is not one question. A report can be given its painted hero long
-   before anyone draws its covers, so everything that prints a book asks for
-   the cover rather than for `r.art` — otherwise a hero on its own is enough
-   to make every shelf, ticket and tile render an empty <img>. */
+/* "Has art" is not one question. Art arrives a piece at a time: hero first,
+   then the cover, then the painted spread. Asking for `r.art` meant one new
+   file was enough to make every shelf, ticket and tile render an empty <img>,
+   so each surface asks for the piece it actually prints. */
 function hasCover(r) { return !!(r.art && r.art.closed); }
+function hasSpread(r) { return !!(r.art && r.art.open); }
 
 /* Each day names the surfaces it is allowed to use — `surf` is the whole
    schedule, and every renderer reads it rather than guessing from the day
@@ -1682,7 +1684,7 @@ function openPay() {
   // Open and still: the spread is a finished painting of an open book, so it
   // needs no swing and no frame. Only a report without art falls back to the
   // built one.
-  $('#paysBook').innerHTML = hasCover(r)
+  $('#paysBook').innerHTML = hasSpread(r)
     ? '<img src="' + r.art.open + '" alt="">'
     : book3d(r);
 
@@ -2578,8 +2580,9 @@ function book3d(r) {
   // honey or periwinkle cover read as dirt rather than as a book.
   var tint = '--cva:' + r.cover.a + ';--cvb:' + r.cover.b;
   // Where the painted cover and its spread exist, show those instead: the art
-  // is the argument, and a drawing of a book cannot make it.
-  if (hasCover(r)) {
+  // is the argument, and a drawing of a book cannot make it. Both are needed,
+  // because this view shows the back board as well as the front.
+  if (hasSpread(r)) {
     return '<span class="bkt" aria-hidden="true" style="' + tint + '">' +
       // Everything that makes the case an object lives inside one preserve-3d
       // stage: back board, page block, then the cover in front of both.
@@ -2612,7 +2615,16 @@ function book3d(r) {
       // The leaf sits a hair behind the cover so that when the cover swings
       // open on the tease loop there is paper underneath, not a hole.
       '<span class="bk3-leaf"></span>' +
-      '<span class="bk3-cov">' + drawnFace(r, 'bk3-face') + '</span>' +
+      // A cover can be painted long before its spread is. When that has
+      // happened the book keeps this drawn shape, because the shape is what
+      // the hinge and the page block are built on, but its front is the real
+      // art rather than the wash standing in for it.
+      '<span class="bk3-cov">' +
+        (hasCover(r)
+          ? '<span class="bk3-face bk3-face-art"' +
+              ' style="background-image:url(' + r.art.closed + ')"></span>'
+          : drawnFace(r, 'bk3-face')) +
+      '</span>' +
     '</span>' +
     '<span class="bk3-sh"></span>' +
   '</span>';
@@ -2788,10 +2800,11 @@ function sellMotif(r) {
 /* The hinged hardback, shared by every sell surface so the book opens the same
    way in the chat as it does in History. */
 function sellBook(r) {
-  /* A report whose cover has not been painted yet has no spread to hinge open,
-     so it shows the drawn book instead. Same wrapper and the same slot, so the
-     card's geometry does not know the difference. */
-  if (!hasCover(r)) {
+  /* The hinge needs a leaf behind the cover, so a report with no painted
+     spread shows the drawn book instead, even if its cover exists. Same
+     wrapper and the same slot, so the card's geometry does not know the
+     difference. */
+  if (!hasSpread(r)) {
     return '<span class="of3-bkw of3-bkw-drawn" aria-hidden="true">' +
       book3d(r) + '</span>';
   }

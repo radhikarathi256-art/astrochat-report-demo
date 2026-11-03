@@ -577,6 +577,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   radial-gradient(50% 29% at 75% 71%,var(--cvb) 0,rgba(255,255,255,0) 72%),
   radial-gradient(44% 25% at 62% 41%,var(--cvi) 0,rgba(255,255,255,0) 76%),
   linear-gradient(160deg,#FFFCF8 0,#F7F0E7 100%)}
+/* And the painted cover, for a report whose front exists but whose spread does
+   not. It keeps the crease and the sheen below, so a real cover catches light
+   on the same side the drawn ones do. */
+.bk3-face-art{background:center/cover no-repeat}
 /* The hinge crease, where the board is pulled in beside the spine: a dark
    line, a lit ridge, a second dark line, then the flat of the board — all of
    it inside the first tenth of the cover. This replaces the old painted spine
