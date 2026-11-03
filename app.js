@@ -2987,23 +2987,26 @@ function renderGuideTile() {
     // look like two different offers. The other two have one pair of lines and
     // keep using it.
     var gc = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
-    /* This is the day's first ask, so it stops being a tile among tiles. Same
-       object, turned up: the book gets a lit ground behind it in the report's
-       own cover colour, a one-word eyebrow that says why it is here, and the
-       price, because ₹49 against ₹499 is the single most persuasive fact we
-       have and the quiet version of this tile never said it. The accent is the
-       cover's own ink, so the emphasis belongs to the book being sold rather
-       than to a generic highlight state. */
+    /* This is the day's first ask, so it is built like a listing card rather
+       than a tile in a list: the cover in its own thumb, the name, the line
+       under it, and one strip along the bottom saying why she is being shown
+       this. No price. The tile's job is to get the report opened, and ₹49 only
+       means something next to what the report actually contains, which is the
+       page it opens. */
     $('#guideSlot').innerHTML =
       '<button class="tile tile-lead" type="button" data-pick="' + lead.id + '"' +
               ' style="--lead-a:' + lead.cover.a + ';--lead-b:' + lead.cover.b + '">' +
-        book3d(lead) +
-        '<span class="tt">' +
-          '<em class="tl-eye">Picked for you</em>' +
-          '<b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small>' +
-          '<span class="tl-price"><s>\u20b9499</s><b>\u20b949</b><i>today</i></span>' +
+        '<span class="tl-row">' +
+          '<span class="tl-thumb">' + book3d(lead) + '</span>' +
+          '<span class="tt">' +
+            '<b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small>' +
+          '</span>' +
+          '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         '</span>' +
-        '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '<span class="tl-off">' +
+          '<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1.2 8.7 4.7l3.9.5-2.8 2.7.7 3.8L7 9.9l-3.5 1.8.7-3.8L1.4 5.2l3.9-.5z" fill="#067647"/></svg>' +
+          '<b>4.7</b><i></i>38 pages<i></i>Written for your chart' +
+        '</span>' +
       '</button>';
     return;
   }

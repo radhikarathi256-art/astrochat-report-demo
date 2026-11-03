@@ -151,7 +151,12 @@ img{display:block}
 .head-name small{display:block;font:500 10px/14px var(--sans);color:var(--g600)}
 .head-name b{font-family:var(--serif);font-size:22px;line-height:26px;font-weight:700;color:var(--g800)}
 .head-r{margin-left:auto;display:flex;align-items:center;gap:12px}
-.ic-btn{border:0;background:none;padding:4px;display:flex;align-items:center;border-radius:10px}
+/* A fixed 32 square, so every glyph in the header row sits on the same baseline
+   and the same optical centre as the wallet pill next to it. With padding-only
+   sizing each button took the size of its own path and the gaps between them
+   came out uneven. */
+.ic-btn{border:0;background:none;padding:0;width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;border-radius:10px;flex:none}
 .ic-btn:active{background:rgba(16,24,40,.06)}
 .wallet{display:flex;align-items:center;gap:6px;height:32px;padding:0 3px 0 9px;border-radius:16px;
   border:1px solid var(--g300);background:#fff;font:700 12px/16px var(--sans);color:var(--g800);
@@ -1586,49 +1591,32 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tile .tag{flex:none}
 .tile .arr{flex:none}
 
-/* The day's first ask. Same tile, turned up — not a different component, because
-   the moment it becomes a coloured promo block it reads as an ad and the rest of
-   Personalised Guidance stops looking like a list she is working through.
-   What changes: a 3px edge and a tinted ground in the book's own cover ink, so
-   the emphasis belongs to the report being sold; a lifted shadow so it is the
-   one card standing off the page; and room for the two lines the quiet version
-   had nowhere to put — why it is here, and what it costs. */
-.tile-lead{position:relative;overflow:hidden;align-items:flex-start;
-  min-height:96px;padding:14px 12px;border-color:transparent;
-  background:
-    linear-gradient(#fff,#fff) padding-box,
-    linear-gradient(135deg,var(--lead-a),var(--lead-b)) border-box;
-  border:1px solid transparent;
-  box-shadow:0 1px 2px rgba(16,24,40,.06),0 10px 22px -12px var(--lead-a)}
-/* The ground. A wash off the cover's own ink, strongest behind the book and
-   gone by the middle of the card, so the title still sits on plain white. */
-.tile-lead::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:linear-gradient(100deg,
-    color-mix(in srgb,var(--lead-b) 20%,#fff) 0,
-    color-mix(in srgb,var(--lead-b) 7%,#fff) 38%,
-    rgba(255,255,255,0) 72%)}
-/* The painted edge down the left, which is what makes it read as the first item
-   rather than a card that happens to be bigger. */
-.tile-lead::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;z-index:1;
-  background:linear-gradient(180deg,var(--lead-a),var(--lead-b))}
-.tile-lead > *{position:relative;z-index:2}
-.tile-lead .bkt,.tile-lead .bk3{width:48px;height:64px}
-.tile-lead .tt{gap:3px}
-/* One word, in the cover's ink. It answers the only question a tile at the top
-   of a list raises: why this one. */
-.tile-lead .tl-eye{font-style:normal;font:700 10px/14px var(--sans);
-  letter-spacing:.08em;text-transform:uppercase;color:var(--lead-a)}
-/* ₹499 struck, ₹49 in the ink, and "today" because the price is only this for
-   as long as she is standing here. Same pattern as the detail page's price row,
-   so the number does not change shape between the tile and the thing it opens. */
-.tile-lead .tl-price{display:flex;align-items:baseline;gap:6px;margin-top:3px;
-  font:400 12px/17px var(--sans);color:var(--g400)}
-.tile-lead .tl-price s{color:var(--g400)}
-.tile-lead .tl-price b{font:700 15px/20px var(--sans);color:var(--lead-a);
-  white-space:nowrap;overflow:visible}
-.tile-lead .tl-price i{font-style:normal;font:600 11px/15px var(--sans);
-  padding:1px 6px;border-radius:5px;background:#ECFDF3;color:#067647}
-.tile-lead .arr{margin-top:22px}
+/* The day's first ask, built like a food-delivery listing card: plain white, one
+   soft shadow, the artwork sitting in its own tinted thumb, the name, the line
+   under it, and a single strip along the bottom behind a dashed rule saying why
+   she is seeing this one. The coloured border and wash it had before made it
+   read as an ad, which is the fastest way to get a card skipped.
+   No price on the tile. Its job is to get the report opened, and ₹49 only means
+   anything beside the contents, which is the page it opens. */
+.tile-lead{display:block;padding:0;min-height:0;overflow:hidden;
+  border-color:var(--g200);
+  box-shadow:0 1px 2px rgba(16,24,40,.05),0 8px 18px -12px rgba(16,24,40,.45)}
+.tl-row{display:flex;align-items:center;gap:12px;padding:12px}
+/* The cover gets a frame instead of a wash across the whole card, so the one
+   piece of colour on the tile is the book itself. */
+.tl-thumb{flex:none;display:grid;place-items:center;width:64px;height:76px;
+  border-radius:12px;background:color-mix(in srgb,var(--lead-b) 9%,#fff)}
+.tile-lead .bkt,.tile-lead .bk3{width:40px;height:54px;margin:0}
+.tile-lead .tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+/* The facts strip: rating, length, and who it was written for. Grey type and
+   dot separators, because this is the row she checks before tapping, not a
+   claim being made at her. */
+.tl-off{display:flex;align-items:center;gap:5px;margin:0 12px;padding:9px 0 11px;
+  border-top:1px dashed var(--g200);
+  font:500 12px/16px var(--sans);color:var(--g600);text-align:left}
+.tl-off svg{flex:none;margin-right:1px}
+.tl-off b{font-weight:700;color:var(--g800)}
+.tl-off i{flex:none;width:3px;height:3px;border-radius:50%;background:var(--g300);margin:0 2px}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
