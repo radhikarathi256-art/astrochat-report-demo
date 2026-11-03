@@ -1681,7 +1681,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tl-off::before{content:'';position:absolute;left:16px;right:16px;top:0;
   border-top:1px dashed color-mix(in srgb,var(--s-ink) 22%,transparent)}
 .tl-off svg{flex:none}
-.tl-off em{flex:1;min-width:0;font-style:normal}
+/* One line, cut with an ellipsis. The strip is a fixed-height footer with a
+   rule above and a rounded edge below, and a hook that wrapped to two lines
+   grew it out of shape and pushed the card taller than the row beside it. */
+.tl-off em{flex:1;min-width:0;font-style:normal;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
