@@ -1626,7 +1626,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    sits under the book rather than behind it: at the chat card's 236px it was
    a wash across half the tile, and the book is the only thing on this card
    that should read as an object. */
-.tl-bg .of3-motif{left:-6px;right:auto;top:34px;width:104px;height:104px;opacity:.42}
+.tl-bg .of3-motif{left:-6px;right:auto;top:6px;width:104px;height:104px;opacity:.42}
 /* The book, at half the chat card's. Scaled rather than re-measured, so the
    hinge, the page block and the spine band stay in proportion to each other.
    The offsets put the cover's own left edge on the card's 14px gutter — the
@@ -1657,13 +1657,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the wrong thing here, because nobody taps a report to find out how long it is. */
 .tl-off{position:relative;z-index:1;display:flex;align-items:center;gap:7px;
   margin:12px 0 0;padding:11px 16px 13px;
-  border-top:1px dashed color-mix(in srgb,var(--s-ink) 22%,transparent);
   border-radius:0 0 15px 15px;
   /* White under the hook, fading up into the wash. The hook is the line she is
      meant to read last and act on, so it gets the one clean surface on the
      card; a hard white band would cut the card in two, hence the fade. */
   background:linear-gradient(180deg,rgba(255,255,255,0) 0%,#fff 58%);
   font:600 12px/16px var(--sans);color:var(--s-ink);text-align:left}
+/* The rule is inset while the strip itself runs full width: a dashed line that
+   touches the card's own edge reads as the card being cut in half. */
+.tl-off::before{content:'';position:absolute;left:16px;right:16px;top:0;
+  border-top:1px dashed color-mix(in srgb,var(--s-ink) 22%,transparent)}
 .tl-off svg{flex:none}
 .tl-off em{flex:1;min-width:0;font-style:normal}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
