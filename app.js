@@ -3004,8 +3004,8 @@ function renderGuideTile() {
           '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         '</span>' +
         '<span class="tl-off">' +
-          '<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1.2 8.7 4.7l3.9.5-2.8 2.7.7 3.8L7 9.9l-3.5 1.8.7-3.8L1.4 5.2l3.9-.5z" fill="#067647"/></svg>' +
-          '<b>4.7</b><i></i>38 pages<i></i>Written for your chart' +
+          '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.2 8.7 4.7l3.9.5-2.8 2.7.7 3.8L7 9.9l-3.5 1.8.7-3.8L1.4 5.2l3.9-.5z" fill="currentColor"/></svg>' +
+          esc(lead.why) +
         '</span>' +
       '</button>';
     return;
