@@ -1992,14 +1992,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    which is the whole of the reference — the drawing is where the eye re-enters
    the list, not a thing to be read, and at g600 eight of them were competing
    with the words for first look. */
-/* The chip, and not the drawing, is the thing repeated down the left. Bare
-   glyphs are six different silhouettes at six different densities — a figure
-   is a solid mass, two rings are hairlines — so the column read as six
-   unrelated marks. Inside one fixed tinted square they read as one set and
-   the drawing goes back to being the detail inside it. */
-.r2-learn li > i{flex:none;display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border-radius:9px;background:#F5EFE7;color:var(--g400)}
-.r2-learn li > i > svg{display:block;width:18px;height:18px}
+.r2-learn li > i{flex:none;width:24px;height:24px;color:var(--g400)}
+.r2-learn li > i > svg{display:block;width:24px;height:24px}
 /* Solar's duotone, so colour means something here that it did not when these
    were stroked: the solid half is the subject and the 55% half is the thing it
    sits in. Brass rather than g400 because a filled drawing at grey-400 reads as
