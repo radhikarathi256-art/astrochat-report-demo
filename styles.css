@@ -591,7 +591,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   pointer-events:none;
   background:linear-gradient(115deg,rgba(255,255,255,.18) 0%,transparent 45%,
     rgba(0,0,0,.06) 100%)}
-.bk3-art{position:absolute;inset:0;width:100%;height:100%;opacity:.74}
+/* The motif draws in `currentColor`, so the colour has to be stated here or it
+   inherits whatever text colour the surface happens to run — which on a tinted
+   card is near-black ink, and a black heart on a violet wash reads as a hole. */
+.bk3-art{position:absolute;inset:0;width:100%;height:100%;opacity:.74;
+  color:var(--cvb)}
 /* The weight on the page: a blurred ellipse under the book, tinted from the
    cover. A box-shadow here drew the element's rectangle, which is the one
    thing a book standing at an angle does not cast. */
@@ -1611,30 +1615,37 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    markup, scaled down to fit a tile. No overflow:hidden on the card itself, or
    the book gets guillotined; `.tl-bg` does the clipping for the wash. */
 .tile-lead{display:block;position:relative;padding:0;min-height:0;
-  margin-top:20px;border:0;border-radius:20px;background:var(--s-grad);
-  box-shadow:0 12px 28px -14px var(--s-sh,rgba(122,46,14,.22))}
+  margin-top:16px;border:1px solid var(--g300);border-radius:16px;
+  background:var(--s-grad);box-shadow:none}
 .tile-lead:active{background:var(--s-grad);filter:brightness(.985)}
-.tl-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:20px;
+.tl-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:16px;
   pointer-events:none}
-/* The same inset white ring the chat card wears. It is what lets the rosette
-   run off the top edge without looking like a mistake. */
-.tl-bg::after{content:"";position:absolute;inset:0;border-radius:20px;
-  box-shadow:inset 0 0 0 5px #fff}
 /* Both the rosette and the book sit on the left here. On Today this tile is one
    row in a list read top to bottom, so the cover goes where her eye starts
-   rather than where the chat card happens to put it. */
-.tl-bg .of3-motif{left:-78px;right:auto;top:-100px;opacity:.32}
-/* The book, at 62% of the chat card's. Scaled rather than re-measured, so the
-   hinge, the page block and the spine band stay in proportion to each other. */
-.tl-bk{position:absolute;left:12px;top:-20px;z-index:2;width:181px;height:127px;
+   rather than where the chat card happens to put it. The rosette sits low and
+   behind: pulled up over the top edge it was a shape in its own right, and the
+   point of it is to be the ground the book stands on. */
+.tl-bg .of3-motif{left:-66px;right:auto;top:-24px;opacity:.3}
+/* The book, at half the chat card's. Scaled rather than re-measured, so the
+   hinge, the page block and the spine band stay in proportion to each other.
+   The offsets put the cover's own left edge on the card's 14px gutter — the
+   wrapper is 86px wider than the board, which is the open leaf behind it. */
+.tl-bk{position:absolute;left:-29px;top:-14px;z-index:2;width:181px;height:127px;
   pointer-events:none}
-.tl-bk .of3-bkw{left:0;right:auto;top:0;transform:scale(.62);transform-origin:0 0}
+.tl-bk .of3-bkw{left:0;right:auto;top:0;transform:scale(.5);transform-origin:0 0}
+/* The drawn stand-in, for a report with no painted cover yet. It sits in the
+   same place the photographed board does — 86px in from the wrapper's left,
+   which is where the spine falls — so the card is laid out identically either
+   way. No spine band over it, because there is no open leaf behind it. */
+.of3-bkw-drawn{perspective:none}
+.of3-bkw-drawn::after{display:none}
+.of3-bkw-drawn .bk3{position:absolute;left:86px;top:0;width:86px;height:127px}
 /* `.tile img` squares every image in a tile to 56 and contains it, which
    flattened the cover into a stamp inside the board. The book brings its own
    geometry. */
 .tile-lead .of3-bk{width:100%;height:100%;object-fit:cover}
 .tile-lead .tt{position:relative;z-index:1;display:flex;flex-direction:column;gap:3px;
-  padding:16px 16px 0 128px}
+  padding:14px 14px 0 104px}
 .tile-lead .tt b{font:700 16px/22px var(--sans);color:var(--s-ink);white-space:normal}
 .tile-lead .tt small{font:400 12px/17px var(--sans);color:var(--s-ink2);opacity:.84}
 /* The strip carries the hook: the one thing this book tells her that she cannot

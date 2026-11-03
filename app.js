@@ -147,17 +147,17 @@ function learnIcon(k) {
    joined by `and`, around 36 characters, no full stop (1844 adds one). */
 var REPORTS = [
   {
-    id: 'partner', t: 'Partner Prediction', s: 'A report on who they are, where you meet and when', pages: 38, rating: '4.7', sold: 13000,
+    id: 'partner', t: 'Marriage Prediction Report', s: 'A report on who they are, where you meet and when', pages: 38, rating: '4.7', sold: 13000,
     // Read once. The chart it is drawn from does not move, so there is no
     // second edition to sell and every surface that sold it says Read Report
     // from the moment it is hers.
     cadence: 'once',
     // `t2` is the long name, used where the card has room for two lines and the
     // book is sitting right next to it — it has to match the cover she can see.
-    t2: 'Your Future Partner Prediction Report',
+    t2: 'Your Marriage Prediction Report',
     // `tl` is the sell page's own headline, Figma 3186:204216 — it names both
-    // halves of what the report answers, which "Your Partner Prediction" does
-    // not. Reports without one fall back to "Your " + t.
+    // halves of what the report answers, which the short name does not.
+    // Reports without one fall back to "Your " + t.
     tl: 'Your Future Partner & Marriage Prediction Report',
     why: 'See the year your chart points to for marriage',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
@@ -227,12 +227,12 @@ var REPORTS = [
        readable in the two seconds the bubble is on screen before the card
        underneath takes over. */
     pitch: [
-      'Mansi, you asked me about your partner. Rahu sitting on your seventh house is the whole answer, and your Partner Prediction report is built on it.',
+      'Mansi, you asked me about your partner. Rahu sitting on your seventh house is the whole answer, and your Marriage Prediction Report is built on it.',
       'Learn what they will be like, how the two of you meet, and the months it can actually happen.',
       'Buy the report and get a full reading of your seventh house, with the remedy that breaks the block.'
     ],
     pitchLong: [
-      'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed, so I have written your Partner Prediction report around it.',
+      'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed, so I have written your Marriage Prediction Report around it.',
       'Learn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.',
       'Buy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
@@ -251,13 +251,13 @@ var REPORTS = [
     tint: 'linear-gradient(94deg,#5A2B2B 0%,#7B3B3A 40%,#C68E8C 74%,#fff 100%)',
     /* The +10 min notification on day 1. Same three beats as the chat pitch,
        squeezed into one line: why now, what she gets, what it costs. */
-    push: 'Mansi, Rahu is in your seventh house. That is the block. Your Partner Prediction is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    push: 'Mansi, Rahu is in your seventh house. That is the block. Your Marriage Prediction Report is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
     /* The ticket stub on Today, day 2. It used to read "Your partner report is
        ready" off the raw id, which named a folder rather than a book. */
     // The second line names the report. On Today this tile sits between a
     // reward ladder and a tarot card, so a line that only promises an answer
     // reads as another free thing — the word is what says it is a report.
-    tkt: { t: 'Your Partner Prediction is ready', s: 'A report on who they are, and when you meet them' },
+    tkt: { t: 'Your Marriage Prediction Report is ready', s: 'A report on who they are, and when you meet them' },
     /* The keepsake at the top of a bought report: the one finding worth pinning
        to a wall, on the paper it was drawn on. Partner has a face to show, so
        the art box holds the sketch. The other two have no portrait to draw —
@@ -284,10 +284,10 @@ var REPORTS = [
     // Named for the thing people search for. "Marriage Report" said nothing the
     // subtitle did not already say; Kundli Milan is the word she would use
     // herself, and it is what the cover says.
-    id: 'marriage', t: 'Kundli Milan Marriage Compatibility', s: 'A report on how well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
+    id: 'marriage', t: 'Kundli Milan Report', s: 'A report on how well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
     // No "Your" on this one: the book belongs to two people, and the cover
     // does not claim it for either of them.
-    t2: 'Kundali Milan, Compatibility Report',
+    t2: 'Kundli Milan Compatibility Report',
     cadence: 'once',
     // The one report with a second person in it, so the one report that has to
     // ask. Board 1321:37310 — his four fields empty, hers written in.
@@ -456,7 +456,7 @@ var REPORTS = [
       licons: ['pie', 'shield', 'planet', 'coin', 'cal', 'leaf']
     },
     /* Chat and History, the two places she is met by name. Everywhere else
-       this is "Kundli Milan Marriage Compatibility Report" and nothing more,
+       this is "Kundli Milan Report" and nothing more,
        because Today and the picker do not know who he is - but these two
        surfaces were there when she said his name, so they can use it, and
        "your compatibility report with Rahul" is a different offer from
@@ -507,8 +507,8 @@ var REPORTS = [
 
        Both Today surfaces read this pair, so there is one sentence to change
        rather than two to keep in step. */
-    tkt: { t: 'Kundli Milan Marriage Compatibility', s: 'Match birth charts and get your compatibility report' },
-    tktDone: { t: 'Kundli Milan Marriage Compatibility', s: 'Birth charts matched. Get your compatibility report' },
+    tkt: { t: 'Kundli Milan Report', s: 'Match birth charts and get your compatibility report' },
+    tktDone: { t: 'Kundli Milan Report', s: 'Birth charts matched. Get your compatibility report' },
     /* Gun Milan is the number this report is bought for, so it is the number on
        the card. Out of 36 under it, because 28 alone means nothing to anyone
        who has not been told the scale. */
@@ -528,15 +528,15 @@ var REPORTS = [
     // says Career & Money; what people actually want to know is whether the
     // thing lands soon, so the horizon goes in the name instead of sitting in
     // the subtitle where it read as one more topic.
-    id: 'career', t: 'Career, Money & Next 3 Months', s: 'A report on November, December and January, month by month', pages: 34, rating: '4.6', sold: 71250,
-    // "Quarterly" up front, because the thing that makes this report different
-    // from the other two is that it runs out and is bought again.
-    t2: 'Quarterly Career & Money Forecast',
-    // A quarter at a time. The report is a window rather than a reading, so it
-    // runs out: once this one is hers she can read it, and she can also buy the
-    // next three months. Every repeat buy is its own row in history.
-    cadence: 'quarterly',
-    why: 'See the weeks this quarter that are best to ask for a raise',
+    id: 'career', t: 'Monthly Wealth Report', s: 'A report on your work and money this month, week by week', pages: 34, rating: '4.6', sold: 71250,
+    // "Monthly" up front, because the thing that makes this report different
+    // from the first two is that it runs out and is bought again.
+    t2: 'Monthly Wealth & Career Report',
+    // A month at a time. The report is a window rather than a reading, so it
+    // runs out: once this one is hers she can read it, and she can also buy
+    // next month. Every repeat buy is its own row in history.
+    cadence: 'monthly',
+    why: 'See the days this month that are best to ask for a raise',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
     art: {
@@ -558,10 +558,10 @@ var REPORTS = [
       heroPos: '50% 0%'
     },
     chips: ['Switch timing', 'Raise window'],
-    // An edition covers a named quarter, so the third column is the window she
-    // is buying rather than how she pays for it.
-    stat3: { v: 'Oct\u2013Dec', l: 'Months' },
-    lead: 'Know your best weeks this quarter for a raise, a switch and money',
+    // An edition covers a named month, so the third column is the window she is
+    // buying rather than how she pays for it.
+    stat3: { v: 'November', l: 'Month' },
+    lead: 'Know your best days this month for a raise, a switch and money',
     revs: [
       { n: 'Shruti B., Pune',   t: 'Month matched', q: 'It named March as the switch month. I got the offer on the 11th of March.' },
       { n: 'Meera T., Gurgaon', t: 'Work read matched', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
@@ -569,28 +569,28 @@ var REPORTS = [
       { n: 'Tanvi A., Jaipur',  t: 'Job over business', q: 'It said job, not business, for this year. I had almost put in my notice to start something.' }
     ],
     learn: [
-      'Is a raise or promotion coming this quarter?',
-      'Which weeks are best to ask for a raise or switch jobs?',
+      'Is a raise or promotion coming this month?',
+      'Which days are best to ask for a raise or switch jobs?',
       'Should I stay, switch, or start my own work?',
       'What does my boss really think of me?',
       'Will my money grow, and where should I be careful?',
       'What small steps will speed up my growth?'
     ],
     licons: ['graph', 'cald', 'route', 'speak', 'coin', 'graph'],
-    /* Career has no person to name and no question she asked, so its trigger is
+    /* Wealth has no person to name and no question she asked, so its trigger is
        the calendar: the month is running out and nothing has moved. That is the
        one thing about work she is already thinking when the message arrives,
-       which makes it the only honest way in. The months are spelled out instead
-       of being called "the next three months" because three named months read
-       as a forecast and the phrase reads as a category. */
+       which makes it the only honest way in. The month is named rather than
+       called "the month ahead", because a named month reads as a forecast and
+       the phrase reads as a category. */
     pitch: [
-      'Mansi, October is almost gone and you have been working hard with very little moving. That is Saturn watching your tenth house, not you, and your Career report starts right there.',
-      'Learn what November, December and January each hold for your work, month by month.',
-      'One move in the right month can change the whole year. The report names that month.'
+      'Mansi, October is almost gone and you have been working hard with very little moving. That is Saturn watching your tenth house, not you, and your November report starts right there.',
+      'Learn what November holds for your work and your money, week by week.',
+      'One move in the right week can change the whole year. The report names that week.'
     ],
     pitchLong: [
-      'Mansi, I kept reading your chart after we spoke. October is nearly over and the year has felt slow to you - Saturn aspecting your tenth house is why, and that is where your Career report begins.',
-      'Learn what November, December and January hold, the dates worth asking for a raise on, the right month to switch, and what your boss actually sees.',
+      'Mansi, I kept reading your chart after we spoke. October is nearly over and the year has felt slow to you - Saturn aspecting your tenth house is why, and that is where your November report begins.',
+      'Learn what November holds week by week, the dates worth asking for a raise on, the right week to switch, and what your boss actually sees.',
       'Buy the report and get your tenth house read in full, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
     ],
     /* Amber, off the stairs and the stacked coins in the career painting. The
@@ -600,13 +600,13 @@ var REPORTS = [
        Its own average is far too light to put white type on, so the card takes
        the hue and drops the value: the same sand, lit from much further away. */
     tint: 'linear-gradient(94deg,#4A352A 0%,#6B4F3E 40%,#BCA38C 74%,#fff 100%)',
-    push: 'Mansi, October is almost gone and nothing has moved. Your next three months, read month by month. \u20b949 today instead of \u20b9499 \ud83d\udcd6',
-    tkt: { t: 'Your Career report is ready', s: 'A report on November, December and January, month by month' },
-    /* Career is bought for timing, so the months are the headline. The year
-       sits under them rather than inside the range, which keeps the figure to
-       four characters and the same weight as the other two cards. */
+    push: 'Mansi, October is almost gone and nothing has moved. Your November, read week by week. \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    tkt: { t: 'Your Monthly Wealth Report is ready', s: 'A report on your work and money in November, week by week' },
+    /* Wealth is bought for timing, so the window is the headline. The year sits
+       under it rather than inside the range, which keeps the figure short and
+       the same weight as the other cards. */
     hero: {
-      fig: { lbl: 'Your switch window', big: 'Apr \u2013 Sep', unit: '2027' },
+      fig: { lbl: 'Your switch window', big: '18 \u2013 26', unit: 'November' },
       foot: [['10th lord', 'Saturn \u00b7 6th house'], ['Money moves', 'Jun 2027']],
       hide: [['Your window', 'After you buy'], ['Money moves', 'In full report']]
     },
@@ -614,6 +614,65 @@ var REPORTS = [
       { q: 'When should I change jobs?',     a: 'When Jupiter looks at your tenth house. In that window the offers are better and talks close. Before it, only talk, do not switch.' },
       { q: 'What does my boss think?',       a: 'The Sun is fine but Saturn is watching. He trusts the work, not the show. So he knows your work, he just does not remember it.' },
       { q: 'Will I get a raise?',            a: 'Your tenth lord is exalted, so yes, but only if you ask, not on its own. Ask on the dates named in the report.' }
+    ]
+  },
+  {
+    /* The fourth book, and the only one about a relationship she is already in.
+       Partner is about someone she has not met and Kundli Milan is about a
+       match on paper; this one is about the person she is with right now and
+       what the month ahead does to the two of them. Monthly, like Wealth, for
+       the same reason: a month is a window, and a window runs out. */
+    id: 'relation', t: 'Monthly Relationship Report', s: 'A report on the two of you this month, week by week', pages: 30, rating: '4.7', sold: 48120,
+    t2: 'Your Monthly Relationship Report',
+    cadence: 'monthly',
+    why: 'See the days this month when things get easier between you',
+    // Violet, so the four covers are four colours: Partner is rose, Kundli
+    // Milan gold, Wealth blue. No painted cover yet, so `book3d` draws the
+    // wash version from these two stops.
+    cover: { a: '#9B6CD1', b: '#4A2A7A', ink: '#EDE2FA', motif: 'heart' },
+    chips: ['Week by week', 'Fight windows'],
+    stat3: { v: 'November', l: 'Month' },
+    lead: 'Know what November holds for the two of you, week by week',
+    revs: [
+      { n: 'Ankita P., Pune',    t: 'Bad week named', q: 'It marked the second week as the hard one. That is the week we almost broke up, and I had been warned.' },
+      { n: 'Swati R., Delhi',    t: 'Same fight explained', q: 'The reason we keep having the same fight was written down in one line. I read it to him.' },
+      { n: 'Nidhi J., Vadodara', t: 'Good days matched', q: 'I waited for the days it called good to bring up moving in together. He said yes.' },
+      { n: 'Reema S., Bhopal',   t: 'Distance explained', q: 'He went quiet for ten days and the report had already said that stretch would feel cold. It was not me.' }
+    ],
+    learn: [
+      'Is this month good or hard for the two of us?',
+      'Which days are best to talk about the difficult things?',
+      'Why do the same fights keep coming back?',
+      'Does he feel the same way I do right now?',
+      'Is a commitment coming this month?',
+      'What can I do this month to make it easier?'
+    ],
+    licons: ['heart', 'cal', 'branch', 'speak', 'rings', 'leaf'],
+    /* Like Wealth, the trigger is the calendar rather than a question she
+       asked. Unlike Wealth, the thing the month is doing has a person in it,
+       so the first line names what she is already feeling about him. */
+    pitch: [
+      'Mansi, things have felt hot and cold with Rahul this month. Venus is moving away from your fifth house, and that is the whole reason.',
+      'Learn which days in November are easy between you, which ones to keep quiet on, and why the same fight keeps coming back.',
+      'Buy the report and get the month read week by week, with what to do in the hard stretch.'
+    ],
+    pitchLong: [
+      'Mansi, I kept reading your chart after we spoke. The push and pull with Rahul is not the two of you. Venus is leaving your fifth house, and November is written around that.',
+      'Learn which days are easy between you, which week is the cold one, why the same fight returns, and what he is actually feeling in it.',
+      'Buy the report and get all four weeks read out, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
+    tint: 'linear-gradient(94deg,#32204F 0%,#4D3273 40%,#A08FC4 74%,#fff 100%)',
+    push: 'Mansi, hot and cold with Rahul this month? Venus is leaving your fifth house. Your November, week by week. \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    tkt: { t: 'Your Monthly Relationship Report is ready', s: 'A report on the two of you in November, week by week' },
+    hero: {
+      fig: { lbl: 'Your easiest week', big: '12 \u2013 18', unit: 'November' },
+      foot: [['5th lord', 'Venus \u00b7 8th house'], ['Hard stretch', '19 \u2013 24 Nov']],
+      hide: [['Your easy week', 'After you buy'], ['Hard stretch', 'In full report']]
+    },
+    ask: [
+      { q: 'Why does he go quiet?',          a: 'Venus is in your eighth house this month, which hides what is felt rather than killing it. He pulls back when he is unsure, not when he is done.' },
+      { q: 'Which days are safe to talk?',   a: 'The days the Moon is in your fourth house. The report names them. On those days the same sentence lands completely differently.' },
+      { q: 'Is he going to commit?',         a: 'Jupiter looks at your seventh house twice this month. Both windows are in the report, and the second one is the stronger of the two.' }
     ]
   }
 ];
@@ -733,7 +792,7 @@ var state = {
      makes history mean something: ids in the order they were bought. */
   paid: false,
   owned: [],
-  /* One row per purchase, newest first, so a repeat buy of a quarterly report
+  /* One row per purchase, newest first, so a repeat buy of a monthly report
      leaves its own mark instead of overwriting the first one. */
   buys: [],
   // Whether today's three tarot cards have been picked. The menu's one card
@@ -937,7 +996,8 @@ function toastLine() {
   var r = leadReport();
   if (state.matched && r.toastDone) return r.toastDone;
   if (!state.matched && r.toast) return r.toast;
-  return 'Hemali made your ' + r.t + ' Report \u00b7 \u20b949';
+  // Every report's name now ends in "Report", so the word is not added again.
+  return 'Hemali made your ' + r.t + ' \u00b7 \u20b949';
 }
 function pushLine() {
   var r = leadReport();
@@ -1610,7 +1670,7 @@ function openPay() {
 
   // The sheet names the purchase. `tl` is the long sell-page headline, so the
   // title here is the same one she tapped Buy Now under.
-  $('#paysName').textContent = r.tl || 'Your ' + r.t + ' Report';
+  $('#paysName').textContent = r.tl || titled(r.t);
   $('#paysMeta').textContent = r.pages + ' pages · One-time payment · Made for your chart';
 
   /* The score strip. It needs a report that has a matched state and a match
@@ -1770,7 +1830,7 @@ function renderMenu() {
 
 /* ----------------------------------------------------------- my reports
    Purchased only, newest first. The record to read is `buys` rather than
-   `owned`: a quarterly report bought twice is two things she can open, and a
+   `owned`: a monthly report bought twice is two things she can open, and a
    shelf that silently collapses them is a shelf that lost one.
 
    Empty, it is still a page with something on it. The three reports go on the
@@ -1790,19 +1850,20 @@ function renderMenu() {
 var HIST_COPY = {
   partner:  'Discover the Love Meant for You',
   marriage: 'Get Guna score out of 36',
-  career:   'Made from your birth chart'
+  career:   'Made from your birth chart',
+  relation: 'Read the month the two of you are in'
 };
-/* "Oct – Dec 2026" -> "From Oct to Dec". Built off QUARTERS rather than typed,
-   so the button can never name a window the edition does not cover. */
-function quarterCta(q, verb) {
-  var p = q.split('\u2013');
-  return (verb || 'From') + ' ' + p[0].trim().split(' ')[0] +
-    ' to ' + p[1].trim().split(' ')[0];
+/* "November 2026" -> "Read November". Built off EDITIONS rather than typed, so
+   the button can never name a window the edition does not cover. The year is
+   dropped: the button is about the month she is buying, and nobody is choosing
+   between the same month in two different years. */
+function monthCta(m, verb) {
+  return (verb || 'Read') + ' ' + m.split(' ')[0];
 }
 /* The bubble's own title drops the trailing "Report": the book is lying next
    to the words, so the word is already on screen once. */
 function histTitle(r) {
-  return (r.t2 || 'Your ' + r.t + ' Report').replace(/\s*Report$/, '');
+  return (r.t2 || titled(r.t)).replace(/\s*Report$/, '');
 }
 
 /* Hemali saying something, with the book leaning out of the top of the bubble.
@@ -1863,9 +1924,9 @@ function histWidget(r) {
   var b = state.buys.filter(function (x) { return x.id === r.id; })[0];
   if (!b) {
     return histSaid(r, HIST_COPY[r.id] || HIST_COPY.career,
-      '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>',
+      '<b>' + esc(r.t2 || titled(r.t)) + '</b>',
       '<button class="hw-cta" type="button" data-pick="' + r.id + '">' +
-        esc(r.cadence === 'quarterly' ? quarterCta(QUARTERS[0]) : 'Learn More') +
+        esc(r.cadence === 'monthly' ? monthCta(EDITIONS[0]) : 'Learn More') +
       '</button>');
   }
   // Still being written. Quick, but the progress line is the whole card until
@@ -1880,22 +1941,22 @@ function histWidget(r) {
   // the card back and offers the next one.
   var again = r.needsMatch
     ? { cta: 'Match Again', sub: 'Bought ' + b.time + ' \u00b7 Match someone else anytime' }
-    : r.cadence === 'quarterly'
-      // "Get Jan to Mar", not "From Oct to Dec": the offer card sells the
-      // window she is in, this one sells the next one, and the verb is what
-      // tells the two apart.
-      ? { cta: quarterCta(QUARTERS[Math.min(state.buys.filter(function (x) {
-            return x.id === r.id; }).length, QUARTERS.length - 1)], 'Get'),
+    : r.cadence === 'monthly'
+      // "Get December", not "Read November": the offer card sells the month she
+      // is in, this one sells the next one, and the verb is what tells the two
+      // apart.
+      ? { cta: monthCta(EDITIONS[Math.min(state.buys.filter(function (x) {
+            return x.id === r.id; }).length, EDITIONS.length - 1)], 'Get'),
           sub: 'Last bought ' + b.time }
       : null;
   if (!again) {
     return histSaid(r, 'Made from your birth chart',
-      '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+      '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
       '<em class="hw-ok">Ready to read</em>',
       '<button class="hw-cta" type="button" data-open-rep="' + r.id + '">Read Report</button>');
   }
   return histSaid(r, 'Made from your birth chart',
-    '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+    '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
     '<small>' + esc(again.sub) + '</small>',
     '<button class="hw-cta ghost" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
     '<button class="hw-cta" type="button" data-buy="' + r.id + '">' + esc(again.cta) + '</button>');
@@ -1907,7 +1968,7 @@ function renderMine() {
      card as the one she paid for this morning, so three reports read as three
      purchases. The rest now sit under their own heading, in the row she has
      already met at the foot of the detail page. */
-  /* One row per payment, newest first. A quarterly report bought twice is two
+  /* One row per payment, newest first. A monthly report bought twice is two
      things she can open, so the record to read is `buys` rather than `owned` —
      a shelf that silently collapses them is a shelf that lost one. */
   var mine = state.buys.map(function (b) {
@@ -1945,7 +2006,7 @@ function mineRow(r, b) {
   return '<button class="mrow" type="button" data-open-rep="' + r.id + '">' +
     book3d(r) +
     '<span class="mr-tx">' +
-      '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+      '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
       // The edition for the one report that has editions, otherwise the stamp.
       // Both are green: this line's job is to say the thing is hers.
       '<em>' + esc(b.ed || 'Bought ' + b.time) + '</em>' +
@@ -1972,16 +2033,19 @@ function renderMyStrip() {
 
 /* ------------------------------------------------------------- what she owns
    `owned` answers "can she read it", which is what the buttons need; `buys` is
-   the record, one entry per payment, so a quarterly report bought twice leaves
+   the record, one entry per payment, so a monthly report bought twice leaves
    two rows in history rather than quietly replacing itself. */
 function owns(id) { return state.owned.indexOf(id) > -1; }
-/* The quarter a Career edition covers, counted off how many she already has.
-   Nothing here is a real date — it only has to read as a window that moves. */
-var QUARTERS = ['Oct – Dec 2026', 'Jan – Mar 2027', 'Apr – Jun 2027', 'Jul – Sep 2027'];
+/* The month an edition covers, counted off how many she already has. Nothing
+   here is a real date — it only has to read as a window that moves. Named
+   EDITIONS, not MONTHS: a MONTHS of twelve short month names already exists
+   further down for the receipt's date, and two `var`s of the same name at the
+   top level are one variable. */
+var EDITIONS = ['November 2026', 'December 2026', 'January 2027', 'February 2027'];
 function editionLabel(r) {
-  if (r.cadence !== 'quarterly') return '';
+  if (r.cadence !== 'monthly') return '';
   var n = state.buys.filter(function (b) { return b.id === r.id; }).length;
-  return QUARTERS[Math.min(n, QUARTERS.length - 1)];
+  return EDITIONS[Math.min(n, EDITIONS.length - 1)];
 }
 
 function pay() {
@@ -2294,6 +2358,12 @@ function pmQuiet() { return !!dayData().quiet; }
 function pmSurf() { return dayData().surf || {}; }
 /* What she actually owns: whichever of the three she picked. */
 function boughtTitle() { return reportById(state.pick).t; }
+/* Every report's final name already ends in "Report", so the word must not be
+   added a second time - "Your Monthly Relationship Report Report". The suffix
+   is still appended when a name does not carry it, so a shorter name added
+   later still reads as a report. */
+function rptName(t) { return /Report$/.test(t) ? t : t + ' Report'; }
+function titled(t) { return 'Your ' + rptName(t); }
 /* Five surfaces name the report she owns — detail page, "ready" push, sample
    cover, timeline card, book cover and the reader's own header. They used to
    be hard-coded to Marriage Yog, so picking Money and paying handed her
@@ -2320,7 +2390,7 @@ function renderBuys() {
         '<div class="rep-top">' + book3d(r) +
           '<div>' +
             '<p class="eyebrow">Made by Astro Hemali for you</p>' +
-            '<b>' + esc(r.t2 || 'Your ' + r.t + ' Report') + '</b>' +
+            '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
             '<p class="rep-status green">' + (b.ed ? esc(b.ed) : 'Ready to read') + '</p>' +
           '</div>' +
         '</div>' +
@@ -2369,11 +2439,11 @@ function paintHeroVideo(r, src) {
 function paintBought() {
   var r = reportById(state.pick);
   var t = boughtTitle();
-  $('#r2Title').textContent   = r.tl || 'Your ' + t + ' Report';
-  $('#pushReadyTitle').textContent = 'Your ' + t + ' Report is ready';
+  $('#r2Title').textContent   = r.tl || titled(t);
+  $('#pushReadyTitle').textContent = titled(t) + ' is ready';
   // The timeline card is the one surface with room for the report's full name,
   // and it is the card she taps to read — so it says the whole thing.
-  $('#repTitle').textContent  = r.t2 || 'Your ' + t + ' Report';
+  $('#repTitle').textContent  = r.t2 || titled(t);
   $('#repThumb').innerHTML    = book3d(r);
   $('#bookTitle').textContent = t;
 }
@@ -2450,7 +2520,8 @@ var MOTIFS = {
    the chat bubble's thumbnail and the picker's row. */
 function coverArt(r, cls) {
   var c = r.cover;
-  // All three reports are painted now, so the drawn motif is only a fallback.
+  // Painted where a cover exists; the drawn motif is the fallback for the ones
+  // still waiting on art.
   if (r.art) {
     return '<span class="cv cv-art-on' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' +
       '<img src="' + r.art.closed + '" alt="">' +
@@ -2544,14 +2615,14 @@ function upsellRow(x) {
     book3d(x) +
     '<span class="ur-txt">' +
       // The long name, because the cover beside it is now too small to read.
-      '<b>' + esc(x.t2 || x.t + ' Report') + '</b>' +
+      '<b>' + esc(x.t2 || rptName(x.t)) + '</b>' +
       '<span class="ur-rt">' + STAR + '<em>' + esc(x.rating) + '</em>' +
         '<s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
       '<span class="ur-foot">' +
-        // An owned row stops quoting a price — except Career, whose quarter
+        // An owned row stops quoting a price — except Wealth, whose month
         // runs out, so there is a real next edition to sell. The empty span
         // keeps `space-between` pushing the button right either way.
-        (own && x.cadence !== 'quarterly' ? '<span></span>' :
+        (own && x.cadence !== 'monthly' ? '<span></span>' :
           '<span class="ur-pr"><b>\u20b949</b><s>\u20b9499</s>' +
             '<em>90% off</em></span>') +
         '<span class="ur-btn">' + (own ? 'Read Report' : 'Buy Now') + '</span>' +
@@ -2602,7 +2673,10 @@ var SELL_SKIN = {
               sh: 'rgba(122,46,14,.22)', ink: '#7A4527', ink2: '#7A4527' },
   career:   { g: ['#EDF1FA 0%', '#F4F6FC 42%', '#FAFAFC 74%', '#FFFDF8 100%'],
               m: ['#FFF6DC', '#F6D58E', '#E8B54A'], fade: '255,253,248',
-              sh: '#D8DFEF', ink: '#1F2A5C', ink2: '#3B4677' }
+              sh: '#D8DFEF', ink: '#1F2A5C', ink2: '#3B4677' },
+  relation: { g: ['#F3EDFB 0%', '#F8F4FD 45%', '#FCFAFE 78%', '#FFFDFF 100%'],
+              m: ['#F7F0FD', '#D6BDF0', '#B394DF'], fade: '255,253,255',
+              sh: 'rgba(74,42,122,.22)', ink: '#3F2370', ink2: '#55378A' }
 };
 function skin(r) { return SELL_SKIN[r.id] || SELL_SKIN.partner; }
 
@@ -2619,14 +2693,17 @@ var SELL_BLURBS = {
              ['cuphot', 'Your first\nmeeting']],
   marriage: [['pie', 'Guna score\nout of 36'], ['heart', 'Real match\nor on paper'],
              ['shield', 'Dosha and\nremedies']],
-  // Career's first chip is the quarter, per 3726:8272. "Your big theme" was
-  // the one chip on any of the three cards that did not name a thing she gets;
-  // the window is what makes this report different, and it is also the reason
-  // she will be back in three months. Named months rather than "Oct - Dec,
-  // month by month": the cell is two words wide, and that phrase took three
-  // lines and pushed the top row of the 2x2 out of line with the bottom.
-  career:   [['spark', 'Oct, Nov\nand Dec'], ['cal', 'Best dates\nfor a raise'],
-             ['case', 'Job or\nbusiness']]
+  // Wealth's first chip is the month, per 3726:8272. "Your big theme" was the
+  // one chip on any of the cards that did not name a thing she gets; the window
+  // is what makes this report different, and it is also the reason she will be
+  // back next month. The cell is two words wide, so the month is named rather
+  // than described.
+  career:   [['spark', 'All of\nNovember'], ['cal', 'Best dates\nfor a raise'],
+             ['case', 'Job or\nbusiness']],
+  // The monthly read on the relationship she is already in. Same shape as
+  // Wealth's: the window first, then the two things she came to find out.
+  relation: [['spark', 'All of\nNovember'], ['cuphot', 'Your best\ndays together'],
+             ['shield', 'Fights and\nhow to end them']]
 };
 
 /* Three chips off the report, then one that counts what is still behind the
@@ -2693,6 +2770,13 @@ function sellMotif(r) {
 /* The hinged hardback, shared by every sell surface so the book opens the same
    way in the chat as it does in History. */
 function sellBook(r) {
+  /* A report whose cover has not been painted yet has no spread to hinge open,
+     so it shows the drawn book instead. Same wrapper and the same slot, so the
+     card's geometry does not know the difference. */
+  if (!r.art) {
+    return '<span class="of3-bkw of3-bkw-drawn" aria-hidden="true">' +
+      book3d(r) + '</span>';
+  }
   return '<span class="of3-bkw" aria-hidden="true">' +
     '<span class="of3-leaf"' +
       (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
@@ -2723,7 +2807,7 @@ function offer3Card() {
     '<span class="of3-bg" aria-hidden="true">' + sellMotif(r) +
       '<span class="of3-veil"></span></span>' +
     sellBook(r) +
-    '<div class="of3-ttl">' + esc(r.t2 || r.t + ' Report') + '</div>' +
+    '<div class="of3-ttl">' + esc(r.t2 || rptName(r.t)) + '</div>' +
     // The green dot is switched off in the frame, and rightly so: it says
     // "live" next to a rating, which is the one thing a rating is not.
     '<div class="of3-badge">' +
@@ -3234,7 +3318,7 @@ function renderReport() {
   // can still sell: the window it covers runs out, so the next edition is a
   // real thing to buy and it goes beside Read rather than instead of it.
   var mine = owns(r.id);
-  var repeat = mine && r.cadence === 'quarterly';
+  var repeat = mine && r.cadence === 'monthly';
   $('.buy-row', $('#report')).classList.toggle('owned', mine);
   $('#r2Price').hidden = mine;
   $('#r2Again').hidden = !repeat;
