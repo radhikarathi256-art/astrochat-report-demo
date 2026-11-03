@@ -3256,6 +3256,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .psr.tot s{font:400 14px/20px var(--sans);color:var(--g400)}
 
 .pays-act{display:flex;align-items:center;gap:12px}
+/* `display:flex` on the selector beats the attribute on its own, so the
+   wallet-covers-it case needs this to actually take it off the bar. */
+.pays-act .paywith[hidden]{display:none}
 .pays-act .paywith small{font-size:12px;line-height:18px;color:var(--g500)}
 .pays-act .paywith b{font-size:16px;line-height:24px;color:var(--g800)}
 .pay-go{position:relative;flex:1;width:auto;height:52px;border-radius:12px;padding:0}

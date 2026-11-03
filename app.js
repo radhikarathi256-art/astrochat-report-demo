@@ -1742,6 +1742,11 @@ function paintPaySum() {
   $('.pg-l').innerHTML = due === 0
     ? 'Get it with wallet \u2022 <b>\u20b90</b>'
     : 'Pay <b>\u20b9' + due + '</b>';
+  // And with nothing left to charge there is no method to choose either, so
+  // "Pay with PhonePe" goes. Leaving it beside a ₹0 button names a card that
+  // is never touched, and it costs the button half the bar.
+  var pw = $('.pays-act .paywith');
+  if (pw) pw.hidden = due === 0;
 }
 
 function stopPay() {
