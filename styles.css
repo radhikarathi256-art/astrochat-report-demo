@@ -1585,6 +1585,50 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tile small{font:400 12px/17px var(--sans);color:var(--g500)}
 .tile .tag{flex:none}
 .tile .arr{flex:none}
+
+/* The day's first ask. Same tile, turned up — not a different component, because
+   the moment it becomes a coloured promo block it reads as an ad and the rest of
+   Personalised Guidance stops looking like a list she is working through.
+   What changes: a 3px edge and a tinted ground in the book's own cover ink, so
+   the emphasis belongs to the report being sold; a lifted shadow so it is the
+   one card standing off the page; and room for the two lines the quiet version
+   had nowhere to put — why it is here, and what it costs. */
+.tile-lead{position:relative;overflow:hidden;align-items:flex-start;
+  min-height:96px;padding:14px 12px;border-color:transparent;
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg,var(--lead-a),var(--lead-b)) border-box;
+  border:1px solid transparent;
+  box-shadow:0 1px 2px rgba(16,24,40,.06),0 10px 22px -12px var(--lead-a)}
+/* The ground. A wash off the cover's own ink, strongest behind the book and
+   gone by the middle of the card, so the title still sits on plain white. */
+.tile-lead::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(100deg,
+    color-mix(in srgb,var(--lead-b) 20%,#fff) 0,
+    color-mix(in srgb,var(--lead-b) 7%,#fff) 38%,
+    rgba(255,255,255,0) 72%)}
+/* The painted edge down the left, which is what makes it read as the first item
+   rather than a card that happens to be bigger. */
+.tile-lead::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;z-index:1;
+  background:linear-gradient(180deg,var(--lead-a),var(--lead-b))}
+.tile-lead > *{position:relative;z-index:2}
+.tile-lead .bkt,.tile-lead .bk3{width:48px;height:64px}
+.tile-lead .tt{gap:3px}
+/* One word, in the cover's ink. It answers the only question a tile at the top
+   of a list raises: why this one. */
+.tile-lead .tl-eye{font-style:normal;font:700 10px/14px var(--sans);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--lead-a)}
+/* ₹499 struck, ₹49 in the ink, and "today" because the price is only this for
+   as long as she is standing here. Same pattern as the detail page's price row,
+   so the number does not change shape between the tile and the thing it opens. */
+.tile-lead .tl-price{display:flex;align-items:baseline;gap:6px;margin-top:3px;
+  font:400 12px/17px var(--sans);color:var(--g400)}
+.tile-lead .tl-price s{color:var(--g400)}
+.tile-lead .tl-price b{font:700 15px/20px var(--sans);color:var(--lead-a);
+  white-space:nowrap;overflow:visible}
+.tile-lead .tl-price i{font-style:normal;font:600 11px/15px var(--sans);
+  padding:1px 6px;border-radius:5px;background:#ECFDF3;color:#067647}
+.tile-lead .arr{margin-top:22px}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
@@ -2017,9 +2061,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    buttons and invited a tap that does nothing. Smaller type, softer rule, a
    tighter pill: they read as what is in the box. */
 .r2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+/* Fully rounded, not an 8px box. Everything else on this page that is a word in
+   a rule — the review pills, the chips in the sample, the price cut — is a
+   capsule, and a square-ish corner here was the one shape in the set that read
+   as a field rather than a tag. */
 .r2-chips span{display:inline-flex;align-items:center;gap:5px;
-  border:1px solid var(--g200);border-radius:8px;background:var(--g50,#F9FAFB);
-  padding:4px 9px;font:500 12px/17px var(--sans);color:var(--g600)}
+  border:1px solid var(--g200);border-radius:999px;background:var(--g50,#F9FAFB);
+  padding:4px 11px;font:500 12px/17px var(--sans);color:var(--g600)}
 .r2-chips svg{flex:none;width:12px;height:12px}
 /* The report's own terms, lifted out of the standard three. These are the only
    lines here that differ between one book and the next, so they take the tint
@@ -2154,8 +2202,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the ask bar sits on a wash with no edge to notice. */
 .rp-arch{position:absolute;top:calc(var(--sbh) + 8px);left:0;right:0;bottom:0;
   z-index:0;pointer-events:none;
+  /* The deep stop used to be a single point at 50% 4%, which is the one part of
+     the field the arch opening covers — so the darkest colour in the report was
+     never actually on screen and the wall around the crown washed out to the
+     mid tone. Holding `arch-a` out to 24% and moving the mid stop back puts the
+     book's real colour in the band either side of the arch, where it can be
+     seen. */
   background:
-    radial-gradient(118% 62% at 50% 4%,var(--arch-a) 0,var(--arch-b) 46%,var(--arch-c) 100%);
+    radial-gradient(118% 62% at 50% 4%,
+      var(--arch-a) 0,var(--arch-a) 24%,var(--arch-b) 60%,var(--arch-c) 100%);
   -webkit-mask-image:linear-gradient(180deg,#000 0,#000 58%,rgba(0,0,0,0) 86%);
           mask-image:linear-gradient(180deg,#000 0,#000 58%,rgba(0,0,0,0) 86%)}
 /* The grain: one tile of fractal noise, blended into the colour so the field
@@ -2195,6 +2250,14 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Solid white, not a frosted pane: the arch behind it is painted artwork and
    a blur dragged the pink up into the icons. */
 .rp-head.solid{background:#fff;box-shadow:0 1px 0 var(--g200)}
+/* The back arrow and the wallet glyph were app-grey on every report, which made
+   the one strip of chrome the only thing on the page that did not belong to the
+   book. They take the arch's deep tone, so the header is Career's blue over
+   Career and gold over Kundli Milan — and it still reads once the bar turns
+   white, because `arch-a` is the darkest colour each report owns. */
+.rp-head .ic-btn svg [stroke]{stroke:var(--arch-a)}
+.rp-head .wallet.rpw svg [fill]{fill:var(--arch-a)}
+.rp-head .wallet.rpw{color:var(--arch-a);border-color:color-mix(in srgb,var(--arch-a) 22%,#fff)}
 .rp-head-r{margin-left:auto;display:flex;align-items:center;gap:9px}
 /* The wallet pill measured off 3189:204380 — a 30px white capsule holding the
    glyph, the balance and the plus that is the reason it is a button at all. */
@@ -2367,8 +2430,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rs-h{display:flex;align-items:center;gap:10px;margin:0 0 14px;
   font:600 12px/18px var(--sans);letter-spacing:.04em;
   text-transform:uppercase;color:var(--g600)}
+/* The disc was Partner's pink on all three books, so a blue Career report ran a
+   column of pink section glyphs down its left edge. It takes the arch instead,
+   like everything else inside a report. */
 .rs-h > i{flex:none;display:grid;place-items:center;width:32px;height:32px;
-  border-radius:50%;background:#FAEFF2;color:#B4536B}
+  border-radius:50%;background:color-mix(in srgb,var(--arch-c) 46%,#fff);
+  color:var(--arch-a)}
 .rs-h > i > svg{display:block;width:17px;height:17px}
 /* Every child of a section is 14px below the one before it — the board's one
    vertical rhythm, so nothing needs a bespoke margin. */
@@ -2382,8 +2449,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Pink, because it is the one block on the page that is not her reading: it is
    the page admitting whose chart this is. */
 .rs-demo{display:flex;flex-direction:column;gap:4px;padding:14px 16px;
-  border-radius:16px;background:#FAEFF2}
-.rs-demo b{font:600 15px/22px var(--sans);color:#B4536B}
+  border-radius:16px;background:color-mix(in srgb,var(--arch-c) 46%,#fff)}
+.rs-demo b{font:600 15px/22px var(--sans);color:var(--arch-a)}
 .rs-demo span{font:400 14px/21px var(--sans);color:var(--g600)}
 .rs-jump{margin:0;text-align:center;font:400 14px/20px var(--sans);color:var(--g500)}
 .rs-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}

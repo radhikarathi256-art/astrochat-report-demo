@@ -249,7 +249,7 @@ var REPORTS = [
        title is white and the old mid-tone had it sitting on a tint rather
        than on ink. */
     tint: 'linear-gradient(94deg,#5A2B2B 0%,#7B3B3A 40%,#C68E8C 74%,#fff 100%)',
-    /* The +15 min notification on day 1. Same three beats as the chat pitch,
+    /* The +10 min notification on day 1. Same three beats as the chat pitch,
        squeezed into one line: why now, what she gets, what it costs. */
     push: 'Mansi, Rahu is in your seventh house. That is the block. Your Partner Prediction is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
     /* The ticket stub on Today, day 2. It used to read "Your partner report is
@@ -624,12 +624,14 @@ function reportById(id) {
 
 /* Each day names the surfaces it is allowed to use — `surf` is the whole
    schedule, and every renderer reads it rather than guessing from the day
-   number. Day 1 stays out of Today entirely: the chat, History and a
-   notification carry it, so nothing competes with the daily reward. */
+   number. Day 1 now opens on Personalised Guidance: the first thing she is
+   asked is a tile she can see on the screen she already landed on, and the
+   notification and the chat come ten minutes later. The loud expert card still
+   stays off day 1, so nothing competes with the daily reward. */
 var PM_JOURNEY = {
   1: {
     stamp: 'Just now',
-    surf: { chat: true, today: false, guide: false, hist: true },
+    surf: { chat: true, today: false, guide: true, hist: true },
     msgs: [
       { who: 'sys',    text: 'Astrologer has joined to guide you' },
       { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
@@ -637,7 +639,7 @@ var PM_JOURNEY = {
       { who: 'hemali', text: 'Do not worry, there is a remedy for it.' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' },
       /* The brief's wait, made visible — nothing touches her until it passes. */
-      { who: 'gap',    text: '15 minutes later' },
+      { who: 'gap',    text: '10 minutes later' },
       { who: 'hemali', pitch: 'long' },
       { who: 'offer3' }
     ],
@@ -2164,11 +2166,18 @@ function hideMatchToast() {
 
 /* The making run, pulled out of pay() so the matching form can call it when it
    is done rather than duplicating the sequence. */
+/* She has just paid, so the next thing she sees is the thing she paid for.
+   This used to land her on History and make her find a Read Report button
+   there, which put a page she never asked for between the payment and the
+   report — and History is a journal, not a receipt. The book opening is the
+   handover, so it happens straight away. The History row is still written
+   underneath (resetTimeline + runMaking drive the same card), so the journal is
+   correct by the time she goes looking for it. */
 function startMaking() {
   state.stack = [state.entry];
-  show('timeline', 'fade');
   resetTimeline();
-  later(runMaking, 350);
+  runMaking();
+  openBook();
 }
 
 /* ---------------------------------------------------------------- R.4b matching form
@@ -2964,29 +2973,36 @@ function renderDayToday() {
 /* The report as one tile among her guidance — same object as the tarot and
    prediction tiles. */
 function renderGuideTile() {
-  // Personalised Guidance is always two tasks. From day 2 the first of them is
-  // the report; on day 1, which carries no report anywhere, kundli matching
-  // stands in so the section is never a single lonely tile.
-  var report = state.paid || state.day > 1;
-  $('#guideAlt').hidden = report;
-  $('#guideSlot').hidden = !report;
+  // Personalised Guidance is always two tasks, and the report is the first of
+  // them from day 1 now. The kundli stand-in only exists for the case where
+  // there is no report to pitch at all.
+  $('#guideAlt').hidden = true;
+  $('#guideSlot').hidden = false;
   if (!state.paid) {
-    // Clearing as well as hiding: switching back from a later day would
-    // otherwise leave that day's tile sitting in the DOM.
-    if (state.day === 1) { $('#guideSlot').hidden = true; $('#guideSlot').innerHTML = ''; return; }
-    // From day 2 the tile sells the one report, Partner Prediction — not a
-    // "2 more reports" bundle. No price chip: the tarot and prediction tiles
-    // carry a title, a line and a chevron, and this is the same object.
     var lead = leadReport();
+    if (!lead) { $('#guideAlt').hidden = false; $('#guideSlot').hidden = true;
+                 $('#guideSlot').innerHTML = ''; return; }
     // Kundli Milan says the same two lines here as on the expert ticket, since
     // a tile that names the report while the ticket names the match makes them
     // look like two different offers. The other two have one pair of lines and
     // keep using it.
     var gc = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
+    /* This is the day's first ask, so it stops being a tile among tiles. Same
+       object, turned up: the book gets a lit ground behind it in the report's
+       own cover colour, a one-word eyebrow that says why it is here, and the
+       price, because ₹49 against ₹499 is the single most persuasive fact we
+       have and the quiet version of this tile never said it. The accent is the
+       cover's own ink, so the emphasis belongs to the book being sold rather
+       than to a generic highlight state. */
     $('#guideSlot').innerHTML =
-      '<button class="tile" type="button" data-pick="' + lead.id + '">' +
+      '<button class="tile tile-lead" type="button" data-pick="' + lead.id + '"' +
+              ' style="--lead-a:' + lead.cover.a + ';--lead-b:' + lead.cover.b + '">' +
         book3d(lead) +
-        '<span class="tt"><b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small></span>' +
+        '<span class="tt">' +
+          '<em class="tl-eye">Picked for you</em>' +
+          '<b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small>' +
+          '<span class="tl-price"><s>\u20b9499</s><b>\u20b949</b><i>today</i></span>' +
+        '</span>' +
         '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
     return;
@@ -3386,10 +3402,16 @@ function renderTpTabs() {
     // so a PM can see at a glance what day 1 does and day 2 does not.
     var sf = pmSurf();
     tabs = [];
-    if (dayData().push) tabs.push({ id: 'push', l: 'Notification \u00b7 +15 min' });
-    if (sf.chat)  tabs.push({ id: 'chat',    l: state.day === 1 ? 'Chat \u00b7 offer at +15 min' : 'Chat \u00b7 offer' });
+    // Day 1 is ordered the way the day runs: the Personalised tile is the first
+    // thing that asks, on the screen she already landed on, and everything else
+    // is ten minutes behind it. On the other days the tile is just one of the
+    // surfaces, so it keeps its old place in the row.
+    if (state.day === 1 && sf.guide) tabs.push({ id: 'guide', l: 'Today \u00b7 personalised \u00b7 1st ask' });
+    if (dayData().push) tabs.push({ id: 'push', l: 'Notification \u00b7 +10 min' });
+    if (state.day === 1) tabs.push({ id: 'nudge', l: 'Chat nudge \u00b7 +10 min \u00b7 bubble + toast' });
+    if (sf.chat)  tabs.push({ id: 'chat',    l: state.day === 1 ? 'Chat \u00b7 offer at +10 min' : 'Chat \u00b7 offer' });
     if (sf.today) tabs.push({ id: 'today',   l: 'Today \u00b7 expert card' });
-    if (sf.guide) tabs.push({ id: 'guide',   l: 'Today \u00b7 personalised' });
+    if (state.day !== 1 && sf.guide) tabs.push({ id: 'guide', l: 'Today \u00b7 personalised' });
     // History, the picker and the report page are deliberately not listed:
     // they are destinations, and jumping straight to one skips the only thing
     // the demo is meant to show — how she gets there.
@@ -3860,6 +3882,24 @@ document.addEventListener('click', function (e) {
         state.repToastSeen = false;
         later(showRepToast, 700);
       }
+    } else if (tp === 'nudge') {
+      /* Ten minutes after the first ask, Hemali answers in the thread she has
+         already left. Two things carry that out to her: a count on the chat
+         icon in the header, which is the door back in, and one line of what was
+         said, because a bare "1" is a chore and the sentence is the reason. */
+      state.histDot = true;
+      renderNav();
+      state.stack = [];
+      show(state.entry, 'fade');
+      var nsc = $('#today-a [data-scroll]');
+      if (nsc) nsc.scrollTop = 0;
+      later(function () {
+        $$('.ncount').forEach(function (n) {
+          n.classList.remove('lit'); void n.offsetHeight; n.classList.add('lit');
+        });
+        state.repToastSeen = false;
+        showRepToast();
+      }, 420);
     } else if (tp === 'counter') {
       // The counter is already live on day 1; the chip just puts both doors
       // that carry it back on screen and blinks them.
