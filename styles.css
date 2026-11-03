@@ -1622,37 +1622,41 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   pointer-events:none}
 /* Both the rosette and the book sit on the left here. On Today this tile is one
    row in a list read top to bottom, so the cover goes where her eye starts
-   rather than where the chat card happens to put it. The rosette sits low and
-   behind: pulled up over the top edge it was a shape in its own right, and the
-   point of it is to be the ground the book stands on. */
-.tl-bg .of3-motif{left:-66px;right:auto;top:-24px;opacity:.3}
+   rather than where the chat card happens to put it. The rosette's own centre
+   is pushed off the left edge on purpose: left inside the card it reads as a
+   pale disc sitting in the gutter, and the point of it is to be petals fanning
+   out from behind the book, not a shape in its own right. */
+.tl-bg .of3-motif{left:-130px;right:auto;top:-30px;opacity:.3}
 /* The book, at half the chat card's. Scaled rather than re-measured, so the
    hinge, the page block and the spine band stay in proportion to each other.
    The offsets put the cover's own left edge on the card's 14px gutter — the
    wrapper is 86px wider than the board, which is the open leaf behind it. */
-.tl-bk{position:absolute;left:-29px;top:-14px;z-index:2;width:181px;height:127px;
+.tl-bk{position:absolute;left:-40px;top:-14px;z-index:2;width:181px;height:127px;
   pointer-events:none}
-.tl-bk .of3-bkw{left:0;right:auto;top:0;transform:scale(.5);transform-origin:0 0}
+.tl-bk .of3-bkw{left:0;right:auto;top:0;transform:scale(.62);transform-origin:0 0}
 /* The drawn stand-in, for a report with no painted cover yet. It sits in the
    same place the photographed board does — 86px in from the wrapper's left,
    which is where the spine falls — so the card is laid out identically either
    way. No spine band over it, because there is no open leaf behind it. */
 .of3-bkw-drawn{perspective:none}
 .of3-bkw-drawn::after{display:none}
-.of3-bkw-drawn .bk3{position:absolute;left:86px;top:0;width:86px;height:127px}
+.of3-bkw-drawn .bk3{position:absolute;left:78px;top:0;width:86px;height:127px}
 /* `.tile img` squares every image in a tile to 56 and contains it, which
    flattened the cover into a stamp inside the board. The book brings its own
    geometry. */
 .tile-lead .of3-bk{width:100%;height:100%;object-fit:cover}
+/* One text column, and the hook strip below starts on the same 77px so the
+   card has a single left edge for everything that is words. The book is the
+   only thing in the gutter. */
 .tile-lead .tt{position:relative;z-index:1;display:flex;flex-direction:column;gap:3px;
-  padding:14px 14px 0 104px}
+  padding:14px 16px 0 77px}
 .tile-lead .tt b{font:700 16px/22px var(--sans);color:var(--s-ink);white-space:normal}
 .tile-lead .tt small{font:400 12px/17px var(--sans);color:var(--s-ink2);opacity:.84}
 /* The strip carries the hook: the one thing this book tells her that she cannot
    get anywhere else on the page. Facts about the file (rating, page count) were
    the wrong thing here, because nobody taps a report to find out how long it is. */
 .tl-off{position:relative;z-index:1;display:flex;align-items:center;gap:7px;
-  margin:12px 16px 0;padding:10px 0 13px;
+  margin:12px 16px 0 77px;padding:10px 0 13px;
   border-top:1px dashed color-mix(in srgb,var(--s-ink) 22%,transparent);
   font:600 12px/16px var(--sans);color:var(--s-ink);text-align:left}
 .tl-off svg{flex:none}

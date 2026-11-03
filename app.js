@@ -159,7 +159,7 @@ var REPORTS = [
     // halves of what the report answers, which the short name does not.
     // Reports without one fall back to "Your " + t.
     tl: 'Your Future Partner & Marriage Prediction Report',
-    why: 'See the year your chart points to for marriage',
+    why: 'Learn which dosha is delaying your marriage',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // Partner is the one report whose art is photographed rather than painted:
     // Figma 3311:6840 for the cover and 3254:6840 for the open spread, exported
@@ -186,8 +186,11 @@ var REPORTS = [
     // The third stat column. Partner is bought once and that is the fact worth
     // printing beside a price.
     stat3: { v: 'One-time', l: 'Payment' },
-    // The line under the title, as the promise rather than as a description.
-    lead: 'See who you will marry, and when you will meet them',
+    /* The line under the title, as the promise rather than as a description.
+       It names the thing standing in the way before it names the happy ending:
+       a date on its own is pleasant and skippable, a date she is being kept
+       from is not. */
+    lead: 'See what is holding your marriage back, and the year it finally happens',
     // Quotes that name something the report called before it happened. A quote
     // that only says "very good" proves nothing and sells nothing.
     revs: [
@@ -299,7 +302,7 @@ var REPORTS = [
        if asked what she wants from it, so the last line before the button
        names it and says it is hers. Out of 36 is in the sentence because 28
        means nothing without the scale. */
-    why: 'Get the remedy written for your Nadi dosha',
+    why: 'Learn which dosha in his chart can break this match',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
@@ -442,7 +445,7 @@ var REPORTS = [
          weakest thing a sentence can end on when the report is the thing being
          sold. Say what Nadi costs her, say it is survivable, and stop. Three
          wrapped lines became two. */
-      why: 'Get the remedy written for your Nadi dosha',
+      why: 'Learn which dosha in his chart can break this match',
       head: 'What Your 28 Does Not Tell You',
       lead: 'Both charts are in. See what your 28 really means.',
       learn: [
@@ -536,7 +539,7 @@ var REPORTS = [
     // runs out: once this one is hers she can read it, and she can also buy
     // next month. Every repeat buy is its own row in history.
     cadence: 'monthly',
-    why: 'See the days this month that are best to ask for a raise',
+    why: 'Learn how Rahu is blocking your money this month',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
     art: {
@@ -561,7 +564,7 @@ var REPORTS = [
     // An edition covers a named month, so the third column is the window she is
     // buying rather than how she pays for it.
     stat3: { v: 'November', l: 'Month' },
-    lead: 'Know your best days this month for a raise, a switch and money',
+    lead: 'See what is blocking your money this month, and the days it opens up',
     revs: [
       { n: 'Shruti B., Pune',   t: 'Month matched', q: 'It named March as the switch month. I got the offer on the 11th of March.' },
       { n: 'Meera T., Gurgaon', t: 'Work read matched', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
@@ -625,14 +628,14 @@ var REPORTS = [
     id: 'relation', t: 'Monthly Relationship Report', s: 'A report on the two of you this month, week by week', pages: 30, rating: '4.7', sold: 48120,
     t2: 'Your Monthly Relationship Report',
     cadence: 'monthly',
-    why: 'See the days this month when things get easier between you',
+    why: 'Learn what is making him go cold on you this month',
     // Violet, so the four covers are four colours: Partner is rose, Kundli
     // Milan gold, Wealth blue. No painted cover yet, so `book3d` draws the
     // wash version from these two stops.
     cover: { a: '#9B6CD1', b: '#4A2A7A', ink: '#EDE2FA', motif: 'heart' },
     chips: ['Week by week', 'Fight windows'],
     stat3: { v: 'November', l: 'Month' },
-    lead: 'Know what November holds for the two of you, week by week',
+    lead: 'See why the two of you keep fighting, and the week it gets easier',
     revs: [
       { n: 'Ankita P., Pune',    t: 'Bad week named', q: 'It marked the second week as the hard one. That is the week we almost broke up, and I had been warned.' },
       { n: 'Swati R., Delhi',    t: 'Same fight explained', q: 'The reason we keep having the same fight was written down in one line. I read it to him.' },
