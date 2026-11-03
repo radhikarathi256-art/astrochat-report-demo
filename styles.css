@@ -164,6 +164,21 @@ img{display:block}
 .gift{width:26px;height:26px;border-radius:50%;background:var(--s50);border:1px solid #ABEFC6;
   display:grid;place-items:center;font-size:14px;font-style:normal}
 
+/* The shelf coachmark. Dark, small, right-aligned to the header's own padding
+   with the caret moved under the book icon, so it points without covering the
+   row it is pointing at. */
+.shelf-tip{position:absolute;right:16px;z-index:16;
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px 9px 12px;border-radius:12px;background:var(--g900);
+  font:600 12px/16px var(--sans);color:#fff;white-space:nowrap;
+  box-shadow:0 12px 26px -12px rgba(16,24,40,.7);
+  opacity:0;transform:translateY(-4px);transition:opacity .2s ease,transform .2s ease}
+.shelf-tip.on{opacity:1;transform:none}
+.st-caret{position:absolute;top:-4px;width:9px;height:9px;border-radius:2px;
+  background:var(--g900);transform:rotate(45deg)}
+.st-x{border:0;background:none;padding:0;font-size:11px;line-height:1;
+  color:rgba(255,255,255,.65)}
+
 /* ---------- Report top nav ---------- */
 .topnav{position:relative;z-index:12;flex:none;display:flex;align-items:center;gap:12px;
   padding:calc(var(--sbh) + 8px) 16px 10px;background:#fff;border-bottom:1px solid var(--g200)}
@@ -1546,9 +1561,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* ---------- Personalised guidance ----------
    Full-width rows, same as the daily-reward Today page (.g2wrap / .g2). */
-/* No peach panel: section title on the white page, cards straight under it.
-   The lead is plain grey text, not a box. */
-.guide-lead{margin:-4px 0 0;font:400 12px/17px var(--sans);color:var(--g500)}
+/* No peach panel: section title on the white page, cards straight under it. */
 .tiles{display:flex;flex-direction:column;gap:8px}
 /* Every tile is the same object — white, 16px radius, ~84px tall. The report
    earns attention through its cover, not a coloured card.

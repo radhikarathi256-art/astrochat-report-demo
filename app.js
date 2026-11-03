@@ -779,6 +779,12 @@ var state = {
   /* The morning's report is waiting in History — the dot on the nav says so,
      and visiting History clears it. */
   histDot: true,
+  /* Has she opened a report she owns, and has the shelf been pointed out yet.
+     The two together are the only moment the coachmark is worth showing: she
+     has a report, she has just closed it, and the icon that keeps it is the
+     one thing on Today she has no reason to have noticed. */
+  readSeen: false,
+  shelfTipSeen: false,
   timers: []
 };
 
@@ -850,7 +856,8 @@ function back() {
 }
 
 function onEnter(id) {
-  if (id === 'read') { startAsk(); } else { stopAsk(); }
+  if (id === 'read') { startAsk(); state.readSeen = true; } else { stopAsk(); }
+  if (id === 'today-a') { later(showShelfTip, 500); } else { hideShelfTip(); }
   // Pay is a sheet, not a screen, so leaving any screen cancels a pay in flight.
   stopPay();
   // Both are built from what she owns, which changes under them, so they are
@@ -886,6 +893,33 @@ function toast(msg, kind) {
     el.classList.remove('on');
     setTimeout(function () { el.hidden = true; }, 220);
   }, 1600);
+}
+
+/* ---------------------------------------------------------------- the shelf coachmark
+   She pays, the book opens, she reads, she comes back. At that point the report
+   has no address she knows: the tile that sold it is gone and History is a
+   journal, not a shelf. This points at the one icon that keeps every report she
+   owns, once, on the way back to Today. It is anchored off the button's own box
+   rather than a hard offset, so it stays under the icon whatever else sits in
+   the header row. */
+function showShelfTip() {
+  if (!state.paid || !state.readSeen || state.shelfTipSeen) return;
+  if (state.screen !== 'today-a') return;
+  var el = $('#shelfTip'), btn = $('#today-a .head-r [data-go="mine"]');
+  if (!el || !btn) return;
+  var head = btn.closest('.head').getBoundingClientRect();
+  var b = btn.getBoundingClientRect();
+  el.style.top = (b.bottom - head.top + 8) + 'px';
+  $('.st-caret', el).style.right = (head.right - 16 - (b.left + b.width / 2) - 5) + 'px';
+  state.shelfTipSeen = true;
+  reveal(el);
+  later(hideShelfTip, 6000);
+}
+function hideShelfTip() {
+  var el = $('#shelfTip');
+  if (!el || el.hidden) return;
+  el.classList.remove('on');
+  setTimeout(function () { el.hidden = true; }, 220);
 }
 
 /* ---------------------------------------------------------------- the report's knock on Today
@@ -3510,7 +3544,10 @@ function restart() {
   state.reminded = false;
   state.repToastSeen = false;
   state.repToastPending = false;
+  state.readSeen = false;
+  state.shelfTipSeen = false;
   hideRepToast();
+  hideShelfTip();
   state.pick = 'partner';
   // The counter is day 1 only — that is the morning the chapter lands in
   // History. After that the badge has nothing new to count.
@@ -3776,6 +3813,7 @@ document.addEventListener('click', function (e) {
     return;
   }
   if (t.id === 'repToastX') { hideRepToast(); return; }
+  if (t.id === 'shelfTipX') { hideShelfTip(); return; }
 
   // The reward sheet's CTA: before day 3 it asks the OS for notifications;
   // on day 3 the wallet covers ₹49, so it goes straight to the pay sheet.
