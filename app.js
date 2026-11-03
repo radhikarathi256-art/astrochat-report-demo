@@ -3021,25 +3021,30 @@ function renderGuideTile() {
     // look like two different offers. The other two have one pair of lines and
     // keep using it.
     var gc = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
-    /* This is the day's first ask, so it is built like a listing card rather
-       than a tile in a list: the cover in its own thumb, the name, the line
-       under it, and one strip along the bottom saying why she is being shown
-       this. No price. The tile's job is to get the report opened, and ₹49 only
-       means something next to what the report actually contains, which is the
-       page it opens. */
+    /* This is the day's first ask, so it is the chat card's own furniture in a
+       tile's footprint: the report's wash, the lotus rosette behind the cover,
+       and the book standing proud of the top edge rather than sitting in a box
+       on the card. Same parts as `offer3Card`, not a copy of them, so the book
+       she is offered in the chat is recognisably the same object here.
+       No price. The tile's job is to get the report opened, and ₹49 only means
+       something next to what the report actually contains. */
+    var sk = skin(lead);
     $('#guideSlot').innerHTML =
       '<button class="tile tile-lead" type="button" data-pick="' + lead.id + '"' +
-              ' style="--lead-a:' + lead.cover.a + ';--lead-b:' + lead.cover.b + '">' +
-        '<span class="tl-row">' +
-          '<span class="tl-thumb">' + book3d(lead) + '</span>' +
-          '<span class="tt">' +
-            '<b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small>' +
-          '</span>' +
-          '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              // 270deg, not the chat card's 90: the wash is tinted where the
+              // words are and white where the book stands, and here the book
+              // stands on the left.
+              ' style="--s-grad:linear-gradient(270deg,' + sk.g.join(',') + ');' +
+                      '--s-sh:' + sk.sh + ';--s-ink:' + sk.ink + ';--s-ink2:' + sk.ink2 + '">' +
+        '<span class="tl-bg" aria-hidden="true">' + sellMotif(lead) + '</span>' +
+        '<span class="tl-bk" aria-hidden="true">' + sellBook(lead) + '</span>' +
+        '<span class="tt">' +
+          '<b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small>' +
         '</span>' +
         '<span class="tl-off">' +
           '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.2 8.7 4.7l3.9.5-2.8 2.7.7 3.8L7 9.9l-3.5 1.8.7-3.8L1.4 5.2l3.9-.5z" fill="currentColor"/></svg>' +
-          esc(lead.why) +
+          '<em>' + esc(lead.why) + '</em>' +
+          '<svg class="arr" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         '</span>' +
       '</button>';
     return;

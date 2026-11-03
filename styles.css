@@ -1604,30 +1604,48 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tile .tag{flex:none}
 .tile .arr{flex:none}
 
-/* The day's first ask, built like a food-delivery listing card: plain white, one
-   soft shadow, the artwork sitting in its own tinted thumb, the name, the line
-   under it, and a single strip along the bottom behind a dashed rule saying why
-   she is seeing this one. The coloured border and wash it had before made it
-   read as an ad, which is the fastest way to get a card skipped.
-   No price on the tile. Its job is to get the report opened, and ₹49 only means
-   anything beside the contents, which is the page it opens. */
-.tile-lead{display:block;padding:0;min-height:0;overflow:hidden;
-  border-color:var(--g200);
-  box-shadow:0 1px 2px rgba(16,24,40,.05),0 8px 18px -12px rgba(16,24,40,.45)}
-.tl-row{display:flex;align-items:center;gap:12px;padding:12px}
-/* The cover stands on the card itself. A tinted panel behind it put a second
-   rectangle inside the first and made the book look like a stock thumbnail
-   rather than the object being sold. */
-.tl-thumb{flex:none;display:grid;place-items:center;width:56px;height:72px}
-.tile-lead .bkt,.tile-lead .bk3{width:44px;height:60px;margin:0}
-.tile-lead .tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+/* The day's first ask, in the chat card's clothes (Figma 3772:8122): the
+   report's own wash instead of white, the lotus rosette rising behind the
+   cover, and the book standing proud of the top edge. Nothing here is a second
+   version of the chat card's art — `.of3-motif` and `.of3-bkw` are the same
+   markup, scaled down to fit a tile. No overflow:hidden on the card itself, or
+   the book gets guillotined; `.tl-bg` does the clipping for the wash. */
+.tile-lead{display:block;position:relative;padding:0;min-height:0;
+  margin-top:20px;border:0;border-radius:20px;background:var(--s-grad);
+  box-shadow:0 12px 28px -14px var(--s-sh,rgba(122,46,14,.22))}
+.tile-lead:active{background:var(--s-grad);filter:brightness(.985)}
+.tl-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:20px;
+  pointer-events:none}
+/* The same inset white ring the chat card wears. It is what lets the rosette
+   run off the top edge without looking like a mistake. */
+.tl-bg::after{content:"";position:absolute;inset:0;border-radius:20px;
+  box-shadow:inset 0 0 0 5px #fff}
+/* Both the rosette and the book sit on the left here. On Today this tile is one
+   row in a list read top to bottom, so the cover goes where her eye starts
+   rather than where the chat card happens to put it. */
+.tl-bg .of3-motif{left:-78px;right:auto;top:-100px;opacity:.32}
+/* The book, at 62% of the chat card's. Scaled rather than re-measured, so the
+   hinge, the page block and the spine band stay in proportion to each other. */
+.tl-bk{position:absolute;left:12px;top:-20px;z-index:2;width:181px;height:127px;
+  pointer-events:none}
+.tl-bk .of3-bkw{left:0;right:auto;top:0;transform:scale(.62);transform-origin:0 0}
+/* `.tile img` squares every image in a tile to 56 and contains it, which
+   flattened the cover into a stamp inside the board. The book brings its own
+   geometry. */
+.tile-lead .of3-bk{width:100%;height:100%;object-fit:cover}
+.tile-lead .tt{position:relative;z-index:1;display:flex;flex-direction:column;gap:3px;
+  padding:16px 16px 0 128px}
+.tile-lead .tt b{font:700 16px/22px var(--sans);color:var(--s-ink);white-space:normal}
+.tile-lead .tt small{font:400 12px/17px var(--sans);color:var(--s-ink2);opacity:.84}
 /* The strip carries the hook: the one thing this book tells her that she cannot
    get anywhere else on the page. Facts about the file (rating, page count) were
    the wrong thing here, because nobody taps a report to find out how long it is. */
-.tl-off{display:flex;align-items:center;gap:7px;margin:0 12px;padding:9px 0 11px;
-  border-top:1px dashed var(--g200);
-  font:600 12px/16px var(--sans);color:var(--g700);text-align:left}
-.tl-off svg{flex:none;color:var(--lead-a)}
+.tl-off{position:relative;z-index:1;display:flex;align-items:center;gap:7px;
+  margin:12px 16px 0;padding:10px 0 13px;
+  border-top:1px dashed color-mix(in srgb,var(--s-ink) 22%,transparent);
+  font:600 12px/16px var(--sans);color:var(--s-ink);text-align:left}
+.tl-off svg{flex:none}
+.tl-off em{flex:1;min-width:0;font-style:normal}
 .tag{font-style:normal;font:600 12px/16px var(--sans);padding:1px 6px;border-radius:8px}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
