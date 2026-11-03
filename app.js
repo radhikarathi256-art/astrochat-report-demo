@@ -633,6 +633,15 @@ var REPORTS = [
     // Milan gold, Wealth blue. No painted cover yet, so `book3d` draws the
     // wash version from these two stops.
     cover: { a: '#9B6CD1', b: '#4A2A7A', ink: '#EDE2FA', motif: 'heart' },
+    // Hero only: the painting is done, the covers are not. Everything that
+    // prints a book asks `hasCover` rather than `r.art`, so this report shows
+    // its hero on the sell page and the drawn wash everywhere else.
+    art: {
+      hero: 'assets/bg-relation.jpg?v=1',
+      // The frame is tall and the whole point of it is the two heads touching,
+      // so the crop holds the upper middle rather than the centre.
+      heroPos: '50% 28%'
+    },
     chips: ['Week by week', 'Fight windows'],
     stat3: { v: 'November', l: 'Month' },
     lead: 'See why the two of you keep fighting, and the week it gets easier',
@@ -683,6 +692,12 @@ function reportById(id) {
   for (var i = 0; i < REPORTS.length; i++) if (REPORTS[i].id === id) return REPORTS[i];
   return REPORTS[0];
 }
+
+/* "Has art" is not one question. A report can be given its painted hero long
+   before anyone draws its covers, so everything that prints a book asks for
+   the cover rather than for `r.art` — otherwise a hero on its own is enough
+   to make every shelf, ticket and tile render an empty <img>. */
+function hasCover(r) { return !!(r.art && r.art.closed); }
 
 /* Each day names the surfaces it is allowed to use — `surf` is the whole
    schedule, and every renderer reads it rather than guessing from the day
@@ -1528,7 +1543,7 @@ function openBook() {
   // The painted cover is the picture; what is inside is paper. Printing the
   // spread on the page is what made the open book twice the width of the shut
   // one, and that resize is what tore the two halves apart on the way.
-  $('#bookCover img').src = r.art ? r.art.closed : 'assets/book.svg';
+  $('#bookCover img').src = hasCover(r) ? r.art.closed : 'assets/book.svg';
   // The spine takes the cover's darker tint, so the 18mm she sees edge-on
   // during the turn belongs to the book she just bought.
   $('#bookEl .spine').style.backgroundColor = r.cover ? r.cover.b : '';
@@ -1667,7 +1682,7 @@ function openPay() {
   // Open and still: the spread is a finished painting of an open book, so it
   // needs no swing and no frame. Only a report without art falls back to the
   // built one.
-  $('#paysBook').innerHTML = r.art
+  $('#paysBook').innerHTML = hasCover(r)
     ? '<img src="' + r.art.open + '" alt="">'
     : book3d(r);
 
@@ -2525,7 +2540,7 @@ function coverArt(r, cls) {
   var c = r.cover;
   // Painted where a cover exists; the drawn motif is the fallback for the ones
   // still waiting on art.
-  if (r.art) {
+  if (hasCover(r)) {
     return '<span class="cv cv-art-on' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' +
       '<img src="' + r.art.closed + '" alt="">' +
     '</span>';
@@ -2564,7 +2579,7 @@ function book3d(r) {
   var tint = '--cva:' + r.cover.a + ';--cvb:' + r.cover.b;
   // Where the painted cover and its spread exist, show those instead: the art
   // is the argument, and a drawing of a book cannot make it.
-  if (r.art) {
+  if (hasCover(r)) {
     return '<span class="bkt" aria-hidden="true" style="' + tint + '">' +
       // Everything that makes the case an object lives inside one preserve-3d
       // stage: back board, page block, then the cover in front of both.
@@ -2776,7 +2791,7 @@ function sellBook(r) {
   /* A report whose cover has not been painted yet has no spread to hinge open,
      so it shows the drawn book instead. Same wrapper and the same slot, so the
      card's geometry does not know the difference. */
-  if (!r.art) {
+  if (!hasCover(r)) {
     return '<span class="of3-bkw of3-bkw-drawn" aria-hidden="true">' +
       book3d(r) + '</span>';
   }
@@ -2920,7 +2935,7 @@ function milanCard(r) {
     '<div class="gn-top">' +
       (m ? scoreDial(m.score)
          : '<span class="gn-cov">' +
-             (r.art ? '<img src="' + r.art.closed + '" alt="">' : drawnFace(r, 'bk3-face')) +
+             (hasCover(r) ? '<img src="' + r.art.closed + '" alt="">' : drawnFace(r, 'bk3-face')) +
            '</span>') +
       '<span class="gn-tx">' +
         '<strong>' + esc(m ? gunaNames() : c.tPre) + '</strong>' +
@@ -2943,7 +2958,7 @@ function exTicket(r) {
   return '<button class="ex-tkt" type="button" data-pick="' + r.id + '">' +
     '<i class="tk-n tk-l" aria-hidden="true"></i>' +
     '<i class="tk-n tk-r" aria-hidden="true"></i>' +
-    (r.art
+    (hasCover(r)
       ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
       : drawnFace(r, 'tk-bk bk3-face')) +
     '<span class="tk-t">' +
