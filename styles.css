@@ -1626,7 +1626,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    sits under the book rather than behind it: at the chat card's 236px it was
    a wash across half the tile, and the book is the only thing on this card
    that should read as an object. */
-.tl-bg .of3-motif{left:-6px;right:auto;top:6px;width:104px;height:104px;opacity:.42}
+.tl-bg .of3-motif{left:-26px;right:auto;top:-12px;width:104px;height:104px;opacity:.42}
 /* The book, at half the chat card's. Scaled rather than re-measured, so the
    hinge, the page block and the spine band stay in proportion to each other.
    The offsets put the cover's own left edge on the card's 14px gutter — the
