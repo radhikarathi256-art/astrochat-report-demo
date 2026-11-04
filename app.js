@@ -1733,7 +1733,9 @@ function openPay() {
   // The sheet names the purchase. `tl` is the long sell-page headline, so the
   // title here is the same one she tapped Buy Now under.
   $('#paysName').textContent = r.tl || titled(r.t);
-  $('#paysMeta').textContent = r.pages + ' pages · One-time payment · Made for your chart';
+  // "Made for your chart" is gone from this line: the block under it now says
+  // so with her name and birth details on it, which is the same claim proved.
+  $('#paysMeta').textContent = r.pages + ' pages · One-time payment';
 
   /* The score strip. It needs a report that has a matched state and a match
      that has actually been run - before that there is no number, and a dial
@@ -1753,6 +1755,19 @@ function openPay() {
     // button, so changing the argument underneath her would read as a
     // different offer.
     $('#paysGunaWhy').textContent = m.why;
+  }
+
+  /* Her own chart, for every report that is not a match. One or the other,
+     never both: two identity blocks stacked above a price is the sheet
+     asking her to check the same thing twice. */
+  var you = $('#paysYou');
+  you.hidden = !!m;
+  if (!m) {
+    var nm = ($('#gName').value || '').trim() || 'You';
+    $('#paysYouName').textContent = nm;
+    $('#paysYouWhen').textContent = prettyDob($('#gDob').value) + ' · ' +
+      prettyTime($('#gTime').value) + ' · ' + ($('#gPlace').value || '').trim();
+    you.querySelector('.py-av').textContent = nm[0].toUpperCase();
   }
 
   $('#paysLangName').textContent = langById(state.lang).label;

@@ -3252,6 +3252,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    gets the room a one-line truncation would take from it. */
 .pg-txt span{font:400 12px/17px var(--sans);color:var(--g600)}
 
+/* Her own chart, in the slot the guna strip takes on a match. Same block, same
+   tint, one row shorter — this one is a fact to check, not a score to read. */
+.pays-you{display:flex;align-items:center;gap:12px;
+  background:var(--brand50);border-radius:12px;padding:12px 14px}
+.py-av{flex:none;display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:50%;background:#fff;
+  font:600 16px/16px var(--sans);color:var(--brand);
+  box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.py-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
+.py-tx small{font:600 10px/14px var(--sans);letter-spacing:.04em;
+  text-transform:uppercase;color:var(--g500)}
+.py-tx strong{font:600 14px/20px var(--sans);color:var(--g900)}
+.py-tx span{font:400 12px/17px var(--sans);color:var(--g600)}
+
 /* The arithmetic, in the order it happens: what it lists for, what today takes
    off, what tax adds, what the wallet covers, what leaves her account. One grey
    block, per the board — on a sheet this short the receipt needs an edge or it
