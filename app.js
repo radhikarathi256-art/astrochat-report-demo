@@ -864,6 +864,11 @@ var state = {
      one thing on Today she has no reason to have noticed. */
   readSeen: false,
   shelfTipSeen: false,
+  // Has she opened the report's detail page today. The day-2 knock is for the
+  // person who has not, so this is the one thing that silences it.
+  repSeen: false,
+  // Stars given at the foot of the report she bought, 0 for not asked yet.
+  rated: 0,
   timers: []
 };
 
@@ -936,6 +941,9 @@ function back() {
 
 function onEnter(id) {
   if (id === 'read') { startAsk(); state.readSeen = true; } else { stopAsk(); }
+  // Opening the detail page is her having seen the offer, which is the whole
+  // condition the day-2 knock waits on.
+  if (id === 'report') state.repSeen = true;
   if (id === 'today-a') { later(showShelfTip, 500); } else { hideShelfTip(); }
   // Pay is a sheet, not a screen, so leaving any screen cancels a pay in flight.
   stopPay();
@@ -1002,11 +1010,14 @@ function hideShelfTip() {
 }
 
 /* ---------------------------------------------------------------- the report's knock on Today
-   Day 1 and Day 3 only, and only once the check-in is answered: that is the
-   one moment she has just been handed something, so the ask is a reply rather
-   than an interruption. Day 2 is left clear — the same nudge three days running
-   stops being a nudge. */
-function repToastDays() { return state.day === 1 || state.day === 3; }
+   Not on day 1. Day 1 already has the tile, the push and the chat offer, so a
+   fourth voice saying the same thing on her first morning is noise. The knock
+   is for the person who got all of that and still has not opened the report:
+   it waits for day 2, and only speaks if she has not seen the offer yet.
+   Day 3 keeps it as the last ask before the flow goes quiet. */
+function repToastDays() {
+  return (state.day === 2 || state.day === 3) && !state.repSeen;
+}
 
 /* The two one-line surfaces that reach her outside the app. Both read the same
    pair of fields, so a report that has something different to say before and
@@ -1135,7 +1146,7 @@ var NAV_ICONS = {
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
-  { id: 'timeline', label: 'History' },
+  { id: 'timeline', label: 'Timeline' },
   { id: 'explore', label: 'Explore' }
 ];
 
@@ -1145,9 +1156,6 @@ function renderNav() {
     el.innerHTML = NAV.map(function (n) {
       return '<button type="button" class="' + (n.id === active ? 'on' : '') + '"' +
              ' data-nav="' + n.id + '">' + NAV_ICONS[n.id] +
-             // The board uses a counter, not a dot: a number says how much is
-             // waiting, which is the only part a dot cannot say.
-             (n.id === 'timeline' && state.histDot ? '<i class="ncount">1</i>' : '') +
              '<span>' + n.label + '</span></button>';
     }).join('');
   });
@@ -1378,6 +1386,14 @@ function renderSecs(sample) {
       '</div>';
     });
   });
+  /* The last thing the sample says is what it is not. It sits at the foot
+     rather than the head because at the head it reads as a warning about the
+     product, and at the foot it reads as the honest note it is. */
+  if (sample) {
+    out += '<p class="rs-disc">This sample is written on a demo chart, so it is ' +
+      'not about you. Reports are for guidance only. They are not medical, ' +
+      'legal or financial advice.</p>';
+  }
   return out;
 }
 
@@ -1446,6 +1462,7 @@ function renderRead() {
      jump index and the two CTA cards. The sample is a window onto this page, so
      a bought report laid out differently read as a different product. */
   $('#readBody').innerHTML = renderSecs(false) +
+      rateCard() +
       // The end of the report is a door, not a full stop: the other two
       // reports, then the chat where the questions it raised get spent.
       '<div class="carousel-wrap">' +
@@ -1462,6 +1479,31 @@ function renderRead() {
   // the bottom of this same screen with her face, her rate and a composer in
   // it, so a second button for the identical action only competed with the one
   // that is always on screen.
+}
+
+/* The ask for a rating, at the foot of the report she paid for. It sits above
+   the "more on your chart" rail rather than below it, because below the rail
+   it would be asking about the next report instead of the one she just read.
+   One tap, no form: a star is the most she will give at the end of fifteen
+   answers, and asking for a sentence on top of it is how ratings stop coming. */
+var STAR_IC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.3 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.5l5.9-.8L12 3.3Z"/></svg>';
+function rateCard() {
+  if (state.rated) {
+    return '<div class="rate done"><div class="rate-stars">' +
+      [1, 2, 3, 4, 5].map(function (n) {
+        return '<span class="' + (n <= state.rated ? 'on' : '') + '">' + STAR_IC + '</span>';
+      }).join('') + '</div>' +
+      '<b>Thanks for rating</b>' +
+      '<p>Hemali sees this with your report.</p></div>';
+  }
+  return '<div class="rate">' +
+    '<b>How was this report?</b>' +
+    '<p>Tap a star. It takes a second and it tells Hemali what to write next.</p>' +
+    '<div class="rate-stars">' + [1, 2, 3, 4, 5].map(function (n) {
+      return '<button type="button" data-rate="' + n + '" aria-label="' + n +
+        (n === 1 ? ' star' : ' stars') + '">' + STAR_IC + '</button>';
+    }).join('') + '</div>' +
+  '</div>';
 }
 
 
@@ -1776,7 +1818,7 @@ var MN_CASE_IC = '<path d="M4.08 8.75a3.5 3.5 0 0 1 3.5-3.5h11.67a2.33 2.33 0 0 
    only question this menu has to answer quickly is "where is the thing I paid
    for". */
 var MN_TILES = [
-  { l: 'Chat History',        nav: 'timeline', d: CHAT_IC },
+  { l: 'Timeline',            nav: 'timeline', d: CHAT_IC },
   { l: 'My Reports',          go: 'mine',      d: MN_BOOK_IC, count: true },
   { l: 'Wallet Transactions', d: MN_CASE_IC }
 ];
@@ -1930,7 +1972,7 @@ function histMaking(r, ready) {
            live now. It is the only place in the app that says it. */
         '<li' + (ready ? ' class="on"' : '') + '><b>Ready to read</b>' +
           '<small>' + (ready
-            ? 'Your reports are available in History and under My Reports in the (\u2630) menu.'
+            ? 'Your reports are available in Timeline and under My Reports in the (\u2630) menu.'
             : 'We will notify you, once its ready') + '</small></li>' +
       '</ol>' +
       (ready
@@ -2138,9 +2180,9 @@ function startBuy() {
    previous one. Letting her see the four values before the price costs one
    extra tap and is the whole difference between a form and a receipt.
 
-   So it is prefilled, never blank twice. The first open takes the chat's guess
-   at his name, labelled as a guess; every open after that takes what she last
-   typed, labelled as the thing she is confirming. */
+   His half always opens blank. A guessed name sitting in the box reads as the
+   app having decided who this match is about, and the one thing it must not do
+   is put a man's name in front of her that she did not type. */
 function openMatch() {
   clearMatchErr();
   hideMatchToast();
@@ -2148,20 +2190,9 @@ function openMatch() {
   // boxes at the top of a form are six things to read before finding the three
   // that are actually blank.
   girlEdit(false);
-  var hint = $('#mtHint');
-  if (state.matched) {
-    // Her own values, left exactly where she put them. Nothing is cleared:
-    // changing one name should not cost her his birth time as well.
-    hint.hidden = false;
-    hint.textContent = 'These are the details you entered last time. ' +
-      'Change them to match someone else.';
-  } else {
-    ['bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
-    $('#bNoTime').checked = false;
-    $('#bName').value = state.suggested || '';
-    hint.hidden = !state.suggested;
-    hint.textContent = 'From your chat with Hemali. Change it if needed.';
-  }
+  $('#mtHint').hidden = true;
+  ['bName', 'bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+  $('#bNoTime').checked = false;
   syncMatch();
   show('match', 'fade');
 }
@@ -3557,7 +3588,7 @@ function renderTpTabs() {
       { id: 'chat',    l: 'Chat \u00b7 continue chat' },
       { id: 'read',    l: 'Full report' },
       { id: 'upsell',  l: 'Report end \u00b7 upsell' },
-      { id: 'history', l: 'History \u00b7 report ready' }
+      { id: 'history', l: 'Timeline \u00b7 report ready' }
     ];
   } else {
     // The tabs ARE the schedule: only the surfaces today actually uses, named
@@ -3583,7 +3614,7 @@ function renderTpTabs() {
     // No "Daily reward · answered" chip: the check-in card is right there on
     // Today and answering it by hand is the honest way to see that state.
     if (repToastDays()) tabs.push({ id: 'toast', l: 'Toast \u00b7 Hemali\u2019s knock' });
-    if (state.day === 1) tabs.push({ id: 'counter', l: 'Counter \u00b7 header + History' });
+    if (state.day === 1) tabs.push({ id: 'counter', l: 'Counter \u00b7 header + Timeline' });
   }
 
   var wrap = document.createElement('div');
@@ -3669,6 +3700,8 @@ function restart() {
   state.reminded = false;
   state.repToastSeen = false;
   state.repToastPending = false;
+  state.repSeen = false;
+  state.rated = 0;
   state.readSeen = false;
   state.shelfTipSeen = false;
   hideRepToast();
@@ -3754,15 +3787,25 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
   if (!t) return;
+
+  // The stars at the foot of the report. Repainting the whole body would throw
+  // away her scroll position, so only the card is swapped.
+  if (t.hasAttribute('data-rate')) {
+    state.rated = +t.getAttribute('data-rate');
+    var rc = t.closest('.rate');
+    if (rc) rc.outerHTML = rateCard();
+    toast('Thanks, that helps Hemali', 'success');
+    return;
+  }
 
   // Today's three cards, picked. The card flips to its done state and stays
   // there for the rest of the demo day.
   if (t.hasAttribute('data-tarot')) {
     state.tarot = true;
     renderMenu();
-    toast('Your three cards are in History', 'success');
+    toast('Your three cards are in Timeline', 'success');
     return;
   }
 
@@ -4045,7 +4088,10 @@ document.addEventListener('click', function (e) {
       var cc = $('#answeredCard');
       if (cc) later(function () { cc.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
       if (tp === 'toast') {
+        // The chip is asking to see the knock, so it also rewinds the one thing
+        // that silences it: having already opened the report page.
         state.repToastSeen = false;
+        state.repSeen = false;
         later(showRepToast, 700);
       }
     } else if (tp === 'nudge') {

@@ -2463,6 +2463,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rp .rp-secs > .accent,
 .rp .rp-secs > .rsc,
 .rp .rp-secs > .rs-idx,
+.rp .rp-secs > .rate,
+.rp .rp-secs > .rs-disc,
 .rp .rp-secs > .carousel-wrap{background:#fff}
 .rp .rp-secs > .rsc{padding:28px 20px}
 .rp .rp-secs > .rs-idx{padding:20px}
@@ -2516,6 +2518,25 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rsc h3{margin:0;font:700 20px/28px var(--sans);letter-spacing:-.01em;color:var(--g900)}
 .rsc p{margin:0;font:400 15px/22px var(--sans);color:var(--g600)}
 .rsc .rsc-go{margin-top:8px;width:100%}
+
+/* --- the rating ask at the foot of a bought report --- */
+.rate{display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:28px 20px;text-align:center;background:#fff}
+.rate b{font:700 20px/28px var(--sans);letter-spacing:-.01em;color:var(--g900)}
+.rate p{margin:0;font:400 15px/22px var(--sans);color:var(--g600)}
+.rate-stars{display:flex;gap:10px;margin-top:10px}
+.rate-stars button,.rate-stars span{display:block;padding:0;border:0;background:none;
+  line-height:0}
+.rate-stars svg{width:34px;height:34px;fill:var(--g200)}
+.rate-stars button:active svg{fill:#F5A524}
+.rate.done .rate-stars{margin:0 0 10px}
+.rate.done .rate-stars svg{width:26px;height:26px}
+.rate.done .rate-stars .on svg{fill:#F5A524}
+
+/* --- the closing note. Quiet on purpose: it has to be readable without
+   competing with the sell card above it. --- */
+.rs-disc{margin:0;padding:20px 20px 28px;text-align:center;background:#fff;
+  font:400 12px/18px var(--sans);color:var(--g500)}
 
 /* --- the evidence blocks, one per `k` on the board --- */
 .rs-card{padding:16px;border-radius:16px;background:#F9FAFB}
