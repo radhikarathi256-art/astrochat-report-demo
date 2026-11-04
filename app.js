@@ -3131,8 +3131,88 @@ function remindCard() {
    day's one job, and Hemali's reply (with the report in it) is what answering
    buys. Until then the chapter sits on the expert card — the one surface that
    is already hers and already on screen. */
+/* The rail's cast. Hemali is hers, the one she just spoke to, and the rest are
+   the shelf behind her. They are here to make the rail a rail: the point of a
+   horizontal scroll is that there is a next person, and one card with a sliver
+   of grey beside it says nothing. Each one carries the same three rows as
+   Hemali's, which is what keeps the rail one height. */
+var ASTROS = [
+  { n: 'Astro Hemali', img: 'assets/hemali.png', was: 20, now: 10, lead: true },
+  { n: 'Astro Mala',   img: 'assets/av1.jpg', now: 19, top: 'Love & marriage · 12 yrs' },
+  { n: 'Astro Devraj', img: 'assets/av2.jpg', now: 15, top: 'Career & money · 9 yrs' },
+  { n: 'Astro Sanya',  img: 'assets/av3.jpg', now: 25, top: 'Kundli milan · 15 yrs' }
+];
+
+function renderRail() {
+  var rail = $('#expertRail');
+  // Built once. renderDayToday runs on every day switch and again when a
+  // report lands, and rebuilding would throw her back to the first card
+  // mid-swipe.
+  if (!rail || rail.children.length) return;
+  rail.innerHTML = ASTROS.map(function (a) {
+    return '<article class="expert-card">' +
+      // Hemali's strip is the countdown, written by renderDayToday. The others
+      // say what they are for, because a rail of four identical faces gives
+      // her no reason to pick one.
+      '<div class="expert-top"' + (a.lead ? ' id="countdownLine"' : '') + '>' +
+        (a.lead ? '' : '\u2726 ' + esc(a.top)) + '</div>' +
+      '<div class="expert-body">' +
+        '<div class="expert-row">' +
+          '<span class="av-ring"><img src="' + a.img + '" alt="' + esc(a.n) + '">' +
+            '<i class="dot"></i></span>' +
+          '<div class="expert-meta">' +
+            '<div><b>' + esc(a.n) + '</b><p>' +
+              (a.was ? '<s>\u20b9' + a.was + '/min</s> ' : '') +
+              '<strong>\u20b9' + a.now + '/min</strong></p></div>' +
+            (a.lead
+              ? '<button class="btn primary" type="button" data-chat>Continue Chat</button>'
+              : '<button class="btn primary" type="button" ' +
+                'data-toast="Other experts are not part of this demo">Start Chat</button>') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }).join('');
+  railScale();
+  rail.addEventListener('scroll', function () {
+    if (railTick) return;
+    railTick = requestAnimationFrame(function () { railTick = 0; railScale(); });
+  });
+}
+
+var railTick = 0;
+/* Her "the smaller card grows as it arrives". It is polish, not the fix - the
+   fix was making every card the same height - so it is kept gentle: 7% down at
+   the far edge, back to true size as the card reaches the middle. Transform
+   and opacity only, so nothing reflows and the rail's own height never moves. */
+function railScale() {
+  var rail = $('#expertRail');
+  if (!rail || !rail.clientWidth) return;
+  // The focused slot is the rail's left gutter, because that is where the
+  // cards snap to. Measuring from the centre instead left card one at 0.99
+  // forever, since an 86%-wide card cannot sit in the middle at scrollLeft 0.
+  var focus = rail.scrollLeft + 16;
+  [].forEach.call(rail.children, function (c) {
+    var d = Math.min(Math.abs(c.offsetLeft - focus) / rail.clientWidth, 1);
+    c.style.transform = 'scale(' + (1 - d * 0.07).toFixed(3) + ')';
+    c.style.opacity = (1 - d * 0.3).toFixed(3);
+  });
+}
+
+var railDay = 0;
+
 function renderDayToday() {
   var day = state.day, r = REWARD[day];
+  renderRail();
+  /* A new day puts her back in front of Hemali. Only on a day change, though:
+     this function also runs when the report she paid for lands, and jerking
+     the rail back to the first card while she is looking at the fourth is the
+     page taking the wheel off her. */
+  if (railDay !== day) {
+    railDay = day;
+    $('#expertRail').scrollLeft = 0;
+    railScale();
+  }
   $('#countdownLine').innerHTML = dayData().countdown;
   $('#checkinCard').hidden  = state.answered;
   $('#answeredCard').hidden = !state.answered;
@@ -3591,7 +3671,7 @@ function openRewardSheet() {
 /* The intro sheet fires once, on the scroll past the free-chat section, exactly
    as the daily reward board specifies. Day 1 only — by day 2 she has seen it. */
 function armIntroSheet() {
-  var sc = $('#today-a [data-scroll]'), experts = $('#today-a .expert-card');
+  var sc = $('#today-a [data-scroll]'), experts = $('#today-a .expert-rail');
   if (!sc || !experts) return;
   sc.removeEventListener('scroll', onTodayScroll);
   state.introShown = state.day !== 1;

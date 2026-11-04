@@ -190,24 +190,18 @@
         <div class="content">
           <section class="sec">
           <div class="sec-head"><span>YOUR EXPERTS</span><a class="lnk" data-toast="Expert list is not part of this demo">Consult Others →</a></div>
-        <div class="expert-card">
-          <!-- Rendered per day. "Free 2 mins" alone brings back 17%; tomorrow
-               needs a name, and the name is the next chapter. -->
-          <div class="expert-top" id="countdownLine">✦ CHAPTER 2 + FREE 2 MIN CHAT IN <b>14h : 23m</b></div>
-          <div class="expert-body">
-            <div class="expert-row">
-              <span class="av-ring"><img src="assets/hemali.png" alt="Astro Hemali"><i class="dot"></i></span>
-              <div class="expert-meta">
-                <div><b>Astro Hemali</b><p><s>₹20/min</s> <strong>₹10/min</strong></p></div>
-                <button class="btn primary" type="button" data-chat>Continue Chat</button>
-              </div>
-            </div>
-            <!-- Day 1 only. The check-in has not been answered yet, so there is
-                 no Hemali bubble to sit under — and the expert card is the one
-                 surface that is already hers and already on screen. -->
-            <div class="ex-report" id="expertSlot" hidden></div>
-          </div>
-        </div>
+        <!-- A rail, not one card. Every card holds exactly the same three
+             things - a strip, a face and a button - so they are all one
+             height and the rail never jumps as it snaps. The report used to
+             live inside card one, which made that card ~90px taller than its
+             neighbours and tied the offer to one astrologer: swipe to the
+             next face and the offer scrolled away with her. It now sits in
+             its own full-width row under the rail. -->
+        <div class="expert-rail" id="expertRail"></div>
+        <!-- Day 1 only. The check-in has not been answered yet, so there is
+             no Hemali bubble to sit under, and this is the one surface that
+             is already hers and already on screen. -->
+        <div class="ex-report" id="expertSlot" hidden></div>
 
           </section>
 

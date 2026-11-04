@@ -1497,10 +1497,28 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .ai-foot{text-align:right;padding:8px 2px 0}
 .ai-foot .ai{font:300 italic 10px/14px var(--sans);color:#FDB022}
 
+/* The rail. It bleeds to both screen edges so the next card can show a sliver
+   of itself: a card cut off by the screen is the only honest way to say there
+   is more to the right, and it costs no chevron and no dots. 16px of padding
+   puts the first card back on the page's own gutter. */
+.expert-rail{display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scroll-padding-left:16px;
+  scrollbar-width:none;margin:0 -16px;padding:6px 16px 8px}
+.expert-rail::-webkit-scrollbar{display:none}
 /* Matches the Today page in the daily-reward prototype: a purple gradient shell
-   with the white card inset, and Continue Chat stacked beside the avatar. */
-.expert-card{border-radius:16px;padding:0 4px 4px;
-  background:linear-gradient(180deg,#7D58A1,#4A3460)}
+   with the white card inset, and Continue Chat stacked beside the avatar.
+   86% leaves a 14% sliver of the next one. Every card is the same height
+   because every card holds the same three rows, which is the whole reason the
+   report had to come out of card one. */
+/* Snapped to the start, not the centre. A card is 86% wide, so a centre snap
+   can never put the first one in the middle of the rail and card one would sit
+   permanently shrunk at the left. Start-snapping lands every card, including
+   the first, on the page's own 16px gutter. */
+.expert-card{flex:0 0 86%;scroll-snap-align:start;
+  border-radius:16px;padding:0 4px 4px;
+  background:linear-gradient(180deg,#7D58A1,#4A3460);
+  transform-origin:50% 50%;will-change:transform}
 .expert-top{display:flex;align-items:center;justify-content:center;gap:6px;
   padding:6px 10px 8px;font:700 12px/18px var(--sans);color:#fff;letter-spacing:.01em;
   text-transform:uppercase}
@@ -1526,26 +1544,22 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .expert-meta s{color:var(--g400);font-weight:500;font-size:12px}
 .expert-meta strong{font-weight:600;color:var(--s700)}
 .expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
-/* Figma 3203:205266 — the report as a ticket stub torn off the bottom of the
-   expert card. Frame 1707481136: padding 8/12/6/12, row gap 12. */
-/* A button sizes to its content, not its container, so this has to be said out
-   loud: the stub runs the full width of the white card, 12px of negative
-   margin each side taking it out to the card's own edge. */
-.ex-tkt{position:relative;display:flex;align-items:center;gap:12px;
-  width:calc(100% + 24px);
-  margin:8px -12px -8px;padding:8px 12px 6px;border:0;
-  border-radius:0 0 12px 12px;background:#fff;text-align:left}
-.ex-tkt:active{background:var(--g50)}
-/* The perforation is one 1px dashed hairline, inset 12px — board "hairline",
-   288 wide in a 312 frame, dash [2,2], #d0d5dd. */
-.ex-tkt::before{content:"";position:absolute;left:12px;right:12px;top:0;
-  border-top:1px dashed var(--g300)}
-/* Board "notch": a 12px circle in the shell's purple, centred on the hairline
-   and sitting 9px outside the white card's edge, so it bites 3px in. */
+/* Figma 3203:205266 — the report as a ticket stub, now torn off the rail
+   rather than out of one card. It is tinted in the rail's own purple instead
+   of white, for two reasons: it still has to read as something the expert
+   section handed her, and the white version was indistinguishable from the
+   Personalised Guidance tile further down the same page. */
+.ex-tkt{position:relative;display:flex;align-items:center;gap:12px;width:100%;
+  padding:10px 12px;border:1px solid #E4D8F0;border-radius:12px;
+  background:#F6F1FA;text-align:left}
+.ex-tkt:active{background:#EFE7F7}
+/* The stub is pinned to the rail by one notch at each shoulder: a 12px circle
+   of page white sitting on the top edge, which is the perforation read at a
+   glance. No dashed rule any more - there is no card above it to tear from. */
 .tk-n{position:absolute;top:-6px;width:12px;height:12px;border-radius:50%;
-  background:#4A3460}
-.tk-l{left:-9px}
-.tk-r{right:-9px}
+  background:#fff}
+.tk-l{left:16px}
+.tk-r{right:16px}
 .tk-bk{flex:none;width:31px;height:41px;object-fit:cover;border-radius:2px;
   box-shadow:0 1px 3px rgba(16,24,40,.18)}
 .tk-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
