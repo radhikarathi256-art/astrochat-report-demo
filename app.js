@@ -899,12 +899,16 @@ function show(id, mode) {
   });
 
   next.classList.toggle('fade-in', mode === 'fade');
+  // Un-park the incoming screen whatever the mode. .behind is written after .on
+  // in the stylesheet, so a screen that still carries it stays at translateX(-24%)
+  // even once it is the active one - two screens side by side, both shifted 90px
+  // left, which is what "the prototype breaks" looked like.
+  next.classList.remove('behind');
 
   if (mode === 'back') {
     // The outgoing screen slides back out to the right; the one underneath
     // was already parked at -24%, so just un-park it.
     cur.classList.remove('on');
-    next.classList.remove('behind');
     next.classList.add('on');
   } else {
     if (cur && mode === 'push') { cur.classList.add('behind'); cur.classList.remove('on'); }
@@ -1735,7 +1739,7 @@ function openPay() {
   $('#paysName').textContent = r.tl || titled(r.t);
   // "Made for your chart" is gone from this line: the block under it now says
   // so with her name and birth details on it, which is the same claim proved.
-  $('#paysMeta').textContent = r.pages + ' pages · One-time payment';
+  $('#paysMeta').textContent = 'One-time payment';
 
   /* The score strip. It needs a report that has a matched state and a match
      that has actually been run - before that there is no number, and a dial
@@ -1765,8 +1769,7 @@ function openPay() {
   if (!m) {
     var nm = ($('#gName').value || '').trim() || 'You';
     $('#paysYouName').textContent = nm;
-    $('#paysYouWhen').textContent = prettyDob($('#gDob').value) + ' · ' +
-      prettyTime($('#gTime').value) + ' · ' + ($('#gPlace').value || '').trim();
+    $('#paysYouWhen').textContent = ($('#gPlace').value || '').trim();
     you.querySelector('.py-av').textContent = nm[0].toUpperCase();
   }
 
@@ -2717,7 +2720,7 @@ function sellCard(r) {
       '<span class="sell-hd">' +
         '<b class="sell-t">' + esc(r.t) + '</b>' +
         '<span class="sell-stats">' +
-          '<em><b>' + r.rating + '</b>' + STAR + ' · ' + r.pages + ' pages</em>' +
+          '<em><b>' + r.rating + '</b>' + STAR + '</em>' +
           '<em><b>' + inr(r.sold) + '</b> readers</em>' +
         '</span>' +
       '</span>' +
@@ -3345,8 +3348,7 @@ function renderPicker() {
       '<span class="pk-t">' +
         '<b>' + esc(r.t) + '</b>' +
         '<small>' + esc(r.s) + '</small>' +
-        '<span class="pk-meta"><i class="pk-n">' + r.learn.length + ' questions answered</i>' +
-          r.pages + ' pages</span>' +
+        '<span class="pk-meta"><i class="pk-n">' + r.learn.length + ' questions answered</i></span>' +
       '</span>' +
       '<em class="pk-chev" aria-hidden="true">›</em>' +
     '</button>';

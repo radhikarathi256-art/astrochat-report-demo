@@ -111,7 +111,11 @@
          wrote is handed over inside the conversation, where she is reading. -->
     <section class="screen" id="chat" data-screen="chat">
       <header class="topnav chat-nav">
-        <button class="ic-btn" type="button" data-go="today-a" aria-label="Back">
+        <!-- data-back, not data-go="today-a". Leaving chat forwards parked chat
+             itself at .behind and grew the stack, so the next Continue Chat
+             brought it back still parked. With no stack this falls through to
+             state.entry, which is Today either way. -->
+        <button class="ic-btn" type="button" data-back aria-label="Back">
           <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M21 9H1m0 0 7.5-7.5M1 9l7.5 7.5" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <img class="cn-av" src="assets/hemali.png" alt="">
@@ -1158,7 +1162,7 @@
            that opens straight into arithmetic never states the purchase. -->
       <div class="pays-top">
         <h2 id="paysName">Your Future Partner &amp; Marriage Prediction</h2>
-        <p id="paysMeta">38 pages · One-time payment · Made for your chart</p>
+        <p id="paysMeta">One-time payment</p>
       </div>
 
       <!-- Only Kundli Milan, and only once the match has been run. The other
@@ -1187,16 +1191,15 @@
       </div>
 
       <!-- The other three reports are read off her own chart, so this is their
-           version of the guna strip: the four facts the report is written from,
-           shown once before the price. Every one of them was given at sign-up
-           and never shown back to her since, and a birth time that is an hour
-           out is the one thing that makes the whole report wrong. -->
+           version of the guna strip: who the report is for, shown once before
+           the price. Name and city only. The full date and time said the same
+           thing in four more facts, and a label over it saying "written on
+           your chart" said it a third time. -->
       <div class="pays-you" id="paysYou" hidden>
         <span class="py-av" aria-hidden="true">M</span>
         <div class="py-tx">
-          <small>Written on your chart</small>
           <strong id="paysYouName">Mansi Sharma</strong>
-          <span id="paysYouWhen">30 Oct 1996 · 4:20 AM · Pune, Maharashtra</span>
+          <span id="paysYouWhen">Pune, Maharashtra</span>
         </div>
       </div>
 

@@ -3290,8 +3290,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   font:600 16px/16px var(--sans);color:var(--brand);
   box-shadow:0 1px 2px rgba(16,24,40,.06)}
 .py-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
-.py-tx small{font:600 10px/14px var(--sans);letter-spacing:.04em;
-  text-transform:uppercase;color:var(--g500)}
 .py-tx strong{font:600 14px/20px var(--sans);color:var(--g900)}
 .py-tx span{font:400 12px/17px var(--sans);color:var(--g600)}
 
