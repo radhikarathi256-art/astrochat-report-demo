@@ -1501,6 +1501,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    of itself: a card cut off by the screen is the only honest way to say there
    is more to the right, and it costs no chevron and no dots. 16px of padding
    puts the first card back on the page's own gutter. */
+/* One width for the card and the stub under it. They are one object, so a
+   stub that ran the full page while the card stopped at 86% put a 49px lip of
+   lavender out past the card's right edge, which read as a layout bug. */
+.expert-rail,.ex-report{--card-w:86%}
 .expert-rail{display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   scroll-padding-left:16px;
@@ -1515,7 +1519,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    can never put the first one in the middle of the rail and card one would sit
    permanently shrunk at the left. Start-snapping lands every card, including
    the first, on the page's own 16px gutter. */
-.expert-card{flex:0 0 86%;scroll-snap-align:start;
+.expert-card{flex:0 0 var(--card-w);scroll-snap-align:start;
   border-radius:16px;padding:0 4px 4px;
   background:linear-gradient(180deg,#7D58A1,#4A3460);
   transform-origin:50% 50%;will-change:transform}
@@ -1549,6 +1553,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    of white, for two reasons: it still has to read as something the expert
    section handed her, and the white version was indistinguishable from the
    Personalised Guidance tile further down the same page. */
+.ex-report{width:var(--card-w)}
 .ex-tkt{position:relative;display:flex;align-items:center;gap:12px;width:100%;
   padding:10px 12px;border:1px solid #E4D8F0;border-radius:12px;
   background:#F6F1FA;text-align:left}

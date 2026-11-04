@@ -3194,8 +3194,12 @@ function railScale() {
   var focus = rail.scrollLeft + 16;
   [].forEach.call(rail.children, function (c) {
     var d = Math.min(Math.abs(c.offsetLeft - focus) / rail.clientWidth, 1);
-    c.style.transform = 'scale(' + (1 - d * 0.07).toFixed(3) + ')';
-    c.style.opacity = (1 - d * 0.3).toFixed(3);
+    /* Gentler than it was. At 7% down and 30% faded the sliver at the screen
+       edge looked like a card that had failed to paint, and its top and bottom
+       sat visibly off the focused card's. 4% and 12% is enough to say "this
+       one is next" and little enough that the rail still reads as one row. */
+    c.style.transform = 'scale(' + (1 - d * 0.04).toFixed(3) + ')';
+    c.style.opacity = (1 - d * 0.12).toFixed(3);
   });
 }
 
