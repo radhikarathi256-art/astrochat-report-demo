@@ -3021,11 +3021,20 @@ function exTicket(r) {
       ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
       : drawnFace(r, 'tk-bk bk3-face')) +
     '<span class="tk-t">' +
-      // Off the report, not off its id. "Your marriage report is ready" named a
-      // folder; the line under it said who made it, which the card already says
-      // twice. Now the stub names the book and tells her what is inside it.
-      '<b>' + esc(tktCopy(r).t) + '</b>' +
-      '<small>' + esc(tktCopy(r).s) + '</small>' +
+      /* The hook first, the book second. "Your Marriage Prediction Report is
+         ready" was two problems in one line: nothing is ready, she has not
+         bought it, and the sentence was too long to fit so it ellipsed into a
+         half-sentence. The hook is the same one the detail page and the tile
+         carry, so all three surfaces make the same promise, and it is allowed
+         to wrap — this is the line she is meant to read.
+         The book's name and its price go underneath, where they answer what
+         the hook costs rather than competing with it. */
+      '<b>' + esc(r.why) + '</b>' +
+      // "Your" comes off here. It belongs on a title, not on a line that is
+      // really a price tag, and "Your Marriage Prediction - Rs 49" reads like
+      // the book is already hers.
+      '<small>' + esc(histTitle(r).replace(/^Your\s+/, '')) + ' \u00b7 \u20b9' + PRICE +
+        ' <s>\u20b9' + LIST_PRICE + '</s></small>' +
     '</span>' +
     '<i class="tk-go" aria-hidden="true">' +
       '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.9 7h8.2m-3.3-3.3L11.1 7l-3.3 3.3" stroke="#F28761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
