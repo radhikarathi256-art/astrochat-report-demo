@@ -1690,6 +1690,11 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .tag.purple{background:var(--purple);color:#fff}
 .tag.green{background:var(--s50);color:var(--s700)}
 
+/* The report being written: the same row, with nothing to tap. It keeps the
+   tile's frame so the list does not reflow when it turns into the real one. */
+.tile-make{cursor:default}
+.tile-make .tag{background:var(--g100,#F2F4F7);color:var(--g600)}
+
 /* ---------- R.2 Report page ---------- */
 /* The hero photo fades into white, so the card below it has no visible seam. */
 /* Figma 3755:8067 — 360x407 above the status bar, and nothing in it but the

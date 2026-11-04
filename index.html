@@ -275,7 +275,11 @@
               <span class="tt"><b>Match Your Kundli</b><small>You and Rahul, out of 36 gunas</small></span>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <button class="tile" type="button" data-toast="Tarot is not part of this demo">
+            <!-- Hidden while a report is being written: see renderGuideTile().
+                 For those few minutes Personalised Guidance has one job, and a
+                 second task beside it is the page asking her to go do something
+                 else while she waits. -->
+            <button class="tile" type="button" id="guideTarot" data-toast="Tarot is not part of this demo">
               <img src="assets/tarot.png" alt="">
               <span class="tt"><b>Ask the Tarot Cards</b><small>3 cards on you and Rahul</small></span>
               <svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>

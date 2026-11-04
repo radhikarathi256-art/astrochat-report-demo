@@ -1998,10 +1998,7 @@ function histMaking(r, ready) {
   '</article>';
 }
 
-/* How long the just-read card holds before it starts selling the next one. */
-var READY_HOLD = 15 * 60 * 1000;
-
-/* Which of the four a report is in right now. */
+/* Which state a report is in right now. */
 function histWidget(r) {
   var b = state.buys.filter(function (x) { return x.id === r.id; })[0];
   if (!b) {
@@ -2015,12 +2012,12 @@ function histWidget(r) {
   // it lands.
   if (!b.ready) return histMaking(r, false);
   /* Just landed. The card has one job and one button: read the thing she just
-     paid for. Nothing is sold over the top of a report she has not opened yet
-     — so this state ends either when she opens it or, for the person who paid
-     and walked away, after the fifteen-minute hold. */
-  if (!b.aged && !b.read) return histMaking(r, true);
-  // Read, or old enough. The progress line has done its job, so Hemali takes
-  // the card back and offers the next one.
+     paid for. Nothing is sold over the top of a report she has not opened yet,
+     and no clock retires that - the card waits until she opens it, however
+     long that takes. */
+  if (!b.read) return histMaking(r, true);
+  // Read. The progress line has done its job, so Hemali takes the card back
+  // and offers the next one.
   var again = r.needsMatch
     ? { cta: 'Match Again', sub: 'Bought ' + b.time + ' \u00b7 Match someone else anytime' }
     : r.cadence === 'monthly'
@@ -2139,16 +2136,14 @@ function pay() {
   // this payment just bought rather than the one after it.
   var ed = editionLabel(r);
   if (!owns(r.id)) state.owned.push(r.id);
-  // The two flags History reads. Writing the report is quick; the ready card
-  // then holds for fifteen minutes before it settles into the state that can
-  // be bought again.
-  var buy = { id: r.id, ed: ed, time: nowStamp(), day: state.day,
-              ready: false, aged: false };
+  /* One flag: is it written yet. Today reads it too now - while this is false
+     Personalised Guidance is the one "being written" task, and when it flips
+     the report takes its place. */
+  var buy = { id: r.id, ed: ed, time: nowStamp(), day: state.day, ready: false };
   state.buys.unshift(buy);
-  var repaint = function () { renderMine(); renderHistCard(); };
   later(function () {
-    buy.ready = true; repaint();
-    later(function () { buy.aged = true; repaint(); }, READY_HOLD);
+    buy.ready = true;
+    renderMine(); renderHistCard(); renderDayToday();
   }, 6000);
   state.wallet -= payUsed();
   paintWallet();
@@ -3178,6 +3173,26 @@ function renderGuideTile() {
   // there is no report to pitch at all.
   $('#guideAlt').hidden = true;
   $('#guideSlot').hidden = false;
+  if ($('#guideTarot')) $('#guideTarot').hidden = false;
+  /* The minutes between paying and the report landing. Today drops to one
+     task for them: she has just spent money and the only thing she wants off
+     this page is whether it is done, and a tarot tile sitting next to that is
+     the app changing the subject. The tile is not a button either - there is
+     nothing to open yet, and a tappable row that does nothing is worse than
+     a row that is honestly still working. */
+  var mk = state.buys[0];
+  if (state.paid && mk && !mk.ready) {
+    if ($('#guideTarot')) $('#guideTarot').hidden = true;
+    var mr = reportById(mk.id);
+    $('#guideSlot').innerHTML =
+      '<div class="tile tile-make">' +
+        book3d(mr) +
+        '<span class="tt"><b>' + esc(mr.t2 || titled(mr.t)) + '</b>' +
+          '<small>Hemali is writing it. We will tell you the moment it is ready.</small></span>' +
+        '<i class="tag">Writing</i>' +
+      '</div>';
+    return;
+  }
   if (!state.paid) {
     var lead = leadReport();
     if (!lead) { $('#guideAlt').hidden = false; $('#guideSlot').hidden = true;
