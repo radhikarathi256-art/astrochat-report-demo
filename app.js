@@ -3739,7 +3739,6 @@ function renderTpTabs() {
     // No "Daily reward · answered" chip: the check-in card is right there on
     // Today and answering it by hand is the honest way to see that state.
     if (repToastDays()) tabs.push({ id: 'toast', l: 'Toast \u00b7 Hemali\u2019s knock' });
-    if (state.day === 1) tabs.push({ id: 'counter', l: 'Counter \u00b7 header + Timeline' });
   }
 
   var wrap = document.createElement('div');
@@ -4237,23 +4236,6 @@ document.addEventListener('click', function (e) {
         state.repToastSeen = false;
         showRepToast();
       }, 420);
-    } else if (tp === 'counter') {
-      // The counter is already live on day 1; the chip just puts both doors
-      // that carry it back on screen and blinks them.
-      state.histDot = true;
-      renderNav();
-      state.stack = [];
-      hideRepToast();
-      show(state.entry, 'fade');
-      // show() only resets the scroll when the screen actually changes, and the
-      // header counter has to be in frame for the blink to mean anything.
-      var tsc2 = $('#today-a [data-scroll]');
-      if (tsc2) tsc2.scrollTop = 0;
-      later(function () {
-        $$('.ncount').forEach(function (n) {
-          n.classList.remove('lit'); void n.offsetHeight; n.classList.add('lit');
-        });
-      }, 360);
     } else {
       state.stack = [];
       show(state.entry, 'fade');
