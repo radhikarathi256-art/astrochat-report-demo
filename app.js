@@ -1150,7 +1150,11 @@ var NAV_ICONS = {
 var NAV = [
   { id: 'today', label: 'Today' },
   { id: 'experts', label: 'Experts' },
-  { id: 'timeline', label: 'Timeline' },
+  /* The tab was called Timeline while the page it opens is headed Your
+     Journey. Timeline also names the sort order rather than the contents, so
+     nobody taps it looking for a thing. Journey is the app's own word for the
+     same shelf. */
+  { id: 'timeline', label: 'Journey' },
   { id: 'explore', label: 'Explore' }
 ];
 
@@ -1849,7 +1853,7 @@ var MN_CASE_IC = '<path d="M4.08 8.75a3.5 3.5 0 0 1 3.5-3.5h11.67a2.33 2.33 0 0 
    only question this menu has to answer quickly is "where is the thing I paid
    for". */
 var MN_TILES = [
-  { l: 'Timeline',            nav: 'timeline', d: CHAT_IC },
+  { l: 'Journey',             nav: 'timeline', d: CHAT_IC },
   { l: 'My Reports',          go: 'mine',      d: MN_BOOK_IC, count: true },
   { l: 'Wallet Transactions', d: MN_CASE_IC }
 ];
@@ -2003,7 +2007,7 @@ function histMaking(r, ready) {
            live now. It is the only place in the app that says it. */
         '<li' + (ready ? ' class="on"' : '') + '><b>Ready to read</b>' +
           '<small>' + (ready
-            ? 'Your reports are available in Timeline and under My Reports in the (\u2630) menu.'
+            ? 'Your reports are available in Journey and under My Reports in the (\u2630) menu.'
             : 'We will notify you, once its ready') + '</small></li>' +
       '</ol>' +
       (ready
@@ -3074,7 +3078,9 @@ function typing(done) {
 function segueCard() {
   var r = reportById(state.pick);
   return '<div class="c-b hemali"><p>Mansi, your <b>' + esc(r.t) +
-      '</b> report is open. If any part needs explaining, or you want the remedies, ask me right here.</p>' +
+      // Titles already end in "Report", so the old sentence read "Marriage
+      // Prediction Report report is open".
+      '</b> is open. If any part needs explaining, or you want the remedies, ask me right here.</p>' +
       // The way back in, said here too. The thread is where she left the report
       // to come and ask, so the one thing it should be able to do is give it
       // back — the offer that used to sit in this spot was selling a book she
@@ -3679,7 +3685,7 @@ function renderTpTabs() {
       { id: 'chat',    l: 'Chat \u00b7 continue chat' },
       { id: 'read',    l: 'Full report' },
       { id: 'upsell',  l: 'Report end \u00b7 upsell' },
-      { id: 'history', l: 'Timeline \u00b7 report ready' }
+      { id: 'history', l: 'Journey \u00b7 report ready' }
     ];
   } else {
     // The tabs ARE the schedule: only the surfaces today actually uses, named
@@ -3899,7 +3905,7 @@ document.addEventListener('click', function (e) {
   if (t.hasAttribute('data-tarot')) {
     state.tarot = true;
     renderMenu();
-    toast('Your three cards are in Timeline', 'success');
+    toast('Your three cards are in Journey', 'success');
     return;
   }
 
