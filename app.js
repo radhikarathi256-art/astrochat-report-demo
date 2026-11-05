@@ -3252,21 +3252,40 @@ function renderDayToday() {
   renderGuideTile();
 }
 
-/* Day 2's second ask, inside Hemali's card. It is deliberately the quiet one:
-   a line of text and a 32px outlined button, under a Continue Chat that stays
-   the loudest thing on the card. Day 1 she only just met the offer in the
-   Personalised Guidance tile, so day 2 is the first day worth asking twice. */
+/* Day 2's second ask, inside Hemali's card. Built to Hackfest 3203:205266:
+   a hairline with a notch bitten out of each edge, then a 31x41 cover, two
+   lines and a 28px round arrow. A stub torn off the bottom of her card, not a
+   second offer stapled to it - which is why it is a row and an arrow rather
+   than a price and a button competing with Continue Chat.
+
+   Day 2 only. Day 1 she has only just met the offer in the Personalised
+   Guidance tile, so day 2 is the first day worth asking twice. */
 function renderExRep() {
   var slot = $('#exRepSlot');
   if (!slot) return;
   var lead = state.day === 2 && !state.paid ? leadReport() : null;
   if (!lead) { slot.innerHTML = ''; return; }
   var c = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
-  slot.innerHTML = '<div class="expert-report">' +
-    '<span class="er-t"><b>' + esc(c.t) + '</b><small>' + esc(c.s) + '</small></span>' +
-    '<button class="btn sm ghost" type="button" data-pick="' + lead.id + '">' +
-      '\u20b9' + PRICE + '</button>' +
-  '</div>';
+  slot.innerHTML =
+    // The notches are the tear. They sit on the hairline and are painted in
+    // the page's own background, so the card reads as perforated there.
+    '<div class="er-perf"><i></i><i></i></div>' +
+    '<button class="expert-report" type="button" data-pick="' + lead.id + '">' +
+      coverArt(lead, 'cv-tk') +
+      /* Figma says "Your partner report is ready", which is the state it is in
+         and not the thing she gets - and on day 2 it is not ready, it is for
+         sale. Same two slots, honest words: what it is, then who made it. */
+      /* Figma's second line is "Made by Hemali from your chart", on a 328px
+         card. This one is 295 and the price has to fit too, so Hemali goes:
+         the row sits inside her card with her face 40px above it, so her name
+         was the one thing on the line she could already see. What is left is
+         the two things the line is for - it is about her chart, and it is
+         ₹49, which is less than she is expecting. */
+      '<span class="er-t"><b>' + esc(c.t) + '</b>' +
+        '<small>From your chart \u00b7 \u20b9' + PRICE + '</small></span>' +
+      '<i class="er-go"><svg viewBox="0 0 14 14" aria-hidden="true">' +
+        '<path d="M2 7h10M7.6 2.6 12 7l-4.4 4.4"/></svg></i>' +
+    '</button>';
 }
 
 /* The report as one tile among her guidance — same object as the tarot and

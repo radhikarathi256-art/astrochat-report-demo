@@ -1567,17 +1567,34 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .expert-meta s{color:var(--g400);font-weight:500;font-size:12px}
 .expert-meta strong{font-weight:600;color:var(--s700)}
 .expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
-/* Entry B — one row, ~56px. A second full-width button competed with Continue
-   Chat at identical width, and the extra ~160px pushed Daily reward below the
-   fold. Chat has to win this card, so the report gets a small outlined button. */
-.expert-report{display:flex;align-items:center;gap:10px;
-  margin:8px 0 2px;padding-top:8px;border-top:1px solid var(--g100)}
-.er-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.er-t b{font:600 15px/20px var(--sans);color:var(--g900);
+/* Hackfest 3203:205266, the report stub torn off the bottom of Hemali's card.
+   The whole row is the target, so nothing competes with Continue Chat for the
+   eye - just an arrow saying which way this goes. */
+/* The perforation. The hairline runs the row's own 12px inset; the two notches
+   are parked half outside the white body, which .expert-body's overflow:hidden
+   clips, so only the bite shows. They are painted in the purple behind, which
+   is what makes it read as a tear and not as two grey dots. */
+.er-perf{position:relative;height:1px;margin:8px 0 0;background:var(--g100)}
+.er-perf i{position:absolute;top:-6px;width:12px;height:12px;border-radius:50%;
+  background:#523A6A}
+.er-perf i:first-child{left:-18px}
+.er-perf i:last-child{right:-18px}
+.expert-card.plain .er-perf i{background:#fff}
+/* 10px gaps, not Figma's 12. 33px of the board's 328 went missing on a 375px
+   phone and the report's name was the thing that got eaten. */
+.expert-report{display:flex;width:100%;align-items:center;gap:10px;
+  margin:0;padding:8px 0 2px;border:0;background:none;text-align:left}
+.expert-report .cv-tk{flex:none;width:31px;height:41px;border-radius:3px}
+.er-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.er-t b{font:600 14px/20px var(--sans);color:var(--g900);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.er-t small{font:400 12px/17px var(--sans);color:var(--g500);
+.er-t small{font:400 12px/18px var(--sans);color:var(--g500);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.expert-report .btn.sm{flex:none;height:32px;padding:0 12px;font-size:13px;border-radius:9px}
+.er-go{flex:none;display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;background:#FDEBE2}
+.er-go svg{width:14px;height:14px;fill:none;stroke:var(--brand);
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.expert-report:active{opacity:.75}
 
 /* ---------- Personalised guidance ----------
    Full-width rows, same as the daily-reward Today page (.g2wrap / .g2). */
