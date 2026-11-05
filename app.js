@@ -1478,7 +1478,16 @@ function renderRead() {
           REPORTS.filter(function (x) { return x.id !== state.pick; })
             .map(upsellRow).join('') +
         '</div>' +
-      '</div>';
+      '</div>' +
+      /* The sample has said this since day one; the report she paid for never
+         did, which is the one place it matters. Last thing on the page, after
+         the rating and the next two books, so it reads as a note about how the
+         work is done and not as a warning about what she just bought. Says
+         where it comes from, then says her own choices are still in it. */
+      '<p class="rs-disc">Read from your Vedic birth chart and the planetary ' +
+      'periods running in it. It shows which way things are leaning, not what ' +
+      'is fixed. What you do still shapes how it turns out. For guidance only, ' +
+      'not medical, legal or financial advice.</p>';
   // No "Continue with Astro Hemali" button under it: the ask bar is pinned to
   // the bottom of this same screen with her face, her rate and a composer in
   // it, so a second button for the identical action only competed with the one
