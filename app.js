@@ -710,7 +710,7 @@ function hasSpread(r) { return !!(r.art && r.art.open); }
 var PM_JOURNEY = {
   1: {
     stamp: 'Just now',
-    surf: { chat: true, today: false, guide: true, hist: true },
+    surf: { chat: true, guide: true, hist: true },
     msgs: [
       { who: 'sys',    text: 'Astrologer has joined to guide you' },
       { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
@@ -740,12 +740,12 @@ var PM_JOURNEY = {
   2: {
     stamp: 'Yesterday',
     lead: 'partner',
-    surf: { chat: false, today: true, guide: true, hist: false },
+    surf: { chat: false, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi! Yesterday you asked about your partner. What would you like to ask today?' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
     ],
-    today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
+    today: { eyebrow: '', note: '' },
     countdown: '✦ FREE 2 MIN CHAT READY'
   },
   /* Day 3 steps back off the expert card — Today keeps only the personalised
@@ -754,7 +754,7 @@ var PM_JOURNEY = {
   3: {
     stamp: '2 days ago',
     lead: 'career',
-    surf: { chat: true, today: false, guide: true, hist: false },
+    surf: { chat: true, guide: true, hist: false },
     msgs: [
       { who: 'hemali', pitch: 'short' },
       { who: 'offer3' },
@@ -770,7 +770,7 @@ var PM_JOURNEY = {
     stamp: '3 days ago',
     lead: 'marriage',
     lastAsk: true,
-    surf: { chat: false, today: false, guide: true, hist: false },
+    surf: { chat: false, guide: true, hist: false },
     msgs: [
       { who: 'hemali', pitch: 'short' },
       { who: 'offer3' },
@@ -785,7 +785,7 @@ var PM_JOURNEY = {
   5: {
     stamp: '4 days ago',
     quiet: true,
-    surf: { chat: false, today: false, guide: true, hist: false },
+    surf: { chat: false, guide: true, hist: false },
     msgs: [
       { who: 'hemali', text: 'Mansi, tell me, what would you like to ask today?' },
       { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
@@ -3025,39 +3025,6 @@ function milanCard(r) {
   '</div>';
 }
 
-/* Figma 3203:205266 — on Today the report rides the expert card as a ticket
-   stub: a dashed perforation, a notch bitten out of each edge of the white
-   card, then one row. The History widget used to be dropped in here whole,
-   which put Hemali's face and name on the card twice and ran it to 383px. */
-function exTicket(r) {
-  return '<button class="ex-tkt" type="button" data-pick="' + r.id + '">' +
-    '<i class="tk-n tk-l" aria-hidden="true"></i>' +
-    '<i class="tk-n tk-r" aria-hidden="true"></i>' +
-    (hasCover(r)
-      ? '<img class="tk-bk" src="' + r.art.closed + '" alt="">'
-      : drawnFace(r, 'tk-bk bk3-face')) +
-    '<span class="tk-t">' +
-      /* The hook first, the book second. "Your Marriage Prediction Report is
-         ready" was two problems in one line: nothing is ready, she has not
-         bought it, and the sentence was too long to fit so it ellipsed into a
-         half-sentence. The hook is the same one the detail page and the tile
-         carry, so all three surfaces make the same promise, and it is allowed
-         to wrap — this is the line she is meant to read.
-         The book's name and its price go underneath, where they answer what
-         the hook costs rather than competing with it. */
-      '<b>' + esc(r.why) + '</b>' +
-      // "Your" comes off here. It belongs on a title, not on a line that is
-      // really a price tag, and "Your Marriage Prediction - Rs 49" reads like
-      // the book is already hers.
-      '<small>' + esc(histTitle(r).replace(/^Your\s+/, '')) + ' \u00b7 \u20b9' + PRICE +
-        ' <s>\u20b9' + LIST_PRICE + '</s></small>' +
-    '</span>' +
-    '<i class="tk-go" aria-hidden="true">' +
-      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.9 7h8.2m-3.3-3.3L11.1 7l-3.3 3.3" stroke="#F28761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-    '</i>' +
-  '</button>';
-}
-
 function renderChat() {
   $('#chatThread').innerHTML = dayData().msgs.map(function (m) {
     if (m.who === 'sys')    return '<p class="c-sys">' + esc(m.text) + '</p>';
@@ -3246,31 +3213,13 @@ function renderDayToday() {
   state.claimed = state.answered ? day : day - 1;
   renderLadder();
 
-  // Today carries the offer in the expert card on every nudging day (the brief
-  // puts it there alongside Chat and History), with the guidance tile from
-  // day 2. Day 5 is the stop — every surface goes quiet.
-  var sf = pmSurf();
-  if (!state.paid) {
-    $('#expertSlot').hidden = !sf.today;
-    // The guidance tile is the one permanent surface: it is a tile among tiles,
-    // not a nudge, so it stays put all five days while the louder cards come
-    // and go.
-    $('#guideSlot').hidden = false;
-    renderGuideTile();
-    // Hiding the slot is not enough — yesterday's countdown would survive in
-    // the DOM and reappear the moment anything unhid it.
-    if (!sf.today) { $('#expertSlot').innerHTML = ''; return; }
-    $('#expertSlot').innerHTML = exTicket(leadReport());
-    return;
-  }
-
-  // Bought: the expert card goes back to being only the expert. The report she
-  // owns already has a row of its own in Personalised Guidance, with the same
-  // title, the same Ready pill and the same destination — two of them on one
-  // screen was the same tap offered twice.
-  $('#expertSlot').hidden = true;
-  $('#expertSlot').innerHTML = '';
-  $('#guideSlot').hidden  = false;
+  /* Today's only pitch is the Personalised Guidance tile. The report used to
+     also ride under the expert rail as a ticket stub on day 2, carrying the
+     same hook, the same book and the same destination as the tile six inches
+     below it - the same tap offered twice, on the one screen that is supposed
+     to feel like hers. The tile is a tile among tiles rather than a nudge, so
+     it stays put all five days and the rail goes back to being only experts. */
+  $('#guideSlot').hidden = false;
   renderGuideTile();
 }
 
@@ -3741,7 +3690,6 @@ function renderTpTabs() {
     if (dayData().push) tabs.push({ id: 'push', l: 'Notification \u00b7 +10 min' });
     if (state.day === 1) tabs.push({ id: 'nudge', l: 'Chat nudge \u00b7 +10 min \u00b7 bubble + toast' });
     if (sf.chat)  tabs.push({ id: 'chat',    l: state.day === 1 ? 'Chat \u00b7 offer at +10 min' : 'Chat \u00b7 offer' });
-    if (sf.today) tabs.push({ id: 'today',   l: 'Today \u00b7 expert card' });
     if (state.day !== 1 && sf.guide) tabs.push({ id: 'guide', l: 'Today \u00b7 personalised' });
     // History, the picker and the report page are deliberately not listed:
     // they are destinations, and jumping straight to one skips the only thing
@@ -4284,7 +4232,7 @@ document.addEventListener('click', function (e) {
     } else {
       state.stack = [];
       show(state.entry, 'fade');
-      var slot = $(state.day === 1 ? '#expertSlot' : '#guideSlot');
+      var slot = $('#guideSlot');
       if (slot) later(function () { slot.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
     }
     return;

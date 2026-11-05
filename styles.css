@@ -341,9 +341,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    Day 1 has no Hemali bubble, because the check-in is still unanswered. The
    expert card is the only surface already in her name, so the report sits
    inside it under a divider, rather than floating as a card of its own. */
-/* No rule of its own: the ticket below draws the one perforation the board
-   has. Two dashed borders stacked here is what read as a double line. */
-.ex-report{margin-top:0}
 /* One tappable row — the reading happens on the report page, so the card
    carries no button of its own, just a pill and a chevron. */
 .ex-tap{display:flex;gap:10px;align-items:center;cursor:pointer}
@@ -1504,7 +1501,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* One width for the card and the stub under it. They are one object, so a
    stub that ran the full page while the card stopped at 86% put a 49px lip of
    lavender out past the card's right edge, which read as a layout bug. */
-.expert-rail,.ex-report{--card-w:86%}
+.expert-rail{--card-w:86%}
 .expert-rail{display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   scroll-padding-left:16px;
@@ -1548,37 +1545,6 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .expert-meta s{color:var(--g400);font-weight:500;font-size:12px}
 .expert-meta strong{font-weight:600;color:var(--s700)}
 .expert-body .btn.primary{height:40px;border-radius:12px;font-size:16px}
-/* Figma 3203:205266 — the report as a ticket stub, now torn off the rail
-   rather than out of one card. It is tinted in the rail's own purple instead
-   of white, for two reasons: it still has to read as something the expert
-   section handed her, and the white version was indistinguishable from the
-   Personalised Guidance tile further down the same page. */
-.ex-report{width:var(--card-w)}
-.ex-tkt{position:relative;display:flex;align-items:center;gap:12px;width:100%;
-  padding:10px 12px;border:1px solid #E4D8F0;border-radius:12px;
-  background:#F6F1FA;text-align:left}
-.ex-tkt:active{background:#EFE7F7}
-/* The stub is pinned to the rail by one notch at each shoulder: a 12px circle
-   of page white sitting on the top edge, which is the perforation read at a
-   glance. No dashed rule any more - there is no card above it to tear from. */
-.tk-n{position:absolute;top:-6px;width:12px;height:12px;border-radius:50%;
-  background:#fff}
-.tk-l{left:16px}
-.tk-r{right:16px}
-.tk-bk{flex:none;width:31px;height:41px;object-fit:cover;border-radius:2px;
-  box-shadow:0 1px 3px rgba(16,24,40,.18)}
-.tk-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-/* The hook is allowed two lines. It is the one sentence on this stub she is
-   meant to read, and a nowrap on a 14px line in a 230px column turned it into
-   half a sentence followed by dots. Two lines is the cap, not a free run. */
-.tk-t b{font:600 14px/20px var(--sans);color:var(--g700);
-  overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;
-  -webkit-line-clamp:2}
-.tk-t small{font:400 12px/18px var(--sans);color:var(--g600);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tk-go{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand50);
-  display:flex;align-items:center;justify-content:center}
-
 /* Entry B — one row, ~56px. A second full-width button competed with Continue
    Chat at identical width, and the extra ~160px pushed Daily reward below the
    fold. Chat has to win this card, so the report gets a small outlined button. */
