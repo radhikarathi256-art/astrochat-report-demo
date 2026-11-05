@@ -2524,10 +2524,12 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   padding:28px 20px;text-align:center;background:#fff}
 .rate b{font:600 16px/22px var(--sans);color:var(--g900)}
 .rate p{margin:0;font:400 14px/20px var(--sans);color:var(--g600)}
-.rate-stars{display:flex;gap:12px}
+/* Bigger than the board's 22px. That board is a desktop column; on a 375px
+   phone 22px reads as decoration and nobody aims at it. */
+.rate-stars{display:flex;gap:14px}
 .rate-stars button,.rate-stars span{display:block;padding:0;border:0;background:none;
   line-height:0}
-.rate-stars svg{width:22px;height:22px;fill:var(--g200)}
+.rate-stars svg{width:32px;height:32px;fill:var(--g200)}
 .rate-stars .on svg,.rate-stars button:active svg{fill:#F5A524}
 
 /* --- the rating sheet, SDFication 977:180579 --- */
@@ -2538,7 +2540,9 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   gap:24px;padding:24px 16px 32px}
 .rate-sheet .rs-q{font:600 18px/28px var(--sans);color:var(--g900)}
 .rate-sheet .rate-stars{margin-top:-12px}
-.rate-sheet .rate-stars svg{width:24px;height:24px}
+/* Bigger again in the sheet, where they are the thing she came to tap. */
+.rate-sheet .rate-stars{gap:16px}
+.rate-sheet .rate-stars svg{width:38px;height:38px}
 .rate-sheet textarea{width:100%;height:140px;resize:none;padding:10px 14px;
   border:1px solid var(--g300);border-radius:12px;background:#fff;
   box-shadow:0 1px 2px rgba(16,24,40,.05);
