@@ -1086,6 +1086,47 @@
        one of the eight is at zero, which is the single most motivated moment in
        the flow; closing the sheet to go and look for the button again is where
        that moment gets spent. -->
+  <!-- Her own four facts, opened from Change on the pay sheet. The same four
+       fields the Kundli Milan form uses, in the same order and the same
+       boxes, because this is the same question asked on a different screen.
+       Saving drops her back on the pay sheet she left, with the price
+       untouched - changing a birth time is a correction, not a new purchase. -->
+  <div class="sheet" id="sheet-you" aria-hidden="true">
+    <div class="grab"></div>
+    <h3>Your birth details</h3>
+    <p class="sheet-sub">Your report is read from these. Fix anything that is wrong.</p>
+    <div class="mt-grp" id="youForm">
+      <label class="fld">
+        <input type="text" id="yName" autocomplete="off" placeholder="Name">
+        <span>Name</span>
+      </label>
+      <div class="fld-row">
+        <label class="fld">
+          <input type="text" id="yDob" inputmode="numeric" autocomplete="off" placeholder="Date of Birth">
+          <span>Date of Birth</span>
+          <i class="fld-ic" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </i>
+        </label>
+        <label class="fld">
+          <input type="text" id="yTime" autocomplete="off" placeholder="Time of Birth">
+          <span>Time of Birth</span>
+          <i class="fld-ic" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </i>
+        </label>
+      </div>
+      <label class="fld fld-lead">
+        <input type="text" id="yPlace" autocomplete="off" placeholder="Birth City">
+        <span>Birth city</span>
+        <i class="fld-ic fld-ic-lead" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 3.8 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </i>
+      </label>
+    </div>
+    <button class="btn primary" type="button" id="youSave">Save and continue</button>
+  </div>
+
   <div class="sheet guna-sheet" id="sheet-guna" aria-hidden="true">
     <button class="pays-x" type="button" data-close-sheet aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -1201,6 +1242,11 @@
           <strong id="paysYouName">Mansi Sharma</strong>
           <span id="paysYouWhen">Pune, Maharashtra</span>
         </div>
+        <!-- Same word, same place and same look as the guna strip's and the
+             language row's. The whole report is read off these four facts, so
+             a wrong birth time has to be fixable here, before she pays, and
+             not only after a report has already been written on it. -->
+        <button class="pg-edit" type="button" id="paysYouEdit">Change</button>
       </div>
 
       <!-- The one decision left on this sheet, so it is the one row that looks

@@ -2366,6 +2366,10 @@ function startMaking() {
 /* Reading order, not form order: the error lands on the first box she can see
    is empty, so date and time come before place now that they share a row. */
 var MATCH_FIELDS = ['bName', 'bDob', 'bTime', 'bPlace', 'gName', 'gDob', 'gTime', 'gPlace'];
+/* The pay sheet's Change opens the same four facts in a sheet of their own.
+   Copied in and out of the match form's boxes rather than kept twice, so
+   wherever she corrects a birth time the other screen already knows. */
+var YOU_FIELDS = [['yName', 'gName'], ['yDob', 'gDob'], ['yTime', 'gTime'], ['yPlace', 'gPlace']];
 /* What the toast calls each one. "Fill this in to continue" was the same
    sentence wherever she stood, which meant the toast could be read without
    telling her anything the red box had not already said. */
@@ -3898,6 +3902,11 @@ $('#match').addEventListener('input', function (e) {
   if (el.id === 'bPlace') citySuggest(el.value);
   syncMatch();
 });
+// Same rule on her own-details sheet: the red goes with the first keystroke,
+// not when she tries Save again.
+$('#sheet-you').addEventListener('input', function (e) {
+  if (e.target.tagName === 'INPUT') clearFldErr(e.target);
+});
 $('#match').addEventListener('change', function (e) {
   if (e.target.id === 'bNoTime') syncMatch();
 });
@@ -3920,7 +3929,7 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
   if (!t) return;
 
   // The stars at the foot of the report. Repainting the whole body would throw
@@ -3970,6 +3979,33 @@ document.addEventListener('click', function (e) {
      would put a price behind a screen that is free, and submitMatch reopens
      it anyway once there is a new number to put on it. */
   if (t.id === 'paysGunaEdit') { closeSheet(); later(openMatch, 240); return; }
+
+  /* Change, on her own details. The sheet swaps in place rather than closing
+     first, the way the language sheet does, because this is a correction to
+     the thing being bought and she has to land back on the same receipt. */
+  if (t.id === 'paysYouEdit') {
+    YOU_FIELDS.forEach(function (p) { $('#' + p[0]).value = $('#' + p[1]).value; });
+    $$('#youForm .fld').forEach(function (f) { f.classList.remove('err'); });
+    openSheet('you');
+    return;
+  }
+  if (t.id === 'youSave') {
+    var bad = 0;
+    YOU_FIELDS.forEach(function (p) {
+      var el = $('#' + p[0]);
+      if (el.value.trim()) { clearFldErr(el); return; }
+      el.closest('.fld').classList.add('err');
+      bad++;
+    });
+    if (bad) return;
+    YOU_FIELDS.forEach(function (p) { $('#' + p[1]).value = $('#' + p[0]).value.trim(); });
+    // Her half of the Kundli Milan receipt is built from the same four boxes,
+    // so it has to be rewritten or the two screens start disagreeing. Closing
+    // the inline editor is what repaints it, and closed is where it belongs.
+    girlEdit(false);
+    openPay();
+    return;
+  }
 
   // All 8 areas, off the score card.
   if (t.id === 'r2Kootas') {
