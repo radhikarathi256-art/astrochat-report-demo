@@ -3074,6 +3074,25 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .fld.err .fld-ic-err{display:block}
 /* Figma 3805:11254. 16 square at 1.5, which is the one control on this page
    that is not a text box and has to look like it. */
+/* Onboarding 4885:4899. Header 20/30 Gray/900 over 14/20 Gray/500, fields 24
+   apart rather than the match form's 16 because here every field is its own
+   full-width row and 16 runs them together. */
+.you-h{margin:0 0 6px;font:600 20px/30px var(--sans);color:#1D2939}
+.you-sub{margin:0 0 24px;font:400 14px/20px var(--sans);color:var(--g500)}
+.you-grp{gap:24px}
+/* Gender: a 16/24 Gray/500 label over the pair, 6 under it, radios 14 apart.
+   The only group on the form whose label sits above the control instead of
+   notched into it, because there is no box to notch it into. */
+.mt-gen{display:flex;flex-direction:column;gap:6px}
+.mt-gen-l{font:400 16px/24px var(--sans);color:var(--g500)}
+.mt-rads{display:flex;gap:14px}
+.mt-rad{display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  font:400 16px/24px var(--sans);color:#1D2939}
+.mt-rad input{position:absolute;opacity:0;width:0;height:0}
+.mt-rad > i{flex:none;width:18px;height:18px;border:1.5px solid #99A1B0;border-radius:50%;
+  background:#fff;transition:border-color .15s ease}
+.mt-rad input:checked + i{border-color:var(--brand);border-width:5px}
+.mt-rad input:focus-visible + i{box-shadow:0 0 0 3px var(--brand50)}
 .mt-chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;
   font:400 13px/18px var(--sans);color:#4D576B}
 .mt-chk input{position:absolute;opacity:0;width:0;height:0}

@@ -1088,21 +1088,37 @@
        untouched - changing a birth time is a correction, not a new purchase. -->
   <div class="sheet" id="sheet-you" aria-hidden="true">
     <div class="grab"></div>
-    <h3>Your birth details</h3>
-    <p class="sheet-sub">Your report is read from these. Fix anything that is wrong.</p>
-    <div class="mt-grp" id="youForm">
+    <!-- Onboarding 4885:4899, the screen that collects these four facts in the
+         first place. Same order, same one-per-row stacking, same 24 between
+         them, same gender radios and the same escape hatch under the birth
+         time. She is correcting here what she typed there, so it should be the
+         same form and not a second, shorter one that leaves out a field. -->
+    <h3 class="you-h">Your birth details</h3>
+    <p class="you-sub">Your report is read from these. Fix anything that is wrong.</p>
+    <div class="mt-grp you-grp" id="youForm">
       <label class="fld">
         <input type="text" id="yName" autocomplete="off" placeholder="Name">
         <span>Name</span>
       </label>
-      <div class="fld-row">
-        <label class="fld">
-          <input type="text" id="yDob" inputmode="numeric" autocomplete="off" placeholder="Date of Birth">
-          <span>Date of Birth</span>
-          <i class="fld-ic" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </i>
-        </label>
+      <label class="fld">
+        <input type="text" id="yDob" inputmode="numeric" autocomplete="off" placeholder="Date of Birth">
+        <span>Date of Birth</span>
+        <i class="fld-ic" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </i>
+      </label>
+      <div class="mt-gen">
+        <span class="mt-gen-l">Gender</span>
+        <div class="mt-rads">
+          <label class="mt-rad"><input type="radio" name="yGender" value="Male"><i aria-hidden="true"></i><span>Male</span></label>
+          <label class="mt-rad"><input type="radio" name="yGender" value="Female" checked><i aria-hidden="true"></i><span>Female</span></label>
+        </div>
+      </div>
+      <label class="fld">
+        <input type="text" id="yPlace" autocomplete="off" placeholder="Place of Birth">
+        <span>Place of Birth</span>
+      </label>
+      <div class="mt-time">
         <label class="fld">
           <input type="text" id="yTime" autocomplete="off" placeholder="Time of Birth">
           <span>Time of Birth</span>
@@ -1110,16 +1126,15 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </i>
         </label>
+        <label class="mt-chk">
+          <input type="checkbox" id="yNoTime">
+          <i aria-hidden="true"></i>
+          <span>Don&rsquo;t know my exact time of birth</span>
+        </label>
+        <p class="mt-help">Note: We can still achieve 80% accurate predictions without your time of birth</p>
       </div>
-      <label class="fld fld-lead">
-        <input type="text" id="yPlace" autocomplete="off" placeholder="Birth City">
-        <span>Birth city</span>
-        <i class="fld-ic fld-ic-lead" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 3.8 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </i>
-      </label>
     </div>
-    <button class="btn primary" type="button" id="youSave">Save and continue</button>
+    <button class="btn primary" type="button" id="youSave">Save Information</button>
   </div>
 
   <!-- Rating, built to SDFication 977:180579. The stars at the foot of the
