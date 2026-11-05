@@ -1509,9 +1509,13 @@ function rateCard() {
       '<b>Thanks for rating</b>' +
       '<p>Hemali sees this with your report.</p></div>';
   }
+  /* The same card the chat already ends on (SDFication 773:173359): one
+     centred question, five outline stars, nothing else. The paragraph under
+     it explaining what a star is for went with it - the stars are the
+     instruction, and a sentence asking her to spend a second is a second
+     spent. */
   return '<div class="rate">' +
     '<b>How was this report?</b>' +
-    '<p>Tap a star. It takes a second and it tells Hemali what to write next.</p>' +
     '<div class="rate-stars">' + [1, 2, 3, 4, 5].map(function (n) {
       return '<button type="button" data-rate="' + n + '" aria-label="' + n +
         (n === 1 ? ' star' : ' stars') + '">' + STAR_IC + '</button>';

@@ -2515,17 +2515,20 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .rsc .rsc-go{margin-top:8px;width:100%}
 
 /* --- the rating ask at the foot of a bought report --- */
-.rate{display:flex;flex-direction:column;align-items:center;gap:6px;
+/* Built to SDFication 773:173359, the card the chat already ends on: a
+   centred question, 8px, then five 22px stars 12px apart. The heading is a
+   step up from the board's 14px because that board is a 736px desktop column
+   and this is a 375px phone, where 14px lands under the body text it is
+   supposed to be introducing. */
+.rate{display:flex;flex-direction:column;align-items:center;gap:8px;
   padding:28px 20px;text-align:center;background:#fff}
-.rate b{font:700 20px/28px var(--sans);letter-spacing:-.01em;color:var(--g900)}
-.rate p{margin:0;font:400 15px/22px var(--sans);color:var(--g600)}
-.rate-stars{display:flex;gap:10px;margin-top:10px}
+.rate b{font:600 16px/22px var(--sans);color:var(--g900)}
+.rate p{margin:0;font:400 14px/20px var(--sans);color:var(--g600)}
+.rate-stars{display:flex;gap:12px}
 .rate-stars button,.rate-stars span{display:block;padding:0;border:0;background:none;
   line-height:0}
-.rate-stars svg{width:34px;height:34px;fill:var(--g200)}
+.rate-stars svg{width:22px;height:22px;fill:var(--g200)}
 .rate-stars button:active svg{fill:#F5A524}
-.rate.done .rate-stars{margin:0 0 10px}
-.rate.done .rate-stars svg{width:26px;height:26px}
 .rate.done .rate-stars .on svg{fill:#F5A524}
 
 /* --- the closing note. Quiet on purpose: it has to be readable without
