@@ -1502,12 +1502,13 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    stub that ran the full page while the card stopped at 86% put a 49px lip of
    lavender out past the card's right edge, which read as a layout bug. */
 .expert-rail{--card-w:86%}
-/* align-items:stretch is what keeps the rail one height once Hemali's card
-   grows a report line on day 2: the three others stretch to match her, and
-   .expert-body below flexes to fill the extra. Without it the rail stair-steps.
+/* Centred, not stretched. Stretching the other three up to Hemali's height
+   bought nothing but air: 50px of empty card above and below a face and a
+   button, which read as a card that had failed to load. They hug their own
+   content and sit on her middle line.
    scroll-behavior:smooth is for the programmatic jump back to card one on a
    day change - a hard scrollLeft=0 teleports. */
-.expert-rail{display:flex;align-items:stretch;gap:10px;
+.expert-rail{display:flex;align-items:center;gap:10px;
   overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   scroll-behavior:smooth;scroll-padding-left:16px;
@@ -1537,10 +1538,16 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* The other three: same box, no purple. A white card with the page's own
    hairline, and the speciality line in grey where Hemali has her countdown in
    white. Identical padding to the lead card, so the rail stays one height. */
-.expert-card.plain{background:#fff;border:1px solid var(--g200);
+.expert-card.plain{background:#fff;border:1px solid var(--g200);padding:0 0 4px;
   box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
-.expert-card.plain .expert-body{box-shadow:none}
-.expert-card.plain .expert-top{color:var(--g500)}
+.expert-card.plain .expert-body{box-shadow:none;gap:10px;padding:4px 12px 8px}
+.expert-card.plain .expert-top{color:var(--g500);padding:10px 10px 0}
+/* 3996:82960: a 50px face, the name and rate beside it, and Start Chat on its
+   own full-width line underneath. Hemali's button is tucked in beside her face
+   because her card has the report stub below it to make room for. */
+.expert-card.plain .expert-row{gap:8px}
+.expert-card.plain .expert-meta{gap:2px}
+.expert-card.plain .expert-meta b{font-size:16px;line-height:24px}
 .expert-top{display:flex;align-items:center;justify-content:center;gap:6px;
   padding:6px 10px 8px;font:700 12px/18px var(--sans);color:#fff;letter-spacing:.01em;
   text-transform:uppercase}
@@ -1550,7 +1557,7 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    cleared the purple shell too and printed a dot on the page behind it. Clipped
    here, only the 3px that bites into the white is ever drawn. A card's own
    box-shadow is not clipped by its own overflow, so the shadow is unaffected. */
-.expert-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;
+.expert-body{flex:1;min-width:0;display:flex;flex-direction:column;
   background:#fff;border-radius:12px;padding:8px 12px;overflow:hidden;
   box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
 .expert-row{display:flex;align-items:center;gap:10px}
@@ -1561,6 +1568,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 .av-ring .dot{position:absolute;right:-1px;top:1px;width:15px;height:15px;border-radius:50%;
   background:var(--s700);border:2px solid #fff}
 .av-ring.sm{width:44px;height:44px;border-width:2px}
+.av-ring.sm2{width:50px;height:50px;border-width:2px}
+.av-ring.sm2 .dot{width:12px;height:12px}
 .expert-meta b{display:block;font:600 16px/22px var(--sans);color:var(--g800)}
 .expert-meta p{margin:0;display:flex;gap:6px;align-items:baseline;
   font:600 14px/20px var(--sans);color:var(--s700)}

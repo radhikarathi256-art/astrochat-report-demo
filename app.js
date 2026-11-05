@@ -3160,33 +3160,48 @@ function renderRail() {
   // mid-swipe.
   if (!rail || rail.children.length) return;
   rail.innerHTML = ASTROS.map(function (a) {
-    /* Only Hemali gets the purple shell, per Figma. The purple is what says
-       "this one is yours and your free minutes are ticking on it"; painting it
-       on all four made it the rail's wallpaper instead of a mark, and the
-       three strangers looked like they were counting down too. */
-    return '<article class="expert-card' + (a.lead ? '' : ' plain') + '">' +
-      // Hemali's strip is the countdown, written by renderDayToday. The others
-      // say what they are for, because a rail of four identical faces gives
-      // her no reason to pick one.
-      '<div class="expert-top"' + (a.lead ? ' id="countdownLine"' : '') + '>' +
-        (a.lead ? '' : '\u2726 ' + esc(a.top)) + '</div>' +
+    var price = (a.was ? '<s>\u20b9' + a.was + '/min</s> ' : '') +
+      '<strong>\u20b9' + a.now + '/min</strong>';
+    /* Two cards, two Figma nodes. Hemali is 3203:205266: purple shell, 68px
+       face, Continue Chat tucked beside it, and the report stub torn off the
+       bottom. The others are 3996:82960: white, 50px face, and the button on
+       its own full-width line under the row. The purple is what says "this one
+       is yours and your free minutes are ticking on it"; on all four it
+       stopped being a mark and became the rail's wallpaper. */
+    if (!a.lead) {
+      return '<article class="expert-card plain">' +
+        // Not in 3996:82960, which is the component on its own. Kept because
+        // three strangers with no line between them give her no reason to
+        // pick one, and this is the slot Hemali's countdown uses.
+        '<div class="expert-top">\u2726 ' + esc(a.top) + '</div>' +
+        '<div class="expert-body">' +
+          '<div class="expert-row">' +
+            '<span class="av-ring sm2"><img src="' + a.img + '" alt="' + esc(a.n) + '">' +
+              '<i class="dot"></i></span>' +
+            '<div class="expert-meta">' +
+              '<b>' + esc(a.n) + '</b><p>' + price + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn primary" type="button" ' +
+            'data-toast="Other experts are not part of this demo">Start Chat</button>' +
+        '</div>' +
+      '</article>';
+    }
+    return '<article class="expert-card">' +
+      // Written by renderDayToday, which owns the countdown.
+      '<div class="expert-top" id="countdownLine"></div>' +
       '<div class="expert-body">' +
         '<div class="expert-row">' +
           '<span class="av-ring"><img src="' + a.img + '" alt="' + esc(a.n) + '">' +
             '<i class="dot"></i></span>' +
           '<div class="expert-meta">' +
-            '<div><b>' + esc(a.n) + '</b><p>' +
-              (a.was ? '<s>\u20b9' + a.was + '/min</s> ' : '') +
-              '<strong>\u20b9' + a.now + '/min</strong></p></div>' +
-            (a.lead
-              ? '<button class="btn primary" type="button" data-chat>Continue Chat</button>'
-              : '<button class="btn primary" type="button" ' +
-                'data-toast="Other experts are not part of this demo">Start Chat</button>') +
+            '<div><b>' + esc(a.n) + '</b><p>' + price + '</p></div>' +
+            '<button class="btn primary" type="button" data-chat>Continue Chat</button>' +
           '</div>' +
         '</div>' +
         // Day 2's report line, written by renderExRep. Hemali's card only: the
         // report is hers, so it belongs under her and nowhere else on the rail.
-        (a.lead ? '<div id="exRepSlot"></div>' : '') +
+        '<div id="exRepSlot"></div>' +
       '</div>' +
     '</article>';
   }).join('');
