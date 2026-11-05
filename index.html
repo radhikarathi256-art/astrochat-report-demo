@@ -1122,6 +1122,22 @@
     <button class="btn primary" type="button" id="youSave">Save and continue</button>
   </div>
 
+  <!-- Rating, built to SDFication 977:180579. The stars at the foot of the
+       report are only the way in. Tapping one opens this, carrying the count
+       she tapped, and the sentence is asked here where there is room for it.
+       Submit and Skip both count as rated, because the stars were already
+       given before this opened. -->
+  <div class="sheet rate-sheet" id="sheet-rate" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="rs-body">
+      <b class="rs-q">How was this report?</b>
+      <div class="rate-stars big" id="rateSheetStars"></div>
+      <textarea id="rateNote" rows="5" placeholder="Add a comment.."></textarea>
+      <button class="btn primary" type="button" id="rateSubmit">Submit</button>
+      <button class="btn text" type="button" id="rateSkip">Skip</button>
+    </div>
+  </div>
+
   <div class="sheet guna-sheet" id="sheet-guna" aria-hidden="true">
     <button class="pays-x" type="button" data-close-sheet aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round"/></svg>

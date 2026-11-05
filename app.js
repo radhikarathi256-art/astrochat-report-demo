@@ -869,6 +869,7 @@ var state = {
   repSeen: false,
   // Stars given at the foot of the report she bought, 0 for not asked yet.
   rated: 0,
+  rating: 0,
   timers: []
 };
 
@@ -1070,6 +1071,9 @@ function openSheet(name) {
   state.sheet = name;
   if (name === 'lang') renderLangList();
   if (name === 'pay') { paintBought(); paintWallet(); }
+  // Opened fresh every time, so a sentence she typed and then backed out of is
+  // not sitting there waiting the next time she taps a star.
+  if (name === 'rate') $('#rateNote').value = '';
   reveal($('#scrim'));
   reveal(el);
   el.setAttribute('aria-hidden', 'false');
@@ -1520,11 +1524,24 @@ function rateCard() {
      spent. */
   return '<div class="rate">' +
     '<b>How was this report?</b>' +
-    '<div class="rate-stars">' + [1, 2, 3, 4, 5].map(function (n) {
-      return '<button type="button" data-rate="' + n + '" aria-label="' + n +
-        (n === 1 ? ' star' : ' stars') + '">' + STAR_IC + '</button>';
-    }).join('') + '</div>' +
+    '<div class="rate-stars">' + starRow(0) + '</div>' +
   '</div>';
+}
+
+/* One row of five tappable stars, lit up to n. Used twice: flat on the report
+   and again inside the sheet, where it has to repaint as she slides across. */
+function starRow(n) {
+  return [1, 2, 3, 4, 5].map(function (i) {
+    return '<button type="button" class="' + (i <= n ? 'on' : '') +
+      '" data-rate="' + i + '" aria-label="' + i +
+      (i === 1 ? ' star' : ' stars') + '">' + STAR_IC + '</button>';
+  }).join('');
+}
+
+function paintRateStars() {
+  $('#rateSheetStars').innerHTML = starRow(state.rating);
+  var rc = $('#read .rate .rate-stars');
+  if (rc) rc.innerHTML = starRow(state.rating);
 }
 
 
@@ -3797,6 +3814,7 @@ function restart() {
   state.repToastPending = false;
   state.repSeen = false;
   state.rated = 0;
+  state.rating = 0;
   state.readSeen = false;
   state.shelfTipSeen = false;
   hideRepToast();
@@ -3887,16 +3905,33 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#rateSubmit,#rateSkip,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
   if (!t) return;
 
-  // The stars at the foot of the report. Repainting the whole body would throw
-  // away her scroll position, so only the card is swapped.
+  /* A star, either at the foot of the report or inside the sheet it opens.
+     The count is held on state.rating until she finishes, so backing out of
+     the sheet does not leave the report claiming she rated it. */
   if (t.hasAttribute('data-rate')) {
-    state.rated = +t.getAttribute('data-rate');
-    var rc = t.closest('.rate');
+    state.rating = +t.getAttribute('data-rate');
+    paintRateStars();
+    if (state.sheet !== 'rate') openSheet('rate');
+    return;
+  }
+
+  // Submit and Skip are the same outcome for the report: the stars are the
+  // rating and they were given before this sheet opened. Submit just also
+  // carries the sentence, so it is the only one that says the sentence landed.
+  if (t.id === 'rateSubmit' || t.id === 'rateSkip') {
+    var note = $('#rateNote').value.trim();
+    state.rated = state.rating;
+    closeSheet();
+    // Only the card is repainted. Repainting the report body would throw away
+    // the scroll position she is standing at.
+    var rc = $('#read .rate');
     if (rc) rc.outerHTML = rateCard();
-    toast('Thanks, that helps Hemali', 'success');
+    toast(t.id === 'rateSubmit' && note
+      ? 'Sent to Hemali with your rating'
+      : 'Thanks, that helps Hemali', 'success');
     return;
   }
 
