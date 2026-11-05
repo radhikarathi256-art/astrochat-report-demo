@@ -3160,7 +3160,11 @@ function renderRail() {
   // mid-swipe.
   if (!rail || rail.children.length) return;
   rail.innerHTML = ASTROS.map(function (a) {
-    return '<article class="expert-card">' +
+    /* Only Hemali gets the purple shell, per Figma. The purple is what says
+       "this one is yours and your free minutes are ticking on it"; painting it
+       on all four made it the rail's wallpaper instead of a mark, and the
+       three strangers looked like they were counting down too. */
+    return '<article class="expert-card' + (a.lead ? '' : ' plain') + '">' +
       // Hemali's strip is the countdown, written by renderDayToday. The others
       // say what they are for, because a rail of four identical faces gives
       // her no reason to pick one.
@@ -3180,6 +3184,9 @@ function renderRail() {
                 'data-toast="Other experts are not part of this demo">Start Chat</button>') +
           '</div>' +
         '</div>' +
+        // Day 2's report line, written by renderExRep. Hemali's card only: the
+        // report is hers, so it belongs under her and nowhere else on the rail.
+        (a.lead ? '<div id="exRepSlot"></div>' : '') +
       '</div>' +
     '</article>';
   }).join('');
@@ -3240,14 +3247,26 @@ function renderDayToday() {
   state.claimed = state.answered ? day : day - 1;
   renderLadder();
 
-  /* Today's only pitch is the Personalised Guidance tile. The report used to
-     also ride under the expert rail as a ticket stub on day 2, carrying the
-     same hook, the same book and the same destination as the tile six inches
-     below it - the same tap offered twice, on the one screen that is supposed
-     to feel like hers. The tile is a tile among tiles rather than a nudge, so
-     it stays put all five days and the rail goes back to being only experts. */
+  renderExRep();
   $('#guideSlot').hidden = false;
   renderGuideTile();
+}
+
+/* Day 2's second ask, inside Hemali's card. It is deliberately the quiet one:
+   a line of text and a 32px outlined button, under a Continue Chat that stays
+   the loudest thing on the card. Day 1 she only just met the offer in the
+   Personalised Guidance tile, so day 2 is the first day worth asking twice. */
+function renderExRep() {
+  var slot = $('#exRepSlot');
+  if (!slot) return;
+  var lead = state.day === 2 && !state.paid ? leadReport() : null;
+  if (!lead) { slot.innerHTML = ''; return; }
+  var c = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
+  slot.innerHTML = '<div class="expert-report">' +
+    '<span class="er-t"><b>' + esc(c.t) + '</b><small>' + esc(c.s) + '</small></span>' +
+    '<button class="btn sm ghost" type="button" data-pick="' + lead.id + '">' +
+      '\u20b9' + PRICE + '</button>' +
+  '</div>';
 }
 
 /* The report as one tile among her guidance — same object as the tarot and

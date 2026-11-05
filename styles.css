@@ -1502,9 +1502,15 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    stub that ran the full page while the card stopped at 86% put a 49px lip of
    lavender out past the card's right edge, which read as a layout bug. */
 .expert-rail{--card-w:86%}
-.expert-rail{display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;
+/* align-items:stretch is what keeps the rail one height once Hemali's card
+   grows a report line on day 2: the three others stretch to match her, and
+   .expert-body below flexes to fill the extra. Without it the rail stair-steps.
+   scroll-behavior:smooth is for the programmatic jump back to card one on a
+   day change - a hard scrollLeft=0 teleports. */
+.expert-rail{display:flex;align-items:stretch;gap:10px;
+  overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
-  scroll-padding-left:16px;
+  scroll-behavior:smooth;scroll-padding-left:16px;
   scrollbar-width:none;margin:0 -16px;padding:6px 16px 8px}
 .expert-rail::-webkit-scrollbar{display:none}
 /* Matches the Today page in the daily-reward prototype: a purple gradient shell
@@ -1516,10 +1522,25 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    can never put the first one in the middle of the rail and card one would sit
    permanently shrunk at the left. Start-snapping lands every card, including
    the first, on the page's own 16px gutter. */
-.expert-card{flex:0 0 var(--card-w);scroll-snap-align:start;
+/* min-width:0 or the card is as wide as its widest unbreakable line rather
+   than 86%: a flex item's automatic minimum size is its min-content, and the
+   report row's two nowrap lines are longer than the card. */
+.expert-card{flex:0 0 var(--card-w);min-width:0;scroll-snap-align:start;
+  display:flex;flex-direction:column;
   border-radius:16px;padding:0 4px 4px;
   background:linear-gradient(180deg,#7D58A1,#4A3460);
-  transform-origin:50% 50%;will-change:transform}
+  transform-origin:50% 50%;will-change:transform;
+  /* Own compositor layer, so the per-frame scale during a swipe repaints
+     nothing. Without it the four cards re-rasterise on every rAF and the rail
+     stutters on the way past. */
+  backface-visibility:hidden;transform:translateZ(0)}
+/* The other three: same box, no purple. A white card with the page's own
+   hairline, and the speciality line in grey where Hemali has her countdown in
+   white. Identical padding to the lead card, so the rail stays one height. */
+.expert-card.plain{background:#fff;border:1px solid var(--g200);
+  box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
+.expert-card.plain .expert-body{box-shadow:none}
+.expert-card.plain .expert-top{color:var(--g500)}
 .expert-top{display:flex;align-items:center;justify-content:center;gap:6px;
   padding:6px 10px 8px;font:700 12px/18px var(--sans);color:#fff;letter-spacing:.01em;
   text-transform:uppercase}
@@ -1529,7 +1550,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    cleared the purple shell too and printed a dot on the page behind it. Clipped
    here, only the 3px that bites into the white is ever drawn. A card's own
    box-shadow is not clipped by its own overflow, so the shadow is unaffected. */
-.expert-body{background:#fff;border-radius:12px;padding:8px 12px;overflow:hidden;
+.expert-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;
+  background:#fff;border-radius:12px;padding:8px 12px;overflow:hidden;
   box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
 .expert-row{display:flex;align-items:center;gap:10px}
 .expert-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
@@ -1548,7 +1570,8 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* Entry B — one row, ~56px. A second full-width button competed with Continue
    Chat at identical width, and the extra ~160px pushed Daily reward below the
    fold. Chat has to win this card, so the report gets a small outlined button. */
-.expert-report{display:flex;align-items:center;gap:10px;margin:2px 0 4px}
+.expert-report{display:flex;align-items:center;gap:10px;
+  margin:8px 0 2px;padding-top:8px;border-top:1px solid var(--g100)}
 .er-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .er-t b{font:600 15px/20px var(--sans);color:var(--g900);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
