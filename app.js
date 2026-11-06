@@ -3961,7 +3961,7 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#rateSubmit,#rateSkip,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#youBack,#rateSubmit,#rateSkip,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
   if (!t) return;
 
   /* A star, either at the foot of the report or inside the sheet it opens.
@@ -4038,6 +4038,9 @@ document.addEventListener('click', function (e) {
     openSheet('you');
     return;
   }
+  // Back off the form is a cancel, not a save: openPay reopens the receipt she
+  // came from, and nothing she typed here was written to it.
+  if (t.id === 'youBack') { openPay(); return; }
   if (t.id === 'youSave') {
     var bad = 0;
     YOU_FIELDS.forEach(function (p) {

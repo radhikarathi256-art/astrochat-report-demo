@@ -1089,8 +1089,21 @@
        boxes, because this is the same question asked on a different screen.
        Saving drops her back on the pay sheet she left, with the price
        untouched - changing a birth time is a correction, not a new purchase. -->
-  <div class="sheet" id="sheet-you" aria-hidden="true">
-    <div class="grab"></div>
+  <!-- A page, not a bottom sheet. Onboarding 4885:4899 is a full screen with
+       its own back arrow, and it has to be: this is eight controls and a
+       footnote, which a half-height sheet can only show by scrolling, and the
+       keyboard then eats what is left. So it covers the phone and comes in
+       from the side, the way a screen does. -->
+  <div class="sheet page-sheet" id="sheet-you" aria-hidden="true">
+    <!-- Back, not a grab handle. A full page cannot be dragged shut, so the way
+         out is the arrow, and it lands her on the receipt she left rather than
+         on the page behind it. -->
+    <div class="ps-head">
+      <button class="ps-back" type="button" id="youBack" aria-label="Back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="#1D2939" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="ps-body">
     <!-- Onboarding 4885:4899, the screen that collects these four facts in the
          first place. Same order, same one-per-row stacking, same 24 between
          them, same gender radios and the same escape hatch under the birth
@@ -1137,7 +1150,13 @@
         <p class="mt-help">Note: We can still achieve 80% accurate predictions without your time of birth</p>
       </div>
     </div>
-    <button class="btn primary" type="button" id="youSave">Save Information</button>
+    </div>
+    <!-- Pinned under the scroll, not after it. The form is taller than the
+         phone, and a Save that has to be scrolled to is a Save that looks
+         missing. -->
+    <div class="ps-foot">
+      <button class="btn primary" type="button" id="youSave">Save Information</button>
+    </div>
   </div>
 
   <!-- Rating, built to SDFication 977:180579. The stars at the foot of the

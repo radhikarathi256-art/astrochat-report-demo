@@ -3241,6 +3241,26 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
   transform:translateY(102%);transition:transform .3s cubic-bezier(.32,.72,0,1);
   max-height:88%;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 .sheet.on{transform:none}
+/* A sheet that behaves like a screen: fills the phone, square corners, and
+   slides in from the left edge instead of up from the bottom. Same .on class
+   and same openSheet/closeSheet, so only the geometry changes - the transform
+   is overridden in both states or it would come in from the bottom and leave
+   to the side. */
+.sheet.page-sheet{top:0;max-height:none;border-radius:0;padding:0;gap:0;
+  overflow:hidden;transform:translateX(-100%)}
+.sheet.page-sheet.on{transform:none}
+.ps-head{flex:none;display:flex;align-items:center;min-height:56px;
+  padding:calc(8px + var(--sat,env(safe-area-inset-top,0px))) 8px 8px}
+.ps-back{display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border:0;border-radius:50%;background:none;padding:0}
+.ps-back:active{background:var(--g100)}
+/* The only thing that scrolls. min-height:0 because a flex child's default
+   min-height is auto, which would let the form push the footer off screen
+   instead of scrolling inside its own box. */
+.ps-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:4px 20px 20px}
+.ps-foot{flex:none;padding:12px 20px calc(16px + var(--sab,env(safe-area-inset-bottom,0px)));
+  background:#fff;box-shadow:0 -1px 0 var(--g200)}
 @media (prefers-reduced-motion:reduce){.sheet,.scrim{transition:none}}
 .grab{width:40px;height:4px;border-radius:2px;background:var(--g200);margin:-6px auto 2px;flex:none}
 .sheet h3{margin:0;font:700 18px/26px var(--sans);color:var(--g900)}
