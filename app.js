@@ -3201,6 +3201,10 @@ function renderRail() {
       '</div>' +
     '</article>';
   }).join('');
+  // One dot per card, Figma 3996:82964. The board draws three for four cards,
+  // which is the iOS windowed indicator; with four experts and no plan for a
+  // fifth, one each is the same picture and can actually be counted.
+  $('#railDots').innerHTML = ASTROS.map(function () { return '<i></i>'; }).join('');
   railScale();
   rail.addEventListener('scroll', function () { railScale(); }, { passive: true });
 }
@@ -3225,7 +3229,9 @@ function railScale() {
     var d = Math.abs(c.getBoundingClientRect().left - edge);
     if (d < bestD) { bestD = d; best = i; }
   });
+  var dots = $('#railDots').children;
   [].forEach.call(rail.children, function (c, i) {
+    if (dots[i]) dots[i].classList.toggle('on', i === best);
     c.classList.toggle('is-snap', i === best);
   });
 }
@@ -3276,6 +3282,12 @@ function renderExRep() {
   var lead = state.day === 2 && !state.paid ? leadReport() : null;
   if (!lead) { slot.innerHTML = ''; return; }
   var c = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
+  /* "Report" comes off the end here. The row is 262px wide inside a card that
+     is now 81% of the page, and the full title ellipsised to "Marriage
+     Prediction R...". The cover art is 40px to its left and the second line
+     ends in a price, so the line has already said what kind of thing this is
+     twice before the word arrives. */
+  var t = c.t.replace(/ Report$/, '');
   slot.innerHTML =
     // The notches are the tear. They sit on the hairline and are painted in
     // the page's own background, so the card reads as perforated there.
@@ -3291,7 +3303,7 @@ function renderExRep() {
          was the one thing on the line she could already see. What is left is
          the two things the line is for - it is about her chart, and it is
          ₹49, which is less than she is expecting. */
-      '<span class="er-t"><b>' + esc(c.t) + '</b>' +
+      '<span class="er-t"><b>' + esc(t) + '</b>' +
         '<small>From your chart \u00b7 \u20b9' + PRICE + '</small></span>' +
       '<i class="er-go"><svg viewBox="0 0 14 14" aria-hidden="true">' +
         '<path d="M2 7h10M7.6 2.6 12 7l-4.4 4.4"/></svg></i>' +

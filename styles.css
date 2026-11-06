@@ -1496,24 +1496,31 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* The rail. It bleeds to both screen edges so the next card can show a sliver
    of itself: a card cut off by the screen is the only honest way to say there
-   is more to the right, and it costs no chevron and no dots. 16px of padding
-   puts the first card back on the page's own gutter. */
-/* One width for the card and the stub under it. They are one object, so a
-   stub that ran the full page while the card stopped at 86% put a 49px lip of
-   lavender out past the card's right edge, which read as a layout bug. */
-.expert-rail{--card-w:86%}
+   is more to the right. 16px of padding puts the first card back on the page's
+   own gutter.
+   Figma 3996:82957 draws a 266px card in a 328px content box, which is 81%,
+   and the 50px of next card it leaves showing is what makes the rail read as
+   a rail. 86% left 38px, which is a stripe rather than a card. */
+.expert-rail{--card-w:81%}
 /* Centred, not stretched. Stretching the other three up to Hemali's height
    bought nothing but air: 50px of empty card above and below a face and a
    button, which read as a card that had failed to load. They hug their own
    content and sit on her middle line.
    scroll-behavior:smooth is for the programmatic jump back to card one on a
    day change - a hard scrollLeft=0 teleports. */
-.expert-rail{display:flex;align-items:center;gap:10px;
+.expert-rail{display:flex;align-items:center;gap:12px;
   overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   scroll-behavior:smooth;scroll-padding-left:16px;
   scrollbar-width:none;margin:0 -16px;padding:6px 16px 8px}
 .expert-rail::-webkit-scrollbar{display:none}
+/* Figma 3996:82964 — 5px dots 3px apart, centred under the rail, and the one
+   she is on stretches into an 8px pill rather than just changing colour, so
+   the indicator still reads at a glance on the warm background. */
+.rail-dots{display:flex;justify-content:center;gap:3px;margin-top:2px}
+.rail-dots i{width:5px;height:5px;border-radius:999px;background:var(--g300);
+  transition:width .28s cubic-bezier(.33,1,.68,1),background .28s}
+.rail-dots i.on{width:8px;background:var(--brand)}
 /* Matches the Today page in the daily-reward prototype: a purple gradient shell
    with the white card inset, and Continue Chat stacked beside the avatar.
    86% leaves a 14% sliver of the next one. Every card is the same height
