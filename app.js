@@ -3164,16 +3164,12 @@ function renderRail() {
       '<strong>\u20b9' + a.now + '/min</strong>';
     /* Two cards, two Figma nodes. Hemali is 3203:205266: purple shell, 68px
        face, Continue Chat tucked beside it, and the report stub torn off the
-       bottom. The others are 3996:82960: white, 50px face, and the button on
-       its own full-width line under the row. The purple is what says "this one
+       bottom. The others are 3996:82960 exactly: white, 50px face, name, rate,
+       full-width button, nothing above it. The purple is what says "this one
        is yours and your free minutes are ticking on it"; on all four it
        stopped being a mark and became the rail's wallpaper. */
     if (!a.lead) {
       return '<article class="expert-card plain">' +
-        // Not in 3996:82960, which is the component on its own. Kept because
-        // three strangers with no line between them give her no reason to
-        // pick one, and this is the slot Hemali's countdown uses.
-        '<div class="expert-top">\u2726 ' + esc(a.top) + '</div>' +
         '<div class="expert-body">' +
           '<div class="expert-row">' +
             '<span class="av-ring sm2"><img src="' + a.img + '" alt="' + esc(a.n) + '">' +
@@ -3206,32 +3202,31 @@ function renderRail() {
     '</article>';
   }).join('');
   railScale();
-  rail.addEventListener('scroll', function () {
-    if (railTick) return;
-    railTick = requestAnimationFrame(function () { railTick = 0; railScale(); });
-  });
+  rail.addEventListener('scroll', function () { railScale(); }, { passive: true });
 }
 
-var railTick = 0;
-/* Her "the smaller card grows as it arrives". It is polish, not the fix - the
-   fix was making every card the same height - so it is kept gentle: 7% down at
-   the far edge, back to true size as the card reaches the middle. Transform
-   and opacity only, so nothing reflows and the rail's own height never moves. */
+/* The reviews strip's effect, exactly: the card the rail has snapped to sits
+   at full size and its neighbours sit back, driven by one class and a CSS
+   transition rather than a transform written on every frame.
+
+   This replaces a per-frame rAF that scaled all four cards continuously by
+   distance. That version had to fire sixty times a second to look like
+   anything, and it still only ever moved a card 4% because any more made the
+   half-card at the screen edge look broken. One class and a 280ms ease does
+   the same job with no work during the swipe, and the growth happens when she
+   lets go, which is when she is actually looking at it. */
 function railScale() {
   var rail = $('#expertRail');
   if (!rail || !rail.clientWidth) return;
-  // The focused slot is the rail's left gutter, because that is where the
-  // cards snap to. Measuring from the centre instead left card one at 0.99
-  // forever, since an 86%-wide card cannot sit in the middle at scrollLeft 0.
-  var focus = rail.scrollLeft + 16;
-  [].forEach.call(rail.children, function (c) {
-    var d = Math.min(Math.abs(c.offsetLeft - focus) / rail.clientWidth, 1);
-    /* Gentler than it was. At 7% down and 30% faded the sliver at the screen
-       edge looked like a card that had failed to paint, and its top and bottom
-       sat visibly off the focused card's. 4% and 12% is enough to say "this
-       one is next" and little enough that the rail still reads as one row. */
-    c.style.transform = 'scale(' + (1 - d * 0.04).toFixed(3) + ')';
-    c.style.opacity = (1 - d * 0.12).toFixed(3);
+  // "Snapped" is the card whose left edge is nearest the rail's own, which is
+  // where scroll-snap parks it. Same rule as markSnappedReview.
+  var edge = rail.getBoundingClientRect().left + 16, best = 0, bestD = Infinity;
+  [].forEach.call(rail.children, function (c, i) {
+    var d = Math.abs(c.getBoundingClientRect().left - edge);
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  [].forEach.call(rail.children, function (c, i) {
+    c.classList.toggle('is-snap', i === best);
   });
 }
 

@@ -1526,22 +1526,25 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 /* min-width:0 or the card is as wide as its widest unbreakable line rather
    than 86%: a flex item's automatic minimum size is its min-content, and the
    report row's two nowrap lines are longer than the card. */
+/* Same resting-and-snapped treatment as the reviews strip (.review /
+   .is-snap): cards sit back at 94% and the one the rail has parked on comes
+   up to full size on a 280ms ease. The reviews sit back at 91%, but these are
+   86%-wide cards against the reviews' 268px, so the same ratio took 26px off
+   the edge of the screen and the half-card past the fold looked broken. */
 .expert-card{flex:0 0 var(--card-w);min-width:0;scroll-snap-align:start;
   display:flex;flex-direction:column;
   border-radius:16px;padding:0 4px 4px;
   background:linear-gradient(180deg,#7D58A1,#4A3460);
-  transform-origin:50% 50%;will-change:transform;
-  /* Own compositor layer, so the per-frame scale during a swipe repaints
-     nothing. Without it the four cards re-rasterise on every rAF and the rail
-     stutters on the way past. */
-  backface-visibility:hidden;transform:translateZ(0)}
+  transform:scale(.94);transform-origin:center;backface-visibility:hidden;
+  transition:transform .28s cubic-bezier(.33,1,.68,1)}
+.expert-card.is-snap{transform:scale(1)}
 /* The other three: same box, no purple. A white card with the page's own
-   hairline, and the speciality line in grey where Hemali has her countdown in
-   white. Identical padding to the lead card, so the rail stays one height. */
-.expert-card.plain{background:#fff;border:1px solid var(--g200);padding:0 0 4px;
-  box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
-.expert-card.plain .expert-body{box-shadow:none;gap:10px;padding:4px 12px 8px}
-.expert-card.plain .expert-top{color:var(--g500);padding:10px 10px 0}
+   hairline. align-self:center is what lets them hug their own content and sit
+   on Hemali's middle instead of stretching to her height, which is the whole
+   point of her card being the tall one. */
+.expert-card.plain{align-self:center;background:#fff;border:1px solid var(--g200);
+  padding:0;box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
+.expert-card.plain .expert-body{flex:none;box-shadow:none;gap:10px;padding:14px 12px}
 /* 3996:82960: a 50px face, the name and rate beside it, and Start Chat on its
    own full-width line underneath. Hemali's button is tucked in beside her face
    because her card has the report stub below it to make room for. */
