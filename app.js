@@ -802,6 +802,13 @@ var WALLET_AT = { 1: 20, 2: 29, 3: 40, 4: 53, 5: 69 };   // start of each day, p
 
 var state = {
   day: 1,
+  /* Which of the two five-day stories is being shown. `new` is the woman who
+     has not bought, which is what the day script is written for. `bought` is
+     the same five days for a woman who paid on day 1: restart() seeds that
+     purchase instead of clearing it, so days 2-5 are the days *after* a sale
+     rather than five more attempts at one. A demo control - the real app has
+     no such flag, it just reads `owned`. */
+  track: 'new',
   answered: false,
   entry: 'today-a',
   wallet: 20,
@@ -2569,7 +2576,25 @@ function esc(s) {
    chat was the only way to tell whether the card works for all three or only
    for the one it was written against. The app still picks one and sticks to
    it — the switch just says which. */
-function leadReport() { return reportById(state.lead); }
+/* One extra rule on top of the switch: never pitch a report she already owns.
+   Once the lead is bought the sell moves to the next book she does not have,
+   in REPORTS order. That one rule is the whole bought track - the push, the
+   chat bubble, the offer card, the expert stub, the Today task and the History
+   chapter all read this function, so all six move on together. */
+function leadReport() {
+  if (!owns(state.lead)) return reportById(state.lead);
+  var next = REPORTS.filter(function (x) { return !owns(x.id); })[0];
+  return next || reportById(state.lead);
+}
+
+/* Did the money go out on the day being shown. The hours after a payment
+   belong to the thing she paid for - read it, rate it, ask Hemali for the
+   remedies - so every sell surface stays shut for the rest of that day and
+   opens again the next morning with the next report. `state.paid` cannot
+   answer this: it is true on day 1 and still true on day 5. */
+function boughtToday() {
+  return state.buys.some(function (b) { return b.day === state.day; });
+}
 
 /* The pointers ARE the sell. A title and a house name tell her nothing; the
    list of questions tells her whether her own question is answered. So the
@@ -3275,7 +3300,11 @@ function renderDayToday() {
 function renderExRep() {
   var slot = $('#exRepSlot');
   if (!slot) return;
-  var lead = state.day === 2 && !state.paid ? leadReport() : null;
+  /* Day 2 only on the track where nothing has been bought. On the bought
+     track day 2 is the morning after the sale, which is the first day the
+     next report is pitched at all - so the stub runs then too, and the gate
+     is "not bought today", not "not bought ever". */
+  var lead = state.day === 2 && !boughtToday() ? leadReport() : null;
   if (!lead) { slot.innerHTML = ''; return; }
   var c = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
   /* "Report" comes off the end here. The row is 262px wide inside a card that
@@ -3334,7 +3363,11 @@ function renderGuideTile() {
       '</div>';
     return;
   }
-  if (!state.paid) {
+  /* The sell tile, and the gate is the day rather than the account: a report
+     bought this morning owns the rest of today, and tomorrow Today goes back
+     to work on the next one. The report she paid for is not lost, it is on her
+     shelf in My Reports - this tile is the shop, not the library. */
+  if (!boughtToday()) {
     var lead = leadReport();
     if (!lead) { $('#guideAlt').hidden = false; $('#guideSlot').hidden = true;
                  $('#guideSlot').innerHTML = ''; return; }
@@ -3840,6 +3873,36 @@ function setLead(id) {
    pays part of it, pays none of it - without replaying five days three times.
    Set in place rather than through restart(), because the point of it is to
    change the number on a sheet that is already open. */
+/* Picking a track rewinds the same way picking a day does, for the same
+   reason: whether a purchase exists changes what half the surfaces on screen
+   are selling, and re-rendering in place would leave one of them mid-sale. */
+function setTrack(t) {
+  state.track = t;
+  $$('.switcher [data-track]').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-track') === t);
+  });
+  restart();
+}
+
+/* The one purchase the bought track stands on. Stamped day 1 and `ready`,
+   because the point of this track is the days *after* a sale, not the minutes
+   after it: nothing here should be mid-write. Wallet comes off the same way a
+   real payment takes it, so day 2's balance is honest about having spent. */
+function seedBought() {
+  var r = reportById(state.lead);
+  if (!r) return;
+  state.paid = true;
+  state.owned = [r.id];
+  state.buys = [{ id: r.id, ed: editionLabel(r), time: '9:12 AM', day: 1, ready: true }];
+  state.wallet = Math.max(0, state.wallet - PRICE);
+  // She has read it, so the shelf tip and the rating prompt have already had
+  // their turn. Leaving them armed makes day 4 look like day 1 again.
+  state.repSeen = true;
+  state.readSeen = true;
+  state.repToastSeen = true;
+  state.shelfTipSeen = true;
+}
+
 function setWallet(n) {
   state.wallet = n;
   $$('.switcher [data-wset]').forEach(function (b) {
@@ -3880,6 +3943,10 @@ function restart() {
   // History. After that the badge has nothing new to count.
   state.histDot = state.day === 1;
   state.stack = [];
+  // Everything above cleared the slate. On the bought track one purchase is
+  // then put back, before a single render runs, so no surface ever paints the
+  // unbought version of itself first and corrects itself a frame later.
+  if (state.track === 'bought') seedBought();
   renderNav();
   $('#notifDlg').hidden = true;
   paintWallet();
@@ -3961,7 +4028,7 @@ $('#match').addEventListener('focusout', function (e) {
 });
 
 document.addEventListener('click', function (e) {
-  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#youBack,#rateSubmit,#rateSkip,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-track],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#youBack,#rateSubmit,#rateSkip,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
   if (!t) return;
 
   /* A star, either at the foot of the report or inside the sheet it opens.
@@ -4132,8 +4199,15 @@ document.addEventListener('click', function (e) {
     // The notification names one report, so it has to land on that report's
     // page. Dropping her on the picker would ask her to make the same choice
     // twice.
-    if (!state.paid && dayData().lead) {
-      state.pick = dayData().lead;
+    /* `leadReport()`, not `dayData().lead`. The notification's words are
+       written off the pitched report, so landing on the day script's own id
+       sent her to a different book than the one she just read about - day 3's
+       push sold Marriage Prediction and opened Monthly Wealth. Same source
+       for the line and the landing, and on the bought track that source has
+       already moved past the report she owns. */
+    var pl = !boughtToday() && !dayData().quiet && leadReport();
+    if (pl) {
+      state.pick = pl.id;
       renderReport();
       $('#report [data-scroll]').scrollTop = 0;
       if (state.screen !== 'report') go('report');
@@ -4166,6 +4240,7 @@ document.addEventListener('click', function (e) {
   if (t.id === 'scrim')   { closeSheet(); return; }
   if (t.id === 'restart') { restart(); return; }
 
+  if (t.hasAttribute('data-track')) { setTrack(t.getAttribute('data-track')); return; }
   if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day')); return; }
   if (t.hasAttribute('data-lead')) { setLead(t.getAttribute('data-lead')); return; }
   if (t.hasAttribute('data-wset')) { setWallet(+t.getAttribute('data-wset')); return; }

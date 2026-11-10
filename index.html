@@ -49,6 +49,18 @@
   <button type="button" data-day="4">Day 4 · Last ask<small>Same as day 3; after today the nudging stops</small></button>
   <button type="button" data-day="5">Day 5 · Nudging stops<small>Every surface quiet, reports stay reachable</small></button>
   <hr>
+  <!-- Two people walk these five days and only one of them has paid. The day
+       lines above are written for the one who has not. This picks the other:
+       she bought on day 1, so that report is already on her shelf and from
+       day 2 Today sells the next one instead. Days 2-5 read completely
+       differently with this on, which is why it is a track and not a chip on
+       one screen. -->
+  <b class="sw-lbl">Who is walking the days</b>
+  <div class="sw-lead">
+    <button type="button" data-track="new" class="on">Has not bought</button>
+    <button type="button" data-track="bought">Bought on day 1</button>
+  </div>
+  <hr>
   <!-- Which report the app pitches. The script pins it to Partner, because
        that is the house Hemali named; these are here so the same days can be
        read with the other two books behind it, where the promise is a score
