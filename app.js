@@ -533,14 +533,23 @@ function bindForm(el) {
   $$('input', el).forEach(function (inp) {
     var f = inp.closest('.fld'), kind = inp.dataset.kind;
     if (kind === 'date' || kind === 'time') {
-      inp.addEventListener('click', function () {
-        var p = document.createElement('input'); p.type = kind; p.style.cssText = 'position:absolute;opacity:0;pointer-events:none;left:0;top:0';
-        p.value = kind === 'date' ? (fieldVal(inp.id) || '1995-06-15') : (fieldVal(inp.id) || '09:00');
-        f.appendChild(p);
-        p.addEventListener('change', function () { setField(inp.id, p.value); inp.value = kind === 'date' ? prettyDate(p.value) : prettyTime(p.value); f.classList.toggle('empty', !p.value); p.remove(); syncK(el); });
-        p.addEventListener('blur', function () { setTimeout(function () { p.remove(); }, 200); });
-        if (p.showPicker) { try { p.showPicker(); return; } catch (e) {} }
-        p.focus(); p.click();
+      /* Date of Birth and Time of Birth used to spawn a throwaway native input with
+         pointer-events:none and then call showPicker(). iOS will not open its wheel
+         for an element it cannot tap, so both fields did nothing on a phone. Now the
+         real native input sits invisibly over the field, so the tap lands on it and
+         the OS picker always opens. The pretty text under it stays as the display. */
+      var p = document.createElement('input');
+      p.type = kind;
+      p.className = 'pick';
+      p.setAttribute('aria-label', inp.placeholder);
+      p.value = fieldVal(inp.id) || '';
+      $('.box', f).appendChild(p);
+      p.addEventListener('change', function () {
+        setField(inp.id, p.value);
+        inp.value = kind === 'date' ? prettyDate(p.value) : prettyTime(p.value);
+        f.classList.toggle('empty', !p.value);
+        f.classList.remove('err');
+        syncK(el);
       });
       return;
     }
