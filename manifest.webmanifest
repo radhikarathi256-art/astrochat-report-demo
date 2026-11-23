@@ -1,12 +1,13 @@
 {
-  "name": "AstroChat · Sell report from Today",
-  "short_name": "Report demo",
-  "description": "Clickable demo of the AstroChat sell-a-report flow from the Today page.",
+  "name": "AstroChat · Reports demo",
+  "short_name": "Reports demo",
+  "description": "Clickable demo of the AstroChat paid reports: Day 1–4 selling flows, buying, after buying and every page state, from Figma.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FBE4D7",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
