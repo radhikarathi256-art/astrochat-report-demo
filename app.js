@@ -154,12 +154,12 @@ var REPORTS = [
     cadence: 'once',
     // `t2` is the long name, used where the card has room for two lines and the
     // book is sitting right next to it — it has to match the cover she can see.
-    t2: 'Your Marriage Prediction Report',
-    // `tl` is the sell page's own headline, Figma 3186:204216 — it names both
-    // halves of what the report answers, which the short name does not.
-    // Reports without one fall back to "Your " + t.
-    tl: 'Your Future Partner & Marriage Prediction Report',
-    why: 'Learn which dosha is delaying your marriage',
+    // Figma 23 Nov: no "Your" before a report name on detail pages, cards,
+    // guidance tiles, the pay sheet or My Reports. Full sentences (pushes,
+    // toasts) still say "your". `tl` is gone with it — the sell page now prints
+    // the plain report name, same as the cover.
+    t2: 'Marriage Prediction Report',
+    why: 'See what dosha is delaying your marriage',
     cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
     // Partner is the one report whose art is photographed rather than painted:
     // Figma 3311:6840 for the cover and 3254:6840 for the open spread, exported
@@ -182,7 +182,7 @@ var REPORTS = [
     // "private forever", "in your language": true of every report we sell and
     // therefore an argument for none of them. The chips say the same terms in
     // a tenth of the height and do not pretend to be a sales point.
-    chips: ['Partner image', 'Birth chart analysis'],
+    chips: ['When you\u2019ll marry', 'Manglik check'],
     // The third stat column. Partner is bought once and that is the fact worth
     // printing beside a price.
     stat3: { v: 'One-time', l: 'Payment' },
@@ -190,29 +190,28 @@ var REPORTS = [
        It names the thing standing in the way before it names the happy ending:
        a date on its own is pleasant and skippable, a date she is being kept
        from is not. */
-    lead: 'See what is holding your marriage back, and the year it finally happens',
+    lead: 'When marriage could happen, what your partner may be like, and what your Kundli says about the life you\u2019ll build',
     // Quotes that name something the report called before it happened. A quote
     // that only says "very good" proves nothing and sells nothing.
     revs: [
-      { n: 'Priya S., Jaipur', t: "Partner's field matched", q: 'It said my partner would be from a creative field. Six months later I got a rishta from a graphic designer.' },
-      { n: 'Neha K., Indore',  t: 'How we met matched', q: 'The part about meeting through people who already know me is exactly how it happened.' },
-      { n: 'Ritu M., Nashik',  t: 'Pattern named', q: 'The wrong-people pattern was uncomfortable to read because it was true. I stopped rushing the first week.' },
-      { n: 'Sneha V., Kolkata', t: 'Partner image matched', q: 'I showed the partner image to my mother before the first meeting. She went quiet when she saw him.' }
+      { n: 'Priya S., Jaipur', t: 'LOVE MARRIAGE MATCHED', q: 'It said love marriage, and both families agreeing by year end. We told them in October, fully expecting drama. They said yes!' },
+      { n: 'Neha K., Indore',  t: 'MARRIAGE WINDOW CLEAR', q: 'It said my strongest window runs till July 2027, and to look beyond attraction. That\u2019s what finally got us talking about marriage at home.' }
     ],
     /* Figma 3111:201622 — eight, and the top three said in the frame's own
        words. The chat card shows three and counts "+5"; History counts all
        eight. Both numbers come from this one list, so they cannot drift. */
     learn: [
-      'What will my future partner look like, and what will they do?',
-      'Where and how will we meet?',
       'When will I get married?',
+      'What will my partner be like?',
       'Love or arranged, what does my chart say?',
-      'What is delaying my marriage right now?',
-      'What can I do to meet them sooner?'
+      'Am I Manglik?',
+      'Will my in-laws be supportive?',
+      'How may money change after marriage?',
+      'What will married life look like over the years?'
     ],
     // Parallel to `learn`, one key per line. Kept as its own list rather than
     // folded into the strings so the copy stays copy and stays translatable.
-    licons: ['heart', 'pin', 'cal', 'branch', 'hour', 'magic'],
+    licons: ['cal', 'heart', 'route', 'planet', 'branch', 'coin', 'hour'],
     /* What Hemali says in the chat just before the card. It has to live on the
        report, not in the day's script: the line names a house and a planet, so
        a script that hard-codes "Saturn, your tenth house" while the card under
@@ -290,7 +289,7 @@ var REPORTS = [
     id: 'marriage', t: 'Kundli Milan Report', s: 'A report on how well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
     // No "Your" on this one: the book belongs to two people, and the cover
     // does not claim it for either of them.
-    t2: 'Kundli Milan Compatibility Report',
+    t2: 'Kundli Milan Report',
     cadence: 'once',
     // The one report with a second person in it, so the one report that has to
     // ask. Board 1321:37310 — his four fields empty, hers written in.
@@ -302,7 +301,7 @@ var REPORTS = [
        if asked what she wants from it, so the last line before the button
        names it and says it is hers. Out of 36 is in the sentence because 28
        means nothing without the scale. */
-    why: 'Learn which dosha in his chart can break this match',
+    why: 'See which dosha matters, and what you can do',
     cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
     // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
     // the hero ground.
@@ -328,10 +327,8 @@ var REPORTS = [
     // worth saying twice.
     stat3: { v: 'Unlimited', l: 'Type' },
     revs: [
-      { n: 'Anjali D., Surat',  t: 'Timing matched', q: 'It put the window in late 2027 and that is when my family started the talks. I had told nobody.' },
-      { n: 'Kavya R., Chennai', t: 'Manglik doubt cleared', q: 'The low-Manglik reading saved me months of panic. Two astrologers had said the opposite.' },
-      { n: 'Pooja N., Bhopal',  t: 'In-laws matched', q: 'The first six months of adjustment with in-laws is exactly what happened, almost to the week.' },
-      { n: 'Isha G., Lucknow',  t: 'Guna count matched', q: 'The guna count matched what the pandit worked out later. We stopped paying for a second opinion.' }
+      { n: 'Anjali D., Surat',  t: 'Guna score matched', q: 'We got 27 of 36, same as our family pandit. But it also explained why Bhakoot was low, which he never bothered to tell us.' },
+      { n: 'Kavya R., Chennai', t: 'Manglik doubt cleared', q: 'Two pandits told me I\u2019m Manglik and I cried for weeks. This showed it\u2019s cancelled in my chart, and why. We\u2019re married now.' }
     ],
     /* Six, and questions rather than contents, to match the other two reports.
        Twelve statements made this page read as a table of contents — a list
@@ -445,18 +442,18 @@ var REPORTS = [
          weakest thing a sentence can end on when the report is the thing being
          sold. Say what Nadi costs her, say it is survivable, and stop. Three
          wrapped lines became two. */
-      why: 'Learn which dosha in his chart can break this match',
+      why: 'See which dosha matters, and what you can do',
       head: 'What Your 28 Does Not Tell You',
       lead: 'Both charts are in. See what your 28 really means.',
       learn: [
         'Why are 8 of our points missing, and is it serious?',
         'Can our Nadi dosha be cancelled?',
-        'Is he Manglik, and how strongly?',
-        'How well do we match on money, temper and family?',
-        'When is the best time for our marriage?',
-        'Which remedies will make our match stronger?'
+        'Is my partner Manglik, and does it cancel with mine?',
+        'Will we clash over money and family plans?',
+        'How will we get along with each other\u2019s families?',
+        'What can we do to make our match stronger?'
       ],
-      licons: ['pie', 'shield', 'planet', 'coin', 'cal', 'leaf']
+      licons: ['pie', 'shield', 'planet', 'coin', 'branch', 'leaf']
     },
     /* Chat and History, the two places she is met by name. Everywhere else
        this is "Kundli Milan Report" and nothing more,
@@ -534,12 +531,12 @@ var REPORTS = [
     id: 'career', t: 'Monthly Wealth Report', s: 'A report on your work and money this month, week by week', pages: 34, rating: '4.6', sold: 71250,
     // "Monthly" up front, because the thing that makes this report different
     // from the first two is that it runs out and is bought again.
-    t2: 'Monthly Wealth & Career Report',
+    t2: 'Monthly Wealth Report',
     // A month at a time. The report is a window rather than a reading, so it
     // runs out: once this one is hers she can read it, and she can also buy
     // next month. Every repeat buy is its own row in history.
     cadence: 'monthly',
-    why: 'Learn how Rahu is blocking your money this month',
+    why: 'Know when to chase money and when to hold it',
     cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
     // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
     art: {
@@ -560,26 +557,26 @@ var REPORTS = [
       // frame that says where he is going.
       heroPos: '50% 0%'
     },
-    chips: ['Switch timing', 'Raise window'],
-    // An edition covers a named month, so the third column is the window she is
-    // buying rather than how she pays for it.
-    stat3: { v: 'November', l: 'Month' },
-    lead: 'See what is blocking your money this month, and the days it opens up',
+    chips: ['20 Nov \u2013 19 Dec', 'Money dates'],
+    /* An edition runs 30 days from the day she buys it, not a calendar month,
+       so the third stat counts the window rather than naming November. The
+       dates themselves are in the chips and under Find Answers To. */
+    stat3: { v: '30 days', l: 'From today' },
+    learnSub: 'For 20 Nov \u2013 19 Dec 2026',
+    lead: 'When to chase a pending payment, put money aside and think twice before saying yes.',
     revs: [
-      { n: 'Shruti B., Pune',   t: 'Month matched', q: 'It named March as the switch month. I got the offer on the 11th of March.' },
-      { n: 'Meera T., Gurgaon', t: 'Work read matched', q: 'The bit about my work being invisible rather than weak changed how I ran my reviews.' },
-      { n: 'Divya S., Kochi',   t: 'Slow year explained', q: 'Saturn watching the tenth lord explained a slow year I had been blaming myself for.' },
-      { n: 'Tanvi A., Jaipur',  t: 'Job over business', q: 'It said job, not business, for this year. I had almost put in my notice to start something.' }
+      { n: 'Shruti B., Pune',   t: 'Payment date matched', q: 'It said to send my payment reminder on the 26th. I did it that morning, and the money I\u2019d been chasing for weeks came in two days later.' },
+      { n: 'Meera T., Gurgaon', t: 'Big purchase paused', q: 'I was about to buy a new phone on EMI. It said give an optional purchase a night. I waited, and honestly I didn\u2019t need it.' }
     ],
     learn: [
-      'Is a raise or promotion coming this month?',
-      'Which days are best to ask for a raise or switch jobs?',
-      'Should I stay, switch, or start my own work?',
-      'What does my boss really think of me?',
-      'Will my money grow, and where should I be careful?',
-      'What small steps will speed up my growth?'
+      'Is more money coming in or going out this month?',
+      'When should I follow up on a pending payment?',
+      'Is this a good time for a big purchase?',
+      'Will an unexpected expense come up?',
+      'How much can I save, and when should I invest?',
+      'Should I lend money or help family this month?'
     ],
-    licons: ['graph', 'cald', 'route', 'speak', 'coin', 'graph'],
+    licons: ['graph', 'cald', 'coin', 'shield', 'pie', 'branch'],
     /* Wealth has no person to name and no question she asked, so its trigger is
        the calendar: the month is running out and nothing has moved. That is the
        one thing about work she is already thinking when the message arrives,
@@ -626,9 +623,9 @@ var REPORTS = [
        what the month ahead does to the two of them. Monthly, like Wealth, for
        the same reason: a month is a window, and a window runs out. */
     id: 'relation', t: 'Monthly Relationship Report', s: 'A report on the two of you this month, week by week', pages: 30, rating: '4.7', sold: 48120,
-    t2: 'Your Monthly Relationship Report',
+    t2: 'Monthly Relationship Report',
     cadence: 'monthly',
-    why: 'Learn what is making him go cold on you this month',
+    why: 'Know the best days for the two of you this month',
     // Violet, so the four covers are four colours: Partner is rose, Kundli
     // Milan gold, Wealth blue. No painted cover yet, so `book3d` draws the
     // wash version from these two stops.
@@ -643,24 +640,23 @@ var REPORTS = [
       // so the crop holds the upper middle rather than the centre.
       heroPos: '50% 28%'
     },
-    chips: ['Week by week', 'Fight windows'],
-    stat3: { v: 'November', l: 'Month' },
-    lead: 'See why the two of you keep fighting, and the week it gets easier',
+    chips: ['20 Nov \u2013 19 Dec', 'Date nights'],
+    stat3: { v: '30 days', l: 'From today' },
+    learnSub: 'For 20 Nov \u2013 19 Dec 2026',
+    lead: 'A date night, a conversation worth having, and the days to take more care.',
     revs: [
-      { n: 'Ankita P., Pune',    t: 'Bad week named', q: 'It marked the second week as the hard one. That is the week we almost broke up, and I had been warned.' },
-      { n: 'Swati R., Delhi',    t: 'Same fight explained', q: 'The reason we keep having the same fight was written down in one line. I read it to him.' },
-      { n: 'Nidhi J., Vadodara', t: 'Good days matched', q: 'I waited for the days it called good to bring up moving in together. He said yes.' },
-      { n: 'Reema S., Bhopal',   t: 'Distance explained', q: 'He went quiet for ten days and the report had already said that stretch would feel cold. It was not me.' }
+      { n: 'Ankita P., Pune', t: 'Date night matched', q: 'It picked the 5th for a date. We went back to the caf\u00e9 from our first date and talked for three hours, no phones.' },
+      { n: 'Swati R., Delhi', t: 'Family plans sorted', q: 'It said to check with each other before saying yes to family plans. I asked first for once, and the whole weekend went without an argument.' }
     ],
     learn: [
-      'Is this month good or hard for the two of us?',
-      'Which days are best to talk about the difficult things?',
-      'Why do the same fights keep coming back?',
-      'Does he feel the same way I do right now?',
-      'Is a commitment coming this month?',
-      'What can I do this month to make it easier?'
+      'Which evening is best for a date this month?',
+      'When is the right time for a heart-to-heart?',
+      'Why do small plans turn into arguments?',
+      'How do we handle in-laws\u2019 expectations together?',
+      'When should I reconnect with my parents or siblings?',
+      'What should we plan for our special days?'
     ],
-    licons: ['heart', 'cal', 'branch', 'speak', 'rings', 'leaf'],
+    licons: ['cal', 'speak', 'route', 'branch', 'heart', 'magic'],
     /* Like Wealth, the trigger is the calendar rather than a question she
        asked. Unlike Wealth, the thing the month is doing has a person in it,
        so the first line names what she is already feeling about him. */
@@ -1771,9 +1767,9 @@ function openPay() {
     ? '<img src="' + r.art.open + '" alt="">'
     : book3d(r);
 
-  // The sheet names the purchase. `tl` is the long sell-page headline, so the
-  // title here is the same one she tapped Buy Now under.
-  $('#paysName').textContent = r.tl || titled(r.t);
+  // The sheet names the purchase, and it names it the way the detail page and
+  // the cover do: plain report name, no "Your".
+  $('#paysName').textContent = r.t2 || titled(r.t);
   // "Made for your chart" is gone from this line: the block under it now says
   // so with her name and birth details on it, which is the same claim proved.
   $('#paysMeta').textContent = 'One-time payment';
@@ -2549,7 +2545,7 @@ function paintHeroVideo(r, src) {
 function paintBought() {
   var r = reportById(state.pick);
   var t = boughtTitle();
-  $('#r2Title').textContent   = r.tl || titled(t);
+  $('#r2Title').textContent   = r.t2 || titled(t);
   $('#pushReadyTitle').textContent = titled(t) + ' is ready';
   // The timeline card is the one surface with room for the report's full name,
   // and it is the card she taps to read — so it says the whole thing.
@@ -3482,6 +3478,8 @@ function renderReport() {
   // Was hard-coded, so picking Money or Marriage still showed the Partner
   // report's reader count. One number, read off the report being shown.
   $('#r2Reads').textContent = inr(r.sold);
+  // Same for the rating: four reports, four scores.
+  $('#r2Rating').textContent = r.rating;
   /* The one line that changes on this page, and it changes by report and not
      by state: Kundli Milan needs two charts, so saying so here is the page
      being honest about what the button is going to ask for rather than a
@@ -3538,6 +3536,10 @@ function renderReport() {
   $('#r2Learn').innerHTML =
     '<h2 class="r2-h">' + esc(matched ? r.matched.head
       : r.needsMatch ? 'What The Milan Answers' : 'Find Answers To') + '</h2>' +
+    /* Monthly reports only. The list is the same every month, so the heading
+       has to say which 30 days it is answering for, or the questions read as
+       a general promise instead of this edition. */
+    (r.learnSub ? '<p class="r2-learn-sub">' + esc(r.learnSub) + '</p>' : '') +
     '<ul class="r2-learn">' +
       learn.map(function (x, i) {
         // Falls back to the tick if a report is ever short an icon key, so a
@@ -3573,13 +3575,21 @@ function renderReport() {
     '<span>\u00b7 ' + inr(r.sold) + ' readers</span>';
   // The strip starts parked on the first card, so that one is already snapped.
   markSnappedReview($('#r2Revs'));
+  // Two, as the board has it. Three rows of the same card turned the foot of
+  // the page into a catalogue and pushed the buy bar's own report out of mind.
   $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
-    .map(upsellRow).join('');
+    .slice(0, 2).map(upsellRow).join('');
   /* Pre-match the hook promises the score, which is the right promise while
      the score is still the unknown. Post-match that promise has been kept, so
      the line over the button has to be about what is still shut - which is
      exactly what `matched.why` was written for. */
-  $('#r2Why').textContent = (matched && r.matched.why) || r.why;
+  renderStatusStrip();
+  /* One report at a time. While Hemali is still writing one, the bar stops
+     being a shop for every other report too: the hook says what is happening
+     and the button promises the push instead of taking a second payment. */
+  var busy = state.buys.some(function (b) { return !b.ready; });
+  $('#r2Why').textContent = busy ? 'Report being prepared'
+    : (matched && r.matched.why) || r.why;
   // The board says "Buy Now" and nothing else. The price is already sitting
   // beside the button, so repeating ₹49 inside it only crowds the line.
   // Once it is hers the bar stops being a shop. A price next to a book she has
@@ -3588,9 +3598,9 @@ function renderReport() {
   // can still sell: the window it covers runs out, so the next edition is a
   // real thing to buy and it goes beside Read rather than instead of it.
   var mine = owns(r.id);
-  var repeat = mine && r.cadence === 'monthly';
+  var repeat = mine && r.cadence === 'monthly' && !busy;
   $('.buy-row', $('#report')).classList.toggle('owned', mine);
-  $('#r2Price').hidden = mine;
+  $('#r2Price').hidden = mine || busy;
   $('#r2Again').hidden = !repeat;
   $('#r2Again').textContent = 'Buy ' + editionLabel(r);
   /* Buy Now on its own is a lie on a button that opens a form, but dropping it
@@ -3607,10 +3617,41 @@ function renderReport() {
      buys - "Buy Now" next to a row of padlocks makes her work out the
      connection herself. Once it is hers it is a door. */
   $('#r2Cta').textContent = mine ? 'Read Report'
+    : busy ? 'We\u2019ll notify you'
     : matchFirst(r) ? 'Enter Details \u0026 Buy Now'
     : matched ? 'Unlock Full Report' : 'Buy Now';
+  // A report she already owns is still readable while the next one is written.
+  $('#r2Cta').disabled = busy && !mine;
   $('#r2Cta').classList.toggle('outline', repeat);
   $('#r2Cta').classList.toggle('primary', !repeat);
+}
+
+/* Figma 4725:37440 — the strip under the title card. Two cells at most: the
+   one still being written, and what is already on the shelf. Both open My
+   Reports, because that is the page that can actually do something about
+   either of them. */
+function renderStatusStrip() {
+  var el = $('#r2Strip');
+  if (!el) return;
+  var pending = state.buys.filter(function (b) { return !b.ready; });
+  var done    = state.buys.filter(function (b) { return b.ready; });
+  if (!pending.length && !done.length) { el.hidden = true; el.innerHTML = ''; return; }
+  var cell = function (lbl, txt) {
+    return '<button type="button" data-go="mine">' +
+      '<small>' + esc(lbl) + '</small><b>' + esc(txt) + '</b></button>';
+  };
+  el.innerHTML =
+    (pending.length ? cell('In progress', buyName(pending[0])) : '') +
+    (done.length ? cell('Past', done.length === 1 ? buyName(done[0])
+                                                  : done.length + ' reports') : '');
+  el.hidden = false;
+}
+
+/* Kundli Milan is a match between two people, so its row names them. Every
+   other report is one person's, and the thing she would look for is the book. */
+function buyName(b) {
+  var r = reportById(b.id);
+  return r.needsMatch ? 'Mansi \u0026 Rahul' : (r.t2 || titled(r.t));
 }
 
 /* Eight 18px line marks, one per koota, drawn rather than imported because the

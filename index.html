@@ -362,9 +362,9 @@
              the page the title and stats had nothing holding them together, and
              the seam between artwork and text read as a gap. -->
         <div class="r2-card">
-          <h1 id="r2Title">Your Marriage Yog report</h1>
+          <h1 id="r2Title">Marriage Prediction Report</h1>
           <div class="r2-stats">
-            <div><b>4.7 <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.05 14.9 8.95l6.5.95-4.7 4.6 1.1 6.45L12 17.9 6.2 20.95l1.1-6.45-4.7-4.6 6.5-.95z"/></svg></b><small>Rating</small></div>
+            <div><b><span id="r2Rating">4.7</span> <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.05 14.9 8.95l6.5.95-4.7 4.6 1.1 6.45L12 17.9 6.2 20.95l1.1-6.45-4.7-4.6 6.5-.95z"/></svg></b><small>Rating</small></div>
             <i class="r2-div"></i>
             <div><b id="r2Reads">13,000</b><small>Reads</small></div>
             <i class="r2-div"></i>
@@ -374,6 +374,13 @@
             <div><b id="r2Type">One-time</b><small id="r2TypeL">Payment</small></div>
           </div>
         </div>
+
+        <!-- Figma 4725:37440. What is already on her shelf, said right under the
+             title. Only one report is written at a time, so if something is
+             still being written this page has to admit it before it offers the
+             next one. Both halves open My Reports. Nothing bought yet means no
+             strip at all, rather than a strip saying zero. -->
+        <div class="r2-strip" id="r2Strip" hidden></div>
 
         <!-- Below the rating the page follows the v2 board: what the report is,
              what it answers, what readers found in it, what else is on her
@@ -415,7 +422,7 @@
         <!-- Not "what readers say": what they found. The quotes that work are
              the ones naming a thing the report called before it happened. -->
         <div class="r2-block r2-revblock">
-          <h2 class="r2-h" id="r2RevH">What Users Found in report</h2>
+          <h2 class="r2-h" id="r2RevH">What Users Found</h2>
           <!-- The rating again, here rather than only in the stat bar: by the
                time she reaches the quotes the bar is five screens behind her,
                and a number is what turns four strangers into a sample. -->

@@ -220,6 +220,11 @@ img{display:block}
 .btn:active{transform:scale(.985)}
 .btn.primary{background:var(--brand);color:#fff;box-shadow:0 1px 2px rgba(16,24,40,.06)}
 .btn.primary:hover{background:var(--brand-dk)}
+/* Only one report is written at a time, so the buy button spends a few minutes
+   as a promise rather than an offer. Grey and unpressable, not a faded orange:
+   a dimmed brand button still reads as the thing to tap. */
+.btn:disabled{background:var(--g200);border-color:var(--g200);color:var(--g500);
+  box-shadow:none;cursor:default;pointer-events:none}
 .btn.outline{background:#fff;border-color:var(--brand);color:var(--brand)}
 .btn.text{height:44px;background:none;color:var(--g700);font-weight:600}
 .btn.sm{height:36px;width:auto;padding:0 16px;font-size:14px;border-radius:10px}
@@ -2022,7 +2027,10 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
    the first line of the promise — the two things on this screen that most need
    to read as one thought, separated by more air than sits between whole
    sections. 28 nets the same 24 every other block uses. */
-.r2-card + .r2-block{padding-top:28px}
+/* The strip sits between them now, and it is `hidden` rather than removed, so
+   the card is no longer the adjacent sibling even when there is no strip. */
+.r2-card + .r2-block,
+.r2-strip + .r2-block{padding-top:28px}
 /* Section headings sit one clear step under the page title (24) and one clear
    step over body (15), so the ladder is 24 / 18 / 15 rather than 20 / 14 with
    the heading nearly as loud as the name of the report. */
@@ -2033,6 +2041,31 @@ hr.thin{border:0;border-top:1px solid var(--g200);margin:12px 0}
 
 /* PM track: what the report answers, as her own questions. It stands in for the
    chapter ladder, because a ladder with nothing shut is only a contents page. */
+/* The shelf strip under the title card. Full card width, two cells at most,
+   the same parchment the review block and the buy-bar hook use so it reads as
+   status rather than as another thing to buy. */
+/* 28, not 0: the title card hangs 20px of negative margin below itself so the
+   block under it tucks in, and the strip is a card of its own rather than part
+   of that overlap. */
+.r2-strip{margin:28px 16px 0;display:flex;background:#FAF6EF;border:1px solid #EAE1D4;
+  border-radius:14px;overflow:hidden}
+/* display:flex beats [hidden]'s display:none, so an empty strip would still
+   draw its border. */
+.r2-strip[hidden]{display:none}
+.r2-strip button{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:2px;
+  align-items:flex-start;padding:10px 14px;background:none;border:0;font:inherit;
+  text-align:left;cursor:pointer}
+.r2-strip button + button{border-left:1px solid #EAE1D4}
+.r2-strip small{font:600 11px/14px var(--sans);letter-spacing:.06em;
+  text-transform:uppercase;color:#8A7560}
+/* One line. A couple's name or a report title both run long, and a strip that
+   wraps to two lines stops being a strip. */
+.r2-strip b{max-width:100%;font:500 13px/18px var(--sans);color:#5B4636;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Monthly reports only: the 30 days this edition answers for. Sits under the
+   heading and above the list, so the questions are read against a window. */
+.r2-learn-sub{margin:4px 0 0;font:400 13px/18px var(--sans);color:var(--g600)}
 .r2-learn{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
 /* The mark sits in its own fixed column so eight lines of different lengths
    still start on one text edge — and `flex:none` so a two-line item does not
