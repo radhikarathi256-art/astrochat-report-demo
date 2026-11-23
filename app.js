@@ -51,7 +51,7 @@ var R = {
            ['KR', 'Kavya R.', 'Chennai', 'Two pandits told me I’m Manglik and I cried for weeks. This showed it’s cancelled in my chart, and why. We’re married now.', 'Manglik doubt cleared'],
            ['PN', 'Pooja N.', 'Bhopal', 'It said the first six months with my in-laws would be tough. It was, almost week by week. Knowing that helped me not take it personally.', 'In-laws matched'],
            ['IG', 'Isha G.', 'Lucknow', 'It showed our Nadi dosha and a simple remedy. My parents only agreed after reading that page. Worth way more than ₹49.', 'Nadi remedy helped']],
-    ups: ['m', 'w'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'See which dosha matters, and what you can do',
+    ups: ['m', 'r'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'See which dosha matters, and what you can do',
     hist: 'See how well you and Rahul match'
   },
   w: {
@@ -716,9 +716,11 @@ BUILD.mine = function () {
   var more = ['m', 'k', 'w', 'r'].filter(function (k) { return !S.own[k]; });
   var SHELF = { m: 'Marriage Prediction', k: 'Kundli Milan Report', w: 'Monthly Wealth Report', r: 'Monthly Relationship Report' };
   var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>My Reports</h1></div></div>' +
-    '<div class="scroll">' + list + (more.length ? '<div class="mr-h">' + (owned.length ? 'More reports for you' : 'Popular reports') + '</div><div class="hrow shelf">' + more.map(function (k) {
+    '<div class="scroll">' + list + (more.length ? '<div class="mr-h">' + (owned.length ? 'More reports for you' : 'Popular reports') + '</div><div class="hrow shelf">' + more.map(function (k, i) {
       var r = R[k];
-      return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹49</b><s>₹499</s><em>90% off</em></span></button>';
+      /* The books tease here too. Staggered 0.7s / 2.5s and alternating, so the shelf
+         catches the eye one book at a time instead of flapping in unison. */
+      return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87, true, i % 2 ? 2.5 : 0.7) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹49</b><s>₹499</s><em>90% off</em></span></button>';
     }).join('') + '</div>' : '') + '</div>';
   return { html: h };
 };
