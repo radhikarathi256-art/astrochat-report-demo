@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Expert rail — four ways to fix the height</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Scratch page. Four copies of the real rail, each in a 375px phone column,
+     using the real styles.css so nothing here is a mock-up of a mock-up. */
+  body{margin:0;background:#EEF0F4;font-family:var(--sans)}
+  .wrap{display:flex;gap:28px;padding:24px;align-items:flex-start;overflow-x:auto}
+  .col{flex:none;width:375px}
+  .col h2{margin:0 0 2px;font:700 15px/20px var(--sans);color:#101828}
+  .col .why{margin:0 0 14px;font:400 12px/17px var(--sans);color:#667085}
+  .col .why b{color:#101828}
+  .phone{background:#FFF6F1;border-radius:18px;padding:16px 0;overflow:hidden;
+    box-shadow:0 6px 22px rgba(16,24,40,.12)}
+  .sec{display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px 10px}
+  .sec h3{margin:0;font:700 13px/18px var(--sans);letter-spacing:.06em;
+    text-transform:uppercase;color:#475467}
+  .sec span{font:500 13px/18px var(--sans);color:#475467}
+  .h{margin:10px 0 0;font:600 11px/16px var(--sans);color:#98A2B3;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- =============== A =============== -->
+  <section class="col">
+    <h2>A · Strip the extras off Hemali</h2>
+    <p class="why">The countdown moves up into the section header, where it is
+      about the app and not about one astrologer. The report leaves the rail.
+      <b>All four cards identical.</b></p>
+    <div class="phone" id="A">
+      <div class="sec"><h3>Your experts</h3><span>Free chat in 14h 23m →</span></div>
+      <div class="expert-rail eq"></div>
+    </div>
+    <p class="h">every card 112px</p>
+  </section>
+
+  <!-- =============== B =============== -->
+  <section class="col">
+    <h2>B · Give the others the same amount to say</h2>
+    <p class="why">Hemali keeps the countdown and the report stub. The other
+      three get a rating strip on top and their speciality on a stub below, so
+      the boxes match. <b>All four identical, nothing is empty.</b></p>
+    <div class="phone" id="B">
+      <div class="sec"><h3>Your experts</h3><span>Consult Others →</span></div>
+      <div class="expert-rail"></div>
+    </div>
+    <p class="h">every card 200px</p>
+  </section>
+
+  <!-- =============== C =============== -->
+  <section class="col">
+    <h2>C · Stop making them one row</h2>
+    <p class="why">Hemali is a full-width card of her own, because she is the
+      one you have actually spoken to. The other three are a rail underneath,
+      small on purpose. <b>No two cards are being compared.</b></p>
+    <div class="phone" id="C">
+      <div class="sec"><h3>Your expert</h3></div>
+      <div class="hero"></div>
+      <div class="sec" style="padding-top:16px"><h3>Consult others</h3><span>See all →</span></div>
+      <div class="expert-rail mini"></div>
+    </div>
+    <p class="h">hero 200px · rail 112px</p>
+  </section>
+
+  <!-- =============== D =============== -->
+  <section class="col">
+    <h2>D · What is live now</h2>
+    <p class="why">Hemali is taller because she carries more. The others hug
+      their content and sit on her middle line. <b>Honest, but the step is
+      visible.</b></p>
+    <div class="phone" id="D">
+      <div class="sec"><h3>Your experts</h3><span>Consult Others →</span></div>
+      <div class="expert-rail live"></div>
+    </div>
+    <p class="h">200px vs 146px</p>
+  </section>
+
+</div>
+
+<script>
+var ASTROS = [
+  { n:'Astro Hemali', img:'assets/hemali.png', was:20, now:10, lead:true },
+  { n:'Astro Mala',   img:'assets/av1.jpg', now:19, top:'Love & marriage · 12 yrs',
+    r:'4.9', c:'2.1k', sp:'Love & marriage' },
+  { n:'Astro Devraj', img:'assets/av2.jpg', now:15, top:'Career & money · 9 yrs',
+    r:'4.7', c:'980',  sp:'Career & money' },
+  { n:'Astro Sanya',  img:'assets/av3.jpg', now:25, top:'Kundli milan · 15 yrs',
+    r:'4.8', c:'3.4k', sp:'Kundli milan' }
+];
+
+function price(a){
+  return (a.was ? '<s>₹'+a.was+'/min</s> ' : '') + '<strong>₹'+a.now+'/min</strong>';
+}
+function face(a, cls){
+  return '<span class="av-ring'+(cls?' '+cls:'')+'"><img src="'+a.img+'" alt=""><i class="dot"></i></span>';
+}
+var ARROW = '<i class="er-go"><svg viewBox="0 0 14 14"><path d="M2 7h10M7.6 2.6 12 7l-4.4 4.4"/></svg></i>';
+var STUB =
+  '<div class="er-perf"><i></i><i></i></div>' +
+  '<button class="expert-report" type="button">' +
+    '<span class="cv-fake"></span>' +
+    '<span class="er-t"><b>Marriage Prediction Report</b>' +
+      '<small>From your chart · ₹49</small></span>' + ARROW +
+  '</button>';
+
+/* The compact card, 3996:82960. No speciality strip - that was the thing on
+   the card that is not in Figma. */
+function compact(a, lead){
+  return '<article class="expert-card plain">' +
+    '<div class="expert-body">' +
+      '<div class="expert-row">' + face(a,'sm2') +
+        '<div class="expert-meta"><b>'+a.n+
+          // 3996:82960 carries a "My Expert" chip in this slot. With the
+          // countdown gone from the card there is nothing else marking Hemali
+          // as the one she has actually spoken to, so the chip does that job.
+          (lead?'<i class="mine-chip">My Expert</i>':'')+'</b>' +
+          '<p>'+price(a)+'</p></div>' +
+      '</div>' +
+      '<button class="btn primary" type="button">'+(lead?'Continue Chat':'Start Chat')+'</button>' +
+    '</div>' +
+  '</article>';
+}
+
+/* ---- A: everyone compact, nothing extra on anyone ---- */
+document.querySelector('#A .expert-rail').innerHTML =
+  ASTROS.map(function(a){ return compact(a, a.lead); }).join('');
+
+/* ---- B: Hemali full, the others padded out with real facts ---- */
+document.querySelector('#B .expert-rail').innerHTML = ASTROS.map(function(a){
+  if (a.lead){
+    return '<article class="expert-card">' +
+      '<div class="expert-top">✦ FREE 2 MIN CHAT READY</div>' +
+      '<div class="expert-body">' +
+        '<div class="expert-row">'+face(a)+
+          '<div class="expert-meta"><div><b>'+a.n+'</b><p>'+price(a)+'</p></div>' +
+          '<button class="btn primary" type="button">Continue Chat</button></div>' +
+        '</div>' + STUB +
+      '</div></article>';
+  }
+  return '<article class="expert-card plain full">' +
+    '<div class="expert-top">★ '+a.r+' · '+a.c+' chats</div>' +
+    '<div class="expert-body">' +
+      '<div class="expert-row">'+face(a)+
+        '<div class="expert-meta"><div><b>'+a.n+'</b><p>'+price(a)+'</p></div>' +
+        '<button class="btn primary" type="button">Start Chat</button></div>' +
+      '</div>' +
+      '<div class="er-perf"><i></i><i></i></div>' +
+      '<div class="expert-report as-note">' +
+        '<span class="er-t"><b>'+a.sp+'</b><small>Replies in about 2 minutes</small></span>' +
+      '</div>' +
+    '</div></article>';
+}).join('');
+
+/* ---- C: hero + mini rail ---- */
+document.querySelector('#C .hero').innerHTML =
+  '<article class="expert-card hero-card">' +
+    '<div class="expert-top">✦ FREE 2 MIN CHAT READY</div>' +
+    '<div class="expert-body">' +
+      '<div class="expert-row">'+face(ASTROS[0])+
+        '<div class="expert-meta"><div><b>Astro Hemali</b><p>'+price(ASTROS[0])+'</p></div>' +
+        '<button class="btn primary" type="button">Continue Chat</button></div>' +
+      '</div>' + STUB +
+    '</div></article>';
+document.querySelector('#C .expert-rail').innerHTML =
+  ASTROS.slice(1).map(function(a){ return compact(a,false); }).join('');
+
+/* ---- D: exactly what ships today ---- */
+document.querySelector('#D .expert-rail').innerHTML = ASTROS.map(function(a){
+  if (a.lead){
+    return '<article class="expert-card">' +
+      '<div class="expert-top">✦ FREE 2 MIN CHAT READY</div>' +
+      '<div class="expert-body">' +
+        '<div class="expert-row">'+face(a)+
+          '<div class="expert-meta"><div><b>'+a.n+'</b><p>'+price(a)+'</p></div>' +
+          '<button class="btn primary" type="button">Continue Chat</button></div>' +
+        '</div>' + STUB +
+      '</div></article>';
+  }
+  return '<article class="expert-card plain">' +
+    '<div class="expert-top">✦ '+a.top+'</div>' +
+    '<div class="expert-body">' +
+      '<div class="expert-row">'+face(a,'sm2')+
+        '<div class="expert-meta"><b>'+a.n+'</b><p>'+price(a)+'</p></div>' +
+      '</div>' +
+      '<button class="btn primary" type="button">Start Chat</button>' +
+    '</div></article>';
+}).join('');
+
+// Report the real heights under each column, so the claim is measured. After
+// load, or the avatars have not arrived and every row measures short.
+window.addEventListener('load', function(){
+  document.querySelectorAll('.col').forEach(function(col){
+    var hs = [].map.call(col.querySelectorAll('.expert-card'), function(c){
+      return c.offsetHeight;
+    });
+    col.querySelector('.h').textContent = hs.join(' · ') + ' px';
+  });
+});
+</script>
+
+<style>
+  /* A: every card is the same .plain box, so the heights cannot drift. Hemali
+     is the same box repainted purple, not a second kind of card. */
+  .expert-rail.eq .expert-card:first-child{
+    background:linear-gradient(180deg,#7D58A1,#4A3460);border-color:transparent}
+  .expert-rail.eq .expert-card:first-child .expert-body{
+    box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
+
+  /* B: the others' stub is a note, not a button. .full puts them back on the
+     lead card's box so the four heights match to the pixel. */
+  .expert-card.plain.full{padding:2px 5px 5px;border:0}
+  .expert-card.plain.full .expert-body{padding:8px 12px;gap:0;
+    box-shadow:0 2px 4px rgba(16,24,40,.06),0 0 15px rgba(16,24,40,.08)}
+  .expert-card.plain.full .expert-top{padding:6px 10px 8px;color:var(--g500)}
+  .expert-report.as-note{padding:8px 0 2px;opacity:1}
+  .expert-report.as-note .er-t b{color:var(--g700)}
+
+  /* C: Hemali out of the rail, full width. */
+  .hero{padding:0 16px}
+  .hero-card{display:flex;flex-direction:column;border-radius:16px;padding:0 4px 4px;
+    background:linear-gradient(180deg,#7D58A1,#4A3460)}
+  .expert-rail.mini .expert-card{flex:0 0 68%}
+
+  .expert-meta b{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .mine-chip{flex:none;padding:2px 8px;border-radius:999px;background:#F3EDF9;
+    font:600 11px/16px var(--sans);color:#6B4A8F;font-style:normal}
+
+  /* Stand-in for the report cover, so this page needs no art. */
+  .cv-fake{flex:none;width:31px;height:41px;border-radius:3px;
+    background:linear-gradient(160deg,#F6C9D6,#C06C8C)}
+</style>
+</body>
+</html>

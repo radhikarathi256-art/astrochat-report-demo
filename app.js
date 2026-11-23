@@ -1,280 +1,4616 @@
-(() => {
-  'use strict';
-  const FLOWS = window.FLOWS || [];
-  const W = 360, H = 800;                       // Figma screen size
-  const $ = s => document.querySelector(s);
-  const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+/* AstroChat · "Sell report from Today" demo.
+   One router over absolutely-positioned .screen elements, plus the few bits of
+   content that are easier to generate than to hand-write nine times over
+   (coin ladder, bottom nav, language list, sample body, full report body). */
+(function () {
+'use strict';
 
-  // index every screen: id -> [{flow, screen}]
-  const flowById = {}, where = {};
-  FLOWS.forEach(f => {
-    flowById[f.id] = f;
-    f.byId = {};
-    f.screens.forEach(s => { f.byId[s.id] = s; (where[s.id] = where[s.id] || []).push(f); });
-    f.out = {};
-    f.edges.forEach(e => { (f.out[e.f] = f.out[e.f] || []).push(e); });
-  });
-  const screenOf = (fid, sid) => (flowById[fid] && flowById[fid].byId[sid]) || null;
+var $  = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  const state = { flow: null, screen: null, hist: [], timer: null, reader: false };
-  const vp = $('#vp'), phone = $('#phone');
+var LANGS = window.LANGS, SAMPLE = window.SAMPLE;
 
-  // ---------- layout ----------
-  const mobile = () => matchMedia('(max-width: 860px)').matches;
-  function size() {
-    if (mobile()) { phone.style.width = ''; phone.style.height = ''; return; }
-    const st = $('#stage').getBoundingClientRect();
-    const h = Math.max(420, Math.min(st.height - 48, 860));
-    let w = h * W / H;
-    if (w > st.width - 48) w = st.width - 48;
-    phone.style.width = Math.round(w) + 'px';
-    phone.style.height = Math.round(w * H / W) + 'px';
+/* ---------------------------------------------------------------- PM spec track
+   The product brief as written: the pitch waits 10 minutes after the free chat
+   so it never sits on top of the daily reward or the paid-chat decision; three
+   reports are offered and the user picks; there is no free chapter, only a
+   preview; day 2 re-offers in the free chat and on Today. Kept as its own track
+   so the two models can be clicked side by side. */
+/* Three reports: finding someone, marrying them, and work. Each one carries
+   - `learn`: the questions it answers, written against HER chart. This is the
+     sell, so it is phrased as her questions, not as a contents page.
+   - `ask`:  the brief's sixth point — what she leaves the report wanting to
+     ask the astrologer.
+   - `cover`: its own colourway, so three reports do not look like one product.
+   - `sample`: the whole report on the demo chart, for the free preview. */
+
+/* The contents-list icons, keyed by `licons[]`. Board 3353:14197 gives every
+   line in "What you will get" its own 24px outline mark instead of nine
+   identical ticks — a tick only says "included", which the list already says by
+   being the list, so nine of them are nine copies of one word. A drawing of the
+   thing says which line you are on, which is what makes a list of eight
+   scannable.
+
+   Redrawn on Solar Linear. The hand-drawn set was geometrically honest but
+   mixed: a hard-cornered calendar next to a true circle next to a 45-degree
+   roof, so eight marks down one column read as eight hands. Solar settles all
+   of that with one rule — every enclosure is a squircle, every corner carries
+   real radius, every terminal is round — which is why the column now scans as
+   one family. No <circle>/<rect> primitives left: the squircle has to be
+   written as a path, and keeping every key a path means the stroke behaves the
+   same on all of them. One viewBox, one 1.5 weight, no fills, no discs: a set,
+   not badges. currentColor so the colour is decided in CSS, once.
+
+   One more rule, measured rather than eyeballed: every mark draws inside the
+   same ~18.5-unit box centred on (12,12). The svg boxes were always identical —
+   it was the artwork inside them that ranged from rings at 10.8 units tall and
+   sitting 3.2 low, to shield at 20.3 — and down one column that reads as eight
+   icons at eight sizes, which is the thing a set is supposed to stop. Forms
+   that are honestly wide and short (chart, arrow, eye, rings) are not stretched
+   to square; they are brought up to roughly 13-16 so they hold the line without
+   being distorted into something they are not. Circles (block, coin) sit a
+   little under the box on purpose: a disc reads larger than a square of the
+   same measure, so matching them by number makes them look bigger. */
+/* The rating star, written once. Four places drew one next to a number and all
+   four used the unicode glyph, which paints at about 0.7em inside its em box —
+   so a star set to the size of the figure beside it still came out smaller than
+   the figure, and the four of them disagreed on top of that because each had
+   been nudged by hand. Sized in CSS off the text it sits in, and centred in its
+   own viewBox so nothing has to be nudged at all. */
+var STAR_D = 'M12 3.05 14.9 8.95l6.5.95-4.7 4.6 1.1 6.45L12 17.9 6.2 20.95l1.1-6.45-4.7-4.6 6.5-.95z';
+var STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_D + '"/></svg>';
+var LI_ICON = {
+  // solar/user-rounded-linear, as drawn. The head is a true r=4 circle on 12,6
+  // and the shoulders are Solar's own curve — the old pair was a smaller head
+  // over a wider body, which at 20px read as a different icon altogether.
+  user:  '<path d="M16 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/><path d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z"/>',
+  // solar/map-point-linear.
+  pin:   '<path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M3.622 10.396C2.896 5.91 6.49 2 11.03 2h1.94c4.54 0 8.134 3.91 7.408 8.396-.513 3.17-2.482 6.054-4.785 8.044-1.59 1.373-2.385 2.06-3.593 2.06s-2.003-.687-3.593-2.06c-2.303-1.99-4.272-4.874-4.785-8.044Z"/>',
+  cup:   '<path d="M6.3 3.4h11.4v4.9c0 3.6-2.6 6.2-5.7 6.2s-5.7-2.6-5.7-6.2z"/><path d="M17.9 4.7h1.3a2.1 2.1 0 0 1 0 4.2h-1.1M6.1 4.7H4.8a2.1 2.1 0 0 0 0 4.2h1.1"/><path d="M12 14.5v3.3M8.2 20.8h7.6a3.1 3.1 0 0 0-3.1-3h-1.4a3.1 3.1 0 0 0-3.1 3Z"/>',
+  // solar/calendar-mark-linear. The mark is the point of it: "best dates" is one
+  // day ringed on a month, so a bare calendar says the wrong thing.
+  cal:   '<path d="M7.8 2.5v2.4M16.2 2.5v2.4"/><path d="M2.8 12.6c0-4.1 0-6.1 1.2-7.4C5.2 4 7.2 4 11.2 4h1.6c4 0 6 0 7.2 1.2 1.2 1.3 1.2 3.3 1.2 7.4v.9c0 4.1 0 6.1-1.2 7.4-1.2 1.2-3.2 1.2-7.2 1.2h-1.6c-4 0-6 0-7.2-1.2-1.2-1.3-1.2-3.3-1.2-7.4z"/><path d="M3.2 9h17.6"/><path d="M8 14.2h3.2a1.2 1.2 0 0 1 1.2 1.2v2.3a1.2 1.2 0 0 1-1.2 1.2H8a1.2 1.2 0 0 1-1.2-1.2v-2.3A1.2 1.2 0 0 1 8 14.2Z"/>',
+  block: '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M5.5 5.5 18.5 18.5"/>',
+  rings: '<path d="M8.6 18.2a6.2 6.2 0 1 0 0-12.4 6.2 6.2 0 0 0 0 12.4Z"/><path d="M15.4 18.2a6.2 6.2 0 1 0 0-12.4 6.2 6.2 0 0 0 0 12.4Z"/>',
+  shield:'<path d="M3.7 11.4c0-3.4 0-5.1.4-5.7.4-.5 2-1.1 5.2-2.2l.6-.2c1-.4 1.5-.6 2.1-.6s1.1.2 2.1.6l.6.2c3.2 1.1 4.8 1.7 5.2 2.2.4.6.4 2.3.4 5.7 0 .5 0 1.1 0 1.6-.1 6-5.5 8.4-7 9-.4.2-.9.2-1.3 0-1.6-.6-6.9-3-7-9 0-.5 0-1.1 0-1.6Z"/>',
+  sun:   '<path d="M16.8 12a4.8 4.8 0 1 1-9.6 0 4.8 4.8 0 0 1 9.6 0Z"/><path d="M12 2.6v1.3M12 20.1v1.3M4.6 12H3.3M20.7 12h-1.3M18.6 5.4l-.9.9M6.3 17.7l-.9.9M18.6 18.6l-.9-.9M6.3 6.3l-.9-.9"/>',
+  spark: '<path d="M9.8 3.4c.4 3.4 1.5 5.9 3.2 7.2.8.65 1.85 1 3.2 1.3-1.35.3-2.4.65-3.2 1.3-1.7 1.3-2.8 3.8-3.2 7.2-.4-3.4-1.5-5.9-3.2-7.2-.8-.65-1.85-1-3.2-1.3 1.35-.3 2.4-.65 3.2-1.3 1.7-1.3 2.8-3.8 3.2-7.2Z"/><path d="M18.4 3.6c.3 1.7.9 2.5 2.6 2.8-1.7.3-2.3 1.1-2.6 2.8-.3-1.7-.9-2.5-2.6-2.8 1.7-.3 2.3-1.1 2.6-2.8Z"/>',
+  chart: '<path d="M4.8 20.2v-7.4M12 20.2V3.8M19.2 20.2v-4.4"/><path d="M2.5 20.4h19"/>',
+  home:  '<path d="M3.7 11c0-1.4 0-2.1.3-2.6.3-.6.9-1 2-1.7l3.7-2.3c1.1-.7 1.6-1 2.3-1s1.2.3 2.3 1l3.7 2.3c1.1.7 1.7 1.1 2 1.7.3.5.3 1.2.3 2.6v4.2c0 2.8 0 4.3-.9 5.2-.9.9-2.3.9-5.1.9h-4.6c-2.8 0-4.2 0-5.1-.9-.9-.9-.9-2.4-.9-5.2z"/><path d="M14.4 21.9v-4.3a2.4 2.4 0 0 0-4.8 0v4.3"/>',
+  coin:  '<path d="M12 21.2a9.2 9.2 0 1 0 0-18.4 9.2 9.2 0 0 0 0 18.4Z"/><path d="M14.6 9.3c-.4-.9-1.4-1.5-2.6-1.5-1.5 0-2.8 1-2.8 2.2s1.2 2.2 2.8 2.2 2.8 1 2.8 2.2-1.2 2.2-2.8 2.2c-1.2 0-2.2-.6-2.6-1.5M12 6.4v1.4M12 16.2v1.4"/>',
+  case:  '<path d="M2.6 14.2c0-3.4 0-5.1 1-6.1 1-1.1 2.7-1.1 6.1-1.1h4.6c3.4 0 5.1 0 6.1 1.1 1 1 1 2.7 1 6.1 0 3.4 0 5.1-1 6.1-1 1.1-2.7 1.1-6.1 1.1H9.7c-3.4 0-5.1 0-6.1-1.1-1-1-1-2.7-1-6.1Z"/><path d="M16.2 6.8c0-1.4 0-2.1-.4-2.6-.5-.9-1.5-.9-2.4-.9h-2.8c-.9 0-1.9 0-2.4.9-.4.5-.4 1.2-.4 2.6"/><path d="M2.8 12.9h18.4"/>',
+  eye:   '<path d="M3.3 13.4c-.4-.6-.6-1-.6-1.4 0-.4.2-.8.6-1.4C4.9 8.3 8.1 4.6 12 4.6s7.1 3.7 8.7 6c.4.6.6 1 .6 1.4 0 .4-.2.8-.6 1.4-1.6 2.3-4.8 6-8.7 6s-7.1-3.7-8.7-6Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>',
+  arrow: '<path d="M3 18.7 9.2 11.5a1.7 1.7 0 0 1 2.4-.1l2 1.8a1.7 1.7 0 0 0 2.4-.1L21 5.6"/><path d="M21.3 10.4V5.3h-5.1"/>',
+  // solar/users-two-linear — two whole figures, the smaller one behind and to
+  // the right, not one figure with half of another cropped off its shoulder.
+  people:'<path d="M18 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M21 17c0 1.657-2.239 3-5 3s-5-1.343-5-3 2.239-3 5-3 5 1.343 5 3Z"/><path d="M13 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/><path d="M16 17c0 2.21-3.134 4-7 4s-7-1.79-7-4 3.134-4 7-4 7 1.79 7 4Z"/>',
+  list:  '<path d="M9 6.6h11.6M9 12h11.6M9 17.4h11.6"/><path d="M4.1 7.4a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 12.8a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4.1 18.2a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z"/>',
+  beads: '<path d="M12 18.4a7.4 7.4 0 1 0 0-14.8 7.4 7.4 0 0 0 0 14.8Z" stroke-dasharray="1.4 4.2"/><path d="M12 22.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"/>',
+  // Guna matching is a weighing, so it gets the scales rather than a tick.
+  scale: '<path d="M12 3.6v17M7.4 20.4h9.2"/><path d="M4.2 6.6 19.8 5"/><path d="M4.2 6.6 1.6 13h5.2zM19.8 5l-2.6 6.4h5.2z"/>',
+  // The fourth chip on every sell card: what is still behind the paywall.
+  // solar/add-circle-linear — a full r=10 circle, so it fills its 20px box the
+  // way the three icons beside it do.
+  plus:  '<path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/><path d="M15 12H9M12 9v6"/>',
+  // solar/cup-hot-linear. The first meeting is a cup of coffee, not a crowd —
+  // `people` said "two of you" where the line already says it, and said nothing
+  // about where. Drawn at 24 rather than 20, see .ic-cuphot.
+  cuphot:'<path d="M17 9h1a3 3 0 0 1 0 6h-1"/><path d="M3 10c0-.943 0-1.414.293-1.707C3.586 8 4.057 8 5 8h10c.943 0 1.414 0 1.707.293C17 8.586 17 9.057 17 10v3a7 7 0 1 1-14 0v-3Z"/><path d="M2 21h16"/><path d="M7.5 2c-.5.5-.5 1.5 0 2s.5 1.5 0 2M11 2c-.5.5-.5 1.5 0 2s.5 1.5 0 2"/>',
+  // solar/pie-chart-linear — the guna score is 36 parts of a whole, so it gets
+  // the shape that says "out of" rather than the bar chart that says "over time".
+  pie:   '<path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/><path d="M12 2v10h10"/>',
+  // solar/heart-linear.
+  heart: '<path d="M12 5.5C9.8 3.3 6.5 3.5 4.8 5.6c-1.7 2.1-1.4 5.3.6 7.3l6.6 6.6 6.6-6.6c2-2 2.3-5.2.6-7.3-1.7-2.1-5-2.3-7.2-.1Z"/>'
+};
+
+/* Figma `icon · solar/<name>-bold-duotone (golden)`, exported from the three
+   detail pages rather than redrawn. Solar's duotone is two filled paths, not a
+   stroke: one solid and one at 55% of the same colour, which is why these
+   cannot go into LI_ICON — that set is stroked and is also what the menu and
+   the report's own section headings draw with. The fill is `currentColor` so
+   the brass comes off the stylesheet, as #8A7560. */
+var GOLD_ICON = {
+  heart:  '<path fill-rule="evenodd" clip-rule="evenodd" d="M16.1568 15.1172C17.8715 15.1172 18.7286 15.1173 19.2613 15.65C19.794 16.1827 19.7941 17.0399 19.7941 18.7545C19.7941 20.4691 19.794 21.3263 19.2613 21.859C18.7286 22.3917 17.8715 22.3918 16.1568 22.3918C14.4422 22.3918 13.5851 22.3917 13.0523 21.859C12.5196 21.3263 12.5195 20.4691 12.5195 18.7545C12.5195 17.0399 12.5196 16.1827 13.0523 15.65C13.5851 15.1173 14.4422 15.1172 16.1568 15.1172ZM18.7549 18.0888C18.7546 16.9147 17.3258 16.0822 16.1568 17.2108C14.9879 16.0822 13.5591 16.9147 13.5588 18.0888C13.5588 19.1524 14.4155 19.7666 15.145 20.289C15.2208 20.3433 15.2953 20.3966 15.3672 20.4494C15.637 20.6469 15.897 20.833 16.1568 20.833C16.4166 20.833 16.6767 20.6469 16.9464 20.4494C17.0184 20.3966 17.0929 20.3433 17.1686 20.289C17.8982 19.7666 18.7549 19.1524 18.7549 18.0888Z"/><path d="M11.4811 1.60742C13.7769 1.60742 15.6381 3.46854 15.6381 5.76434C15.6381 8.06015 13.7769 9.92127 11.4811 9.92127C9.18533 9.92127 7.32422 8.06015 7.32422 5.76434C7.32422 3.46854 9.18533 1.60742 11.4811 1.60742Z"/><path opacity=".55" d="M17.8145 15.1499C17.373 15.1175 16.8314 15.1175 16.1572 15.1175C14.4426 15.1175 13.5852 15.1175 13.0526 15.6502C12.5199 16.1828 12.5199 17.0402 12.5199 18.7548C12.5199 19.9669 12.5199 20.7506 12.7081 21.294C12.309 21.3327 11.899 21.3529 11.4807 21.3529C7.46301 21.3529 4.20605 19.4917 4.20605 17.196C4.20605 14.9002 7.46301 13.0391 11.4807 13.0391C14.1966 13.0391 16.565 13.8896 17.8145 15.1499Z"/>',
+  pin:    '<path opacity=".55" d="M18.9448 19.5266C20.2287 18.8265 21 17.929 21 16.9504C21 15.9131 20.1335 14.9669 18.7083 14.2504C17.0603 13.4219 14.6655 12.9004 12 12.9004C9.3345 12.9004 6.93964 13.4219 5.29168 14.2504C3.86656 14.9669 3 15.9131 3 16.9504C3 17.9876 3.86656 18.9339 5.29168 19.6504C6.93964 20.4789 9.3345 21.0004 12 21.0004C14.7959 21.0004 17.2941 20.4266 18.9448 19.5266Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.7002 8.86318C5.7002 5.62503 8.5208 3 12.0002 3C15.4796 3 18.3002 5.62503 18.3002 8.86318C18.3002 12.076 16.2894 15.8249 13.1523 17.1656C12.4209 17.4781 11.5794 17.4781 10.8481 17.1656C7.71094 15.8249 5.7002 12.076 5.7002 8.86318ZM12.0002 11.1C12.9943 11.1 13.8002 10.2941 13.8002 9.3C13.8002 8.30589 12.9943 7.5 12.0002 7.5C11.0061 7.5 10.2002 8.30589 10.2002 9.3C10.2002 10.2941 11.0061 11.1 12.0002 11.1Z"/>',
+  cal:    '<path d="M16.0502 14.7002C16.7958 14.7002 17.4002 15.3046 17.4002 16.0502C17.4002 16.7958 16.7958 17.4002 16.0502 17.4002C15.3046 17.4002 14.7002 16.7958 14.7002 16.0502C14.7002 15.3046 15.3046 14.7002 16.0502 14.7002Z"/><path d="M16.536 3C16.9118 3.00005 17.2163 3.27905 17.2163 3.62314V4.93535C18.522 5.0311 19.3797 5.26566 20.0095 5.84238C20.6391 6.41909 20.8954 7.20434 21 8.4V9.3H3V8.4C3.10455 7.20434 3.36086 6.41909 3.99053 5.84238C4.6203 5.26566 5.47794 5.0311 6.78369 4.93535V3.62314C6.78369 3.27905 7.08823 3.00005 7.46396 3C7.83973 3 8.14424 3.27903 8.14424 3.62314V4.87998C8.74776 4.86926 9.42478 4.86943 10.1859 4.86943H13.814C14.5753 4.86943 15.2522 4.86926 15.8558 4.87998V3.62314C15.8558 3.27903 16.1603 3 16.536 3Z"/><path opacity=".55" d="M20.9999 13.7998V11.9998C20.9999 11.2447 20.9885 9.89855 20.9769 9.2998H3.00521C2.9936 9.89855 3.00501 11.2447 3.00501 11.9998V13.7998C3.00501 17.1939 3.00501 18.891 4.05913 19.9454C5.11325 20.9998 6.80983 20.9998 10.203 20.9998H13.802C17.1951 20.9998 18.8917 20.9998 19.9459 19.9454C20.9999 18.891 20.9999 17.1939 20.9999 13.7998Z"/>',
+  branch: '<path opacity=".55" d="M4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.6819 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.6819 19.6819C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.6819C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802Z"/><path d="M12.6748 16.9498C12.6748 17.3226 12.3726 17.6248 11.9998 17.6248C11.627 17.6248 11.3248 17.3226 11.3248 16.9498V11.5498C11.3248 9.93437 10.0152 8.6248 8.3998 8.6248H8.2294L8.4271 8.82251C8.6907 9.08611 8.6907 9.5135 8.4271 9.7771C8.1635 10.0407 7.73611 10.0407 7.47251 9.7771L6.12251 8.4271C5.8589 8.1635 5.8589 7.73611 6.12251 7.47251L7.47251 6.12251C7.73611 5.8589 8.1635 5.8589 8.4271 6.12251C8.6907 6.38611 8.6907 6.8135 8.4271 7.0771L8.2294 7.2748H8.3998C9.91133 7.2748 11.2397 8.05926 11.9998 9.24327C12.7599 8.05926 14.0883 7.2748 15.5998 7.2748H15.7702L15.5725 7.0771C15.3089 6.8135 15.3089 6.38611 15.5725 6.12251C15.8361 5.8589 16.2635 5.8589 16.5271 6.12251L17.8771 7.47251C18.1407 7.73611 18.1407 8.1635 17.8771 8.4271L16.5271 9.7771C16.2635 10.0407 15.8361 10.0407 15.5725 9.7771C15.3089 9.5135 15.3089 9.08611 15.5725 8.82251L15.7702 8.6248H15.5998C13.9844 8.6248 12.6748 9.93437 12.6748 11.5498V16.9498Z"/>',
+  hour:   '<path fill-rule="evenodd" clip-rule="evenodd" d="M12.0004 1.5C7.66071 1.5 5.49087 1.5 4.85855 2.86414C4.80421 2.9814 4.75835 3.1032 4.72142 3.2284C4.29189 4.68496 5.82619 6.37317 8.89481 9.74958L10.9504 12H13.0504L15.106 9.74958C18.1746 6.37317 19.7089 4.68496 19.2793 3.2284C19.2425 3.1032 19.1966 2.9814 19.1422 2.86414C18.5099 1.5 16.34 1.5 12.0004 1.5Z"/><path opacity=".55" d="M4.85855 21.1358C5.49087 22.5 7.66071 22.5 12.0004 22.5C16.34 22.5 18.5099 22.5 19.1422 21.1358C19.1966 21.0186 19.2425 20.8968 19.2793 20.7716C19.7089 19.315 18.1746 17.6268 15.106 14.2505L13.0504 12H10.9504L8.89481 14.2505C5.82619 17.6268 4.29189 19.315 4.72142 20.7716C4.75835 20.8968 4.80421 21.0186 4.85855 21.1358Z"/>',
+  magic:  '<path opacity=".55" d="M3.80089 4.74815C3.28871 5.26037 3.00098 5.95507 3.00098 6.67943C3.00098 7.40379 3.28871 8.09848 3.80089 8.6107L5.30441 10.1152C5.31578 10.1019 5.83022 10.5917 5.84253 10.5794L9.63213 6.7898C9.64445 6.77748 9.15464 6.26305 9.16791 6.25168L7.66344 4.74815C7.15122 4.23598 6.45652 3.94824 5.73216 3.94824C5.0078 3.94824 4.31311 4.23598 3.80089 4.74815ZM5.02114 15.6072C5.05461 15.5214 5.11321 15.4477 5.18928 15.3957C5.26535 15.3437 5.35533 15.3159 5.44747 15.3159C5.5396 15.3159 5.62959 15.3437 5.70566 15.3957C5.78172 15.4477 5.84033 15.5214 5.8738 15.6072L6.02254 15.9862C6.04529 16.0448 6.07994 16.098 6.12429 16.1425C6.16864 16.187 6.22174 16.2219 6.28023 16.2448L6.6573 16.3936C6.74289 16.4277 6.81629 16.4867 6.868 16.5629C6.91971 16.6392 6.94735 16.7292 6.94735 16.8213C6.94735 16.9135 6.91971 17.0035 6.868 17.0798C6.81629 17.156 6.74289 17.215 6.6573 17.2491L6.28023 17.3988C6.22174 17.4218 6.16864 17.4566 6.12429 17.5011C6.07994 17.5456 6.04529 17.5988 6.02254 17.6574L5.8738 18.0364C5.84033 18.1222 5.78172 18.196 5.70566 18.2479C5.62959 18.2999 5.5396 18.3277 5.44747 18.3277C5.35533 18.3277 5.26535 18.2999 5.18928 18.2479C5.11321 18.196 5.05461 18.1222 5.02114 18.0364L4.8724 17.6574C4.84964 17.5988 4.815 17.5456 4.77065 17.5011C4.72629 17.4566 4.6732 17.4218 4.6147 17.3988L4.23764 17.2491C4.15204 17.215 4.07865 17.156 4.02694 17.0798C3.97523 17.0035 3.94759 16.9135 3.94759 16.8213C3.94759 16.7292 3.97523 16.6392 4.02694 16.5629C4.07865 16.4867 4.15204 16.4277 4.23764 16.3936L4.6147 16.2448C4.67329 16.2218 4.72644 16.1868 4.7708 16.1421C4.81516 16.0974 4.84975 16.044 4.8724 15.9853L5.02114 15.6072Z"/><path opacity=".55" d="M19.0743 9.75425C19.1078 9.66841 19.1664 9.59467 19.2425 9.54269C19.3185 9.4907 19.4085 9.46289 19.5006 9.46289C19.5928 9.46289 19.6828 9.4907 19.7588 9.54269C19.8349 9.59467 19.8935 9.66841 19.927 9.75425L20.0748 10.1323C20.1221 10.2507 20.215 10.3445 20.3334 10.3909L20.7105 10.5406C20.7958 10.5748 20.8689 10.6338 20.9204 10.71C20.9718 10.7861 20.9993 10.8759 20.9993 10.9679C20.9993 11.0598 20.9718 11.1496 20.9204 11.2257C20.8689 11.3019 20.7958 11.3609 20.7105 11.3951L20.3334 11.5448C20.2753 11.5686 20.2225 11.6038 20.1781 11.6482C20.1337 11.6926 20.0986 11.7454 20.0748 11.8035L19.927 12.1824C19.8935 12.2683 19.8349 12.342 19.7588 12.394C19.6828 12.446 19.5928 12.4738 19.5006 12.4738C19.4085 12.4738 19.3185 12.446 19.2425 12.394C19.1664 12.342 19.1078 12.2683 19.0743 12.1824L18.9256 11.8035C18.9019 11.7455 18.8669 11.6927 18.8227 11.6483C18.7784 11.6039 18.7258 11.5688 18.6679 11.5448L18.2908 11.3951C18.2055 11.3609 18.1324 11.3019 18.0809 11.2257C18.0295 11.1496 18.002 11.0598 18.002 10.9679C18.002 10.8759 18.0295 10.7861 18.0809 10.71C18.1324 10.6338 18.2055 10.5748 18.2908 10.5406L18.6679 10.3909C18.7258 10.367 18.7784 10.3318 18.8227 10.2874C18.8669 10.243 18.9019 10.1903 18.9256 10.1323L19.0743 9.75425Z"/><path opacity=".8" d="M15.4116 3.29038C15.4451 3.20454 15.5037 3.1308 15.5797 3.07882C15.6558 3.02684 15.7458 2.99902 15.8379 2.99902C15.9301 2.99902 16.02 3.02684 16.0961 3.07882C16.1722 3.1308 16.2308 3.20454 16.2643 3.29038L16.6716 4.32778C16.6943 4.38653 16.7289 4.43994 16.7732 4.48463C16.8176 4.52931 16.8707 4.5643 16.9293 4.58737L17.9629 4.99665C18.0485 5.03074 18.1219 5.08973 18.1736 5.16599C18.2253 5.24225 18.253 5.33226 18.253 5.4244C18.253 5.51653 18.2253 5.60655 18.1736 5.68281C18.1219 5.75906 18.0485 5.81805 17.9629 5.85215L16.9303 6.26143C16.8722 6.28524 16.8194 6.32037 16.775 6.36477C16.7306 6.40918 16.6955 6.46196 16.6716 6.52007L16.2643 7.55652C16.2308 7.64236 16.1722 7.7161 16.0961 7.76808C16.02 7.82006 15.9301 7.84788 15.8379 7.84788C15.7458 7.84788 15.6558 7.82006 15.5797 7.76808C15.5037 7.7161 15.4451 7.64236 15.4116 7.55652L15.0042 6.51912C14.9804 6.46102 14.9453 6.40823 14.9009 6.36383C14.8565 6.31943 14.8037 6.28429 14.7456 6.26048L13.7129 5.8512C13.6273 5.81711 13.5539 5.75812 13.5022 5.68186C13.4505 5.6056 13.4229 5.51559 13.4229 5.42345C13.4229 5.33131 13.4505 5.2413 13.5022 5.16504C13.5539 5.08878 13.6273 5.02979 13.7129 4.9957L14.7456 4.58642C14.8038 4.5625 14.8566 4.52722 14.901 4.48265C14.9454 4.43808 14.9805 4.38511 15.0042 4.32683L15.4116 3.29038Z"/><path d="M10.1697 7.25352C10.1584 7.26678 9.64394 6.77697 9.63162 6.78929L5.84203 10.5789C5.82971 10.5912 6.31951 11.1056 6.30625 11.117L15.3899 20.1997C15.6435 20.4534 15.9446 20.6547 16.276 20.792C16.6074 20.9293 16.9626 21 17.3213 21C17.68 21.0001 18.0353 20.9295 18.3667 20.7922C18.6981 20.655 18.9993 20.4538 19.2529 20.2002C19.5066 19.9466 19.7079 19.6455 19.8452 19.3141C19.9825 18.9827 20.0532 18.6275 20.0532 18.2688C20.0533 17.9101 19.9827 17.5549 19.8454 17.2234C19.7082 16.892 19.507 16.5909 19.2534 16.3372L10.1697 7.25352Z"/>',
+  pie:    '<path opacity=".55" d="M6.87925 5.01464C7.28771 4.74171 7.71659 4.50499 8.16098 4.30598C9.42146 3.7415 10.0517 3.45925 10.8902 4.00244C11.7286 4.54565 11.7286 5.4367 11.7286 7.2188V8.59699C11.7286 10.3295 11.7286 11.1957 12.2668 11.7339C12.805 12.2722 13.6713 12.2722 15.4038 12.2722H16.782C18.5641 12.2722 19.4551 12.2722 19.9983 13.1106C20.5415 13.9491 20.2592 14.5793 19.6947 15.8398C19.4957 16.2842 19.259 16.7131 18.9862 17.1215C18.027 18.5569 16.6638 19.6757 15.0689 20.3364C13.4739 20.997 11.7189 21.1698 10.0257 20.8331C8.33255 20.4962 6.77726 19.6649 5.55655 18.4442C4.33583 17.2235 3.50451 15.6682 3.16772 13.9751C2.83093 12.2818 3.00379 10.5268 3.66443 8.93189C4.32507 7.33695 5.44384 5.97374 6.87925 5.01464Z"/><path d="M20.8668 7.28144C20.1209 5.38808 18.6118 3.87893 16.7184 3.13304C15.3021 2.57507 14.0254 3.85814 14.0254 5.38046V9.05565C14.0254 9.56308 14.4367 9.97443 14.9442 9.97443H18.6194C20.1417 9.97443 21.4247 8.6978 20.8668 7.28144Z"/>',
+  shield: '<path opacity=".55" d="M3.82006 5.43693C3.46191 5.94719 3.46191 7.46394 3.46191 10.4975V11.9914C3.46191 17.34 7.48334 19.9357 10.0065 21.0379C10.6909 21.3368 11.0331 21.4864 12.0001 21.4864C12.9671 21.4864 13.3092 21.3368 13.9936 21.0379C16.5167 19.9357 20.5382 17.34 20.5382 11.9914V10.4975C20.5382 7.46394 20.5382 5.94719 20.1801 5.43693C19.822 4.92666 18.3958 4.43848 15.5435 3.46213L15.0001 3.27612C13.5132 2.76717 12.7698 2.5127 12.0001 2.5127C11.2303 2.5127 10.4869 2.76717 9.00006 3.27612L8.45665 3.46213C5.60434 4.43848 4.1782 4.92666 3.82006 5.43693Z"/><path d="M14.9027 10.576C15.1644 10.2829 15.1389 9.83312 14.8458 9.5714C14.5526 9.30968 14.1029 9.33515 13.8412 9.62827L10.9838 12.8286L10.1593 11.9051C9.89754 11.612 9.44775 11.5865 9.15464 11.8483C8.86151 12.1099 8.83605 12.5597 9.09776 12.8528L10.453 14.3707C10.588 14.522 10.7811 14.6084 10.9838 14.6084C11.1864 14.6084 11.3795 14.522 11.5145 14.3707L14.9027 10.576Z"/>',
+  planet: '<path opacity=".55" d="M19.764 12.0002C19.764 16.288 16.288 19.764 12.0002 19.764C7.71231 19.764 4.23633 16.288 4.23633 12.0002C4.23633 7.71231 7.71231 4.23633 12.0002 4.23633C16.288 4.23633 19.764 7.71231 19.764 12.0002Z"/><path d="M17.5443 5.64652C18.5603 5.45887 19.491 5.3953 20.2587 5.49838C21.0063 5.59878 21.7491 5.88053 22.1565 6.53175C22.5896 7.22398 22.4591 8.0278 22.1446 8.7227C21.825 9.42883 21.2535 10.1772 20.5219 10.9239C19.0512 12.4249 16.7991 14.0547 14.1195 15.4823C11.439 16.9105 8.78748 17.8928 6.65331 18.3157C5.59013 18.5263 4.61707 18.606 3.81689 18.5109C3.04037 18.4187 2.26446 18.1394 1.84447 17.4681C1.38757 16.7378 1.55678 15.886 1.91201 15.1589C2.27595 14.414 2.91434 13.62 3.72898 12.827L4.23667 12.4042C4.23667 12.6161 4.31757 13.0924 4.39982 13.5162C4.44302 13.7388 4.4866 13.9469 4.51901 14.0946C3.88643 14.7403 3.45353 15.32 3.21996 15.798C2.95091 16.3487 3.01793 16.5991 3.07855 16.696C3.14923 16.809 3.3746 16.9924 3.98863 17.0654C4.57901 17.1355 5.38578 17.0828 6.37037 16.8878C8.33172 16.4991 10.8474 15.5762 13.4351 14.1975C16.0238 12.8183 18.1434 11.2714 19.4821 9.9051C20.1551 9.21816 20.5977 8.61032 20.8184 8.12256C21.0441 7.62357 20.9799 7.39586 20.9224 7.30385C20.8543 7.19493 20.6418 7.01862 20.0649 6.94114C19.5395 6.87058 18.8305 6.90107 17.9656 7.05L16.7264 5.8432C17.0552 5.74477 17.3651 5.67753 17.5443 5.64652Z"/>',
+  coin:   '<path fill-rule="evenodd" clip-rule="evenodd" d="M19.537 10.0512C20.3373 10.1003 21.0446 10.7083 21.1043 11.5576C21.1082 11.6133 21.1086 11.6739 21.1086 11.7295V15.3064C21.1086 15.3621 21.1082 15.4227 21.1043 15.4784C21.0446 16.3277 20.3373 16.9356 19.537 16.9847C19.4831 16.988 19.4243 16.9881 19.3634 16.9881H16.9573C14.9868 16.9881 13.3008 15.482 13.3008 13.518C13.3008 11.554 14.9868 10.0479 16.9573 10.0479H19.3634C19.4243 10.0478 19.4831 10.0479 19.537 10.0512ZM16.7455 12.5928C16.2382 12.5928 15.8271 13.0069 15.8271 13.518C15.8271 14.029 16.2382 14.4431 16.7455 14.4431C17.2527 14.4431 17.6639 14.029 17.6639 13.518C17.6639 13.007 17.2527 12.5929 16.7455 12.5928Z"/><path d="M9.91878 3.60372C10.8978 2.942 12.2243 2.94198 13.2034 3.60372L15.0358 4.84233L16.6854 5.942C16.5013 5.90216 16.3096 5.8696 16.111 5.84288C15.1227 5.71001 13.8596 5.70985 12.2655 5.70987H10.4322C8.84057 5.70985 7.57934 5.70982 6.5918 5.84203L8.09558 4.83556L9.91878 3.60372Z"/><path opacity=".55" d="M19.4947 10.0489C19.4947 9.02473 19.4575 7.92605 18.8027 7.13842C18.7395 7.06239 18.6723 6.98857 18.6006 6.91691C17.9513 6.26768 17.1281 5.97956 16.111 5.84282C15.1227 5.70994 13.8599 5.70995 12.2655 5.70996H10.4326C8.83828 5.70995 7.57547 5.70994 6.58716 5.84282C5.57005 5.97956 4.74681 6.26768 4.09757 6.91691C3.44834 7.56614 3.16022 8.38939 3.02348 9.4065C2.8906 10.3948 2.89062 11.6576 2.89063 13.2519V13.3498C2.89062 14.9442 2.8906 16.2069 3.02348 17.1952C3.16022 18.2123 3.44834 19.0356 4.09757 19.6849C4.74681 20.334 5.57005 20.6222 6.58716 20.759C7.57546 20.8918 8.83826 20.8918 10.4325 20.8918H12.2655C13.8599 20.8918 15.1227 20.8918 16.111 20.759C17.1281 20.6222 17.9513 20.334 18.6006 19.6849C18.778 19.5074 18.9287 19.3167 19.0568 19.1121C19.4476 18.4879 19.4947 17.7229 19.4947 16.9866C19.4529 16.9879 19.4088 16.9879 19.3635 16.9879H16.9576C14.9871 16.9879 13.301 15.4818 13.301 13.5178C13.301 11.5537 14.9871 10.0476 16.9576 10.0476H19.3634C19.4087 10.0476 19.4529 10.0476 19.4947 10.0489Z"/>',
+  leaf:   '<path opacity=".55" d="M12 2C12.4992 2 12.9986 2.10821 13.4629 2.3252C14.5712 2.84325 15.5689 3.62056 16.4316 4.56836C17.3062 5.52916 18.0422 6.66557 18.6143 7.88574C19.1839 9.10061 19.5906 10.399 19.8105 11.6895C19.935 12.4197 20 13.1474 20 13.8564C20 18.3539 16.4183 22 12 22V2Z"/><path d="M12 22C7.58172 22 4 18.3539 4 13.8564C4.0001 9.39433 6.55344 4.18719 10.5371 2.3252C11.0014 2.10821 11.5008 2 12 2V22Z"/>',
+  graph:  '<path opacity=".55" d="M3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3C16.2426 3 18.364 3 19.6819 4.31802C21 5.63604 21 7.75736 21 12C21 16.2426 21 18.364 19.6819 19.6819C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.6819C3 18.364 3 16.2426 3 12Z"/><path d="M14.2502 10.8754C13.8774 10.8754 13.5752 10.5732 13.5752 10.2004C13.5752 9.8276 13.8774 9.52539 14.2502 9.52539H16.5002C16.873 9.52539 17.1752 9.8276 17.1752 10.2004V12.4504C17.1752 12.8232 16.873 13.1254 16.5002 13.1254C16.1274 13.1254 15.8252 12.8232 15.8252 12.4504V11.83L14.0139 13.6413C13.3988 14.2563 12.4016 14.2563 11.7865 13.6413L10.3593 12.2141C10.2714 12.1262 10.129 12.1262 10.0411 12.2141L7.97749 14.2777C7.71389 14.5413 7.2865 14.5413 7.0229 14.2777C6.7593 14.0141 6.7593 13.5867 7.0229 13.3231L9.0865 11.2595C9.70158 10.6445 10.6988 10.6445 11.3139 11.2595L12.7411 12.6867C12.829 12.7746 12.9714 12.7746 13.0593 12.6867L14.8706 10.8754H14.2502Z"/>',
+  cald:   '<path d="M10.1727 12.4226C10.3657 12.2297 10.6562 12.1714 10.9083 12.2758C11.1606 12.3803 11.3249 12.6269 11.3249 12.8999V16.4999C11.3249 16.8727 11.0227 17.1749 10.6499 17.1749C10.2772 17.1749 9.97494 16.8727 9.97494 16.4999V14.5293L9.77719 14.7272C9.51359 14.9908 9.0863 14.9908 8.8227 14.7272C8.5591 14.4636 8.5591 14.0362 8.8227 13.7726L10.1727 12.4226Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7996 12.2246C14.6695 12.2246 15.3746 12.9298 15.3746 13.7996V15.5996C15.3746 16.4695 14.6695 17.1746 13.7996 17.1746C12.9298 17.1746 12.2246 16.4695 12.2246 15.5996V13.7996C12.2246 12.9298 12.9298 12.2246 13.7996 12.2246ZM13.7996 13.5746C13.6753 13.5746 13.5746 13.6753 13.5746 13.7996V15.5996C13.5746 15.7239 13.6753 15.8246 13.7996 15.8246C13.9239 15.8246 14.0246 15.7239 14.0246 15.5996V13.7996C14.0246 13.6753 13.9239 13.5746 13.7996 13.5746Z"/><path d="M16.536 3C16.9118 3.00005 17.2163 3.27905 17.2163 3.62314V4.93535C18.522 5.0311 19.3797 5.26566 20.0095 5.84238C20.6391 6.41909 20.8954 7.20434 21 8.4V9.3H3V8.4C3.10455 7.20434 3.36086 6.41909 3.99053 5.84238C4.6203 5.26566 5.47794 5.0311 6.78369 4.93535V3.62314C6.78369 3.27905 7.08823 3.00005 7.46396 3C7.83973 3 8.14424 3.27903 8.14424 3.62314V4.87998C8.74776 4.86926 9.42478 4.86943 10.1859 4.86943H13.814C14.5753 4.86943 15.2522 4.86926 15.8558 4.87998V3.62314C15.8558 3.27903 16.1603 3 16.536 3Z"/><path opacity=".55" d="M20.9999 13.7998V11.9998C20.9999 11.2447 20.9885 9.89855 20.9769 9.2998H3.00521C2.9936 9.89855 3.00501 11.2447 3.00501 11.9998V13.7998C3.00501 17.1939 3.00501 18.891 4.05913 19.9454C5.11325 20.9998 6.80983 20.9998 10.203 20.9998H13.802C17.1951 20.9998 18.8917 20.9998 19.9459 19.9454C20.9999 18.891 20.9999 17.1939 20.9999 13.7998Z"/>',
+  route:  '<g opacity=".55"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.8502 13.7998C16.1105 13.7998 14.7002 15.1124 14.7002 16.7314C14.7002 18.3378 15.7056 20.2123 17.2742 20.8826C17.6399 21.0389 18.0605 21.0389 18.4262 20.8826C19.9948 20.2123 21.0002 18.3378 21.0002 16.7314C21.0002 15.1124 19.5899 13.7998 17.8502 13.7998Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.15 3C4.4103 3 3 4.31251 3 5.93159C3 7.53797 4.00537 9.41247 5.57397 10.0828C5.93963 10.2391 6.36037 10.2391 6.72603 10.0828C8.29463 9.41247 9.3 7.53797 9.3 5.93159C9.3 4.31251 7.8897 3 6.15 3Z"/></g><path d="M15.7185 5.02539C18.1947 5.02539 19.1365 8.25931 17.0475 9.58867L7.67745 15.5512C6.72791 16.1554 7.15579 17.6254 8.28125 17.6254H10.3705L10.1727 17.4277C9.90912 17.1641 9.90912 16.7367 10.1727 16.4731C10.4362 16.2095 10.8636 16.2096 11.1272 16.4731L12.4772 17.8231C12.7408 18.0867 12.7408 18.5141 12.4772 18.7777L11.1272 20.1277C10.8636 20.3912 10.4362 20.3912 10.1727 20.1277C9.90912 19.864 9.90912 19.4367 10.1727 19.1731L10.3705 18.9754H8.28125C5.80519 18.9754 4.86342 15.7415 6.95235 14.4121L16.3223 8.44961C17.2719 7.84535 16.8441 6.37539 15.7185 6.37539H11.9999C11.6271 6.37535 11.3249 6.07315 11.3249 5.70039C11.3249 5.32763 11.6271 5.02544 11.9999 5.02539H15.7185Z"/><path d="M17.8502 16.0498C18.3473 16.0498 18.7502 16.4527 18.7502 16.9498C18.7502 17.4469 18.3473 17.8498 17.8502 17.8498C17.3531 17.8498 16.9502 17.4469 16.9502 16.9498C16.9502 16.4527 17.3531 16.0498 17.8502 16.0498Z"/><path d="M6.15 5.25C6.64705 5.25 7.05 5.65295 7.05 6.15C7.05 6.64705 6.64705 7.05 6.15 7.05C5.65295 7.05 5.25 6.64705 5.25 6.15C5.25 5.65295 5.65295 5.25 6.15 5.25Z"/>',
+  speak:  '<path d="M9.77867 3.46387C11.845 3.46387 13.5202 5.13902 13.5202 7.20542C13.5202 9.27182 11.845 10.947 9.77867 10.947C7.71226 10.947 6.03711 9.27182 6.03711 7.20542C6.03711 5.13902 7.71226 3.46387 9.77867 3.46387Z"/><path d="M17.5953 3.10307C17.7948 2.77096 18.225 2.66354 18.5572 2.86283C18.8512 3.04297 20.7687 4.25897 20.7687 7.20545C20.7687 10.1519 18.8512 11.3679 18.5572 11.5489C18.225 11.7481 17.7947 11.6399 17.5953 11.3078C17.3969 10.977 17.5022 10.5483 17.831 10.3478C17.9158 10.2922 19.3656 9.40361 19.3656 7.20545C19.3656 5.00729 17.9158 4.11867 17.831 4.06312C17.5023 3.86261 17.3969 3.43382 17.5953 3.10307Z"/><path d="M15.6981 5.02116C15.8713 4.67462 16.2934 4.53365 16.6399 4.70693C16.7934 4.78261 17.9626 5.42802 17.9626 7.20526C17.9626 8.9825 16.7934 9.62792 16.6399 9.70359C16.2934 9.87683 15.8714 9.73666 15.6981 9.39027C15.527 9.04804 15.6624 8.63205 15.9996 8.45488C16.0451 8.43062 16.5595 8.14065 16.5595 7.20526C16.5595 6.26988 16.0451 5.9799 15.9996 5.95564C15.6626 5.77852 15.5272 5.36333 15.6981 5.02116Z"/><path opacity=".55" d="M9.77819 21.237C13.3944 21.237 16.3259 19.5619 16.3259 17.4955C16.3259 15.4291 13.3944 13.7539 9.77819 13.7539C6.16198 13.7539 3.23047 15.4291 3.23047 17.4955C3.23047 19.5619 6.16198 21.237 9.77819 21.237Z"/>'
+};
+/* The one place the two sets meet. A question list draws the golden duotone;
+   anything GOLD_ICON has no drawing for falls back to the stroked LI_ICON so a
+   missing key is a plainer icon rather than an empty box. */
+function learnIcon(k) {
+  if (GOLD_ICON[k]) {
+    return '<svg class="li-gold" viewBox="0 0 24 24" fill="currentColor" ' +
+      'aria-hidden="true">' + GOLD_ICON[k] + '</svg>';
   }
-  const scale = () => vp.clientWidth / W;
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+    (LI_ICON[k] || '<path d="M4.5 12.5 9.5 17.5 19.5 6.5"/>') + '</svg>';
+}
+/* `s` is the one line under every cover — on the upsell card, on the picker,
+   on the tile, and as the opening of the sell page's lead. Three books wrote it
+   three different ways and three different lengths, so side by side one ran to
+   three lines and its neighbour to two, and everything below them — rating,
+   price, button — stopped lining up. They are all the same promise, so they are
+   all the same shape now: the questions the book answers, two or three of them,
+   joined by `and`, around 36 characters, no full stop (1844 adds one). */
+var REPORTS = [
+  {
+    id: 'partner', t: 'Marriage Prediction Report', s: 'A report on who they are, where you meet and when', pages: 38, rating: '4.7', sold: 13000,
+    // Read once. The chart it is drawn from does not move, so there is no
+    // second edition to sell and every surface that sold it says Read Report
+    // from the moment it is hers.
+    cadence: 'once',
+    // `t2` is the long name, used where the card has room for two lines and the
+    // book is sitting right next to it — it has to match the cover she can see.
+    // Figma 23 Nov: no "Your" before a report name on detail pages, cards,
+    // guidance tiles, the pay sheet or My Reports. Full sentences (pushes,
+    // toasts) still say "your". `tl` is gone with it — the sell page now prints
+    // the plain report name, same as the cover.
+    t2: 'Marriage Prediction Report',
+    why: 'See what dosha is delaying your marriage',
+    cover: { a: '#F0668B', b: '#8B2F55', ink: '#FFE4EC', motif: 'heart' },
+    // Partner is the one report whose art is photographed rather than painted:
+    // Figma 3311:6840 for the cover and 3254:6840 for the open spread, exported
+    // straight out of the board. The spread keeps its own board edges on
+    // transparency, re-padded to the proportions the hero's hand-placed contact
+    // shadow and gutter were measured against. The query strings are the only
+    // thing that gets an installed home-screen app to re-fetch art that kept its
+    // filename.
+    art: {
+      closed: 'assets/cover-partner.jpg?v=4',
+      open: 'assets/spread-partner.png?v=4',
+      // Two reports now have a filmed hero and they share one element, so each
+      // has to name its own file — otherwise coming back from Kundali Milan
+      // leaves her couple playing over this one.
+      video: 'assets/r2-hero.mp4?v=202610271219',
+      rate: 1
+    },
+    // What is in the box, as chips — the one thing unique to this report first.
+    // These were briefly three icon rows reading "read from your birth chart",
+    // "private forever", "in your language": true of every report we sell and
+    // therefore an argument for none of them. The chips say the same terms in
+    // a tenth of the height and do not pretend to be a sales point.
+    chips: ['When you\u2019ll marry', 'Manglik check'],
+    // The third stat column. Partner is bought once and that is the fact worth
+    // printing beside a price.
+    stat3: { v: 'One-time', l: 'Payment' },
+    /* The line under the title, as the promise rather than as a description.
+       It names the thing standing in the way before it names the happy ending:
+       a date on its own is pleasant and skippable, a date she is being kept
+       from is not. */
+    lead: 'When marriage could happen, what your partner may be like, and what your Kundli says about the life you\u2019ll build',
+    // Quotes that name something the report called before it happened. A quote
+    // that only says "very good" proves nothing and sells nothing.
+    revs: [
+      { n: 'Priya S., Jaipur', t: 'LOVE MARRIAGE MATCHED', q: 'It said love marriage, and both families agreeing by year end. We told them in October, fully expecting drama. They said yes!' },
+      { n: 'Neha K., Indore',  t: 'MARRIAGE WINDOW CLEAR', q: 'It said my strongest window runs till July 2027, and to look beyond attraction. That\u2019s what finally got us talking about marriage at home.' }
+    ],
+    /* Figma 3111:201622 — eight, and the top three said in the frame's own
+       words. The chat card shows three and counts "+5"; History counts all
+       eight. Both numbers come from this one list, so they cannot drift. */
+    learn: [
+      'When will I get married?',
+      'What will my partner be like?',
+      'Love or arranged, what does my chart say?',
+      'Am I Manglik?',
+      'Will my in-laws be supportive?',
+      'How may money change after marriage?',
+      'What will married life look like over the years?'
+    ],
+    // Parallel to `learn`, one key per line. Kept as its own list rather than
+    // folded into the strings so the copy stays copy and stays translatable.
+    licons: ['cal', 'heart', 'route', 'planet', 'branch', 'coin', 'hour'],
+    /* What Hemali says in the chat just before the card. It has to live on the
+       report, not in the day's script: the line names a house and a planet, so
+       a script that hard-codes "Saturn, your tenth house" while the card under
+       it sells Kundli Milan is an astrologer contradicting herself one line
+       later. `pitchLong` is the day-1 version, said fifteen minutes after the
+       chat ended, which is why it can afford to mention the sample.
 
-  // ---------- render ----------
-  function render(dir) {
-    clearTimeout(state.timer);
-    const f = flowById[state.flow], s = f.byId[state.screen];
-    const k = scale();
-    vp.querySelectorAll('.scr, .pin, .autobar, .hot').forEach(n => n.remove());
-    if (!state.reader) vp.querySelectorAll('iframe').forEach(n => n.remove());
+       Three lines, not a paragraph, and always the same three:
+         1. the reason she is being spoken to at all - something she said in the
+            chat, or something the calendar is doing to her right now;
+         2. what she will learn, named as specifics rather than as a subject;
+         3. what buying gets her, and why it matters.
+       A paragraph makes all three the same weight and hides the only one she is
+       scanning for, which is the second. Separating them also makes the ask
+       readable in the two seconds the bubble is on screen before the card
+       underneath takes over. */
+    pitch: [
+      'Mansi, you asked me about your partner. Rahu sitting on your seventh house is the whole answer, and your Marriage Prediction Report is built on it.',
+      'Learn what they will be like, how the two of you meet, and the months it can actually happen.',
+      'Buy the report and get a full reading of your seventh house, with the remedy that breaks the block.'
+    ],
+    pitchLong: [
+      'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed, so I have written your Marriage Prediction Report around it.',
+      'Learn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.',
+      'Buy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
+    /* The colour behind the title in the chat card, taken off this report's own
+       hero rather than being one magenta for all three. Sampled from the art:
+       the deepest saturated pixel in the partner film is a dusty brick, which
+       is the curtain light at the edge of the frame. The ramp then opens to the
+       card's white on the right, the same shape for every report - only the hue
+       moves, so the card is recognisably the same card and still arrives in the
+       colour of the book it is selling. */
+    /* Sampled off r2-hero.mp4, not picked by eye: the film averages #E0AEAB
+       and bottoms out at #7B3B3A, so the card is built from its own darkest
+       value and opens toward its average. Darker than it was, because the
+       title is white and the old mid-tone had it sitting on a tint rather
+       than on ink. */
+    tint: 'linear-gradient(94deg,#5A2B2B 0%,#7B3B3A 40%,#C68E8C 74%,#fff 100%)',
+    /* The +10 min notification on day 1. Same three beats as the chat pitch,
+       squeezed into one line: why now, what she gets, what it costs. */
+    push: 'Mansi, Rahu is in your seventh house. That is the block. Your Marriage Prediction Report is \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    /* The ticket stub on Today, day 2. It used to read "Your partner report is
+       ready" off the raw id, which named a folder rather than a book. */
+    // The second line names the report. On Today this tile sits between a
+    // reward ladder and a tarot card, so a line that only promises an answer
+    // reads as another free thing — the word is what says it is a report.
+    tkt: { t: 'Your Marriage Prediction Report is ready', s: 'A report on who they are, and when you meet them' },
+    /* The keepsake at the top of a bought report: the one finding worth pinning
+       to a wall, on the paper it was drawn on. Partner has a face to show, so
+       the art box holds the sketch. The other two have no portrait to draw —
+       there is no picture of a marriage score or a quarter of a year — so they
+       put their headline figure in the same box instead of leaving it empty or
+       inventing a stock image. Two facts underneath either way, because the
+       point of the card is that it is small enough to screenshot. */
+    hero: {
+      img: 'assets/sketch.jpg?v=202610221813',
+      alt: 'Sketch of your future partner',
+      foot: [['7th lord', 'Venus \u00b7 9th house'], ['You meet', 'Mar \u2013 Nov 2027']],
+      // What the same card says before she has paid. The labels change too, not
+      // just the values: withheld, the job of the line is to name what is
+      // coming, and "7th lord" does not do that for anyone.
+      hide: [['Your sketch', 'After you buy'], ['You meet', 'In full report']]
+    },
+    ask: [
+      { q: 'Where will I meet them?',        a: 'Your navamsa points to one direction. An introduction through work or study, not alone in some unknown place. It comes through people who already know you.' },
+      { q: 'What is the remedy for Rahu?',   a: 'Pray to Durga on Wednesdays and feed one person. And for three weeks, make no new promise about the thing that is stuck.' },
+      { q: 'Why do wrong people turn up?',   a: 'Rahu shows whatever is available instantly. Any relationship that moves very fast in the first week is your pattern. Wait three weeks and the pattern breaks.' }
+    ]
+  },
+  {
+    // Named for the thing people search for. "Marriage Report" said nothing the
+    // subtitle did not already say; Kundli Milan is the word she would use
+    // herself, and it is what the cover says.
+    id: 'marriage', t: 'Kundli Milan Report', s: 'A report on how well you match and when you marry', pages: 42, rating: '4.8', sold: 96440,
+    // No "Your" on this one: the book belongs to two people, and the cover
+    // does not claim it for either of them.
+    t2: 'Kundli Milan Report',
+    cadence: 'once',
+    // The one report with a second person in it, so the one report that has to
+    // ask. Board 1321:37310 — his four fields empty, hers written in.
+    needsMatch: true,
+    /* The hook over the buy bar. Mars holding the talks back is a worry, and a
+       worry is what the free chat already gave her — it is the reason she is
+       on this page, not a reason to pay. The score is the one thing in the
+       report she cannot get anywhere else and the thing she would say out loud
+       if asked what she wants from it, so the last line before the button
+       names it and says it is hers. Out of 36 is in the sentence because 28
+       means nothing without the scale. */
+    why: 'See which dosha matters, and what you can do',
+    cover: { a: '#E8973C', b: '#8A4A12', ink: '#FFEBD4', motif: 'knot' },
+    // Figma 3466:13910 for the cover, 3459:22391 for the spread, 3457:6843 for
+    // the hero ground.
+    art: {
+      closed: 'assets/cover-marriage.jpg?v=5',
+      open: 'assets/spread-marriage.png?v=3',
+      // Filmed, like Partner's. The painted ground below is what Career still
+      // uses and what this one fell back to before the clip existed.
+      video: 'assets/hero-marriage.mp4?v=1',
+      // Run at 0.4, which is the 2.5x slower she asked for: the clip is four
+      // seconds of a very small movement, and at speed it reads as a loop
+      // catching rather than two people standing still.
+      rate: 0.4,
+      hero: 'assets/bg-marriage.jpg?v=2',
+      // Cropped from the top rather than centred. At 8% the couple sat low
+      // enough that the mandap above them was most of the picture and the two
+      // faces — the only thing in the frame that is about her — were down
+      // level with the book. This lifts them by about a third of the hero.
+      heroPos: '50% 70%'
+    },
+    chips: ['36 guna match', 'Dosha check'],
+    // A Milan can be run again against anyone, which is the one thing about it
+    // worth saying twice.
+    stat3: { v: 'Unlimited', l: 'Type' },
+    revs: [
+      { n: 'Anjali D., Surat',  t: 'Guna score matched', q: 'We got 27 of 36, same as our family pandit. But it also explained why Bhakoot was low, which he never bothered to tell us.' },
+      { n: 'Kavya R., Chennai', t: 'Manglik doubt cleared', q: 'Two pandits told me I\u2019m Manglik and I cried for weeks. This showed it\u2019s cancelled in my chart, and why. We\u2019re married now.' }
+    ],
+    /* Six, and questions rather than contents, to match the other two reports.
+       Twelve statements made this page read as a table of contents — a list
+       that long is scanned, not read, and the one line she came for was
+       somewhere in the middle of it. The same six also carry the dosha words
+       out loud: a woman who has been told she is Manglik is scanning for that
+       word and will not find it in "which doshas you have".
+       The post-match versions of these sit in `matched.learn`, written against
+       a score she can already see. Every surface counts this list out loud —
+       the chat card now says "+3 more questions answered" off its length and
+       the picker and History say "6 questions answered", which is what the
+       other two reports say too. */
+    learn: [
+      'How many of the 36 gunas do we actually match?',
+      'Are we compatible, or only on paper?',
+      'Is he Manglik, and how strongly?',
+      'Do we have a Nadi or Kaal Sarp dosha, and can it be cancelled?',
+      'When is the best time for our marriage?',
+      'Which remedies will make our match stronger?'
+    ],
+    licons: ['pie', 'heart', 'planet', 'shield', 'cal', 'leaf'],
+    /* The trigger for this one is a person, not a planet. Kundli Milan is the
+       only report of the three that needs a second chart, so it is only ever
+       pitched to someone who has named him in the chat - and saying so out loud
+       is what separates it from an ad. She told Hemali about him; Hemali is
+       answering about him. */
+    /* No "report" anywhere in the thread. In the chat what she is being
+       offered is a match between two charts, and naming a product next to it
+       makes the free thing look like the bait on a hook. The word the bubble
+       uses when it has to name the paid half is analysis, which is what she
+       would call it anyway. */
+    pitch: [
+      'Mansi, you mentioned Rahul in the chat. Do you want your compatibility report with him?',
+      'I read the two charts side by side - how well the two of you actually match, what is holding it back, and the window the marriage can happen in.',
+      // No price and no number. The button under this one opens a form, not a
+      // payment, and asking for money in the same breath as asking for his
+      // birth time makes the typing feel like part of it.
+      'Give me his birth details and I will do it now.'
+    ],
+    pitchLong: [
+      'Mansi, you mentioned Rahul today, so I put both charts in front of me after we finished.',
+      'How well the two of you match and what is holding it back, what the Mangal dosha does to this match, how the two families sit together, and when the marriage is best done.',
+      'Give me his birth details and I will read them together. There is a complete sample on another chart if you want to see how deep it goes first.'
+    ],
+    /* The page after the form. Everything here replaces its plain counterpart
+       once both charts exist, which is the whole reason the details come
+       before the money: the detail page stops being a brochure for a book and
+       becomes a reading of her own match that happens to stop halfway.
 
-    const scr = el('div', 'scr' + (dir ? ' enter' : ''));
-    const layer = el('div', 'layer');
-    const img = el('img', 'shot');
-    img.src = s.src; img.alt = s.n; img.draggable = false;
-    img.width = 720; img.height = Math.round(s.h * 2);
-    layer.appendChild(img);
-    scr.appendChild(layer);
-    vp.appendChild(scr);
+       The number is 28, so 8 points are missing - and 8 is exactly the weight
+       of Nadi, the heaviest koota of the eight and the one families actually
+       refuse over. That is not a convenient coincidence to invent, it is what
+       a 28 usually means, and it gives every surface on this page the same
+       single subject instead of a generic "learn more". The chips show it,
+       the hook names the remedy for it, and the pointer list opens on it.
 
-    const edges = (f.out[s.id] || []);
-    const sticky = s.sticky;
-    let top = null, bot = null;
-    if (sticky) {
-      if (sticky.top > 0) {
-        top = el('div', 'pin top');
-        top.style.height = (sticky.top * k) + 'px';
-        top.style.backgroundImage = `url("${s.src}")`;
-        top.style.backgroundPosition = '0 0';
-        vp.appendChild(top);
+       The hook is the one place a remedy is promised. A locked list says what
+       is missing; a remedy says something can be done, and the gap between
+       those two is the reason to pay. */
+    matched: {
+      tl: function (n) { return 'Your Kundli Milan With ' + n; },
+      lead: function (n) {
+        return '28 of 36 gunas matched with ' + n +
+          '. Astro Hemali has read both charts for what the other 8 are doing.';
+      },
+      /* The number on its own, so the surfaces that only have room for the
+         figure - the pay sheet's dial - read it from here instead of each
+         keeping its own 28 to fall out of step with. */
+      score: { n: 28, of: 36 },
+      /* The eight kootas, weighted the way Ashta Koota actually weights them -
+         1, 2, 3, 4, 5, 6, 7, 8 - which is the only reason 36 is 36. The first
+         seven all match and Nadi takes nothing, so the 28 adds up and the
+         missing 8 has one name.
+
+         Two are shown and five are locked. Showing none makes the page a
+         receipt for a form she filled in; showing all eight hands over the
+         answer and leaves the report with nothing but adjectives to sell.
+         Two is enough to prove the match is real and specific to her, and
+         the lock on the rest is then an obvious, honest door. Nadi is pulled
+         out of the table on its own because it is the finding, not a row. */
+      /* `en` is the plain-English name the board's Compatibility details sheet
+         shows by default, with the Sanskrit behind a toggle — the eight kootas
+         are the one place the app has to say a word she may not know, and
+         "Yoni 4/4" tells her nothing that "Intimacy 4/4" does not tell her
+         better. The toggle exists because the Sanskrit is what she will hear
+         from everyone else about this score. */
+      kootas: [
+        { n: 'Varna',        en: 'Work',          ic: 'work',  s: 1, of: 1, open: true },
+        { n: 'Vashya',       en: 'Influence',     ic: 'inf',   s: 2, of: 2, open: true },
+        { n: 'Tara',         en: 'Destiny',       ic: 'star',  s: 3, of: 3 },
+        { n: 'Yoni',         en: 'Intimacy',      ic: 'flame', s: 4, of: 4 },
+        { n: 'Graha Maitri', en: 'Compatibility', ic: 'rings', s: 5, of: 5 },
+        { n: 'Gana',         en: 'Temperament',   ic: 'face',  s: 6, of: 6 },
+        { n: 'Bhakoot',      en: 'Love',          ic: 'heart', s: 7, of: 7 }
+      ],
+      nadi: { n: 'Nadi', en: 'Health', ic: 'pulse', s: 0, of: 8,
+              why: 'The heaviest of the eight, and the one families refuse over' },
+      /* Named, not given. A remedy she can act on from this page is a page she
+         never needs to buy anything from; a remedy that does not exist is the
+         page withholding a problem with no way out. So it says there is one and
+         that it is specific to these two charts, and the instruction is the
+         thing on the other side of the price. */
+      remedy: 'A Nadi dosha can be cancelled, and in these two charts there is ' +
+              'a cancellation to work with. Astro Hemali has written out which ' +
+              'one applies to you and what to do about it.',
+      chips: ['28 of 36 gunas', 'Nadi 0 of 8', 'Nadi dosha present'],
+      /* The last line she reads before the price, so it has to carry a stake
+         and not an inventory. The old one spent its first half restating the
+         arithmetic already on the dial two inches to the left, and its second
+         half pointing at a product - "it is in the report" - which is the
+         weakest thing a sentence can end on when the report is the thing being
+         sold. Say what Nadi costs her, say it is survivable, and stop. Three
+         wrapped lines became two. */
+      why: 'See which dosha matters, and what you can do',
+      head: 'What Your 28 Does Not Tell You',
+      lead: 'Both charts are in. See what your 28 really means.',
+      learn: [
+        'Why are 8 of our points missing, and is it serious?',
+        'Can our Nadi dosha be cancelled?',
+        'Is my partner Manglik, and does it cancel with mine?',
+        'Will we clash over money and family plans?',
+        'How will we get along with each other\u2019s families?',
+        'What can we do to make our match stronger?'
+      ],
+      licons: ['pie', 'shield', 'planet', 'coin', 'branch', 'leaf']
+    },
+    /* Chat and History, the two places she is met by name. Everywhere else
+       this is "Kundli Milan Report" and nothing more,
+       because Today and the picker do not know who he is - but these two
+       surfaces were there when she said his name, so they can use it, and
+       "your compatibility report with Rahul" is a different offer from
+       "Kundli Milan" even though it is the same forty-two pages.
+
+       The guna count is gone from the pitch. It was leading with a term she
+       has to already believe in - 36 gunas, free - when the thing she wants is
+       to know whether this works with him. The gunas are still the substance,
+       they just belong on the other side of the form where they are her
+       numbers rather than a vocabulary lesson.
+
+       No price on either state. The pre-form button captures intent and
+       nothing else: Get Your Report, then the free form, then the page with
+       her own match on it. The money is asked for once, at the end, when there
+       is a 28 on the screen to spend it against. */
+    card: {
+      tPre: 'Your Compatibility Report With Rahul',
+      sPre: 'Astro Hemali reads both your charts together',
+      ctaPre: 'Get Your Report',
+      sPost: '28 of 36 matched. Nadi is what is holding it back, and it can be cancelled',
+      ctaPost: 'See Your Match',
+      more: 'Learn more about it'
+    },
+    /* The rose this card has always worn. Kundli Milan is the one report whose
+       hero art is warmer than its book - the painting is gold and brown, the
+       cover is rose - and the cover is what the card is showing, so the cover
+       wins. */
+    /* Off hero-marriage.mp4 rather than off the cover. The film is lamplight
+       and brass - average #AD8965, darkest #532E16 - and the rose this card
+       used to wear belonged to the book, which is already in the picture a few
+       pixels to the right. Two different warms touching looked like a mistake. */
+    tint: 'linear-gradient(94deg,#3E2211 0%,#633618 40%,#A8835F 74%,#fff 100%)',
+    /* Two states, because a notification that says the match is ready before
+       she has given his birth details is a lie she can check in one tap. And
+       no price in either: one that leads with 49 is an ad, one that leads with
+       him is a message. The push is a one-to-one surface, so it keeps his
+       name - this is the same licence the chat and History have. */
+    push: 'Mansi, give me Rahul\u2019s birth details and I will read the two charts together \u2728',
+    pushDone: 'Mansi, your compatibility report with Rahul is ready. One thing is holding the match back \u2728',
+    toast: 'Hemali can read your compatibility with Rahul',
+    toastDone: 'Your compatibility with Rahul is ready',
+    /* Today is not a surface that knows who he is - the ticket and the tile in
+       Personalised Guidance sit next to a reward ladder and a tarot card, in
+       front of whoever opens the app - so here it is the product name and
+       nothing else. "Is ready" is gone from both states: before the form
+       nothing is ready, and after it the thing that is ready is a match, which
+       the second line says without claiming it twice.
+
+       Both Today surfaces read this pair, so there is one sentence to change
+       rather than two to keep in step. */
+    tkt: { t: 'Kundli Milan Report', s: 'Match birth charts and get your compatibility report' },
+    tktDone: { t: 'Kundli Milan Report', s: 'Birth charts matched. Get your compatibility report' },
+    /* Gun Milan is the number this report is bought for, so it is the number on
+       the card. Out of 36 under it, because 28 alone means nothing to anyone
+       who has not been told the scale. */
+    hero: {
+      fig: { lbl: 'Gun Milan', big: '28', unit: 'out of 36' },
+      foot: [['Mangal dosha', 'In neither chart'], ['Best window', 'Feb \u2013 Aug 2027']],
+      hide: [['Your score', 'After you buy'], ['Best window', 'In full report']]
+    },
+    ask: [
+      { q: 'How serious is the Manglik?',    a: 'Mars is in your chart but weakly placed. This is called a low Manglik. With a partner whose chart is similar, it settles on its own.' },
+      { q: 'Which is the best month?',       a: 'When Jupiter looks at your seventh house. In that window talks move forward and the family agrees too.' },
+      { q: 'What will the in-laws be like?', a: 'The lord of your fourth house is well placed, so the home stays calm. The first six months ask for some adjustment, then it steadies.' }
+    ]
+  },
+  {
+    // Money, not just the job, and a window rather than a subject. The cover
+    // says Career & Money; what people actually want to know is whether the
+    // thing lands soon, so the horizon goes in the name instead of sitting in
+    // the subtitle where it read as one more topic.
+    id: 'career', t: 'Monthly Wealth Report', s: 'A report on your work and money this month, week by week', pages: 34, rating: '4.6', sold: 71250,
+    // "Monthly" up front, because the thing that makes this report different
+    // from the first two is that it runs out and is bought again.
+    t2: 'Monthly Wealth Report',
+    // A month at a time. The report is a window rather than a reading, so it
+    // runs out: once this one is hers she can read it, and she can also buy
+    // next month. Every repeat buy is its own row in history.
+    cadence: 'monthly',
+    why: 'Know when to chase money and when to hold it',
+    cover: { a: '#3E8FD6', b: '#1B4A78', ink: '#DCEBFA', motif: 'arrow' },
+    // Figma 3496:13905 cover, 3488:24186 spread, 3492:8493 hero ground.
+    art: {
+      closed: 'assets/cover-career.jpg?v=3',
+      open: 'assets/spread-career.png?v=2',
+      // Filmed, like the other two. The crown turns above the stairs — the same
+      // climb the cover paints, so the still below is only the fallback now.
+      video: 'assets/hero-career.mp4?v=1',
+      // Left at speed. This one is already ten seconds of one slow rotation;
+      // the 0.4 that Kundali Milan needed was for four seconds of almost no
+      // movement, and applying it here would stop the crown rather than calm it.
+      rate: 1,
+      hero: 'assets/bg-career.jpg?v=2',
+      // Anchored to the very top of the painting. This one is a climb, so the
+      // thing the picture is about is the space above the stairs — the door,
+      // the light coming through it, the sky the coins are stacked against.
+      // Cropping into that to lift the figure took away the only part of the
+      // frame that says where he is going.
+      heroPos: '50% 0%'
+    },
+    chips: ['20 Nov \u2013 19 Dec', 'Money dates'],
+    /* An edition runs 30 days from the day she buys it, not a calendar month,
+       so the third stat counts the window rather than naming November. The
+       dates themselves are in the chips and under Find Answers To. */
+    stat3: { v: '30 days', l: 'From today' },
+    learnSub: 'For 20 Nov \u2013 19 Dec 2026',
+    lead: 'When to chase a pending payment, put money aside and think twice before saying yes.',
+    revs: [
+      { n: 'Shruti B., Pune',   t: 'Payment date matched', q: 'It said to send my payment reminder on the 26th. I did it that morning, and the money I\u2019d been chasing for weeks came in two days later.' },
+      { n: 'Meera T., Gurgaon', t: 'Big purchase paused', q: 'I was about to buy a new phone on EMI. It said give an optional purchase a night. I waited, and honestly I didn\u2019t need it.' }
+    ],
+    learn: [
+      'Is more money coming in or going out this month?',
+      'When should I follow up on a pending payment?',
+      'Is this a good time for a big purchase?',
+      'Will an unexpected expense come up?',
+      'How much can I save, and when should I invest?',
+      'Should I lend money or help family this month?'
+    ],
+    licons: ['graph', 'cald', 'coin', 'shield', 'pie', 'branch'],
+    /* Wealth has no person to name and no question she asked, so its trigger is
+       the calendar: the month is running out and nothing has moved. That is the
+       one thing about work she is already thinking when the message arrives,
+       which makes it the only honest way in. The month is named rather than
+       called "the month ahead", because a named month reads as a forecast and
+       the phrase reads as a category. */
+    pitch: [
+      'Mansi, October is almost gone and you have been working hard with very little moving. That is Saturn watching your tenth house, not you, and your November report starts right there.',
+      'Learn what November holds for your work and your money, week by week.',
+      'One move in the right week can change the whole year. The report names that week.'
+    ],
+    pitchLong: [
+      'Mansi, I kept reading your chart after we spoke. October is nearly over and the year has felt slow to you - Saturn aspecting your tenth house is why, and that is where your November report begins.',
+      'Learn what November holds week by week, the dates worth asking for a raise on, the right week to switch, and what your boss actually sees.',
+      'Buy the report and get your tenth house read in full, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
+    /* Amber, off the stairs and the stacked coins in the career painting. The
+       warmest of the three, which is right for the only report that is sold on
+       a month rather than on a person. */
+    /* Off hero-career.mp4, which is a pale sand #E3D3C5 all the way through.
+       Its own average is far too light to put white type on, so the card takes
+       the hue and drops the value: the same sand, lit from much further away. */
+    tint: 'linear-gradient(94deg,#4A352A 0%,#6B4F3E 40%,#BCA38C 74%,#fff 100%)',
+    push: 'Mansi, October is almost gone and nothing has moved. Your November, read week by week. \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    tkt: { t: 'Your Monthly Wealth Report is ready', s: 'A report on your work and money in November, week by week' },
+    /* Wealth is bought for timing, so the window is the headline. The year sits
+       under it rather than inside the range, which keeps the figure short and
+       the same weight as the other cards. */
+    hero: {
+      fig: { lbl: 'Your switch window', big: '18 \u2013 26', unit: 'November' },
+      foot: [['10th lord', 'Saturn \u00b7 6th house'], ['Money moves', 'Jun 2027']],
+      hide: [['Your window', 'After you buy'], ['Money moves', 'In full report']]
+    },
+    ask: [
+      { q: 'When should I change jobs?',     a: 'When Jupiter looks at your tenth house. In that window the offers are better and talks close. Before it, only talk, do not switch.' },
+      { q: 'What does my boss think?',       a: 'The Sun is fine but Saturn is watching. He trusts the work, not the show. So he knows your work, he just does not remember it.' },
+      { q: 'Will I get a raise?',            a: 'Your tenth lord is exalted, so yes, but only if you ask, not on its own. Ask on the dates named in the report.' }
+    ]
+  },
+  {
+    /* The fourth book, and the only one about a relationship she is already in.
+       Partner is about someone she has not met and Kundli Milan is about a
+       match on paper; this one is about the person she is with right now and
+       what the month ahead does to the two of them. Monthly, like Wealth, for
+       the same reason: a month is a window, and a window runs out. */
+    id: 'relation', t: 'Monthly Relationship Report', s: 'A report on the two of you this month, week by week', pages: 30, rating: '4.7', sold: 48120,
+    t2: 'Monthly Relationship Report',
+    cadence: 'monthly',
+    why: 'Know the best days for the two of you this month',
+    // Violet, so the four covers are four colours: Partner is rose, Kundli
+    // Milan gold, Wealth blue. No painted cover yet, so `book3d` draws the
+    // wash version from these two stops.
+    cover: { a: '#9B6CD1', b: '#4A2A7A', ink: '#EDE2FA', motif: 'heart' },
+    // Hero and cover, no spread yet. Which is why "has art" is three questions
+    // here and not one: `hasCover` prints the book, `hasSpread` opens it, and
+    // this report answers yes to the first and no to the second.
+    art: {
+      closed: 'assets/cover-relation.jpg?v=1',
+      hero: 'assets/bg-relation.jpg?v=1',
+      // The frame is tall and the whole point of it is the two heads touching,
+      // so the crop holds the upper middle rather than the centre.
+      heroPos: '50% 28%'
+    },
+    chips: ['20 Nov \u2013 19 Dec', 'Date nights'],
+    stat3: { v: '30 days', l: 'From today' },
+    learnSub: 'For 20 Nov \u2013 19 Dec 2026',
+    lead: 'A date night, a conversation worth having, and the days to take more care.',
+    revs: [
+      { n: 'Ankita P., Pune', t: 'Date night matched', q: 'It picked the 5th for a date. We went back to the caf\u00e9 from our first date and talked for three hours, no phones.' },
+      { n: 'Swati R., Delhi', t: 'Family plans sorted', q: 'It said to check with each other before saying yes to family plans. I asked first for once, and the whole weekend went without an argument.' }
+    ],
+    learn: [
+      'Which evening is best for a date this month?',
+      'When is the right time for a heart-to-heart?',
+      'Why do small plans turn into arguments?',
+      'How do we handle in-laws\u2019 expectations together?',
+      'When should I reconnect with my parents or siblings?',
+      'What should we plan for our special days?'
+    ],
+    licons: ['cal', 'speak', 'route', 'branch', 'heart', 'magic'],
+    /* Like Wealth, the trigger is the calendar rather than a question she
+       asked. Unlike Wealth, the thing the month is doing has a person in it,
+       so the first line names what she is already feeling about him. */
+    pitch: [
+      'Mansi, things have felt hot and cold with Rahul this month. Venus is moving away from your fifth house, and that is the whole reason.',
+      'Learn which days in November are easy between you, which ones to keep quiet on, and why the same fight keeps coming back.',
+      'Buy the report and get the month read week by week, with what to do in the hard stretch.'
+    ],
+    pitchLong: [
+      'Mansi, I kept reading your chart after we spoke. The push and pull with Rahul is not the two of you. Venus is leaving your fifth house, and November is written around that.',
+      'Learn which days are easy between you, which week is the cold one, why the same fight returns, and what he is actually feeling in it.',
+      'Buy the report and get all four weeks read out, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.'
+    ],
+    tint: 'linear-gradient(94deg,#32204F 0%,#4D3273 40%,#A08FC4 74%,#fff 100%)',
+    push: 'Mansi, hot and cold with Rahul this month? Venus is leaving your fifth house. Your November, week by week. \u20b949 today instead of \u20b9499 \ud83d\udcd6',
+    tkt: { t: 'Your Monthly Relationship Report is ready', s: 'A report on the two of you in November, week by week' },
+    hero: {
+      fig: { lbl: 'Your easiest week', big: '12 \u2013 18', unit: 'November' },
+      foot: [['5th lord', 'Venus \u00b7 8th house'], ['Hard stretch', '19 \u2013 24 Nov']],
+      hide: [['Your easy week', 'After you buy'], ['Hard stretch', 'In full report']]
+    },
+    ask: [
+      { q: 'Why does he go quiet?',          a: 'Venus is in your eighth house this month, which hides what is felt rather than killing it. He pulls back when he is unsure, not when he is done.' },
+      { q: 'Which days are safe to talk?',   a: 'The days the Moon is in your fourth house. The report names them. On those days the same sentence lands completely differently.' },
+      { q: 'Is he going to commit?',         a: 'Jupiter looks at your seventh house twice this month. Both windows are in the report, and the second one is the stronger of the two.' }
+    ]
+  }
+];
+function reportById(id) {
+  for (var i = 0; i < REPORTS.length; i++) if (REPORTS[i].id === id) return REPORTS[i];
+  return REPORTS[0];
+}
+
+/* "Has art" is not one question. Art arrives a piece at a time: hero first,
+   then the cover, then the painted spread. Asking for `r.art` meant one new
+   file was enough to make every shelf, ticket and tile render an empty <img>,
+   so each surface asks for the piece it actually prints. */
+function hasCover(r) { return !!(r.art && r.art.closed); }
+function hasSpread(r) { return !!(r.art && r.art.open); }
+
+/* Each day names the surfaces it is allowed to use — `surf` is the whole
+   schedule, and every renderer reads it rather than guessing from the day
+   number. Day 1 now opens on Personalised Guidance: the first thing she is
+   asked is a tile she can see on the screen she already landed on, and the
+   notification and the chat come ten minutes later. The loud expert card still
+   stays off day 1, so nothing competes with the daily reward. */
+var PM_JOURNEY = {
+  1: {
+    stamp: 'Just now',
+    surf: { chat: true, guide: true, hist: true },
+    msgs: [
+      { who: 'sys',    text: 'Astrologer has joined to guide you' },
+      { who: 'user',   text: 'Will I have a healthy relationship with my partner?' },
+      { who: 'hemali', text: 'Mansi, I have read your chart. Rahu sits in your seventh house. That is why things stop just as they start to work out.' },
+      { who: 'hemali', text: 'Do not worry, there is a remedy for it.' },
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' },
+      /* The brief's wait, made visible — nothing touches her until it passes. */
+      { who: 'gap',    text: '10 minutes later' },
+      { who: 'hemali', pitch: 'long' },
+      { who: 'offer3' }
+    ],
+    today: { eyebrow: '', note: '' },
+    countdown: '✦ NEXT FREE 2 MIN CHAT IN <b>14h : 23m</b>',
+    /* A notification that names her own house and opens that one preview beats
+       a storefront ad that makes her choose again on the other side of the tap. */
+    lead: 'partner',
+    /* The flag only says that day 1 has a notification. What it says is the
+       pitched report's business, the same as the chat line directly under it -
+       a push hard-coded to Rahu while the card sells Kundli Milan is the same
+       contradiction the chat bubble had. */
+    push: true
+  },
+  /* `lead` is the one report each day actually suggests. Day 1 and 2 lead with
+     the house she asked about; if that has not landed in two days the
+     hypothesis was wrong, so days 3 and 4 change the question instead of
+     repeating it. The other two are always one tap away, never stacked. */
+  2: {
+    stamp: 'Yesterday',
+    lead: 'partner',
+    surf: { chat: false, guide: true, hist: false },
+    msgs: [
+      { who: 'hemali', text: 'Mansi! Yesterday you asked about your partner. What would you like to ask today?' },
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
+    ],
+    today: { eyebrow: '', note: '' },
+    countdown: '✦ FREE 2 MIN CHAT READY'
+  },
+  /* Day 3 steps back off the expert card — Today keeps only the personalised
+     tile, and the chat carries the ask. Nothing escalates: same three reports,
+     same preview, same price. */
+  3: {
+    stamp: '2 days ago',
+    lead: 'career',
+    surf: { chat: true, guide: true, hist: false },
+    msgs: [
+      { who: 'hemali', pitch: 'short' },
+      { who: 'offer3' },
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
+    ],
+    today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
+    countdown: '✦ FREE 2 MIN CHAT READY'
+  },
+  /* Day 4 is the last ask, and it is quieter than day 3, not louder: the chat
+     and the expert card both drop away and the report sits as the first task in
+     Personalised Guidance, where she can take it or walk past it. */
+  4: {
+    stamp: '3 days ago',
+    lead: 'marriage',
+    lastAsk: true,
+    surf: { chat: false, guide: true, hist: false },
+    msgs: [
+      { who: 'hemali', pitch: 'short' },
+      { who: 'offer3' },
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
+    ],
+    today: { eyebrow: '', note: '' },   // PM Today uses the expert card, not this slot
+    countdown: '✦ FREE 2 MIN CHAT READY'
+  },
+  /* Day 5: the stop. Nothing asks her any more — no push, no chat line, no
+     expert card. The report stays on the shelf as a task she can pick up if she
+     wants it, which is not the same as being sold to. */
+  5: {
+    stamp: '4 days ago',
+    quiet: true,
+    surf: { chat: false, guide: true, hist: false },
+    msgs: [
+      { who: 'hemali', text: 'Mansi, tell me, what would you like to ask today?' },
+      { who: 'ended',  text: 'This is an automated message. Your chat ended as you ran out of free minutes. You may recharge and start the chat again. For any issues, contact customer support.' }
+    ],
+    today: { eyebrow: '', note: '' },
+    countdown: '✦ FREE 2 MIN CHAT READY'
+  }
+};
+
+/* Daily-reward coins. The wallet is the habit loop's own currency — the report
+   is flat ₹49 (down from ₹499) and never discounts off the wallet. */
+var REWARD = { 1: 9, 2: 11, 3: 13, 4: 16, 5: 17 };
+var WALLET_AT = { 1: 20, 2: 29, 3: 40, 4: 53, 5: 69 };   // start of each day, pre-answer
+
+var state = {
+  day: 1,
+  /* Which of the two five-day stories is being shown. `new` is the woman who
+     has not bought, which is what the day script is written for. `bought` is
+     the same five days for a woman who paid on day 1: restart() seeds that
+     purchase instead of clearing it, so days 2-5 are the days *after* a sale
+     rather than five more attempts at one. A demo control - the real app has
+     no such flag, it just reads `owned`. */
+  track: 'new',
+  answered: false,
+  entry: 'today-a',
+  wallet: 20,
+  lang: 'en',
+  langFrom: 'sample',   // which surface opened the language sheet
+  /* `paid` stays what it always was — has she bought anything at all — because
+     every post-purchase surface in the app reads it. `owned` is the list that
+     makes history mean something: ids in the order they were bought. */
+  paid: false,
+  owned: [],
+  /* One row per purchase, newest first, so a repeat buy of a monthly report
+     leaves its own mark instead of overwriting the first one. */
+  buys: [],
+  // Whether today's three tarot cards have been picked. The menu's one card
+  // with a daily reset, and the only thing in there that changes.
+  tarot: false,
+  screen: 'today-a',
+  stack: [],
+  sheet: null,
+  introShown: false,
+  /* Coins collected on the 7-day ladder. Day 1 starts at 0 because the check-in
+     is still unanswered — the intro sheet is asking for that first answer. */
+  claimed: 0,
+  reminded: false,
+  pick: 'partner',  // which of the three reports she is looking at
+  /* Which report the app is pitching today — the chat card, the expert ticket,
+     the History chapter and the push all read it. Separate from `pick`, which
+     is whatever she has tapped into: the pitch is the app's choice, the pick is
+     hers. A demo control, not a user one — the real app would pin this to the
+     house Hemali just named, which for this script is Partner. */
+  lead: 'partner',
+  /* His details, and whether they have been given. Kundli Milan is the only
+     report that needs a second chart, and the chart now comes before the
+     money: the form is free, the guna number it produces is free, and the
+     paywall sits after both. Two reasons it is that way round. Most women do
+     not know the man's exact birth time, so taking ₹49 first and handing her
+     a form she cannot fill is a stuck purchase and a refund; this way the
+     same failure is a free walk-away. And four fields about him is real
+     effort, so by the time the price appears she has already put something
+     in - which is the right order for sunk cost, where paying first and then
+     being given homework is a bill after the bill. */
+  matched: false,
+  /* Which names the Compatibility details sheet shows. English by default —
+     the Sanskrit is the thing she will hear from her family, not the thing she
+     can read. */
+  gunaSans: false,
+  /* Who the match was actually run against, and who the chat guessed it would
+     be. Two fields, not one, because the guess has to survive her overruling
+     it: if she matches against someone else and then comes back to redo it,
+     the form should still offer the name Hemali heard rather than the name
+     that was just rejected. */
+  boy: '',
+  suggested: 'Rahul',
+  /* The morning's report is waiting in History — the dot on the nav says so,
+     and visiting History clears it. */
+  histDot: true,
+  /* Has she opened a report she owns, and has the shelf been pointed out yet.
+     The two together are the only moment the coachmark is worth showing: she
+     has a report, she has just closed it, and the icon that keeps it is the
+     one thing on Today she has no reason to have noticed. */
+  readSeen: false,
+  shelfTipSeen: false,
+  // Has she opened the report's detail page today. The day-2 knock is for the
+  // person who has not, so this is the one thing that silences it.
+  repSeen: false,
+  // Stars given at the foot of the report she bought, 0 for not asked yet.
+  rated: 0,
+  rating: 0,
+  timers: []
+};
+
+function clearTimers() {
+  state.timers.forEach(clearTimeout);
+  state.timers = [];
+}
+function later(fn, ms) {
+  var t = setTimeout(fn, ms);
+  state.timers.push(t);
+  return t;
+}
+
+/* ---------------------------------------------------------------- router */
+var screens = $('#screens');
+
+function screenEl(id) { return $('#' + id); }
+
+/* mode: 'push' (from the right), 'back' (reverse) or 'fade' */
+function show(id, mode) {
+  var next = screenEl(id), cur = screenEl(state.screen);
+  if (!next || id === state.screen) return;
+
+  // Only the outgoing and incoming screens may be painted. Without this a screen
+  // left parked at .behind by an earlier push shows through the next fade.
+  $$('.screen').forEach(function (s) {
+    if (s !== cur && s !== next) s.classList.remove('on', 'behind');
+  });
+
+  next.classList.toggle('fade-in', mode === 'fade');
+  // Un-park the incoming screen whatever the mode. .behind is written after .on
+  // in the stylesheet, so a screen that still carries it stays at translateX(-24%)
+  // even once it is the active one - two screens side by side, both shifted 90px
+  // left, which is what "the prototype breaks" looked like.
+  next.classList.remove('behind');
+
+  if (mode === 'back') {
+    // The outgoing screen slides back out to the right; the one underneath
+    // was already parked at -24%, so just un-park it.
+    cur.classList.remove('on');
+    next.classList.add('on');
+  } else {
+    if (cur && mode === 'push') { cur.classList.add('behind'); cur.classList.remove('on'); }
+    else if (cur) { cur.classList.remove('on', 'behind'); }
+    // Force a frame so the translateX(100%) start state is actually painted.
+    next.offsetHeight;
+    next.classList.add('on');
+  }
+
+  state.screen = id;
+  if (id !== 'timeline') hideReadyPush();
+  hidePush();
+  var sc = $('[data-scroll]', next);
+  if (sc) sc.scrollTop = 0;
+  // The scroll went back to the top, so the header has to go back to glass —
+  // it does not fire a scroll event for a programmatic reset.
+  var rh = $('.rp-head', next);
+  if (rh) rh.classList.remove('solid');
+  onEnter(id);
+}
+
+function go(id, mode) {
+  if (mode !== 'back') state.stack.push(state.screen);
+  // The knock belongs to Today. Leaving the page is an answer to it either way.
+  if (id !== 'today-a') hideRepToast();
+  show(id, mode || 'push');
+}
+
+function back() {
+  var prev = state.stack.pop();
+  if (!prev) prev = state.entry;
+  show(prev, 'back');
+}
+
+function onEnter(id) {
+  if (id === 'read') { startAsk(); state.readSeen = true; } else { stopAsk(); }
+  // Opening the detail page is her having seen the offer, which is the whole
+  // condition the day-2 knock waits on.
+  if (id === 'report') state.repSeen = true;
+  if (id === 'today-a') { later(showShelfTip, 500); } else { hideShelfTip(); }
+  // Pay is a sheet, not a screen, so leaving any screen cancels a pay in flight.
+  stopPay();
+  // Both are built from what she owns, which changes under them, so they are
+  // painted on the way in rather than kept in step from every pay path.
+  if (id === 'menu') renderMenu();
+  if (id === 'mine') renderMine();
+  if (id === 'timeline') renderHistCard();
+}
+
+/* ---------------------------------------------------------------- wallet */
+function paintWallet() {
+  $$('[data-wallet]').forEach(function (el) { el.textContent = '₹' + state.wallet; });
+}
+
+/* Reveal something that animates in from a parked transform. Reading offsetHeight
+   forces the start state to be computed now; requestAnimationFrame is not safe
+   here because browsers throttle it while the tab is not painting. */
+function reveal(el, cls) {
+  el.hidden = false;
+  void el.offsetHeight;
+  el.classList.add(cls || 'on');
+}
+
+/* ---------------------------------------------------------------- toast */
+var toastT;
+function toast(msg, kind) {
+  var el = $('#toast');
+  el.textContent = msg;
+  el.classList.toggle('success', kind === 'success');
+  reveal(el);
+  clearTimeout(toastT);
+  toastT = setTimeout(function () {
+    el.classList.remove('on');
+    setTimeout(function () { el.hidden = true; }, 220);
+  }, 1600);
+}
+
+/* ---------------------------------------------------------------- the shelf coachmark
+   She pays, the book opens, she reads, she comes back. At that point the report
+   has no address she knows: the tile that sold it is gone and History is a
+   journal, not a shelf. This points at the one icon that keeps every report she
+   owns, once, on the way back to Today. It is anchored off the button's own box
+   rather than a hard offset, so it stays under the icon whatever else sits in
+   the header row. */
+function showShelfTip() {
+  if (!state.paid || !state.readSeen || state.shelfTipSeen) return;
+  if (state.screen !== 'today-a') return;
+  var el = $('#shelfTip'), btn = $('#today-a .head-r [data-go="mine"]');
+  if (!el || !btn) return;
+  var head = btn.closest('.head').getBoundingClientRect();
+  var b = btn.getBoundingClientRect();
+  el.style.top = (b.bottom - head.top + 8) + 'px';
+  $('.st-caret', el).style.right = (head.right - 16 - (b.left + b.width / 2) - 5) + 'px';
+  state.shelfTipSeen = true;
+  reveal(el);
+  later(hideShelfTip, 6000);
+}
+function hideShelfTip() {
+  var el = $('#shelfTip');
+  if (!el || el.hidden) return;
+  el.classList.remove('on');
+  setTimeout(function () { el.hidden = true; }, 220);
+}
+
+/* ---------------------------------------------------------------- the report's knock on Today
+   Not on day 1. Day 1 already has the tile, the push and the chat offer, so a
+   fourth voice saying the same thing on her first morning is noise. The knock
+   is for the person who got all of that and still has not opened the report:
+   it waits for day 2, and only speaks if she has not seen the offer yet.
+   Day 3 keeps it as the last ask before the flow goes quiet. */
+function repToastDays() {
+  return (state.day === 2 || state.day === 3) && !state.repSeen;
+}
+
+/* The two one-line surfaces that reach her outside the app. Both read the same
+   pair of fields, so a report that has something different to say before and
+   after the match says it in both places or in neither, and the two can never
+   drift apart. Partner and Career have one state and keep the generic line. */
+function toastLine() {
+  var r = leadReport();
+  if (state.matched && r.toastDone) return r.toastDone;
+  if (!state.matched && r.toast) return r.toast;
+  // Every report's name now ends in "Report", so the word is not added again.
+  return 'Hemali made your ' + r.t + ' \u00b7 \u20b949';
+}
+function pushLine() {
+  var r = leadReport();
+  return (state.matched && r.pushDone) ? r.pushDone : r.push;
+}
+/* The two Today surfaces. Same shape as the push: a report with something
+   different to say after the match keeps both versions here, and one that has
+   not stays on its single pair. */
+function tktCopy(r) { return (state.matched && r.tktDone) ? r.tktDone : r.tkt; }
+
+function showRepToast() {
+  if (state.paid || state.repToastSeen || !repToastDays()) return;
+  var el = $('#repToast');
+  if (!el) return;
+  $('#repToastLine').textContent = toastLine();
+  state.repToastSeen = true;
+  reveal(el);
+}
+
+function hideRepToast() {
+  var el = $('#repToast');
+  if (!el || el.hidden) return;
+  el.classList.remove('on');
+  setTimeout(function () { el.hidden = true; }, 260);
+}
+
+/* ---------------------------------------------------------------- sheets */
+function openSheet(name) {
+  var el = $('#sheet-' + name);
+  if (!el) return;
+  if (state.sheet && state.sheet !== name) {
+    var old = $('#sheet-' + state.sheet);
+    if (old) { old.classList.remove('on'); old.setAttribute('aria-hidden', 'true'); }
+  }
+  state.sheet = name;
+  if (name === 'lang') renderLangList();
+  if (name === 'pay') { paintBought(); paintWallet(); }
+  // Opened fresh every time, so a sentence she typed and then backed out of is
+  // not sitting there waiting the next time she taps a star.
+  if (name === 'rate') $('#rateNote').value = '';
+  reveal($('#scrim'));
+  reveal(el);
+  el.setAttribute('aria-hidden', 'false');
+}
+
+function closeSheet() {
+  var el = state.sheet && $('#sheet-' + state.sheet);
+  if (el) { el.classList.remove('on'); el.setAttribute('aria-hidden', 'true'); }
+  state.sheet = null;
+  var scrim = $('#scrim');
+  scrim.classList.remove('on', 'blur');
+  setTimeout(function () { if (!state.sheet) scrim.hidden = true; }, 240);
+  // The reward sheet covers the page, so the knock waits for it to clear.
+  if (state.repToastPending) {
+    state.repToastPending = false;
+    setTimeout(showRepToast, 420);
+  }
+}
+
+/* ---------------------------------------------------------------- content: ladder */
+var DAYS = [
+  { d: 'Day 1', v: 9 },
+  { d: 'Day 2', v: 11 },
+  { d: 'Day 3', v: 13 },
+  { d: 'Day 4', v: 15 },
+  { d: 'Day 5', v: 17 },
+  { d: 'Day 6', v: 19 },
+  { d: 'Day 7', v: 21 }
+];
+/* Sizes and lifts match the daily-reward prototype. */
+var COIN_SIZE = [26, 28, 30, 30, 33, 38, 46];
+var COIN_LIFT = [0, 1, 3, 5, 8, 11, 15];
+var CHECK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none">' +
+  '<path d="M3.5 8.4l3 3 6-6.3" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function renderLadder() {
+  var cols = DAYS.map(function (day, i) {
+    var done = i < state.claimed;
+    // Today is today whether or not she has collected it — Figma 2640:12298
+    // keeps the brand ring and label on day 1 in the answered state, so the
+    // strip says where she is rather than what is next.
+    var cls = 'col' + (done ? ' done' : '') + (i === state.day - 1 ? ' today' : '') +
+      (i === DAYS.length - 1 ? ' goal' : '');
+    return '<div class="' + cls + '">' +
+             '<span class="ic"><span class="coin' + (done ? ' got' : '') + '" style="width:' +
+               COIN_SIZE[i] + 'px;height:' + COIN_SIZE[i] + 'px;margin-bottom:' + COIN_LIFT[i] + 'px">' +
+               '<span class="cn-v"><small>₹</small><b>' + day.v + '</b></span></span></span>' +
+             '<span class="tr"><i class="dot">' + (done ? CHECK : '') + '</i></span>' +
+             '<span class="lb">Day<b>' + (i + 1) + '</b></span>' +
+           '</div>';
+  }).join('');
+
+  var html = '<div class="ladder" style="--f:' + (Math.max(state.claimed - 1, 0) / 6) + '">' + cols + '</div>';
+  $$('[data-ladder]').forEach(function (el) { el.innerHTML = html; });
+  // Day 1 keeps the Daily reward block — the check-in is the day's one job —
+  // but not the seven coins. On the morning someone arrives, a full streak laid
+  // out ahead of them reads as a chore list rather than a reward. The sheets in
+  // the reward flow still show it, because there the strip is the subject.
+  // ...until she answers: Figma 2640:12298 puts the strip back in the answered
+  // state, where it is a receipt for day 1 rather than a list of six chores.
+  $('#todayLadder').hidden = state.day === 1 && !state.answered;
+}
+
+/* ---------------------------------------------------------------- content: bottom nav */
+// An open book. Declared here rather than beside the menu it was written for,
+// because the nav is built at load and would otherwise read it before it exists.
+var BOOK_IC = '<path d="M4 4.6h5.4c1.3 0 2.1.8 2.1 2.1V19c0-1-.8-1.8-1.8-1.8H4zM20 4.6h-5.4c-1.3 0-2.1.8-2.1 2.1V19c0-1 .8-1.8 1.8-1.8H20z"/>';
+var NAV_ICONS = {
+  today: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  experts: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M2.8 20c.5-3.3 3.1-5.4 6.2-5.4S14.7 16.7 15.2 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M16.2 5.3a3.2 3.2 0 010 5.6M18 14.9c2 .8 3.2 2.7 3.5 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  timeline: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 4v16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="7" cy="8" r="2.2" fill="#fff" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="17" r="2.2" fill="#fff" stroke="currentColor" stroke-width="1.6"/><path d="M12 8h8M12 17h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  explore: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15.2 8.8-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  mine: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + BOOK_IC + '</svg>'
+};
+/* No Reports tab. History already answers "what do I have" for chats, and the
+   report widget lives inside it, so a second shelf tab was the same answer
+   twice. */
+var NAV = [
+  { id: 'today', label: 'Today' },
+  { id: 'experts', label: 'Experts' },
+  { id: 'timeline', label: 'Timeline' },
+  { id: 'explore', label: 'Explore' }
+];
+
+function renderNav() {
+  $$('[data-bnav]').forEach(function (el) {
+    var active = el.getAttribute('data-bnav');
+    el.innerHTML = NAV.map(function (n) {
+      return '<button type="button" class="' + (n.id === active ? 'on' : '') + '"' +
+             ' data-nav="' + n.id + '">' + NAV_ICONS[n.id] +
+             '<span>' + n.label + '</span></button>';
+    }).join('');
+  });
+  // The chapter is reachable from two doors — the History tab and the chat
+  // history icon in the header. Both carry the same counter.
+  $$('.ic-btn[data-chat]').forEach(function (b) {
+    var d = b.querySelector('.ncount');
+    if (state.histDot && !d) {
+      d = document.createElement('i');
+      d.className = 'ncount';
+      d.textContent = '1';
+      b.appendChild(d);
+    } else if (!state.histDot && d) {
+      d.remove();
+    }
+  });
+}
+
+/* ---------------------------------------------------------------- content: language sheet */
+function langById(id) {
+  for (var i = 0; i < LANGS.length; i++) if (LANGS[i].id === id) return LANGS[i];
+  return LANGS[0];
+}
+function langLabel(id) {
+  var l = langById(id);
+  return l.native || l.label;
+}
+
+/* The sample is only written in two voices, and a nine-row list promised seven
+   it could not keep. English and Hinglish are also the two that actually split
+   her audience — anything else is a translation request, not a reading choice. */
+var READ_LANGS = ['en', 'hinglish'];
+
+function renderLangList() {
+  $('#langList').innerHTML = LANGS.filter(function (l) {
+    return READ_LANGS.indexOf(l.id) > -1;
+  }).map(function (l) {
+    var name = l.native ? l.label + ' · ' + l.native : l.label;
+    return '<button type="button" data-lang="' + l.id + '"' +
+           (l.id === state.lang ? ' class="on"' : '') + '>' +
+           '<span>' + name + '</span><span class="rd"></span></button>';
+  }).join('');
+  paintShowSample();
+}
+
+function paintShowSample() {
+  var btn = $('#showSample');
+  btn.textContent = state.langFrom === 'pay'
+    ? 'Use ' + langById(state.lang).label
+    : 'Show sample in ' + langById(state.lang).label;
+}
+
+/* ---------------------------------------------------------------- content: sample report (R.3 / R.3c) */
+function copyFor(id) {
+  // Only English and Hindi are written out; everything else borrows the English
+  // body and keeps its own chip + buy label, exactly like the Figma flow.
+  var base = SAMPLE[id] || SAMPLE.en;
+  var l = langById(id);
+  return {
+    dev: !!base.dev,
+    chip: base === SAMPLE[id] ? base.chip : (l.native || l.label),
+    navTitle: base.navTitle,
+    bandSub: base.bandSub,
+    tag: base.tag,
+    title: base.title,
+    subtitle: base.subtitle,
+    name: base.name,
+    bpLabel: base.bpLabel,
+    bpText: base.bpText,
+    scores: base.scores,
+    coversLabel: base.coversLabel,
+    covers: base.covers,
+    footnote: base.footnote,
+    buy: 'Buy in ' + l.label
+  };
+}
+
+/* One section of the reader: a full-width band of paper laid on the arch, with
+   a gap above and below so the painting shows through the seams. */
+function rsec(label, body) {
+  return '<section class="rs">' +
+    (label ? '<h3 class="rs-h">' + label + '</h3>' : '') + body + '</section>';
+}
+
+/* The evidence block at the foot of each section. One branch per `k` on the
+   board — the kind is what makes a section feel written rather than templated,
+   so they are not collapsed into a single list renderer. */
+function rsEvidence(s) {
+  var i;
+  if (s.k === 'bars') {
+    return '<div class="rs-card"><p class="rs-cl">' + esc(s.label) + '</p>' +
+      s.rows.map(function (r) {
+        return '<div class="rs-bar"><span>' + esc(r[0]) + '</span>' +
+          '<i><b style="width:' + (r[1] * 10) + '%"></b></i>' +
+          '<em>' + r[1] + '</em></div>';
+      }).join('') + '</div>';
+  }
+  if (s.k === 'tiles') {
+    return '<div class="rs-tiles">' + s.rows.map(function (r) {
+      return '<div><small>' + esc(r[0]) + '</small><b>' + esc(r[1]) + '</b></div>';
+    }).join('') + '</div>';
+  }
+  if (s.k === 'rows') {
+    return '<div class="rs-rows">' + s.rows.map(function (r) {
+      return '<div><small>' + esc(r[0]) + '</small><b>' + esc(r[1]) + '</b></div>';
+    }).join('') + '</div>';
+  }
+  if (s.k === 'chance') {
+    return '<div class="rs-card"><p class="rs-cl">' + esc(s.label) + '</p>' +
+      '<div class="rs-chart">' + s.rows.map(function (r) {
+        // The two tall bars are the answer; the rest are there to make them
+        // look like an answer rather than an assertion.
+        var hot = r[1] >= 80;
+        return '<div' + (hot ? ' class="hot"' : '') + '>' +
+          '<i style="height:' + r[1] + '%"></i><small>' + esc(r[0]) + '</small></div>';
+      }).join('') + '</div>' +
+      '<div class="rs-win"><small>' + esc(s.winLabel) + '</small><b>' + esc(s.win) + '</b></div>' +
+    '</div>';
+  }
+  if (s.k === 'split') {
+    return '<div class="rs-card tight">' +
+      '<i class="rs-split"><b style="width:' + s.pct + '%"></b></i>' +
+      '<p class="rs-sl"><span>' + esc(s.rows[0][0]) + '</span><em>' + esc(s.rows[0][1]) + '</em></p>' +
+    '</div>';
+  }
+  if (s.k === 'tags') {
+    return s.rows.map(function (r) {
+      return '<div class="rs-tag"><p><b>' + esc(r[0]) + '</b><i>' + esc(r[1]) + '</i></p>' +
+        '<small>' + esc(r[2]) + '</small></div>';
+    }).join('');
+  }
+  if (s.k === 'tips') {
+    return '<div class="rs-tips">' + s.rows.map(function (r, n) {
+      return '<div><i>' + (n + 1) + '</i><span><b>' + esc(r[0]) + '</b><small>' +
+        esc(r[1]) + '</small></span></div>';
+    }).join('') + '</div>';
+  }
+  if (s.k === 'kundali') {
+    // North Indian square: the diamond and the two diagonals, with the twelve
+    // house labels dropped at the anchor points the board uses.
+    var pos = [
+      [50, 19], [32, 7], [13, 25], [32, 44], [13, 68], [32, 87],
+      [50, 76], [68, 87], [87, 68], [68, 44], [87, 25], [68, 7]
+    ];
+    var cells = '';
+    for (i = 0; i < 12; i++) {
+      var occ = s.houses[i + 1];
+      cells += '<span class="kh" style="left:' + pos[i][0] + '%;top:' + pos[i][1] + '%">' +
+        '<em>' + (i + 1) + '</em>' + (occ ? '<b>' + esc(occ) + '</b>' : '') + '</span>';
+    }
+    return '<div class="rs-kun">' +
+      '<div class="kun">' +
+        '<svg viewBox="0 0 240 240" aria-hidden="true">' +
+          '<rect x="1" y="1" width="238" height="238" rx="4" fill="none" stroke="#EAECF0" stroke-width="1.5"/>' +
+          '<path d="M1 1 239 239M239 1 1 239M120 1 239 120 120 239 1 120Z" fill="none" stroke="#EAECF0" stroke-width="1.5" stroke-linejoin="round"/>' +
+        '</svg>' + cells +
+      '</div>' +
+      '<div class="rs-leg">' + s.legend.map(function (l) {
+        return '<div><i></i><span><b>' + esc(l[0]) + '</b><small>' + esc(l[1]) + '</small></span></div>';
+      }).join('') + '</div>' +
+    '</div>';
+  }
+  return '';
+}
+
+/* Every section ends on the same two hills so the bands read as one landscape;
+   the motif on top is what tells them apart. They are drawn in the grey ramp,
+   not in pink: the only colour the reader should carry is the painted artwork,
+   and a pink motif beside it read as a second, competing brand. */
+/* Back in pink. In grey the decorations read as chrome — a footer, a divider,
+   something structural — when the whole point of them is that the report is a
+   warm, hand-made object. `--dec1`/`--dec2` are the pale and deep tones, so
+   there is one place to tune all fourteen. */
+var DECOR = {
+  hearts: '<path d="M262 36c0-8 6-13 12-13s11 5 11 11-9 14-14 18c-5-4-9-10-9-16Z" fill="var(--dec1)"/><path d="M279 24c0-10 8-16 15-16s14 6 14 14-11 18-17 23c-7-5-12-13-12-21Z" fill="var(--dec2)"/>',
+  leaf:   '<path d="M268 48c0-18 14-32 32-32 0 18-14 32-32 32Z" fill="var(--dec2)"/><path d="M300 48V22" stroke="var(--dec1)" stroke-width="2"/>',
+  pin:    '<path d="M288 10c9 0 16 7 16 16 0 12-16 26-16 26s-16-14-16-26c0-9 7-16 16-16Z" fill="var(--dec2)"/><circle cx="288" cy="26" r="6" fill="#fff"/>',
+  orbit:  '<circle cx="288" cy="32" r="16" fill="var(--dec1)"/><ellipse cx="288" cy="32" rx="30" ry="11" fill="none" stroke="var(--dec2)" stroke-width="2"/>',
+  moon:   '<path d="M298 12a22 22 0 1 0 0 42 26 26 0 0 1 0-42Z" fill="var(--dec2)"/>',
+  lights: '<path d="M258 16h62" stroke="var(--dec1)" stroke-width="2"/><circle cx="268" cy="26" r="7" fill="var(--dec2)"/><circle cx="288" cy="30" r="7" fill="var(--dec1)"/><circle cx="308" cy="26" r="7" fill="var(--dec2)"/>',
+  cups:   '<path d="M270 18h36l-5 22h-26Z" fill="var(--dec2)"/><path d="M282 40h12v12h-12Z" fill="var(--dec1)"/>',
+  rings:  '<circle cx="280" cy="32" r="14" fill="none" stroke="var(--dec2)" stroke-width="4"/><circle cx="300" cy="32" r="14" fill="none" stroke="var(--dec1)" stroke-width="4"/>',
+  house:  '<path d="M288 12l24 18v24h-48V30Z" fill="var(--dec1)"/><path d="M280 54V40h16v14" fill="var(--dec2)"/>',
+  lamp:   '<path d="M266 44c0-8 10-12 22-12s22 4 22 12-10 10-22 10-22-2-22-10Z" fill="var(--dec1)"/><path d="M288 32c0-10 8-14 8-20-10 3-16 10-16 20Z" fill="var(--dec2)"/>',
+  plant:  '<path d="M288 54V24" stroke="var(--dec2)" stroke-width="3"/><path d="M288 34c-12 0-18-8-18-16 12 0 18 7 18 16Zm0-4c12 0 18-8 18-16-12 0-18 7-18 16Z" fill="var(--dec1)"/>',
+  lotus:  '<path d="M288 14c7 8 7 22 0 32-7-10-7-24 0-32Z" fill="var(--dec2)"/><path d="M288 46c-10 0-20-6-24-14 11-3 20 3 24 14Zm0 0c10 0 20-6 24-14-11-3-20 3-24 14Z" fill="var(--dec1)"/>',
+  mala:   '<circle cx="288" cy="32" r="18" fill="none" stroke="var(--dec1)" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="288" cy="52" r="5" fill="var(--dec2)"/>',
+  stars:  '<path d="M288 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z" fill="var(--dec2)"/><circle cx="262" cy="24" r="3" fill="var(--dec1)"/><circle cx="314" cy="40" r="4" fill="var(--dec1)"/>'
+};
+
+function rsDecor(k) {
+  return '<div class="rs-dec" aria-hidden="true">' +
+    '<svg viewBox="0 0 360 96" preserveAspectRatio="none">' +
+      '<path d="M0 56c60-18 120-18 180 0s120 18 180 0v40H0Z" fill="var(--decw1)"/>' +
+      '<path d="M0 73c70-14 140-14 210 0s100 10 150 0v23H0Z" fill="var(--decw2)"/>' +
+    '</svg>' +
+    '<svg class="rs-dec-m" viewBox="0 0 360 96">' + (DECOR[k] || '') + '</svg>' +
+  '</div>';
+}
+
+/* The report body, Figma 3366:6885. `sample` is the only difference between the
+   two copies now that the locks are gone: it adds the demo-chart banner, the
+   jump index and the two CTA cards. The answers themselves are identical, which
+   is the point — the sample is the product, not a trailer for it. */
+function renderSecs(sample) {
+  var out = sample ? rsIndex() : '';
+  RSECS.forEach(function (s, i) {
+    // Only the sample carries the ids: it is the only copy with an index to
+    // jump from, and both copies sit in the DOM at the same time.
+    out += '<section class="rs"' + (sample ? ' id="rs-' + i + '"' : '') + '>' +
+      '<h3 class="rs-h"><i aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+          'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+          (LI_ICON[s.ic] || '') +
+        '</svg></i>' + esc(s.e) + '</h3>' +
+      '<p class="rs-t">' + esc(s.h) + '</p>' +
+      (s.p ? '<p class="rs-p">' + esc(s.p) + '</p>' : '') +
+      rsEvidence(s) +
+      rsDecor(s.dec) +
+    '</section>';
+    if (!sample) return;
+    RCTAS.forEach(function (c) {
+      if (c.after !== i) return;
+      out += '<div class="rsc">' +
+        '<h3>' + esc(c.h) + '</h3>' +
+        '<p>' + esc(c.p) + '</p>' +
+        '<button class="btn primary rsc-go" type="button">Get my report \u00b7 \u20b9' + PRICE + '</button>' +
+      '</div>';
+    });
+  });
+  /* The last thing the sample says is what it is not. It sits at the foot
+     rather than the head because at the head it reads as a warning about the
+     product, and at the foot it reads as the honest note it is. */
+  if (sample) {
+    out += '<p class="rs-disc">This sample is written on a demo chart, so it is ' +
+      'not about you. Reports are for guidance only. They are not medical, ' +
+      'legal or financial advice.</p>';
+  }
+  return out;
+}
+
+/* Fifteen answers is more than anyone scrolls past twice, so the sample opens
+   with a way in. The banner above it is doing the harder job: saying out loud
+   that these are Riya's answers, which is what makes the CTA cards' promise —
+   yours will read differently — land as a fact rather than a sales line. */
+function rsIndex() {
+  return '<div class="rs-idx">' +
+    '<div class="rs-demo"><b>' + esc(RINDEX.h) + '</b><span>' + esc(RINDEX.p) + '</span></div>' +
+    '<p class="rs-jump">' + esc(RINDEX.jump) + '</p>' +
+    '<div class="rs-chips">' + RSECS.map(function (s, i) {
+      return '<button type="button" data-jump="' + i + '">' + esc(s.c) + '</button>';
+    }).join('') + '</div>' +
+  '</div>';
+}
+
+/* The arch behind the reader takes the colour of the book being read: the
+   gradient stops and the hue the PNG is rotated into both hang off this one
+   attribute, on both reader screens at once. */
+function paintArch() {
+  $$('.rp').forEach(function (s) { s.setAttribute('data-rep', state.pick); });
+}
+
+function renderSample() {
+  var c = copyFor(state.lang);
+  var sec = $('#sample');
+
+  paintArch();
+  sec.classList.toggle('dev', c.dev);
+  $('#langChipLabel').textContent = 'Read in ' + c.chip;
+  paintPaper($('#samplePaper'), true);
+  $('#sampleWhy').textContent = reportById(state.pick).why;
+  $('#sampleBody').innerHTML = renderSecs(true);
+}
+
+/* Paints the keepsake card for whichever report was bought. `preview` keeps the
+   sample page's blur-and-badge treatment; the bought page passes nothing. */
+function paintPaper(host, preview) {
+  if (!host) return;
+  var r = reportById(state.pick), h = r.hero || {};
+  var art = h.img
+    ? '<img src="' + h.img + '" alt="' + esc(h.alt || '') + '">'
+    // No portrait to draw, so the box holds the finding instead. Same height as
+    // the sketch, so all three cards are one object at one size.
+    : '<div class="paper-fig"><small>' + esc(h.fig.lbl) + '</small>' +
+      '<b>' + esc(h.fig.big) + '</b><em>' + esc(h.fig.unit) + '</em></div>';
+  host.innerHTML =
+    '<div class="paper-art">' + art +
+      (preview ? '<span class="pv-badge">Preview</span>' : '') +
+    '</div>' +
+    '<div class="paper-foot">' +
+      ((preview ? h.hide : h.foot) || []).map(function (f, i) {
+        return (i ? '<i></i>' : '') +
+          '<div><small>' + esc(f[0]) + '</small><b>' + esc(f[1]) + '</b></div>';
+      }).join('') +
+    '</div>' +
+    '<span class="paper-fold" aria-hidden="true"></span>' +
+    '<span class="tape t" aria-hidden="true"></span>';
+}
+
+function renderRead() {
+  paintArch();
+  paintPaper($('#readPaper'), false);
+  /* The same fifteen answers the sample shows, minus the demo-chart banner, the
+     jump index and the two CTA cards. The sample is a window onto this page, so
+     a bought report laid out differently read as a different product. */
+  $('#readBody').innerHTML = renderSecs(false) +
+      rateCard() +
+      // The end of the report is a door, not a full stop: the other two
+      // reports, then the chat where the questions it raised get spent.
+      '<div class="carousel-wrap">' +
+        '<p class="lbl">MORE ON YOUR CHART</p>' +
+        // The same rail as the sell page's and the empty shelf's. Two cards
+        // here rather than three, so nothing scrolls - but the shape she
+        // learned on the other two surfaces is the shape she meets again.
+        '<div class="ur-list">' +
+          REPORTS.filter(function (x) { return x.id !== state.pick; })
+            .map(upsellRow).join('') +
+        '</div>' +
+      '</div>' +
+      /* The sample has said this since day one; the report she paid for never
+         did, which is the one place it matters. Last thing on the page, after
+         the rating and the next two books, so it reads as a note about how the
+         work is done and not as a warning about what she just bought. Says
+         where it comes from, then says her own choices are still in it. */
+      '<p class="rs-disc">Read from your Vedic birth chart and the planetary ' +
+      'periods running in it. It shows which way things are leaning, not what ' +
+      'is fixed. What you do still shapes how it turns out. For guidance only, ' +
+      'not medical, legal or financial advice.</p>';
+  // No "Continue with Astro Hemali" button under it: the ask bar is pinned to
+  // the bottom of this same screen with her face, her rate and a composer in
+  // it, so a second button for the identical action only competed with the one
+  // that is always on screen.
+}
+
+/* The ask for a rating, at the foot of the report she paid for. It sits above
+   the "more on your chart" rail rather than below it, because below the rail
+   it would be asking about the next report instead of the one she just read.
+   One tap, no form: a star is the most she will give at the end of fifteen
+   answers, and asking for a sentence on top of it is how ratings stop coming. */
+var STAR_IC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.3 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.5l5.9-.8L12 3.3Z"/></svg>';
+function rateCard() {
+  if (state.rated) {
+    return '<div class="rate done"><div class="rate-stars">' +
+      [1, 2, 3, 4, 5].map(function (n) {
+        return '<span class="' + (n <= state.rated ? 'on' : '') + '">' + STAR_IC + '</span>';
+      }).join('') + '</div>' +
+      '<b>Thanks for rating</b>' +
+      '<p>Hemali sees this with your report.</p></div>';
+  }
+  /* The same card the chat already ends on (SDFication 773:173359): one
+     centred question, five outline stars, nothing else. The paragraph under
+     it explaining what a star is for went with it - the stars are the
+     instruction, and a sentence asking her to spend a second is a second
+     spent. */
+  return '<div class="rate">' +
+    '<b>How was this report?</b>' +
+    '<div class="rate-stars">' + starRow(0) + '</div>' +
+  '</div>';
+}
+
+/* One row of five tappable stars, lit up to n. Used twice: flat on the report
+   and again inside the sheet, where it has to repaint as she slides across. */
+function starRow(n) {
+  return [1, 2, 3, 4, 5].map(function (i) {
+    return '<button type="button" class="' + (i <= n ? 'on' : '') +
+      '" data-rate="' + i + '" aria-label="' + i +
+      (i === 1 ? ' star' : ' stars') + '">' + STAR_IC + '</button>';
+  }).join('');
+}
+
+function paintRateStars() {
+  $('#rateSheetStars').innerHTML = starRow(state.rating);
+  var rc = $('#read .rate .rate-stars');
+  if (rc) rc.innerHTML = starRow(state.rating);
+}
+
+
+/* ---------------------------------------------------------------- timeline: making -> ready */
+function resetTimeline() {
+  // The "report being made / ready" card only exists after the purchase.
+  $('#tlReport').hidden = !state.paid;
+  $('#tlReportTime').textContent = '10:42 AM';
+  $('#repStatus').textContent = 'Your report is being made';
+  $('#repStatus').classList.remove('green');
+  $('#repSteps').hidden = false;
+  $('#repNotify').hidden = false;
+  $('#repActs').hidden = true;
+  $$('#repSteps .step').forEach(function (s) { s.classList.remove('done', 'now'); });
+  hideReadyPush();
+}
+
+/* The switcher's "Report bought" entry lands with the report already made —
+   the timeline card sits in its settled "Ready to read" state, no animation. */
+function applyPaidTimeline() {
+  if (!state.paid) return;
+  $('#tlReport').hidden = false;
+  $('#tlReportTime').textContent = '12:10 PM';
+  var st = $('#repStatus');
+  st.textContent = 'Ready to read';
+  st.classList.add('green');
+  $('#repSteps').hidden = true;
+  $('#repNotify').hidden = true;
+  $('#repActs').hidden = false;
+}
+
+function runMaking() {
+  var steps = $$('#repSteps .step');
+  steps.forEach(function (s) { s.classList.remove('done', 'now'); });
+
+  function tick(i) {
+    for (var k = 0; k < i; k++) { steps[k].classList.add('done'); steps[k].classList.remove('now'); }
+    if (steps[i]) steps[i].classList.add('now');
+  }
+  tick(0);
+  later(function () { tick(1); }, 900);
+  later(function () { tick(2); }, 1800);
+  later(function () { tick(3); }, 2700);
+  later(markReady, 3400);
+}
+
+function markReady() {
+  $$('#repSteps .step').forEach(function (s) { s.classList.add('done'); s.classList.remove('now'); });
+  later(function () {
+    // The stamp the payment recorded, not a fixed one — a second purchase sat
+    // directly above the first at the same minute, which made one timeline
+    // read as a duplicate rather than two things bought.
+    $('#tlReportTime').textContent = state.buys.length ? state.buys[0].time : '12:10 PM';
+    var st = $('#repStatus');
+    st.textContent = 'Ready to read';
+    st.classList.add('green');
+    $('#repSteps').hidden = true;
+    $('#repNotify').hidden = true;
+    $('#repActs').hidden = false;
+    showReadyPush();
+  }, 500);
+}
+
+function showReadyPush() {
+  // If the user already opened the report the banner is stale, so drop it.
+  if (state.screen !== 'timeline') return;
+  reveal($('#push'));
+}
+function hideReadyPush() {
+  var p = $('#push');
+  p.classList.remove('on');
+  setTimeout(function () { if (!p.classList.contains('on')) p.hidden = true; }, 440);
+}
+
+/* ---------------------------------------------------------------- book opening (R.6b / R.6c) */
+function openBook() {
+  hideReadyPush();
+  go('book', 'fade');
+  var bk = $('#bookEl'), cap = $('#bookCap'), stage = $('#bookStage'),
+      bz = $('#blaze'), r = reportById(state.pick);
+  // The painted cover is the picture; what is inside is paper. Printing the
+  // spread on the page is what made the open book twice the width of the shut
+  // one, and that resize is what tore the two halves apart on the way.
+  $('#bookCover img').src = hasCover(r) ? r.art.closed : 'assets/book.svg';
+  // The spine takes the cover's darker tint, so the 18mm she sees edge-on
+  // during the turn belongs to the book she just bought.
+  $('#bookEl .spine').style.backgroundColor = r.cover ? r.cover.b : '';
+  bk.classList.remove('turn', 'open');
+  stage.classList.remove('gone', 'lit');
+  bz.className = 'blaze';
+  cap.textContent = 'Your report is ready';
+  // 1. Shut, square on, for long enough to be seen as an object — this is the
+  //    first time the thing she paid for is in front of her at full size.
+  // 2. The turn. Three-quarters is the angle a book is held at when it is
+  //    being handed over, and it is the only angle that shows the spine, which
+  //    is the one part that says this is a volume and not a picture of one.
+  later(function () { bk.classList.add('turn'); }, 420);
+  // 3. The board comes off the spine and the inside starts to light.
+  later(function () {
+    bk.classList.add('open');
+    stage.classList.add('lit');
+    cap.textContent = 'Opening your report…';
+  }, 1180);
+  // 4. The light wins. It is the same glow from inside the book, scaled past
+  //    the edges of the phone, and it is deliberately overexposed: a white
+  //    screen is the only thing that can carry the swap underneath it.
+  later(function () { bz.classList.add('on'); }, 1620);
+  // 5. The swap happens inside the white, where there is nothing to see.
+  later(function () { stage.classList.add('gone'); enterRead(true); }, 2240);
+}
+
+/* The opening is a curtain, not a toll booth: the second time she sees it a tap
+   takes her straight in. */
+function enterRead(lit) {
+  if (state.screen !== 'book') return;
+  clearTimers();
+  state.stack = [state.entry];        // the report is now "read", so back lands on Today
+  show('read', 'fade');
+  var bz = $('#blaze');
+  // `lit` is only true when the sequence called this from inside the white.
+  // The click handler passes a MouseEvent, which is why this is an identity
+  // test and not a truthiness one — a tap to skip must not flash the screen.
+  if (lit !== true) { bz.className = 'blaze'; return; }
+  // One frame of white over the report, then the light pulls back off it. The
+  // report is revealed by the glow going, which is the point of putting the
+  // glow outside the screens in the first place.
+  later(function () { bz.classList.add('off'); }, 110);
+  later(function () { bz.className = 'blaze'; }, 800);
+}
+
+/* Reading one she already owns. No book opening: that beat is the report being
+   handed over for the first time, and replaying it on every visit would turn a
+   moment into a loading screen. The page just opens, at the top, on the right
+   report — she can own three now, so which one has to be set before it paints. */
+function openRep(id) {
+  state.pick = id;
+  /* Reading it is what retires the "Ready to read" card. The fifteen-minute
+     hold exists for the person who pays and walks away; the moment she has
+     actually opened the thing, holding the card on "read this" is the app not
+     having noticed she did. Repainted on the way back, not now — swapping the
+     card under her finger as the reader opens is a flicker she would see. */
+  state.buys.forEach(function (b) { if (b.id === id) b.read = true; });
+  paintBought();
+  renderRead();
+  renderReport();
+  $('#read [data-scroll]').scrollTop = 0;
+  go('read', 'fade');
+}
+
+/* ---------------------------------------------------------------- the reader's composer
+   The report answers what she asked and raises what she did not. This bar is
+   where those go, so it types the open question for her — a live composer reads
+   as the next line of the report, where a banner reads as an ad. */
+/* Every question names something the report just told her. A general question
+   could have been asked before she paid; one that quotes her own report only
+   exists because she read it, which is the whole reason this bar is here. */
+var ASKS = {
+  partner: [
+    'My report says north-west. How far is that?',
+    'The image in my report, is that how he looks?',
+    'Chapter 3 says Rahu is blocking it. For how long?',
+    'My report gives a 2027 window. Can I move it?'
+  ],
+  marriage: [
+    'My report says low Manglik. Does that need a remedy?',
+    '28 of 36 gunas in my report. Is that enough?',
+    'My report puts the window in late 2027. Why then?',
+    'The in-laws chapter says six months. Six months of what?'
+  ],
+  career: [
+    'My report says March for the switch. Which week?',
+    'It says my work is invisible, not weak. How do I fix that?',
+    'My report says job, not business, this year. Why?',
+    'Saturn is on my tenth lord. Is that the slow year it means?'
+  ]
+};
+
+var askT = null, askN = 0;
+function stopAsk() { clearTimeout(askT); askT = null; }
+
+function startAsk() {
+  stopAsk();
+  var el = $('#askIn');
+  if (!el) return;
+  var list = ASKS[state.pick] || ASKS.partner;
+  var msg = list[askN % list.length], i = 0;
+  // A sentence appearing letter by letter is motion; reduced motion gets the
+  // whole question at once and no loop.
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    el.placeholder = msg;
+    return;
+  }
+  el.placeholder = '';
+  function type() {
+    el.placeholder = msg.slice(0, ++i);
+    askT = setTimeout(i < msg.length ? type : erase, i < msg.length ? 36 : 1900);
+  }
+  function erase() {
+    el.placeholder = msg.slice(0, --i);
+    if (i > 0) { askT = setTimeout(erase, 14); return; }
+    askN++;
+    askT = setTimeout(startAsk, 260);
+  }
+  type();
+}
+
+/* ---------------------------------------------------------------- payment */
+/* Figma 3339:208658. The report is a flat ₹49 off a ₹499 list price and the
+   wallet is not in the way any more — the only thing left to decide is the
+   language, so the screen shows the book, the arithmetic and one button. */
+var payT = [];
+var LIST_PRICE = 499, PRICE = 49, GST = 0.18;
+
+/* Opens over whatever she is on. No screen change and no stack push: the
+   ground is the live detail page or the live sample, and closing puts her back
+   on it mid-scroll rather than navigating her somewhere. */
+function openPay() {
+  var r = reportById(state.pick);
+
+  // Open and still: the spread is a finished painting of an open book, so it
+  // needs no swing and no frame. Only a report without art falls back to the
+  // built one.
+  $('#paysBook').innerHTML = hasSpread(r)
+    ? '<img src="' + r.art.open + '" alt="">'
+    : book3d(r);
+
+  // The sheet names the purchase, and it names it the way the detail page and
+  // the cover do: plain report name, no "Your".
+  $('#paysName').textContent = r.t2 || titled(r.t);
+  // "Made for your chart" is gone from this line: the block under it now says
+  // so with her name and birth details on it, which is the same claim proved.
+  $('#paysMeta').textContent = 'One-time payment';
+
+  /* The score strip. It needs a report that has a matched state and a match
+     that has actually been run - before that there is no number, and a dial
+     reading 0 of 36 next to a Buy button is the sheet arguing against itself. */
+  var m = state.matched && r.matched;
+  var guna = $('#paysGuna');
+  guna.hidden = !m;
+  if (m) {
+    $('#paysGunaN').textContent = m.score.n;
+    $('#paysGunaOf').textContent = 'of ' + m.score.of;
+    // Her name first, off the form rather than a constant, because the form
+    // let her correct it and a sheet that has forgotten the correction is the
+    // one place she will not forgive it.
+    var her = ($('#gName').value || '').trim().split(' ')[0] || 'You';
+    $('#paysGunaWho').textContent = her + ' \u0026 ' + state.boy;
+    // The same sentence the Buy bar was carrying. She is mid-tap on that
+    // button, so changing the argument underneath her would read as a
+    // different offer.
+    $('#paysGunaWhy').textContent = m.why;
+  }
+
+  /* Her own chart, for every report that is not a match. One or the other,
+     never both: two identity blocks stacked above a price is the sheet
+     asking her to check the same thing twice. */
+  var you = $('#paysYou');
+  you.hidden = !!m;
+  if (!m) {
+    var nm = ($('#gName').value || '').trim() || 'You';
+    $('#paysYouName').textContent = nm;
+    $('#paysYouWhen').textContent = ($('#gPlace').value || '').trim();
+    you.querySelector('.py-av').textContent = nm[0].toUpperCase();
+  }
+
+  $('#paysLangName').textContent = langById(state.lang).label;
+  paintPaySum();
+  openSheet('pay');
+  // Dim is not enough behind a page made of artwork; the board blurs it.
+  $('#scrim').classList.add('blur');
+}
+
+/* 18% GST on the ₹49 actually charged. The board's button said ₹118, which is
+   18% on ₹100 — a number from an older price that no longer exists anywhere on
+   this screen. */
+function payGst() { return Math.round(PRICE * GST); }
+function payTotal() { return PRICE + payGst(); }
+/* The wallet comes off the bill, capped at it — the daily-reward coins are what
+   make the report nearly free, so the arithmetic has to show them doing it. */
+function payUsed() { return Math.min(state.wallet, payTotal()); }
+function payDue() { return payTotal() - payUsed(); }
+
+function paintPaySum() {
+  var due = payDue();
+  $('#payGst').textContent = '+\u20b9' + payGst();
+  $('#payWal').textContent = '\u2212\u20b9' + payUsed();
+  // Struck list price first, then what she pays — the board's order, and the
+  // one that reads as a markdown rather than as a price with a footnote.
+  $('#payDue').innerHTML = '<s>\u20b9' + LIST_PRICE + '</s> \u20b9' + due;
+  // Nothing left to charge means nothing left to say about GST — and "Pay ₹0"
+  // is not a sentence, so the wallet gets the credit on the button too.
+  $('.pg-l').innerHTML = due === 0
+    ? 'Get it with wallet \u2022 <b>\u20b90</b>'
+    : 'Pay <b>\u20b9' + due + '</b>';
+  // And with nothing left to charge there is no method to choose either, so
+  // "Pay with PhonePe" goes. Leaving it beside a ₹0 button names a card that
+  // is never touched, and it costs the button half the bar.
+  var pw = $('.pays-act .paywith');
+  if (pw) pw.hidden = due === 0;
+}
+
+function stopPay() {
+  payT.forEach(clearTimeout);
+  payT = [];
+  var btn = $('#paySubmit');
+  if (btn) btn.classList.remove('pressed', 'busy');
+}
+
+/* --------------------------------------------------------------- app menu
+   The real hamburger, drawn from LxCKwlbqHUN45c7CxFAWov 1418:17033. Eight of
+   these nine rows are the live app's and stay inert; the ninth is the one this
+   work adds. It is drawn in full rather than as a two-item stub because the
+   only question worth asking of My Reports is whether it reads as a normal
+   part of the menu she already has, and a stub cannot answer that.
+
+   It sits second, under Chat History. Both are things of hers, so they belong
+   together, and the top of the list is where she looks for her own stuff.
+   First would have read as a banner for a feature rather than as a row. */
+/* Icon geometry below is exported straight out of 3921:15083 rather than
+   redrawn, so the menu is the board's own artwork at the board's own weight. */
+var CHAT_IC = '<path d="M14 24.03a10.03 10.03 0 1 0-8.75-5.13L3.97 24.03 9.1 22.75c1.5.84 3.18 1.28 4.9 1.28Z"/><path d="M9.8 14h.01M14 14h.01M18.2 14h.01"/>';
+var MN_BOOK_IC = '<path d="M4.67 5.37h6.3c1.51 0 2.45.93 2.45 2.45v14.35c0-1.17-.94-2.1-2.1-2.1h-6.65V5.37Zm18.66 0h-6.3c-1.51 0-2.45.93-2.45 2.45v14.35c0-1.17.94-2.1 2.1-2.1h6.65V5.37Z"/>';
+var MN_CASE_IC = '<path d="M4.08 8.75a3.5 3.5 0 0 1 3.5-3.5h11.67a2.33 2.33 0 0 1 2.34 2.33v1.75"/><path d="M4.08 8.75v.58m0 0v11.09a3.5 3.5 0 0 0 3.5 3.5h12.84a2.33 2.33 0 0 0 2.33-2.34v-9.91a2.33 2.33 0 0 0-2.33-2.34H4.08Z"/><path d="M18.67 16.57h.01"/>';
+/* Figma 3922:11037. The three tiles at the top are the three places her own
+   things live. My Reports is the middle one and carries the count, because the
+   only question this menu has to answer quickly is "where is the thing I paid
+   for". */
+var MN_TILES = [
+  { l: 'Timeline',            nav: 'timeline', d: CHAT_IC },
+  { l: 'My Reports',          go: 'mine',      d: MN_BOOK_IC, count: true },
+  { l: 'Wallet Transactions', d: MN_CASE_IC }
+];
+/* The four evergreen tools, as the Offerings block from the live app —
+   S1vM7htbaJ5ZOgT7XYWDAs 8140:3889. Names, order and artwork are that frame's,
+   exported node by node rather than redrawn: these four are the only icons in
+   the menu that are not line icons, because in the app they never were. */
+var MN_TOOLS = [
+  { l: 'Daily Panchang',  img: 'off-panchang' },
+  { l: 'Get Kundli',      img: 'off-kundli' },
+  { l: 'Love Matching',   img: 'off-matching' },
+  { l: 'Daily Horoscope', img: 'off-horoscope' }
+];
+var MN_ROWS = [
+  { l: 'My Astrologers', d: '<path d="M12.2 8a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z"/><path d="M2.8 20c.5-3.3 3.1-5.4 6.2-5.4s5.7 2.1 6.2 5.4"/><path d="M16.2 5.3a3.2 3.2 0 0 1 0 5.6M18 14.9c2 .8 3.2 2.7 3.5 5.1"/>' },
+  { l: 'Logout',         d: '<path d="M14 4.5H8a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h6"/><path d="M11 12h10m-3.2 3.2L21 12l-3.2-3.2"/>' }
+];
+function mnIcon(m, sw, vb) {
+  if (m.img) return '<img src="img/' + m.img + '.png" alt="" aria-hidden="true">';
+  return '<svg viewBox="0 0 ' + (vb || 24) + ' ' + (vb || 24) + '" fill="none" ' +
+    'stroke="currentColor" stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' +
+    (m.d || LI_ICON[m.k]) + '</svg>';
+}
+// Only the rows that go somewhere get a destination. The rest carry the demo's
+// standard refusal, which is honest about why nothing happened.
+function mnAct(m) {
+  return m.go  ? 'data-go="' + m.go + '"'
+       : m.nav ? 'data-nav="' + m.nav + '"'
+       : 'data-toast="' + esc(m.l) + ' is not part of this demo"';
+}
+function renderMenu() {
+  var n = state.owned.length;
+  $('#mnTiles').innerHTML = MN_TILES.map(function (m) {
+    return '<button class="mn-tile" type="button" ' + mnAct(m) + '>' +
+      '<i>' + mnIcon(m, 1.5, 28) +
+        // The count, only once there is one. A "0" on My Reports would be the
+        // menu telling her she has nothing every time she opens it.
+        (m.count && n ? '<b class="mn-n">' + n + '</b>' : '') +
+      '</i><span>' + esc(m.l) + '</span></button>';
+  }).join('');
+  $('#mnGrid').innerHTML = MN_TOOLS.map(function (m) {
+    // Broken at the space rather than left to the column width. 8140:3889 puts
+    // all four of these on two lines; "Get Kundli" is the one short enough to
+    // fit on one, and on one line it sat a line higher than its neighbours.
+    return '<button class="mn-tool" type="button" ' + mnAct(m) + '>' +
+      '<i>' + mnIcon(m) + '</i><span>' + esc(m.l).replace(' ', '<br>') +
+      '</span></button>';
+  }).join('');
+  /* Two states, and the second one is the point of the card: once she has
+     picked today's three the card stops asking and says when the next set
+     lands, so the menu is never selling her a thing she has already had. */
+  var done = state.tarot;
+  $('#mnTarot').innerHTML =
+    '<div class="mn-ftc' + (done ? ' done' : '') + '">' +
+      '<img class="mn-fti" src="img/tarot.png" alt="" aria-hidden="true">' +
+      '<span class="mn-ft">' +
+        '<span class="mn-ftop"><b>Free Tarot</b>' +
+          (done ? '' : '<em class="mn-tag">New</em>') + '</span>' +
+        '<small>' + (done
+          ? '\u2713 Done today. New cards tomorrow'
+          : 'Pick 3 cards today') + '</small>' +
+      '</span>' +
+      (done
+        ? '<button class="mn-ftb ghost" type="button" data-toast="Your three cards are in History">View</button>'
+        : '<button class="mn-ftb" type="button" data-tarot>Try</button>') +
+    '</div>';
+  $('#mnList').innerHTML = MN_ROWS.map(function (m) {
+    return '<li><button class="mn-row" type="button" ' + mnAct(m) + '>' +
+      '<i aria-hidden="true">' + mnIcon(m) + '</i>' +
+      '<b>' + esc(m.l) + '</b>' +
+      '<em aria-hidden="true">\u203a</em>' +
+    '</button></li>';
+  }).join('');
+}
+
+/* ----------------------------------------------------------- my reports
+   Purchased only, newest first. The record to read is `buys` rather than
+   `owned`: a monthly report bought twice is two things she can open, and a
+   shelf that silently collapses them is a shelf that lost one.
+
+   Empty, it is still a page with something on it. The three reports go on the
+   same horizontal strip the detail page uses for its upsells - an empty state
+   whose only content is an apology sends her back to where she came from with
+   nothing, and this is a page she reached by looking for something to read. */
+/* ------------------------------------------------- the History widget
+   Figma 3696:8360. One card per report, and the card is the report's whole
+   life: the pitch before she owns it, the writing while Hemali is reading the
+   chart, the live Read Report the moment it lands, and the re-buy once the
+   edition it covers has passed.
+
+   Two shapes, not four. Offer and Past are things Hemali says, so they come
+   out of her mouth — avatar, name, speech bubble. Writing and Ready are
+   things the app is doing, so they are a plain card with a progress line and
+   no face on them: nobody is talking, something is being made. */
+var HIST_COPY = {
+  partner:  'Discover the Love Meant for You',
+  marriage: 'Get Guna score out of 36',
+  career:   'Made from your birth chart',
+  relation: 'Read the month the two of you are in'
+};
+/* "November 2026" -> "Read November". Built off EDITIONS rather than typed, so
+   the button can never name a window the edition does not cover. The year is
+   dropped: the button is about the month she is buying, and nobody is choosing
+   between the same month in two different years. */
+function monthCta(m, verb) {
+  return (verb || 'Read') + ' ' + m.split(' ')[0];
+}
+/* The bubble's own title drops the trailing "Report": the book is lying next
+   to the words, so the word is already on screen once. */
+function histTitle(r) {
+  return (r.t2 || titled(r.t)).replace(/\s*Report$/, '');
+}
+
+/* Hemali saying something, with the book leaning out of the top of the bubble.
+   The book is positioned rather than laid out, because in the board it breaks
+   the bubble's edge on two sides — that overhang is the whole effect. */
+function histSaid(r, sub, body, actions) {
+  return '<article class="hw hw-said" data-pick="' + r.id + '">' +
+    '<header class="hw-who">' +
+      '<span class="hw-av"><img src="assets/hemali.png" alt="">' +
+        '<i class="hw-dot" aria-hidden="true"></i></span>' +
+      '<span class="hw-nm">' +
+        '<span class="hw-top"><b>Astro Hemali</b></span>' +
+        '<small>' + esc(sub) + '</small>' +
+      '</span>' +
+    '</header>' +
+    '<div class="hw-bub">' +
+      '<span class="hw-tail" aria-hidden="true"></span>' +
+      book3d(r) +
+      '<div class="hw-tx">' + body + '</div>' +
+      '<div class="hw-acts">' + actions + '</div>' +
+    '</div>' +
+  '</article>';
+}
+
+/* The app working, with no one talking over it. */
+function histMaking(r, ready) {
+  return '<article class="hw hw-make' + (ready ? ' is-ready' : '') + '">' +
+    '<div class="hw-card">' +
+      // No subtitle here. The timeline underneath already says who is writing
+      // it and what happens next, so a line naming the astrologer again was
+      // the card saying the same thing twice.
+      book3d(r) +
+      '<div class="hw-tx"><b>' + esc(histTitle(r)) + '</b></div>' +
+      '<ol class="hw-steps">' +
+        '<li class="on"><b>Writing your report</b>' +
+          '<small>Reading your birth chart. Takes about 15 minutes.</small></li>' +
+        /* Once it has landed the second line stops describing the wait and
+           starts answering the question she is about to have: where does this
+           live now. It is the only place in the app that says it. */
+        '<li' + (ready ? ' class="on"' : '') + '><b>Ready to read</b>' +
+          '<small>' + (ready
+            ? 'Your reports are available in Timeline and under My Reports in the (\u2630) menu.'
+            : 'We will notify you, once its ready') + '</small></li>' +
+      '</ol>' +
+      (ready
+        ? '<button class="hw-cta ghost" type="button" data-open-rep="' + r.id + '">' +
+            'Read Report</button>'
+        : '<span class="hw-cta off" aria-disabled="true">Read Report</span>') +
+    '</div>' +
+  '</article>';
+}
+
+/* Which state a report is in right now. */
+function histWidget(r) {
+  var b = state.buys.filter(function (x) { return x.id === r.id; })[0];
+  if (!b) {
+    return histSaid(r, HIST_COPY[r.id] || HIST_COPY.career,
+      '<b>' + esc(r.t2 || titled(r.t)) + '</b>',
+      '<button class="hw-cta" type="button" data-pick="' + r.id + '">' +
+        esc(r.cadence === 'monthly' ? monthCta(EDITIONS[0]) : 'Learn More') +
+      '</button>');
+  }
+  // Still being written. Quick, but the progress line is the whole card until
+  // it lands.
+  if (!b.ready) return histMaking(r, false);
+  /* Just landed. The card has one job and one button: read the thing she just
+     paid for. Nothing is sold over the top of a report she has not opened yet,
+     and no clock retires that - the card waits until she opens it, however
+     long that takes. */
+  if (!b.read) return histMaking(r, true);
+  // Read. The progress line has done its job, so Hemali takes the card back
+  // and offers the next one.
+  var again = r.needsMatch
+    ? { cta: 'Match Again', sub: 'Bought ' + b.time + ' \u00b7 Match someone else anytime' }
+    : r.cadence === 'monthly'
+      // "Get December", not "Read November": the offer card sells the month she
+      // is in, this one sells the next one, and the verb is what tells the two
+      // apart.
+      ? { cta: monthCta(EDITIONS[Math.min(state.buys.filter(function (x) {
+            return x.id === r.id; }).length, EDITIONS.length - 1)], 'Get'),
+          sub: 'Last bought ' + b.time }
+      : null;
+  if (!again) {
+    return histSaid(r, 'Made from your birth chart',
+      '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
+      '<em class="hw-ok">Ready to read</em>',
+      '<button class="hw-cta" type="button" data-open-rep="' + r.id + '">Read Report</button>');
+  }
+  return histSaid(r, 'Made from your birth chart',
+    '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
+    '<small>' + esc(again.sub) + '</small>',
+    '<button class="hw-cta ghost" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
+    '<button class="hw-cta" type="button" data-buy="' + r.id + '">' + esc(again.cta) + '</button>');
+}
+
+function renderMine() {
+  /* What she owns is the page; what she does not is the shelf under it. Run as
+     one list of widgets, a report she has never heard of wore the same Hemali
+     card as the one she paid for this morning, so three reports read as three
+     purchases. The rest now sit under their own heading, in the row she has
+     already met at the foot of the detail page. */
+  /* One row per payment, newest first. A monthly report bought twice is two
+     things she can open, so the record to read is `buys` rather than `owned` —
+     a shelf that silently collapses them is a shelf that lost one. */
+  var mine = state.buys.map(function (b) {
+    var r = reportById(b.id);
+    return r ? mineRow(r, b) : '';
+  }).join('');
+  var left = REPORTS.filter(function (x) { return !owns(x.id); });
+  $('#mineBody').innerHTML =
+    (mine
+      ? '<div class="mine-list">' + mine + '</div>' +
+        '<div class="mine-notew"><p class="mine-note">Every report stays here in ' +
+          'the language you chose and in English.</p></div>'
+      : '<div class="mine-empty">' +
+          '<i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
+            'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
+            'stroke-linejoin="round">' + BOOK_IC + '</svg></i>' +
+          '<b>Nothing on your shelf yet</b>' +
+          '<p>Anything you buy opens here, in your language, forever.</p>' +
+        '</div>') +
+    /* Not "You May Also Like" — on her own shelf the other three are not
+       recommendations, they are the rest of what her chart already says. The
+       "Also" only appears once there is something above to be also to. */
+    (left.length
+      ? '<div class="r2-block mine-also"><h2 class="r2-h">' +
+          (mine ? 'Also Written On Your Chart' : 'Written On Your Chart') + '</h2>' +
+          '<div class="ur-list">' + left.map(upsellRow).join('') + '</div></div>'
+      : '');
+}
+
+/* Figma 3924:15332. A bought report is a flat row, not a Hemali card: the card
+   is how an unbought one is pitched, and wearing it on the shelf made the thing
+   she paid for this morning look like an advert for itself. Cover, name, when
+   she got it, how much is in it, chevron. */
+function mineRow(r, b) {
+  return '<button class="mrow" type="button" data-open-rep="' + r.id + '">' +
+    book3d(r) +
+    '<span class="mr-tx">' +
+      '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
+      // The edition for the one report that has editions, otherwise the stamp.
+      // Both are green: this line's job is to say the thing is hers.
+      '<em>' + esc(b.ed || 'Bought ' + b.time) + '</em>' +
+      '<s>' + ((r.learn && r.learn.length) || 6) + ' questions answered</s>' +
+    '</span>' +
+    '<i class="mr-ch" aria-hidden="true">' +
+      '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M7.5 4.5 13 10l-5.5 5.5"/></svg>' +
+    '</i>' +
+  '</button>';
+}
+
+/* Today's one line for owners. Hidden until there is something behind it, so
+   it is never a door onto an empty room. */
+function renderMyStrip() {
+  var n = state.owned.length;
+  $('#myStrip').hidden = !n;
+  if (!n) return;
+  $('#myStripTx').textContent = n === 1
+    ? 'Your report is in My Reports'
+    : 'Your ' + n + ' reports are in My Reports';
+}
+
+/* ------------------------------------------------------------- what she owns
+   `owned` answers "can she read it", which is what the buttons need; `buys` is
+   the record, one entry per payment, so a monthly report bought twice leaves
+   two rows in history rather than quietly replacing itself. */
+function owns(id) { return state.owned.indexOf(id) > -1; }
+/* The month an edition covers, counted off how many she already has. Nothing
+   here is a real date — it only has to read as a window that moves. Named
+   EDITIONS, not MONTHS: a MONTHS of twelve short month names already exists
+   further down for the receipt's date, and two `var`s of the same name at the
+   top level are one variable. */
+var EDITIONS = ['November 2026', 'December 2026', 'January 2027', 'February 2027'];
+function editionLabel(r) {
+  if (r.cadence !== 'monthly') return '';
+  var n = state.buys.filter(function (b) { return b.id === r.id; }).length;
+  return EDITIONS[Math.min(n, EDITIONS.length - 1)];
+}
+
+function pay() {
+  stopPay();
+  closeSheet();
+  var r = reportById(state.pick);
+  state.paid = true;
+  // The edition is read before the buy is recorded, so the row says the window
+  // this payment just bought rather than the one after it.
+  var ed = editionLabel(r);
+  if (!owns(r.id)) state.owned.push(r.id);
+  /* One flag: is it written yet. Today reads it too now - while this is false
+     Personalised Guidance is the one "being written" task, and when it flips
+     the report takes its place. */
+  var buy = { id: r.id, ed: ed, time: nowStamp(), day: state.day, ready: false };
+  state.buys.unshift(buy);
+  later(function () {
+    buy.ready = true;
+    renderMine(); renderHistCard(); renderDayToday();
+  }, 6000);
+  state.wallet -= payUsed();
+  paintWallet();
+  paintBought();
+  // Every sell surface retires into the follow-up: read, chat, remedies, other reports.
+  renderDayToday(); renderChat(); renderHistCard(); renderTpTabs(); renderRead();
+  renderReport(); renderBuys(); renderMyStrip(); renderNav();
+  toast('Payment successful', 'success');
+  // Matching needs a second chart before anything can be written, so it stops
+  // here for his details. The other two are read off a chart the app already
+  // holds and go straight to being made.
+  later(function () {
+    state.stack = [state.entry];
+    // Nothing stops here any more. Matching collects its second chart before
+    // the payment now, so by the time money has changed hands every report
+    // has everything it needs and goes straight to being made.
+    startMaking();
+  }, 900);
+}
+
+/* The one door into paying. Every sell surface used to call openPay directly,
+   which was right while all three reports were the same shape — read off a
+   chart the app already holds, and buyable in one tap. Kundli Milan is not
+   that shape: it needs his birth details, and those are worth more before the
+   price than after it. So the gate sits here rather than in six places. */
+function startBuy() {
+  var r = reportById(state.pick);
+  /* The form only while there is nothing to show. Once her answers are in,
+     the sheet already carries both names and the score they produced, so
+     reopening eight fields to confirm what is printed two lines above the
+     price is a step that reads as the app not trusting her. The correction
+     she might want is still one tap away - the Edit on the sheet - which is
+     the right weight for something she will almost never do. */
+  if (r.needsMatch && !state.matched) { openMatch(); return; }
+  openPay();
+}
+
+/* The form, every time Buy is tapped — not only the first time. Skipping it
+   once the details are in looks like efficiency and is actually the one place
+   this flow can take money for the wrong chart: the guna score is computed off
+   four fields about a man, and the man can change between one tap and the
+   next. A family puts a second rishta in front of her, she comes back, taps
+   Buy, and a flow that remembers too well sells her a report about the
+   previous one. Letting her see the four values before the price costs one
+   extra tap and is the whole difference between a form and a receipt.
+
+   His half always opens blank. A guessed name sitting in the box reads as the
+   app having decided who this match is about, and the one thing it must not do
+   is put a man's name in front of her that she did not type. */
+function openMatch() {
+  clearMatchErr();
+  hideMatchToast();
+  // Her half always arrives closed. It is already answered, and six filled
+  // boxes at the top of a form are six things to read before finding the three
+  // that are actually blank.
+  girlEdit(false);
+  $('#mtHint').hidden = true;
+  ['bName', 'bDob', 'bPlace', 'bTime'].forEach(function (id) { $('#' + id).value = ''; });
+  $('#bNoTime').checked = false;
+  syncMatch();
+  show('match', 'fade');
+}
+
+/* Which of his four the form is still waiting on. The time stops counting the
+   moment she says she does not know it — the checkbox is an answer, and a form
+   that keeps asking after being answered is not listening. */
+function matchMissing() {
+  var need = ['bName', 'bDob', 'bPlace'];
+  if (!$('#bNoTime').checked) need.splice(2, 0, 'bTime');
+  return need.filter(function (id) { return !$('#' + id).value.trim(); });
+}
+
+/* One pass that repaints everything downstream of a keystroke: the count in
+   his chip, the dead-or-alive button, and the time box when the checkbox takes
+   it out of play. Called on every input rather than wired field by field,
+   because the three of them are one fact shown three ways. */
+function syncMatch() {
+  var miss = matchMissing();
+  var chip = $('#mtBoyChip');
+  if (miss.length) {
+    chip.className = 'mt-chip mt-chip-todo';
+    chip.textContent = miss.length + (miss.length === 1 ? ' detail left' : ' details left');
+  } else {
+    chip.className = 'mt-chip mt-chip-ok';
+    chip.innerHTML = CHIP_TICK + 'Added';
+  }
+  var noTime = $('#bNoTime').checked;
+  var bt = $('#bTime');
+  bt.disabled = noTime;
+  bt.closest('.fld').style.opacity = noTime ? '.45' : '';
+  if (noTime) { bt.value = ''; clearFldErr(bt); }
+  /* `aria-disabled`, not `disabled`. A truly disabled button swallows the
+     click, and the one thing this button must not do is nothing: tapping it
+     with a blank left is how she asks the form what it is still waiting for. */
+  var go = $('#mtGo');
+  go.setAttribute('aria-disabled', miss.length > 0 ? 'true' : 'false');
+}
+
+var CHIP_TICK = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" ' +
+  'aria-hidden="true"><path d="M2.5 6.3 4.7 8.5 9.5 3.7" stroke="#168045" ' +
+  'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* Her card swaps for her fields in place. A sheet or a second screen would
+   make correcting a typo feel like leaving the form she is in the middle of. */
+function girlEdit(on) {
+  $('#mtGirlSum').hidden = on;
+  $('#mtGirlForm').hidden = !on;
+  $('#mtGirlChip').hidden = on;
+  $('#mtGirlDone').hidden = !on;
+  if (!on) {
+    // Back to the receipt, carrying whatever she just changed.
+    $('#mtGirlWhen').textContent = prettyDob($('#gDob').value) + ' · ' +
+      prettyTime($('#gTime').value);
+    $('#mtGirlWhere').textContent = $('#gPlace').value.trim() || '—';
+    $('#mtGirlSum').querySelector('b').textContent = $('#gName').value.trim() || '—';
+    $('#mtGirlSum').querySelector('.mt-av').textContent =
+      ($('#gName').value.trim()[0] || 'M').toUpperCase();
+  }
+}
+
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/* 30/10/1996 -> 30 Oct 1996. The receipt is read, not parsed, so it gets the
+   month as a word; the field stays numeric because that is what she types. */
+function prettyDob(v) {
+  var p = (v || '').split(/[\/\-.]/);
+  if (p.length !== 3) return v || '—';
+  var m = parseInt(p[1], 10);
+  return p[0] + ' ' + (MONTHS[m - 1] || p[1]) + ' ' + p[2];
+}
+function prettyTime(v) {
+  var p = (v || '').split(':');
+  if (p.length !== 2) return v || '—';
+  var h = parseInt(p[0], 10), ap = h < 12 ? 'AM' : 'PM';
+  return ((h % 12) || 12) + ':' + p[1] + ' ' + ap;
+}
+
+/* A short list of real places, because the point of the state is that the one
+   she wants may not be in it — see the line under the list. */
+var CITIES = [
+  ['Pune', 'Maharashtra, India'], ['Punalur', 'Kerala, India'],
+  ['Punganur', 'Andhra Pradesh, India'], ['Punjai Puliampatti', 'Tamil Nadu, India'],
+  ['Mumbai', 'Maharashtra, India'], ['Delhi', 'Delhi, India'],
+  ['Jaipur', 'Rajasthan, India'], ['Patna', 'Bihar, India'],
+  ['Lucknow', 'Uttar Pradesh, India'], ['Indore', 'Madhya Pradesh, India'],
+  ['Nagpur', 'Maharashtra, India'], ['Nashik', 'Maharashtra, India']
+];
+function citySuggest(q) {
+  var box = $('#mtSugg');
+  q = (q || '').trim();
+  if (q.length < 2) { box.hidden = true; return; }
+  var hits = CITIES.filter(function (c) {
+    return c[0].toLowerCase().indexOf(q.toLowerCase()) === 0;
+  }).slice(0, 4);
+  if (!hits.length) { box.hidden = true; return; }
+  box.innerHTML = hits.map(function (c) {
+    return '<button type="button" data-city="' + esc(c[0]) + ', ' +
+        esc(c[1].split(',')[0]) + '">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+        '<path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" ' +
+          'stroke-width="1.6"/><path d="M3.6 10.4C2.9 5.9 6.5 2 11 2h2c4.5 0 8.1 3.9 7.4 ' +
+          '8.4-.5 3.2-2.5 6.1-4.8 8-1.6 1.4-2.4 2.1-3.6 2.1s-2-.7-3.6-2.1c-2.3-1.9-4.3-4.8-4.8-8Z" ' +
+          'stroke="currentColor" stroke-width="1.6"/></svg>' +
+      '<span><b><i>' + esc(c[0].slice(0, q.length)) + '</i>' + esc(c[0].slice(q.length)) +
+        '</b><small>' + esc(c[1]) + '</small></span></button>';
+  }).join('') + '<p>Village not listed? Pick the nearest town or city.</p>';
+  box.hidden = false;
+}
+
+function showMatchToast(msg) {
+  var t = $('#mtToast');
+  t.querySelector('span').textContent = msg;
+  t.hidden = false;
+  later(function () { t.classList.add('on'); }, 10);
+  clearTimeout(t._t);
+  t._t = setTimeout(hideMatchToast, 4000);
+}
+function hideMatchToast() {
+  var t = $('#mtToast');
+  t.classList.remove('on');
+  clearTimeout(t._t);
+  t._t = setTimeout(function () { t.hidden = true; }, 220);
+}
+
+/* The making run, pulled out of pay() so the matching form can call it when it
+   is done rather than duplicating the sequence. */
+/* She has just paid, so the next thing she sees is the thing she paid for.
+   This used to land her on History and make her find a Read Report button
+   there, which put a page she never asked for between the payment and the
+   report — and History is a journal, not a receipt. The book opening is the
+   handover, so it happens straight away. The History row is still written
+   underneath (resetTimeline + runMaking drive the same card), so the journal is
+   correct by the time she goes looking for it. */
+function startMaking() {
+  state.stack = [state.entry];
+  resetTimeline();
+  runMaking();
+  openBook();
+}
+
+/* ---------------------------------------------------------------- R.4b matching form
+   The button greys out, because the chip above the fields now counts the gaps
+   down in the open and the count says where. But it stays tappable: a dead
+   button that does nothing when pressed is a form refusing to explain itself,
+   so the tap still marks the first blank and names it in a toast. One field,
+   not four — four red boxes is a page saying everything is wrong instead of a
+   form saying look here. */
+/* Reading order, not form order: the error lands on the first box she can see
+   is empty, so date and time come before place now that they share a row. */
+var MATCH_FIELDS = ['bName', 'bDob', 'bTime', 'bPlace', 'gName', 'gDob', 'gTime', 'gPlace'];
+/* The pay sheet's Change opens the same four facts in a sheet of their own.
+   Copied in and out of the match form's boxes rather than kept twice, so
+   wherever she corrects a birth time the other screen already knows. */
+var YOU_FIELDS = [['yName', 'gName'], ['yDob', 'gDob'], ['yTime', 'gTime'], ['yPlace', 'gPlace']];
+/* What the toast calls each one. "Fill this in to continue" was the same
+   sentence wherever she stood, which meant the toast could be read without
+   telling her anything the red box had not already said. */
+var MATCH_LABELS = {
+  bName: "the boy's name", bDob: "the boy's date of birth",
+  bTime: "the boy's time of birth", bPlace: "the boy's birth city",
+  gName: 'your name', gDob: 'your date of birth',
+  gTime: 'your time of birth', gPlace: 'your birth city'
+};
+function clearFldErr(el) { el.closest('.fld').classList.remove('err'); }
+function clearMatchErr() { MATCH_FIELDS.forEach(function (id) { clearFldErr($('#' + id)); }); }
+function submitMatch() {
+  clearMatchErr();
+  for (var i = 0; i < MATCH_FIELDS.length; i++) {
+    var id = MATCH_FIELDS[i], el = $('#' + id);
+    // Her half is only on the page when it is open; closed, it is a receipt of
+    // values that are already good, so there is nothing there to be empty.
+    if (el.disabled || el.offsetParent === null) continue;
+    if (!el.value.trim()) {
+      el.closest('.fld').classList.add('err');
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.focus({ preventScroll: true });
+      showMatchToast('Please add ' + MATCH_LABELS[id]);
+      return;
+    }
+  }
+  hideMatchToast();
+  // His name is used by name from here on. Everything downstream is about the
+  // two of them, and "your match" where a name could stand is the app
+  // forgetting what she just typed.
+  state.boy = $('#bName').value.trim().split(' ')[0] || 'him';
+  state.matched = true;
+  /* Straight through to the sheet, with the score on it. Sending her back to
+     the detail page first would make her tap Buy on a page that has nothing
+     new on it, which reads as the form having done nothing. The detail page is
+     restored underneath so the back gesture lands somewhere sensible, but what
+     she sees is the number she just earned sitting above the price. */
+  state.pick = 'marriage';
+  renderReport();
+  /* The two surfaces that carry the dial are repainted now, not next time the
+     day changes. She leaves the chat with a question mark and comes back to a
+     28 in the same widget - that is the whole point of it being the same
+     widget, and it only works if the number is already there when she looks. */
+  renderChat();
+  renderHistCard();
+  // Today too: the expert ticket and the Personalised Guidance tile both offer
+  // to match all 36 gunas free, which stops being an offer the moment she has.
+  renderDayToday();
+  // The detail page, and nothing on top of it. She has just handed over twenty
+  // seconds of typing and is owed the result of it; a pay sheet sliding up over
+  // her own score turns the free thing she agreed to into a bill. The page is
+  // now carrying the match itself, so the reading happens first and the price
+  // waits at the bottom where she can get to it when she wants it.
+  // From the top: the form is now the way in to this page, so she has not seen
+  // its cover yet and must not land halfway down it.
+  $('#report [data-scroll]').scrollTop = 0;
+  show('report', 'fade');
+}
+
+/* ------------------------------------------------------------- journey */
+function dayData() { return PM_JOURNEY[state.day]; }
+/* The ask is live for four days and then retires for good, so the ₹49 price
+   "ends tonight" on day 4. */
+function lastDay() { return 4; }
+function pmQuiet() { return !!dayData().quiet; }
+/* Which surfaces today is allowed to use — renderers read this rather than
+   guessing from the day number. */
+function pmSurf() { return dayData().surf || {}; }
+/* What she actually owns: whichever of the three she picked. */
+function boughtTitle() { return reportById(state.pick).t; }
+/* Every report's final name already ends in "Report", so the word must not be
+   added a second time - "Your Monthly Relationship Report Report". The suffix
+   is still appended when a name does not carry it, so a shorter name added
+   later still reads as a report. */
+function rptName(t) { return /Report$/.test(t) ? t : t + ' Report'; }
+function titled(t) { return 'Your ' + rptName(t); }
+/* Five surfaces name the report she owns — detail page, "ready" push, sample
+   cover, timeline card, book cover and the reader's own header. They used to
+   be hard-coded to Marriage Yog, so picking Money and paying handed her
+   somebody else's report. One writer keeps them honest. */
+/* A clock for the history rows. Not the real time of day: the rest of this
+   timeline is a scripted morning, so a live clock would be the one entry
+   disagreeing with the others. It steps forward with each purchase instead. */
+var BUY_TIMES = ['12:10 PM', '12:41 PM', '1:16 PM', '2:05 PM', '3:22 PM'];
+function nowStamp() {
+  return BUY_TIMES[Math.min(state.buys.length, BUY_TIMES.length - 1)];
+}
+
+/* Every purchase before the newest one. The newest keeps the card above, which
+   is the one that animates from being made to being ready; these are settled,
+   so they are the report, what it covers, and the way back into it. */
+function renderBuys() {
+  var host = $('#tlBuys');
+  if (!host) return;
+  host.innerHTML = state.buys.slice(1).map(function (b) {
+    var r = reportById(b.id);
+    return '<div class="tl-item">' +
+      '<time>' + esc(b.time) + '</time>' +
+      '<div class="card tl-card">' +
+        '<div class="rep-top">' + book3d(r) +
+          '<div>' +
+            '<p class="eyebrow">Made by Astro Hemali for you</p>' +
+            '<b>' + esc(r.t2 || titled(r.t)) + '</b>' +
+            '<p class="rep-status green">' + (b.ed ? esc(b.ed) : 'Ready to read') + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rep-acts">' +
+          '<button class="btn outline" type="button" data-toast="Sharing is not part of this demo">Share</button>' +
+          '<button class="btn primary" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* One <video> element serves every report that has a filmed hero, so the file
+   and its speed are swapped rather than a second player being stacked behind
+   the first. The id also rides on the element as a class, because each clip is
+   framed differently and the crop belongs to the footage, not to the slot. */
+function paintHeroVideo(r, src) {
+  var v = $('.r2-vid');
+  v.hidden = !src;
+  REPORTS.forEach(function (x) { v.classList.toggle('vid-' + x.id, x.id === r.id && !!src); });
+  if (!src) { v.pause(); return; }
+  // Only re-point it when the file actually changes. Re-setting the same src
+  // restarts the clip every time she opens the page, which on a slow loop
+  // reads as a stutter on arrival.
+  // No load() here: setting src already starts one, and the explicit call
+  // resets the element a tick later — which paused the clip the play() below
+  // had just started, leaving a still frame that looked like a broken video.
+  if (v.getAttribute('src') !== src) v.setAttribute('src', src);
+  // There is no attribute for playback rate, and the element forgets it each
+  // time it loads a new file, so it is set on arrival as well as now.
+  var rate = r.art.rate || 1;
+  var start = function () {
+    // She can pick a second report before the first file has arrived, which
+    // leaves this waiting on a clip that is no longer on screen — and it would
+    // wake up and set that one's speed on whatever is playing now.
+    if (v.getAttribute('src') !== src) return;
+    v.playbackRate = rate;
+    var p = v.play();
+    // Autoplay can still be refused; a held frame is what shows then.
+    if (p && p.catch) p.catch(function () {});
+  };
+  if (v.readyState >= 1) start();
+  else v.addEventListener('loadedmetadata', start, { once: true });
+}
+
+function paintBought() {
+  var r = reportById(state.pick);
+  var t = boughtTitle();
+  $('#r2Title').textContent   = r.t2 || titled(t);
+  $('#pushReadyTitle').textContent = titled(t) + ' is ready';
+  // The timeline card is the one surface with room for the report's full name,
+  // and it is the card she taps to read — so it says the whole thing.
+  $('#repTitle').textContent  = r.t2 || titled(t);
+  $('#repThumb').innerHTML    = book3d(r);
+  $('#bookTitle').textContent = t;
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+
+/* The one report today suggests. A three-row menu makes her choose before she
+   has any reason to care; a single report tied to a house Hemali already named
+   is a recommendation, and the other two stay one tap away. */
+/* Pinned to one report rather than rotating a different one each day: one
+   report, nudged until she takes it. Day 1 shows none of this — the free chat
+   is the whole of day 1.
+   Which one is now a demo switch rather than a constant, because the pitch
+   reads differently depending on the book behind it: Partner has a face to
+   promise, Kundli Milan has a score, Career has months. Reading them in the
+   chat was the only way to tell whether the card works for all three or only
+   for the one it was written against. The app still picks one and sticks to
+   it — the switch just says which. */
+/* One extra rule on top of the switch: never pitch a report she already owns.
+   Once the lead is bought the sell moves to the next book she does not have,
+   in REPORTS order. That one rule is the whole bought track - the push, the
+   chat bubble, the offer card, the expert stub, the Today task and the History
+   chapter all read this function, so all six move on together. */
+function leadReport() {
+  if (!owns(state.lead)) return reportById(state.lead);
+  var next = REPORTS.filter(function (x) { return !owns(x.id); })[0];
+  return next || reportById(state.lead);
+}
+
+/* Did the money go out on the day being shown. The hours after a payment
+   belong to the thing she paid for - read it, rate it, ask Hemali for the
+   remedies - so every sell surface stays shut for the rest of that day and
+   opens again the next morning with the next report. `state.paid` cannot
+   answer this: it is true on day 1 and still true on day 5. */
+function boughtToday() {
+  return state.buys.some(function (b) { return b.day === state.day; });
+}
+
+/* The pointers ARE the sell. A title and a house name tell her nothing; the
+   list of questions tells her whether her own question is answered. So the
+   same list rides every surface — chat, History, Today — cut to the top few
+   with the remainder counted, so the report reads finite and worth ₹49. */
+/* Same glyphs as "What you will get" on the detail page, off the same
+   `licons`. The tick on a disc was the same mark four times over, which made
+   the list read as terms and conditions — four identical boxes being ticked —
+   when each line is a different question. The drawing is what tells them
+   apart, and it is the one the detail page will show her next. */
+function pointers(r, n) {
+  var top = r.learn.slice(0, n), rest = r.learn.length - top.length;
+  return '<ul class="pts">' +
+    top.map(function (x, i) {
+      var k = (r.licons || [])[i];
+      return '<li><i aria-hidden="true">' + learnIcon(k) + '</i>' + esc(x) + '</li>';
+    }).join('') +
+    (rest > 0 ? '<li class="pts-more">+' + rest + ' more questions answered</li>' : '') +
+  '</ul>';
+}
+
+/* The countdown and the live-buyer count are gone. A clock under a ₹49 report
+   makes the report look like the thing that needs rescuing, and a number that
+   climbs while you watch is the one element on the page nobody believes. */
+
+/* 49 against 499, and what the 49 buys you forever. Said once per surface,
+   directly under the list of questions it pays for. */
+function priceRow() {
+  return '<p class="of3-price"><b>₹49</b>' +
+    '<small><s>₹499</s><i>90% OFF</i></small></p>';
+}
+
+/* 1,28,880 -> "1,28,880". Indian grouping: last three, then pairs. */
+function inr(n) {
+  var s = String(n), last3 = s.slice(-3), rest = s.slice(0, -3);
+  return rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3 : last3;
+}
+
+/* A closed book, turned so its spine faces her and carries the title the way a
+   real one does. The open book was the wrong object to show: an open book is
+   something already being read, and nothing about it says "not yours yet". */
+/* Each report gets its own cover instead of all three sharing one book icon —
+   on a shelf of three, the colourway is what tells them apart at a glance. */
+var MOTIFS = {
+  heart: '<path fill="currentColor" d="M20 30c-5.7-4.2-10-7.8-10-12.6 0-3 2.3-5.4 5.1-5.4 2 0 3.7 1.1 4.9 2.8 1.2-1.7 2.9-2.8 4.9-2.8 2.8 0 5.1 2.4 5.1 5.4C30 22.2 25.7 25.8 20 30z"/>',
+  knot:  '<g fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="16" cy="21" r="6.4"/><circle cx="24" cy="21" r="6.4"/></g>',
+  arrow: '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 27l6.5-6.5 4 4L30 15"/><path d="M23.5 15H30v6.5"/></g>'
+};
+
+/* The flat cover, for the places that only need the report's face at a glance —
+   the chat bubble's thumbnail and the picker's row. */
+function coverArt(r, cls) {
+  var c = r.cover;
+  // Painted where a cover exists; the drawn motif is the fallback for the ones
+  // still waiting on art.
+  if (hasCover(r)) {
+    return '<span class="cv cv-art-on' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' +
+      '<img src="' + r.art.closed + '" alt="">' +
+    '</span>';
+  }
+  return '<span class="cv' + (cls ? ' ' + cls : '') + '" aria-hidden="true"' +
+    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+    '<svg class="cv-art" viewBox="0 0 40 52">' +
+      '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
+      '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
+      '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
+      '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
+    '</svg>' +
+  '</span>';
+}
+
+/* The drawn cover's face, for the reports with no painted artwork yet: the
+   wash is the element's own background, the motif and its stars ride on top.
+   Shared by the standing book and the History card's hinged one. */
+function drawnFace(r, cls) {
+  var c = r.cover;
+  return '<span class="' + cls + '"' +
+    ' style="--cva:' + c.a + ';--cvb:' + c.b + ';--cvi:' + c.ink + '">' +
+    '<svg class="bk3-art" viewBox="0 0 40 52">' +
+      '<circle class="cv-star" cx="9" cy="10" r="1"/>' +
+      '<circle class="cv-star" cx="32" cy="14" r="1.5"/>' +
+      '<circle class="cv-star" cx="29" cy="43" r="1"/>' +
+      '<g transform="translate(0,5)">' + MOTIFS[c.motif] + '</g>' +
+    '</svg>' +
+  '</span>';
+}
+
+function book3d(r) {
+  // The cover's own tint, carried on the root so the back board and the cast
+  // shadow can both be mixed from it. A grey rim and a grey shadow under a
+  // honey or periwinkle cover read as dirt rather than as a book.
+  var tint = '--cva:' + r.cover.a + ';--cvb:' + r.cover.b;
+  // Where the painted cover and its spread exist, show those instead: the art
+  // is the argument, and a drawing of a book cannot make it. Both are needed,
+  // because this view shows the back board as well as the front.
+  if (hasSpread(r)) {
+    return '<span class="bkt" aria-hidden="true" style="' + tint + '">' +
+      // Everything that makes the case an object lives inside one preserve-3d
+      // stage: back board, page block, then the cover in front of both.
+      '<span class="bkt-in">' +
+        '<span class="bkt-board"></span>' +
+        '<span class="bkt-pages"></span>' +
+        // The right-hand page of the spread, sitting under the cover.
+        '<span class="bkt-leaf" style="background-image:url(' + r.art.open + ')"></span>' +
+        // Loose leaves standing between the boards, each one deeper than the
+        // last. Only the surfaces that open the cover show them; shut, they are
+        // hidden behind it and the fore-edge block does the work instead.
+        '<span class="bkt-pg" style="--i:3"></span>' +
+        '<span class="bkt-pg" style="--i:2"></span>' +
+        '<span class="bkt-pg" style="--i:1"></span>' +
+        // The cover and the first leaf turn together: painted board on the
+        // front, the spread's left-hand page on the back, so when it swings
+        // the full 180 the book is lying open flat rather than ajar.
+        '<span class="bkt-cov">' +
+          '<span class="bkt-face" style="background-image:url(' + r.art.closed + ')"></span>' +
+          '<span class="bkt-back" style="background-image:url(' + r.art.open + ')"></span>' +
+        '</span>' +
+      '</span>' +
+      '<span class="bkt-sh"></span>' +
+    '</span>';
+  }
+  return '<span class="bk3" aria-hidden="true" style="' + tint + '">' +
+    '<span class="bk3-in">' +
+      '<span class="bk3-board"></span>' +
+      '<span class="bk3-pages"></span>' +
+      // The leaf sits a hair behind the cover so that when the cover swings
+      // open on the tease loop there is paper underneath, not a hole.
+      '<span class="bk3-leaf"></span>' +
+      // A cover can be painted long before its spread is. When that has
+      // happened the book keeps this drawn shape, because the shape is what
+      // the hinge and the page block are built on, but its front is the real
+      // art rather than the wash standing in for it.
+      '<span class="bk3-cov">' +
+        (hasCover(r)
+          ? '<span class="bk3-face bk3-face-art"' +
+              ' style="background-image:url(' + r.art.closed + ')"></span>'
+          : drawnFace(r, 'bk3-face')) +
+      '</span>' +
+    '</span>' +
+    '<span class="bk3-sh"></span>' +
+  '</span>';
+}
+
+/* Figma 3811:11554 `Upsell row · Detail` — the rail is now a list. Two covers
+   side by side each wanted 104px and a stacked price under it, which made the
+   foot of the page nearly a screen tall for the two books she did not come
+   for. Laid on its side the same offer is 155: a small standing book, the
+   title, the rating, then the price with a *secondary* Buy Now, so the sticky
+   bar below stays the only orange button in view. The book keeps its flip —
+   it is the one thing on the row that says these are books — it is just
+   smaller. */
+function upsellRow(x) {
+  var own = owns(x.id);
+  return '<button class="urow" type="button" ' +
+      (own ? 'data-open-rep="' : 'data-pick="') + x.id + '">' +
+    book3d(x) +
+    '<span class="ur-txt">' +
+      // The long name, because the cover beside it is now too small to read.
+      '<b>' + esc(x.t2 || rptName(x.t)) + '</b>' +
+      '<span class="ur-rt">' + STAR + '<em>' + esc(x.rating) + '</em>' +
+        '<s>\u00b7 ' + inr(x.sold) + ' reads</s></span>' +
+      '<span class="ur-foot">' +
+        // An owned row stops quoting a price — except Wealth, whose month
+        // runs out, so there is a real next edition to sell. The empty span
+        // keeps `space-between` pushing the button right either way.
+        (own && x.cadence !== 'monthly' ? '<span></span>' :
+          '<span class="ur-pr"><b>\u20b949</b><s>\u20b9499</s>' +
+            '<em>90% off</em></span>') +
+        '<span class="ur-btn">' + (own ? 'Read Report' : 'Buy Now') + '</span>' +
+      '</span>' +
+    '</span>' +
+  '</button>';
+}
+
+/* The report's own artwork as the backdrop, the closed book standing in it, the
+   title and the numbers beside it — composed as a card, not as a miniature of
+   the report page. */
+function sellCard(r) {
+  return '<button class="sell-hit" type="button" data-pick="' + r.id + '">' +
+    '<span class="sell-hero">' +
+      book3d(r) +
+      '<span class="sell-hd">' +
+        '<b class="sell-t">' + esc(r.t) + '</b>' +
+        '<span class="sell-stats">' +
+          '<em><b>' + r.rating + '</b>' + STAR + '</em>' +
+          '<em><b>' + inr(r.sold) + '</b> readers</em>' +
+        '</span>' +
+      '</span>' +
+    '</span>' +
+    '<span class="sell-body">' +
+      '<span class="sell-why">' + esc(r.why) + '</span>' +
+    '</span>' +
+  '</button>';
+}
+
+/* Figma 3726:8279 — each report's own light. The dark banner is gone: the
+   whole card is now a wash in the book's colour, left to right, with the
+   temple motif rising behind the cover and a fade bringing the bottom back to
+   something text can sit on. Two inks per skin, because the title carries the
+   card and everything under it steps back one notch without leaving the hue. */
+/* Figma `bg` frames 3705:10229 / 10263 / 10297. The wash is far paler than it
+   reads in isolation: it starts tinted at the left, where the title is, and is
+   effectively white by the right-hand end, where the book stands. The old ramp
+   went the other way — it kept getting *darker* towards the cover, so the book
+   was cut out of a dark field instead of standing in the light, and the card
+   competed with the chat bubble above it. `sh` is the drop shadow, which is warm
+   brown on the two pink skins and a cool grey-blue on Career. */
+var SELL_SKIN = {
+  partner:  { g: ['#FCEEF1 0%', '#FDF4F5 45%', '#FFF9FA 78%', '#FFFCFC 100%'],
+              m: ['#FDEEF1', '#ECB8C8', '#D292B0'], fade: '255,252,252',
+              sh: 'rgba(122,46,14,.22)', ink: '#6B1D45', ink2: '#7A2E57' },
+  marriage: { g: ['#FBF0E4 0%', '#FCF5EC 45%', '#FEFAF5 78%', '#FFFDFA 100%'],
+              m: ['#FDF3E2', '#E8C899', '#C99B68'], fade: '255,253,250',
+              sh: 'rgba(122,46,14,.22)', ink: '#7A4527', ink2: '#7A4527' },
+  career:   { g: ['#EDF1FA 0%', '#F4F6FC 42%', '#FAFAFC 74%', '#FFFDF8 100%'],
+              m: ['#FFF6DC', '#F6D58E', '#E8B54A'], fade: '255,253,248',
+              sh: '#D8DFEF', ink: '#1F2A5C', ink2: '#3B4677' },
+  relation: { g: ['#F3EDFB 0%', '#F8F4FD 45%', '#FCFAFE 78%', '#FFFDFF 100%'],
+              m: ['#F7F0FD', '#D6BDF0', '#B394DF'], fade: '255,253,255',
+              sh: 'rgba(74,42,122,.22)', ink: '#3F2370', ink2: '#55378A' }
+};
+function skin(r) { return SELL_SKIN[r.id] || SELL_SKIN.partner; }
+
+/* The same three questions `learn` opens with, cut to two words a line so four
+   of them tile in a 2x2 without a single one wrapping to three. The long
+   sentences still run the detail page; this is the shop window. */
+var SELL_BLURBS = {
+  // The icons are Figma's own picks, which are not the obvious ones: a cup for
+  // the first meeting rather than two people (the line already says "your"), a
+  // pie for a score out of 36 rather than a bar chart, a heart for whether the
+  // match is real, and a shield for the doshas because a dosha is a thing you
+  // are protected from, not a list.
+  partner:  [['user', "Partner's\nimage"], ['pin', 'Where you\nwill meet'],
+             ['cuphot', 'Your first\nmeeting']],
+  marriage: [['pie', 'Guna score\nout of 36'], ['heart', 'Real match\nor on paper'],
+             ['shield', 'Dosha and\nremedies']],
+  // Wealth's first chip is the month, per 3726:8272. "Your big theme" was the
+  // one chip on any of the cards that did not name a thing she gets; the window
+  // is what makes this report different, and it is also the reason she will be
+  // back next month. The cell is two words wide, so the month is named rather
+  // than described.
+  career:   [['spark', 'All of\nNovember'], ['cal', 'Best dates\nfor a raise'],
+             ['case', 'Job or\nbusiness']],
+  // The monthly read on the relationship she is already in. Same shape as
+  // Wealth's: the window first, then the two things she came to find out.
+  relation: [['spark', 'All of\nNovember'], ['cuphot', 'Your best\ndays together'],
+             ['shield', 'Fights and\nhow to end them']]
+};
+
+/* Three chips off the report, then one that counts what is still behind the
+   paywall and reads as a link, because that is what it is. */
+function benefits(r) {
+  var list = (SELL_BLURBS[r.id] || SELL_BLURBS.partner).slice(0, 3);
+  var rest = Math.max(0, r.learn.length - 3);
+  var cells = list.concat([['plus', rest + ' more\nanswers']]);
+  return '<div class="of3-ben">' + cells.map(function (c, i) {
+    return '<span class="bn' + (i === 3 ? ' bn-more' : '') + '">' +
+      // 1.5 is Solar's own stroke at a 24 viewBox; 1.6 was a sixteenth heavier
+      // than the Figma icons at every size the card is ever drawn at.
+      '<i aria-hidden="true"><svg class="ic-' + c[0] + '" viewBox="0 0 24 24" ' +
+        'fill="none" stroke="currentColor" stroke-width="1.5" ' +
+        'stroke-linecap="round" stroke-linejoin="round">' +
+        (LI_ICON[c[0]] || LI_ICON.plus) + '</svg></i>' +
+      '<b>' + esc(c[1]).replace('\n', '<br>') + '</b>' +
+    '</span>';
+  }).join('') + '</div>';
+}
+
+/* The lotus-temple rosette behind the book, lifted out of Figma rather than
+   redrawn: one exported petal path per ring, repeated nine times at 40 degrees,
+   which is how the original is built. Centre of the flower is (112.587, 40) in
+   the exported coordinates, so the viewBox is offset to put it in the middle.
+   Only the three gradient stops change per report. Gradient ids are unique per
+   card because `url(#id)` resolves document-wide and a shared id would paint
+   all three cards in the first one's colour. */
+var MOTIF_C = [112.587, 40];
+var MOTIF_RINGS = [
+  // [petal path, ring opacity, light-source centre]
+  ['M112.587 40.0002C148.312 28.0979 166.473 -21.7998 148.909 -59.7951C111.032 -41.979 92.8703 7.91871 112.587 40.0002Z', .5, [183.112, 191.242]],
+  ['M112.587 40.0004C138.153 21.8087 138.153 -19.4913 112.587 -42.5996C87.02 -19.4913 87.02 21.8087 112.587 40.0004Z', .75, [230.587, 158]],
+  ['M112.587 39.9999C135.372 34.8987 145.126 8.10183 132.093 -13.5939C108.164 -5.35097 98.4111 21.4459 112.587 39.9999Z', 1, [183.112, 191.242]]
+];
+function sellMotif(r) {
+  var s = skin(r), base = 'mot-' + r.id;
+  var stops = '<stop stop-color="' + s.m[0] + '"/>' +
+              '<stop offset=".55" stop-color="' + s.m[1] + '"/>' +
+              '<stop offset="1" stop-color="' + s.m[2] + '"/>';
+  var defs = '', body = '';
+  MOTIF_RINGS.forEach(function (ring, n) {
+    var id = base + '-' + n;
+    defs += '<radialGradient id="' + id + '" cx="0" cy="0" r="1" ' +
+      'gradientUnits="userSpaceOnUse" gradientTransform="translate(' +
+      ring[2][0] + ' ' + ring[2][1] + ') scale(116.033)">' + stops + '</radialGradient>';
+    var petals = '';
+    for (var i = 0; i < 9; i++) {
+      petals += '<path d="' + ring[0] + '" transform="rotate(' + (i * 40) + ' ' +
+        MOTIF_C[0] + ' ' + MOTIF_C[1] + ')"/>';
+    }
+    body += '<g opacity="' + ring[1] + '" fill="url(#' + id + ')">' + petals + '</g>';
+  });
+  defs += '<radialGradient id="' + base + '-s" cx="0" cy="0" r="1" ' +
+    'gradientUnits="userSpaceOnUse" gradientTransform="translate(' +
+    MOTIF_C[0] + ' ' + MOTIF_C[1] + ') scale(116.033)">' + stops + '</radialGradient>';
+  body += '<circle cx="' + MOTIF_C[0] + '" cy="' + MOTIF_C[1] + '" r="15.733" ' +
+    'fill="url(#' + base + '-s)"/>';
+  return '<svg class="of3-motif" viewBox="' + (MOTIF_C[0] - 118) + ' ' +
+    (MOTIF_C[1] - 118) + ' 236 236" fill="none" aria-hidden="true">' +
+    '<defs>' + defs + '</defs>' + body + '</svg>';
+}
+
+/* The hinged hardback, shared by every sell surface so the book opens the same
+   way in the chat as it does in History. */
+function sellBook(r) {
+  /* The hinge needs a leaf behind the cover, so a report with no painted
+     spread shows the drawn book instead, even if its cover exists. Same
+     wrapper and the same slot, so the card's geometry does not know the
+     difference. */
+  if (!hasSpread(r)) {
+    return '<span class="of3-bkw of3-bkw-drawn" aria-hidden="true">' +
+      book3d(r) + '</span>';
+  }
+  return '<span class="of3-bkw" aria-hidden="true">' +
+    '<span class="of3-leaf"' +
+      (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+    '<span class="of3-cov">' +
+      '<img class="of3-bk" src="' + (r.art ? r.art.closed : '') + '" alt="">' +
+      '<span class="of3-back"' +
+        (r.art ? ' style="background-image:url(' + r.art.open + ')"' : '') + '></span>' +
+    '</span>' +
+  '</span>';
+}
+
+/* The offer as it lands in the chat, built to Figma 3726:8279. */
+function offer3Card() {
+  var r = leadReport();
+  var s = skin(r);
+  // Kundli Milan still cannot be bought off a chart the app already holds, so
+  // it does not put a price next to a Buy Now. It sends her to the page where
+  // the second birth chart gets asked for. Same card, different last line.
+  var ask = matchFirst(r);
+  // The whole card is the link to the detail page; only Buy Now jumps the
+  // queue straight to payment.
+  return '<div class="of3" role="button" tabindex="0" data-pick="' + r.id + '" ' +
+      'style="--s-grad:linear-gradient(90deg,' + s.g.join(',') + ');' +
+      '--s-sh:' + s.sh + ';' +
+      '--s-ink:' + s.ink + ';--s-ink2:' + s.ink2 + ';--s-fade:' + s.fade + '">' +
+    // Wash, rosette and fade all live behind one clipped layer, so the book can
+    // still stand proud of the top edge without being guillotined by it.
+    '<span class="of3-bg" aria-hidden="true">' + sellMotif(r) +
+      '<span class="of3-veil"></span></span>' +
+    sellBook(r) +
+    '<div class="of3-ttl">' + esc(r.t2 || rptName(r.t)) + '</div>' +
+    // The green dot is switched off in the frame, and rightly so: it says
+    // "live" next to a rating, which is the one thing a rating is not.
+    '<div class="of3-badge">' +
+      // Star inside the `b`, not beside it. As a sibling it took the badge's
+      // 8px gap — the same distance as the separator — so 4.7 and its star
+      // looked no more related to each other than to the reader count.
+      '<b>' + r.rating + STAR + '</b>' +
+      '<i class="of3-sep"></i>' +
+      '<b>' + inr(r.sold) + ' readers</b>' +
+    '</div>' +
+    // Bought: the card stays in the thread and stops selling. No questions, no
+    // price, no hairline — she has already read the pitch and paid it, so all
+    // that is left is the door into the thing she owns.
+    (owns(r.id)
+      ? '<div class="of3-got">' +
+          '<b>\u2713 Bought \u00b7 Ready to read</b>' +
+          '<button class="of3-go" type="button" data-open-rep="' + r.id + '">' +
+            'Read Report</button>' +
+        '</div>'
+      : benefits(r) +
+        // The four questions are a sample, not the contents page. The link says
+        // so, and it is the only wording on the card that admits there is more
+        // behind it than the grid shows. Not on Kundli Milan: that card's whole
+        // button already reads Learn More.
+        (ask ? '' : '<span class="of3-more">Learn More about this Report' + CHEV_R + '</span>') +
+        '<div class="of3-foot' + (ask ? ' of3-foot-ask' : '') + '">' +
+          (ask
+            ? '<button class="of3-go wide" type="button" data-pick="' + r.id + '">' +
+                'Learn More</button>'
+            // Same block the detail page's buy bar uses, in the same order:
+            // what she pays leads, the cut explains it underneath. The chip
+            // used to sit on top, which read the discount out before there was
+            // a price for it to be a discount on.
+            : '<div class="of3-price"><b>₹49</b>' +
+                '<small><s>₹499</s><i>90% OFF</i></small></div>' +
+              '<button class="of3-go" type="button" data-buy="' + r.id + '">Buy Now</button>') +
+        '</div>') +
+  '</div>';
+}
+
+var CHEV_R = '<svg class="of3-more-c" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+  '<path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" stroke-width="1.6" ' +
+  'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* True while a report still owes a second chart. Every sell surface asks it,
+   because the question they put to her changes shape: the other two are a
+   price and a Buy Now, this one is a free calculation she has not run yet. */
+function matchFirst(r) { return !!r.needsMatch && !state.matched && !owns(r.id); }
+
+/* True on the two surfaces that should be selling a score rather than a book.
+   Once she owns it the book is the honest picture again - there is a thing to
+   open - so this falls away and the ordinary card comes back. */
+function milanSell(r) { return !!(r.card && r.needsMatch && !owns(r.id)); }
+
+/* Both names, whichever pair the app is entitled to use. Before the form the
+   only name it has for him is the one she said in the chat, which is why the
+   card can say "Mansi and Rahul" at all; after the form it uses what she
+   actually typed, so a correction on the pay sheet shows up here too. */
+function gunaNames() {
+  var her = 'Mansi';
+  var him = state.suggested || 'him';
+  if (state.matched) {
+    her = ($('#gName').value || '').trim().split(' ')[0] || her;
+    him = state.boy || him;
+  }
+  return her + ' \u0026 ' + him;
+}
+
+/* The small 28-of-36 ring, drawn wherever a card has room for the score and
+   nothing else. r=28 gives a 175.9 circumference, so the arc is that times the
+   fraction and there is no magic number to drift if the score ever changes. */
+function scoreDial(sc) {
+  var C = 2 * Math.PI * 28;
+  return '<span class="gn-dial">' +
+    '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+      '<circle class="gn-trk" cx="32" cy="32" r="28"></circle>' +
+      '<circle class="gn-arc" cx="32" cy="32" r="28" stroke-dasharray="' +
+        (C * sc.n / sc.of).toFixed(1) + ' ' + C.toFixed(1) + '"></circle>' +
+    '</svg>' +
+    // The pair is wrapped so it can be centred in the ring as one object while
+    // the two of them sit on a shared baseline inside it. Baseline alignment on
+    // the dial itself pins the line box to the top, which put the /36 out over
+    // the stroke where the chord is narrowest.
+    '<span class="gn-num"><b>' + sc.n + '</b><small>/' + sc.of + '</small></span>' +
+  '</span>';
+}
+
+/* Chat and History. One card, two states, so the thing she asked for in the
+   chat is the same object she finds in History afterwards rather than a second
+   card about the same two people.
+
+   Before the form there is no ring and no 36. Leading on a guna count asks her
+   to already believe in gunas; what she wants to know is whether this works
+   with Rahul, so the card says that, shows the cover, and the button captures
+   intent and nothing else. The number arrives on the other side of the form,
+   where it is hers.
+
+   After the form the ring carries the 28 with the bite visibly out of it and
+   the line under it names what the bite is. The button goes to the detail
+   page, not to the pay sheet: she has just been given a result, and the next
+   thing she is owed is the reading of it, not a price. */
+function milanCard(r) {
+  var m = state.matched && r.matched;
+  var c = r.card;
+  return '<div class="gn gn-chat' + (m ? ' gn-done' : '') +
+      '" role="button" tabindex="0" data-pick="' + r.id + '">' +
+    '<div class="gn-top">' +
+      (m ? scoreDial(m.score)
+         : '<span class="gn-cov">' +
+             (hasCover(r) ? '<img src="' + r.art.closed + '" alt="">' : drawnFace(r, 'bk3-face')) +
+           '</span>') +
+      '<span class="gn-tx">' +
+        '<strong>' + esc(m ? gunaNames() : c.tPre) + '</strong>' +
+        '<span>' + esc(m ? c.sPost : c.sPre) + '</span>' +
+      '</span>' +
+    '</div>' +
+    '<div class="gn-foot">' +
+      '<button class="gn-go" type="button" ' +
+        (m ? 'data-pick="' : 'data-buy="') + r.id + '">' +
+        (m ? c.ctaPost : c.ctaPre) + '</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderChat() {
+  $('#chatThread').innerHTML = dayData().msgs.map(function (m) {
+    if (m.who === 'sys')    return '<p class="c-sys">' + esc(m.text) + '</p>';
+    if (m.who === 'ended')  return '<p class="c-end">' + esc(m.text) + '</p>';
+    if (m.who === 'gap')    return '<p class="c-gap"><span>' + esc(m.text) + '</span></p>';
+    if (m.who === 'offer3') return offer3Card();
+    if (m.who === 'remind') return remindCard();
+    // A bubble that pitches takes its words off the report being pitched, so
+    // the sentence and the card under it always name the same house. Pitches
+    // arrive as three lines - why now, what you learn, what buying gets you -
+    // and each becomes its own paragraph inside the one bubble, because this
+    // is one message from Hemali, not three pings.
+    var txt = m.pitch ? leadReport()[m.pitch === 'long' ? 'pitchLong' : 'pitch'] : m.text;
+    var body = [].concat(txt).map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('');
+    return '<div class="c-b ' + m.who + '">' + body + '<time>02:24 PM</time></div>';
+  }).join('') + (state.paid ? segueCard() : '');
+}
+
+/* Live thread helpers — only the post-purchase follow-up appends to the chat
+   after render, so they stay small and local to it. */
+function bubble(who, text) {
+  var el = document.createElement('div');
+  el.className = 'c-b ' + who;
+  el.innerHTML = '<p>' + esc(text) + '</p><time>02:41 PM</time>';
+  return el;
+}
+function scrollChat() {
+  var sc = $('#chat [data-scroll]');
+  if (sc) requestAnimationFrame(function () { sc.scrollTop = sc.scrollHeight; });
+}
+function typing(done) {
+  var el = document.createElement('div');
+  el.className = 'c-b hemali c-typing';
+  el.innerHTML = '<span></span><span></span><span></span>';
+  $('#chatThread').insertBefore(el, $('#sgChips'));
+  scrollChat();
+  later(function () { el.remove(); done(); }, 900);
+}
+
+/* Brief point 6: the report has to end in a conversation, not a full stop.
+   Once she owns one, the thread picks up where the report left off and hands
+   her the three questions that report actually leaves people with. */
+function segueCard() {
+  var r = reportById(state.pick);
+  return '<div class="c-b hemali"><p>Mansi, your <b>' + esc(r.t) +
+      // Titles already end in "Report", so the old sentence read "Marriage
+      // Prediction Report report is open".
+      '</b> is open. If any part needs explaining, or you want the remedies, ask me right here.</p>' +
+      // The way back in, said here too. The thread is where she left the report
+      // to come and ask, so the one thing it should be able to do is give it
+      // back — the offer that used to sit in this spot was selling a book she
+      // has already paid for.
+      '<button class="sg-read" type="button" data-open-rep="' + r.id + '">Read Report</button>' +
+      '<time>02:41 PM</time></div>' +
+    '<div class="sg" id="sgChips">' +
+      '<p class="sg-h">Ask beyond the report</p>' +
+      r.ask.map(function (x, i) {
+        return '<button class="sg-q" type="button" data-ask="' + i + '">' + esc(x.q) + '</button>';
+      }).join('') +
+    '</div>';
+}
+
+/* History is the brief's third surface, with its own four-state widget rather
+   than the chat's sell card: offer, being written, just-ready, bought-before.
+   One pitch, not a catalogue — what she has bought, plus the single report the
+   chat is actually selling her, which is the one the conversation's theme
+   picked. Three offers stacked would be a shop. */
+function renderHistCard() {
+  $('#tlChap').hidden = false;
+  var list = REPORTS.filter(function (x) { return owns(x.id); });
+  var lead = leadReport();
+  if (lead && !owns(lead.id)) list.push(lead);
+  $('#tlChapCard').innerHTML = '<div class="hw-list">' +
+    list.map(histWidget).join('') + '</div>';
+}
+
+/* Tomorrow's reason to return: the free chat and the next coin. */
+function remindCard() {
+  if (state.reminded) {
+    return '<div class="rm-card done"><p>🔔 Done. We will tell you the moment tomorrow\'s free chat is ready.</p></div>';
+  }
+  return '<div class="rm-card">' +
+    '<p>Tomorrow you get <b>2 minutes free chat</b> again, and ₹11 on the check-in. Shall we remind you?</p>' +
+    '<button class="btn sm primary" type="button" data-remind>🔔 Yes, remind me</button>' +
+  '</div>';
+}
+
+/* Every day lands unanswered, per the daily reward board: the check-in is the
+   day's one job, and Hemali's reply (with the report in it) is what answering
+   buys. Until then the chapter sits on the expert card — the one surface that
+   is already hers and already on screen. */
+/* The rail's cast. Hemali is hers, the one she just spoke to, and the rest are
+   the shelf behind her. They are here to make the rail a rail: the point of a
+   horizontal scroll is that there is a next person, and one card with a sliver
+   of grey beside it says nothing. Each one carries the same three rows as
+   Hemali's, which is what keeps the rail one height. */
+var ASTROS = [
+  { n: 'Astro Hemali', img: 'assets/hemali.png', was: 20, now: 10, lead: true },
+  { n: 'Astro Mala',   img: 'assets/av1.jpg', now: 19, top: 'Love & marriage · 12 yrs' },
+  { n: 'Astro Devraj', img: 'assets/av2.jpg', now: 15, top: 'Career & money · 9 yrs' },
+  { n: 'Astro Sanya',  img: 'assets/av3.jpg', now: 25, top: 'Kundli milan · 15 yrs' }
+];
+
+function renderRail() {
+  var rail = $('#expertRail');
+  // Built once. renderDayToday runs on every day switch and again when a
+  // report lands, and rebuilding would throw her back to the first card
+  // mid-swipe.
+  if (!rail || rail.children.length) return;
+  rail.innerHTML = ASTROS.map(function (a) {
+    var price = (a.was ? '<s>\u20b9' + a.was + '/min</s> ' : '') +
+      '<strong>\u20b9' + a.now + '/min</strong>';
+    /* Two cards, two Figma nodes. Hemali is 3203:205266: purple shell, 68px
+       face, Continue Chat tucked beside it, and the report stub torn off the
+       bottom. The others are 3996:82960 exactly: white, 50px face, name, rate,
+       full-width button, nothing above it. The purple is what says "this one
+       is yours and your free minutes are ticking on it"; on all four it
+       stopped being a mark and became the rail's wallpaper. */
+    if (!a.lead) {
+      return '<article class="expert-card plain">' +
+        '<div class="expert-body">' +
+          '<div class="expert-row">' +
+            '<span class="av-ring sm2"><img src="' + a.img + '" alt="' + esc(a.n) + '">' +
+              '<i class="dot"></i></span>' +
+            '<div class="expert-meta">' +
+              '<b>' + esc(a.n) + '</b><p>' + price + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn primary" type="button" ' +
+            'data-toast="Other experts are not part of this demo">Start Chat</button>' +
+        '</div>' +
+      '</article>';
+    }
+    return '<article class="expert-card">' +
+      // Written by renderDayToday, which owns the countdown.
+      '<div class="expert-top" id="countdownLine"></div>' +
+      '<div class="expert-body">' +
+        '<div class="expert-row">' +
+          '<span class="av-ring"><img src="' + a.img + '" alt="' + esc(a.n) + '">' +
+            '<i class="dot"></i></span>' +
+          '<div class="expert-meta">' +
+            '<div><b>' + esc(a.n) + '</b><p>' + price + '</p></div>' +
+            '<button class="btn primary" type="button" data-chat>Continue Chat</button>' +
+          '</div>' +
+        '</div>' +
+        // Day 2's report line, written by renderExRep. Hemali's card only: the
+        // report is hers, so it belongs under her and nowhere else on the rail.
+        '<div id="exRepSlot"></div>' +
+      '</div>' +
+    '</article>';
+  }).join('');
+  // One dot per card, Figma 3996:82964. The board draws three for four cards,
+  // which is the iOS windowed indicator; with four experts and no plan for a
+  // fifth, one each is the same picture and can actually be counted.
+  $('#railDots').innerHTML = ASTROS.map(function () { return '<i></i>'; }).join('');
+  railScale();
+  rail.addEventListener('scroll', function () { railScale(); }, { passive: true });
+}
+
+/* The reviews strip's effect, exactly: the card the rail has snapped to sits
+   at full size and its neighbours sit back, driven by one class and a CSS
+   transition rather than a transform written on every frame.
+
+   This replaces a per-frame rAF that scaled all four cards continuously by
+   distance. That version had to fire sixty times a second to look like
+   anything, and it still only ever moved a card 4% because any more made the
+   half-card at the screen edge look broken. One class and a 280ms ease does
+   the same job with no work during the swipe, and the growth happens when she
+   lets go, which is when she is actually looking at it. */
+function railScale() {
+  var rail = $('#expertRail');
+  if (!rail || !rail.clientWidth) return;
+  // "Snapped" is the card whose left edge is nearest the rail's own, which is
+  // where scroll-snap parks it. Same rule as markSnappedReview.
+  var edge = rail.getBoundingClientRect().left + 16, best = 0, bestD = Infinity;
+  [].forEach.call(rail.children, function (c, i) {
+    var d = Math.abs(c.getBoundingClientRect().left - edge);
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  var dots = $('#railDots').children;
+  [].forEach.call(rail.children, function (c, i) {
+    if (dots[i]) dots[i].classList.toggle('on', i === best);
+    c.classList.toggle('is-snap', i === best);
+  });
+}
+
+var railDay = 0;
+
+function renderDayToday() {
+  var day = state.day, r = REWARD[day];
+  renderRail();
+  /* A new day puts her back in front of Hemali. Only on a day change, though:
+     this function also runs when the report she paid for lands, and jerking
+     the rail back to the first card while she is looking at the fourth is the
+     page taking the wheel off her. */
+  if (railDay !== day) {
+    railDay = day;
+    $('#expertRail').scrollLeft = 0;
+    railScale();
+  }
+  $('#countdownLine').innerHTML = dayData().countdown;
+  $('#checkinCard').hidden  = state.answered;
+  $('#answeredCard').hidden = !state.answered;
+  // Two lines by hand, as in Figma: the break keeps "wallet" clear of the
+  // coin stack parked in the title row's top-right corner.
+  $('#checkinTitle').innerHTML =
+    'Day ' + day + ' · Answer to get<br><span class="amt">₹' + r + '</span> in your wallet';
+  $('#answeredTitle').innerHTML =
+    'Day ' + day + ' · <span class="amt">₹' + r + '</span> added to your wallet';
+  // The ladder has to agree with the card: today is not collected until she answers.
+  state.claimed = state.answered ? day : day - 1;
+  renderLadder();
+
+  renderExRep();
+  $('#guideSlot').hidden = false;
+  renderGuideTile();
+}
+
+/* Day 2's second ask, inside Hemali's card. Built to Hackfest 3203:205266:
+   a hairline with a notch bitten out of each edge, then a 31x41 cover, two
+   lines and a 28px round arrow. A stub torn off the bottom of her card, not a
+   second offer stapled to it - which is why it is a row and an arrow rather
+   than a price and a button competing with Continue Chat.
+
+   Day 2 only. Day 1 she has only just met the offer in the Personalised
+   Guidance tile, so day 2 is the first day worth asking twice. */
+function renderExRep() {
+  var slot = $('#exRepSlot');
+  if (!slot) return;
+  /* Day 2 only on the track where nothing has been bought. On the bought
+     track day 2 is the morning after the sale, which is the first day the
+     next report is pitched at all - so the stub runs then too, and the gate
+     is "not bought today", not "not bought ever". */
+  var lead = state.day === 2 && !boughtToday() ? leadReport() : null;
+  if (!lead) { slot.innerHTML = ''; return; }
+  var c = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
+  /* "Report" comes off the end here. The row is 262px wide inside a card that
+     is now 81% of the page, and the full title ellipsised to "Marriage
+     Prediction R...". The cover art is 40px to its left and the second line
+     ends in a price, so the line has already said what kind of thing this is
+     twice before the word arrives. */
+  var t = c.t.replace(/ Report$/, '');
+  slot.innerHTML =
+    // The notches are the tear. They sit on the hairline and are painted in
+    // the page's own background, so the card reads as perforated there.
+    '<div class="er-perf"><i></i><i></i></div>' +
+    '<button class="expert-report" type="button" data-pick="' + lead.id + '">' +
+      coverArt(lead, 'cv-tk') +
+      /* Figma says "Your partner report is ready", which is the state it is in
+         and not the thing she gets - and on day 2 it is not ready, it is for
+         sale. Same two slots, honest words: what it is, then who made it. */
+      /* Figma's second line is "Made by Hemali from your chart", on a 328px
+         card. This one is 295 and the price has to fit too, so Hemali goes:
+         the row sits inside her card with her face 40px above it, so her name
+         was the one thing on the line she could already see. What is left is
+         the two things the line is for - it is about her chart, and it is
+         ₹49, which is less than she is expecting. */
+      '<span class="er-t"><b>' + esc(t) + '</b>' +
+        '<small>From your chart \u00b7 \u20b9' + PRICE + '</small></span>' +
+      '<i class="er-go"><svg viewBox="0 0 14 14" aria-hidden="true">' +
+        '<path d="M2 7h10M7.6 2.6 12 7l-4.4 4.4"/></svg></i>' +
+    '</button>';
+}
+
+/* The report as one tile among her guidance — same object as the tarot and
+   prediction tiles. */
+function renderGuideTile() {
+  // Personalised Guidance is always two tasks, and the report is the first of
+  // them from day 1 now. The kundli stand-in only exists for the case where
+  // there is no report to pitch at all.
+  $('#guideAlt').hidden = true;
+  $('#guideSlot').hidden = false;
+  if ($('#guideTarot')) $('#guideTarot').hidden = false;
+  /* The minutes between paying and the report landing. Today drops to one
+     task for them: she has just spent money and the only thing she wants off
+     this page is whether it is done, and a tarot tile sitting next to that is
+     the app changing the subject. The tile is not a button either - there is
+     nothing to open yet, and a tappable row that does nothing is worse than
+     a row that is honestly still working. */
+  var mk = state.buys[0];
+  if (state.paid && mk && !mk.ready) {
+    if ($('#guideTarot')) $('#guideTarot').hidden = true;
+    var mr = reportById(mk.id);
+    $('#guideSlot').innerHTML =
+      '<div class="tile tile-make">' +
+        book3d(mr) +
+        '<span class="tt"><b>' + esc(mr.t2 || titled(mr.t)) + '</b>' +
+          '<small>Hemali is writing it. We will tell you the moment it is ready.</small></span>' +
+        '<i class="tag">Writing</i>' +
+      '</div>';
+    return;
+  }
+  /* The sell tile, and the gate is the day rather than the account: a report
+     bought this morning owns the rest of today, and tomorrow Today goes back
+     to work on the next one. The report she paid for is not lost, it is on her
+     shelf in My Reports - this tile is the shop, not the library. */
+  if (!boughtToday()) {
+    var lead = leadReport();
+    if (!lead) { $('#guideAlt').hidden = false; $('#guideSlot').hidden = true;
+                 $('#guideSlot').innerHTML = ''; return; }
+    // Kundli Milan says the same two lines here as on the expert ticket, since
+    // a tile that names the report while the ticket names the match makes them
+    // look like two different offers. The other two have one pair of lines and
+    // keep using it.
+    var gc = lead.tktDone ? tktCopy(lead) : { t: lead.t, s: lead.s };
+    /* This is the day's first ask, so it is the chat card's own furniture in a
+       tile's footprint: the report's wash, the lotus rosette behind the cover,
+       and the book standing proud of the top edge rather than sitting in a box
+       on the card. Same parts as `offer3Card`, not a copy of them, so the book
+       she is offered in the chat is recognisably the same object here.
+       No price. The tile's job is to get the report opened, and ₹49 only means
+       something next to what the report actually contains. */
+    var sk = skin(lead);
+    $('#guideSlot').innerHTML =
+      '<button class="tile tile-lead" type="button" data-pick="' + lead.id + '"' +
+              // 270deg, not the chat card's 90: the wash is tinted where the
+              // words are and white where the book stands, and here the book
+              // stands on the left.
+              ' style="--s-grad:linear-gradient(270deg,' + sk.g.join(',') + ');' +
+                      '--s-sh:' + sk.sh + ';--s-ink:' + sk.ink + ';--s-ink2:' + sk.ink2 + '">' +
+        '<span class="tl-bg" aria-hidden="true">' + sellMotif(lead) + '</span>' +
+        '<span class="tl-bk" aria-hidden="true">' + sellBook(lead) + '</span>' +
+        '<span class="tt">' +
+          '<b>' + esc(gc.t) + '</b><small>' + esc(gc.s) + '</small>' +
+        '</span>' +
+        '<span class="tl-off">' +
+          '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.2 8.7 4.7l3.9.5-2.8 2.7.7 3.8L7 9.9l-3.5 1.8.7-3.8L1.4 5.2l3.9-.5z" fill="currentColor"/></svg>' +
+          '<em>' + esc(lead.why) + '</em>' +
+          '<svg class="arr" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</span>' +
+      '</button>';
+    return;
+  }
+  $('#guideSlot').innerHTML =
+    '<button class="tile" type="button" data-go="read">' +
+      book3d(reportById(state.pick)) +
+      '<span class="tt"><b>' + esc(boughtTitle()) + '</b>' +
+        '<small>Your full report is open. Ask Hemali for the remedies</small></span>' +
+      '<i class="tag green">Ready</i>' +
+      '<svg class="arr" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3.5 8h8.5M8.5 4.2 12.3 8l-3.8 3.8" stroke="#475467" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</button>';
+}
+
+/* ---------------------------------------------------------------- PM: picker + preview */
+/* The brief's shop front: three reports, she picks. */
+function renderPicker() {
+  // All three cost the same, so repeating ₹49 three times only flattens the
+  // choice. Price moves to one strip above the list; the cards are then about
+  // which problem she has, and the chevron is the only thing on the right.
+  $('#pkList').innerHTML = REPORTS.map(function (r) {
+    return '<button class="pk-card" type="button" data-pick="' + r.id + '">' +
+      coverArt(r, 'cv-md pk-bk') +
+      '<span class="pk-t">' +
+        '<b>' + esc(r.t) + '</b>' +
+        '<small>' + esc(r.s) + '</small>' +
+        '<span class="pk-meta"><i class="pk-n">' + r.learn.length + ' questions answered</i></span>' +
+      '</span>' +
+      '<em class="pk-chev" aria-hidden="true">›</em>' +
+    '</button>';
+  }).join('');
+}
+
+/* The sell page. The hero GIF and the cover swinging open off its spine are
+   this page's entire first impression. Nothing is locked: the pointers say what
+   the report answers, and then the ENTIRE report follows, rendered on a demo
+   chart. She learns the depth from the sample and that it is about her from the
+   pointers. */
+function renderReport() {
+  var r = reportById(state.pick);
+  /* Generic, always, including after the match has been run. This page used to
+     rewrite itself around her 28 and it was the wrong place for it: a detail
+     page is the shop window, and a shop window that has already handed over
+     the headline number has nothing left to sell. It is also the one surface
+     she can reach without having said anything to Hemali - from Timeline, from
+     a push, from History - so personalising it meant the app naming a man she
+     had not named to it yet.
+
+     So the number moves to the pay sheet, where it is read with a price next
+     to it, and this page keeps one job: tell her what a milan answers, and
+     point at the form. See `paysGuna` in openPay. */
+  // The pick has just changed, so every surface that names the report she is
+  // buying — this title included — has to be rewritten with it.
+  paintBought();
+  // The hero is the closed cover of the report she is looking at — the same
+  // object the chat bubble and the upsells show, just larger.
+  // The sample door, on the book rather than in the header. As a Preview pill
+  // in the nav it was a word floating over artwork, naming nothing she could
+  // see; sitting on the open spread it points at the exact pages it opens, and
+  // the book stops being a picture and becomes the thing you tap. It is a
+  // sibling of the spread inside the same wrapper, so it moves with the book.
+  $('#r2Book').innerHTML = book3d(r) +
+    '<button class="r2-bk-samp" type="button" id="r2BookSample">' +
+      '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+        '<path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="8" cy="8" r="1.9" stroke="currentColor" stroke-width="1.4"/></svg>' +
+      'See Sample report</button>';
+  // Partner's hero moves; the other two are painted stills out of the same
+  // board. `has-bg` is what stops the couple's clip and its rose wash from
+  // showing through a ground that is neither pink nor about a couple.
+  var hero = $('#r2Hero');
+  var vid = r.art && r.art.video;
+  // A painted ground only where there is no film. Career still has one.
+  hero.classList.toggle('has-bg', !!(r.art && r.art.hero && !vid));
+  hero.style.backgroundImage = r.art && r.art.hero && !vid ? 'url(' + r.art.hero + ')' : '';
+  // Each still is framed on its own subject, so the crop is part of the art
+  // rather than one rule for all of them. Blank falls back to the CSS default.
+  hero.style.backgroundPosition = (r.art && r.art.heroPos) || '';
+  paintHeroVideo(r, vid);
+  // Was hard-coded, so picking Money or Marriage still showed the Partner
+  // report's reader count. One number, read off the report being shown.
+  $('#r2Reads').textContent = inr(r.sold);
+  // Same for the rating: four reports, four scores.
+  $('#r2Rating').textContent = r.rating;
+  /* The one line that changes on this page, and it changes by report and not
+     by state: Kundli Milan needs two charts, so saying so here is the page
+     being honest about what the button is going to ask for rather than a
+     form appearing out of nowhere after the tap. */
+  /* Once the form is in, the page stops asking for it. "Add both sets of birth
+     details" under her own finished score is the page not having noticed she
+     did the thing, which is the cheapest way to make a product feel unattended.
+     The line becomes the handover into the panel below it instead. */
+  var matched = !!(state.matched && r.matched);
+  /* Each report now carries its own line, written as the promise. The generic
+     "Astro Hemali makes it from your birth chart" was true of all three and so
+     argued for none of them, and it spent the one line above the chips saying
+     how the report is made rather than what it answers. Kundli Milan keeps a
+     second line for the state before the form, because there the honest
+     promise is still a request. */
+  $('#r2Lead').textContent = matched ? r.matched.lead
+    : r.needsMatch
+      ? r.s + '. Add both sets of birth details and Astro Hemali reads the two charts together.'
+      : r.lead;
+  // The third stat column, the only one that differs between reports.
+  $('#r2Type').textContent = r.stat3.v;
+  $('#r2TypeL').textContent = r.stat3.l;
+  renderMatchPanel(r, matched);
+  // Two kinds of chip, drawn as one until now. The first are what only this
+  // report has; the last three are true of everything we sell. Flat grey pills
+  // made "36 guna match" look like the word "Private", so the report's own
+  // terms take the brand tint and a star, and the standard three stay quiet
+  // with the drawing that says which of them it is.
+  /* Only the report's own terms. "42 pages", "Shareable" and "Private" are
+     true of everything we sell, so three of the five chips under the promise
+     were arguing for nothing and pushed the real two — "36 guna match",
+     "Dosha check" — onto a line of their own. The standard terms are still
+     said, in the privacy line on the pay sheet, where they answer a question
+     she is actually asking. */
+  var CHIP_STAR = '<path d="M6 1 7.3 4.5 10.8 5.8 7.3 7.1 6 10.6 4.7 7.1 1.2 5.8 4.7 4.5z"/>';
+  $('#r2Chips').innerHTML = r.chips.map(function (c) {
+    return '<span class="ch-key">' +
+      '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1" ' +
+        'stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">' +
+        CHIP_STAR + '</svg>' + esc(c) + '</span>';
+  }).join('');
+  /* Post-match the twelve pointers are the same twelve, but they are answering
+     a different question. Before the form the list is what a milan covers;
+     after it, with a 28 and a locked Nadi sitting above it, the list is what
+     the 28 does not tell her - so the heading and the wording both come from
+     the matched set. */
+  var learn  = (matched && r.matched.learn)  || r.learn;
+  var licons = (matched && r.matched.licons) || r.licons;
+  /* "Find Answers To", and the list under it is questions in her words rather
+     than contents in ours. A line that reads "Business or a job, what the
+     chart says" is a chapter title; "Should I stay, switch, or start my own
+     work?" is the thing she was already turning over, and the report is the
+     answer to it. */
+  $('#r2Learn').innerHTML =
+    '<h2 class="r2-h">' + esc(matched ? r.matched.head
+      : r.needsMatch ? 'What The Milan Answers' : 'Find Answers To') + '</h2>' +
+    /* Monthly reports only. The list is the same every month, so the heading
+       has to say which 30 days it is answering for, or the questions read as
+       a general promise instead of this edition. */
+    (r.learnSub ? '<p class="r2-learn-sub">' + esc(r.learnSub) + '</p>' : '') +
+    '<ul class="r2-learn">' +
+      learn.map(function (x, i) {
+        // Falls back to the tick if a report is ever short an icon key, so a
+        // missing entry costs a drawing rather than a blank left column.
+        var k = (licons || [])[i];
+        return '<li><i aria-hidden="true">' + learnIcon(k) + '</i>' + esc(x) + '</li>';
+      }).join('') +
+    '</ul>';
+  /* Figma 3814:11864. The five stars are gone from the card: every one of the
+     four was five, so the row was decoration that said nothing and it sat
+     above the quote, which is the only part anyone reads. A person reads the
+     card instead — initials, name, city — then what they said, then the one
+     thing the report called before it happened, as a tag. The rating itself
+     moved up under the heading, where it covers all four at once. */
+  $('#r2Revs').innerHTML = r.revs.map(function (v) {
+    var who = v.n.split(',');
+    var nm = who[0].trim(), city = (who[1] || '').trim();
+    // Initials off the printed name rather than a stored field, so a review
+    // can never disagree with its own avatar.
+    var ini = nm.split(/\s+/).map(function (w) { return w[0]; })
+      .join('').replace(/\./g, '').slice(0, 2).toUpperCase();
+    return '<div class="review">' +
+      '<span class="rv-q" aria-hidden="true">\u201d</span>' +
+      '<span class="rv-who"><span class="rv-av">' + esc(ini) + '</span>' +
+        '<span class="rv-nm"><b>' + esc(nm) + '</b><small>' + esc(city) + '</small></span></span>' +
+      '<p>' + esc(v.q) + '</p>' +
+      (v.t ? '<em class="rv-tag">' + esc(v.t) + '</em>' : '') +
+    '</div>';
+  }).join('');
+  /* The rating again, over the quotes. Five screens below the stat bar a
+     number is what turns four strangers into a sample. */
+  $('#r2RevSum').innerHTML = STAR + '<b>' + esc(r.rating) + '</b>' +
+    '<span>\u00b7 ' + inr(r.sold) + ' readers</span>';
+  // The strip starts parked on the first card, so that one is already snapped.
+  markSnappedReview($('#r2Revs'));
+  // Two, as the board has it. Three rows of the same card turned the foot of
+  // the page into a catalogue and pushed the buy bar's own report out of mind.
+  $('#r2AlsoList').innerHTML = REPORTS.filter(function (x) { return x.id !== r.id; })
+    .slice(0, 2).map(upsellRow).join('');
+  /* Pre-match the hook promises the score, which is the right promise while
+     the score is still the unknown. Post-match that promise has been kept, so
+     the line over the button has to be about what is still shut - which is
+     exactly what `matched.why` was written for. */
+  renderStatusStrip();
+  /* One report at a time. While Hemali is still writing one, the bar stops
+     being a shop for every other report too: the hook says what is happening
+     and the button promises the push instead of taking a second payment. */
+  var busy = state.buys.some(function (b) { return !b.ready; });
+  $('#r2Why').textContent = busy ? 'Report being prepared'
+    : (matched && r.matched.why) || r.why;
+  // The board says "Buy Now" and nothing else. The price is already sitting
+  // beside the button, so repeating ₹49 inside it only crowds the line.
+  // Once it is hers the bar stops being a shop. A price next to a book she has
+  // already paid for is the page asking a second time, so the whole price
+  // block goes and the button becomes the way back in. Career is the one that
+  // can still sell: the window it covers runs out, so the next edition is a
+  // real thing to buy and it goes beside Read rather than instead of it.
+  var mine = owns(r.id);
+  var repeat = mine && r.cadence === 'monthly' && !busy;
+  $('.buy-row', $('#report')).classList.toggle('owned', mine);
+  $('#r2Price').hidden = mine || busy;
+  $('#r2Again').hidden = !repeat;
+  $('#r2Again').textContent = 'Buy ' + editionLabel(r);
+  /* Buy Now on its own is a lie on a button that opens a form, but dropping it
+     is the other mistake: a button that only promises a form reads as one more
+     step before the real one, and she is being asked to pay the price sitting
+     next to it. So the button says both, in the order they happen. */
+  /* Only while the form is still coming. Once her details are in, the tap
+     goes straight to the sheet and the button is a plain Buy Now again -
+     promising a form she is no longer being shown would be the opposite
+     mistake. */
+  /* Three states, because the button is doing three different things. Before
+     the form it opens a form. After the form, with five kootas visibly shut on
+     the page above it, "Unlock" is the literal description of what the money
+     buys - "Buy Now" next to a row of padlocks makes her work out the
+     connection herself. Once it is hers it is a door. */
+  $('#r2Cta').textContent = mine ? 'Read Report'
+    : busy ? 'We\u2019ll notify you'
+    : matchFirst(r) ? 'Enter Details \u0026 Buy Now'
+    : matched ? 'Unlock Full Report' : 'Buy Now';
+  // A report she already owns is still readable while the next one is written.
+  $('#r2Cta').disabled = busy && !mine;
+  $('#r2Cta').classList.toggle('outline', repeat);
+  $('#r2Cta').classList.toggle('primary', !repeat);
+}
+
+/* Figma 4725:37440 — the strip under the title card. Two cells at most: the
+   one still being written, and what is already on the shelf. Both open My
+   Reports, because that is the page that can actually do something about
+   either of them. */
+function renderStatusStrip() {
+  var el = $('#r2Strip');
+  if (!el) return;
+  var pending = state.buys.filter(function (b) { return !b.ready; });
+  var done    = state.buys.filter(function (b) { return b.ready; });
+  if (!pending.length && !done.length) { el.hidden = true; el.innerHTML = ''; return; }
+  var cell = function (lbl, txt) {
+    return '<button type="button" data-go="mine">' +
+      '<small>' + esc(lbl) + '</small><b>' + esc(txt) + '</b></button>';
+  };
+  el.innerHTML =
+    (pending.length ? cell('In progress', buyName(pending[0])) : '') +
+    (done.length ? cell('Past', done.length === 1 ? buyName(done[0])
+                                                  : done.length + ' reports') : '');
+  el.hidden = false;
+}
+
+/* Kundli Milan is a match between two people, so its row names them. Every
+   other report is one person's, and the thing she would look for is the book. */
+function buyName(b) {
+  var r = reportById(b.id);
+  return r.needsMatch ? 'Mansi \u0026 Rahul' : (r.t2 || titled(r.t));
+}
+
+/* Eight 18px line marks, one per koota, drawn rather than imported because the
+   board's own icon set is eight single-path glyphs and a sprite sheet for eight
+   paths is more plumbing than drawing. Keyed by `ic` on the data so the row and
+   its mark can never drift apart. */
+var KOOTA_ICONS = {
+  work:  '<rect x="2.5" y="5.5" width="13" height="9.5" rx="1.5"/><path d="M6.5 5.5V4a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 11.5 4v1.5"/>',
+  inf:   '<circle cx="9" cy="9" r="6.5"/><path d="M2.5 9h13M9 2.5c3.2 3.6 3.2 9.4 0 13M9 2.5c-3.2 3.6-3.2 9.4 0 13"/>',
+  star:  '<path d="M9 2.2l2 4.3 4.6.6-3.4 3.2.9 4.5L9 12.7l-4.1 2.1.9-4.5L2.4 7.1l4.6-.6z"/>',
+  flame: '<path d="M9 2.3c2.6 2.4 4.4 4.6 4.4 7.1a4.4 4.4 0 0 1-8.8 0c0-1.3.6-2.5 1.6-3.7.5 1 1.1 1.6 1.8 1.8-.2-2 .2-3.7 1-5.2z"/>',
+  rings: '<circle cx="6.6" cy="10.4" r="4.6"/><circle cx="11.4" cy="7.6" r="4.6"/>',
+  face:  '<circle cx="9" cy="9" r="6.5"/><path d="M6.4 11.2a3.4 3.4 0 0 0 5.2 0"/><path d="M6.8 6.9h.01M11.2 6.9h.01"/>',
+  heart: '<path d="M9 14.8S3 11.2 3 7.3A3.2 3.2 0 0 1 9 5.7a3.2 3.2 0 0 1 6 1.6c0 3.9-6 7.5-6 7.5z"/>',
+  pulse: '<path d="M2 9h3l2-4 2.6 8L12 9h4"/>',
+  /* The card's one finding. A shield with a bar through it, not the pulse the
+     Health row uses — on the card the line is a warning, in the list it is a
+     category. */
+  alert: '<path d="M9 2.4l5.2 2v4.3c0 3-2.1 5.5-5.2 6.6-3.1-1.1-5.2-3.6-5.2-6.6V4.4z"/>' +
+         '<path d="M9 6.3v4.1"/>'
+};
+function kootaIcon(name) {
+  return '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.3125" stroke-linecap="round" stroke-linejoin="round" ' +
+    'aria-hidden="true">' + (KOOTA_ICONS[name] || KOOTA_ICONS.star) + '</svg>';
+}
+
+/* The eight rows live behind "All 8 areas" rather than on the page, which is
+   the board's call and the right one: the page's job is the number and the one
+   finding that explains it, and a list of eight rows under a 28 makes her
+   audit arithmetic she has no way to check. The sheet is where the detail goes
+   for the person who wants it.
+
+   So the card is a score, a bar, two doors and one sentence. The bar matters
+   more than it looks — "28 of 36" is a fraction she has to do in her head, and
+   the fill does it for her before she reads either number. The sentence is
+   Nadi, because it is the whole of the missing 8 and the reason to buy. */
+function renderMatchPanel(r, matched) {
+  var box = $('#r2Match');
+  box.hidden = !matched;
+  if (!matched) { box.innerHTML = ''; return; }
+  var m = r.matched, nd = m.nadi;
+  var pct = Math.max(0, Math.min(1, m.score.n / m.score.of));
+  box.innerHTML =
+    '<h2 class="r2-h">Your Compatibility Score</h2>' +
+    '<div class="gm">' +
+      '<div class="gm-top">' +
+        '<div class="gm-sc">' +
+          '<span class="gm-pair">' + esc(gunaNames()) + '</span>' +
+          '<b>' + m.score.n + ' of ' + m.score.of + '</b>' +
+          '<span class="gm-verdict">' + esc(matchVerdict(pct)) + '</span>' +
+        '</div>' +
+        /* The marker rides the end of the fill, inset by its own width so it
+           stays inside the track at 0 and at 36 instead of hanging off. */
+        '<div class="gm-prog">' +
+          '<span class="gm-trk"><i style="width:' + (pct * 100).toFixed(1) + '%"></i></span>' +
+          '<span class="gm-badge" style="left:calc((100% - 36px) * ' + pct.toFixed(4) + ')">' +
+            '<svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.5" ' +
+                 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+              '<path d="M10 16.1S4 12.4 4 8.4a3.3 3.3 0 0 1 6-1.7 3.3 3.3 0 0 1 6 1.7c0 4-6 7.7-6 7.7z"/>' +
+            '</svg>' +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+      /* Labels only. Both of these are already short, literal descriptions of
+         what they do, and a mark in front of each would be decorating a
+         sentence that needs no help. */
+      '<div class="gm-acts">' +
+        '<button class="gm-act" type="button" id="r2Kootas">' +
+          'All ' + (m.kootas.length + 1) + ' areas</button>' +
+        '<button class="gm-act" type="button" id="r2MatchEdit">Edit details</button>' +
+      '</div>' +
+      '<div class="gm-div"></div>' +
+      '<p class="gm-note">' +
+        '<i aria-hidden="true">' + kootaIcon('alert') + '</i>' +
+        '<span>' + esc(nd.n) + ' is ' + nd.s + ' of ' + nd.of + ', the dosha ' +
+          'families worry about most. See if yours is cancelled.</span>' +
+      '</p>' +
+    '</div>';
+}
+
+/* Words for the fraction, because 28 is only good or bad against a convention
+   she has no reason to know. The bands are the ones every Indian matchmaker
+   uses, so the verdict agrees with whatever her family will tell her. */
+function matchVerdict(pct) {
+  if (pct >= 0.89) return 'Excellent match';
+  if (pct >= 0.72) return 'Very good match';
+  if (pct >= 0.50) return 'Good match';
+  return 'Needs a closer look';
+}
+
+/* The board's Compatibility details, 3908:14788. Same score header as the card
+   so the sheet is visibly the same object opened up, then the eight rows, then
+   the one that failed restated at the foot — a sheet that ends on a row of
+   greyed-out type and nothing else leaves her with a problem and no exit, and
+   the bar under it is the exit. */
+function renderKootaSheet(r) {
+  var m = r.matched, nd = m.nadi, pct = m.score.n / m.score.of;
+  var rows = m.kootas.concat([nd]);
+  var sans = state.gunaSans;
+  $('#gunaHead').innerHTML =
+    '<span class="gm-pair">Compatibility score</span>' +
+    '<b>' + m.score.n + ' of ' + m.score.of + '</b>' +
+    '<span class="gm-verdict">' + esc(matchVerdict(pct)) + '</span>';
+  $('#gunaRows').innerHTML = rows.map(function (k) {
+    /* Zero is the only state worth colouring, and it is coloured by being
+       drained rather than by going red: nothing has gone wrong, there is just
+       nothing there. */
+    var dead = k.s === 0;
+    return '<div class="gk' + (dead ? ' off' : '') + '">' +
+      '<i>' + kootaIcon(k.ic) + '</i>' +
+      '<b>' + esc(sans ? k.n : k.en) + '</b>' +
+      '<em>' + k.s + ' / ' + k.of + '</em>' +
+    '</div>';
+  }).join('');
+  $('#gunaFoot').innerHTML =
+    '<i aria-hidden="true">' + kootaIcon(nd.ic) + '</i>' +
+    '<span>' + esc(sans ? nd.n : nd.en) + ' is ' + nd.s + ' of ' + nd.of +
+      '. Your report explains if it is cancelled, and the remedy.</span>';
+  $('#gunaWhy').textContent = m.why;
+  $('#gunaSeg').querySelectorAll('button').forEach(function (b) {
+    b.classList.toggle('on', (b.dataset.gunaLang === 'sans') === !!sans);
+  });
+}
+
+/* Per the board's J1: answering opens the reward sheet — coin, ladder with
+   today claimed, tomorrow's amount as the comeback reason. Day 3 swaps the
+   comeback line for the deadline. */
+function openRewardSheet() {
+  $('#rewardTitle').textContent = '₹' + REWARD[state.day] + ' added to your wallet!';
+  if (state.day < lastDay()) {
+    $('#rewardSub').textContent = 'Your wallet is now ₹' + state.wallet +
+      '. Come back tomorrow for ₹' + REWARD[state.day + 1] + ' more.';
+    $('#rewardCta').textContent = 'Remind me for tomorrow';
+  } else {
+    $('#rewardSub').textContent = 'One more thing. The ₹49 price on the report ends tonight. Back to ₹499 tomorrow.';
+    $('#rewardCta').textContent = 'Unlock full report · ₹49';
+  }
+  openSheet('reward');
+}
+
+/* The intro sheet fires once, on the scroll past the free-chat section, exactly
+   as the daily reward board specifies. Day 1 only — by day 2 she has seen it. */
+function armIntroSheet() {
+  var sc = $('#today-a [data-scroll]'), experts = $('#today-a .expert-rail');
+  if (!sc || !experts) return;
+  sc.removeEventListener('scroll', onTodayScroll);
+  state.introShown = state.day !== 1;
+  if (state.day === 1) sc.addEventListener('scroll', onTodayScroll);
+}
+/* "Past the free chat section" in practice means the check-in has come into
+   view — waiting for the expert card to leave the screen entirely needs another
+   full screen of scrolling, by which point she is already somewhere else. */
+function onTodayScroll() {
+  // state.answered: once she has answered, the intro has nothing left to sell —
+  // and it must not steal the reward sheet that is opening at the same moment.
+  if (state.introShown || state.answered || state.screen !== 'today-a') return;
+  var card = $('#checkinCard'), sc = $('#today-a [data-scroll]');
+  if (card.getBoundingClientRect().top > sc.getBoundingClientRect().bottom - 80) return;
+  state.introShown = true;
+  openSheet('intro');
+}
+
+/* Demo chrome: the selected day's touchpoints, as chips docked right under its
+   card in the switcher — tap one to jump the phone to that surface. */
+function renderTpTabs() {
+  var old = $('.switcher .tp-wrap');
+  if (old) old.parentNode.removeChild(old);
+  $$('.switcher .has-tp').forEach(function (b) { b.classList.remove('has-tp'); });
+  var host = $('.switcher [data-day].on');
+  if (!host) return;
+
+  var tabs;
+  if (state.paid) {
+    // Post-purchase: every sell surface has retired into the follow-up.
+    tabs = [
+      { id: 'today',   l: 'Today \u00b7 read your report' },
+      { id: 'chat',    l: 'Chat \u00b7 continue chat' },
+      { id: 'read',    l: 'Full report' },
+      { id: 'upsell',  l: 'Report end \u00b7 upsell' },
+      { id: 'history', l: 'Timeline \u00b7 report ready' }
+    ];
+  } else {
+    // The tabs ARE the schedule: only the surfaces today actually uses, named
+    // so a PM can see at a glance what day 1 does and day 2 does not.
+    var sf = pmSurf();
+    tabs = [];
+    // Day 1 is ordered the way the day runs: the Personalised tile is the first
+    // thing that asks, on the screen she already landed on, and everything else
+    // is ten minutes behind it. On the other days the tile is just one of the
+    // surfaces, so it keeps its old place in the row.
+    if (state.day === 1 && sf.guide) tabs.push({ id: 'guide', l: 'Today \u00b7 personalised \u00b7 1st ask' });
+    if (dayData().push) tabs.push({ id: 'push', l: 'Notification \u00b7 +10 min' });
+    if (state.day === 1) tabs.push({ id: 'nudge', l: 'Chat nudge \u00b7 +10 min \u00b7 bubble + toast' });
+    if (sf.chat)  tabs.push({ id: 'chat',    l: state.day === 1 ? 'Chat \u00b7 offer at +10 min' : 'Chat \u00b7 offer' });
+    if (state.day !== 1 && sf.guide) tabs.push({ id: 'guide', l: 'Today \u00b7 personalised' });
+    // History, the picker and the report page are deliberately not listed:
+    // they are destinations, and jumping straight to one skips the only thing
+    // the demo is meant to show — how she gets there.
+    if (!tabs.length) tabs.push(
+      { id: 'today',   l: 'Today \u00b7 nothing asks' },
+      { id: 'chat',    l: 'Chat \u00b7 nothing asks' });
+    // No "Daily reward · answered" chip: the check-in card is right there on
+    // Today and answering it by hand is the honest way to see that state.
+    if (repToastDays()) tabs.push({ id: 'toast', l: 'Toast \u00b7 Hemali\u2019s knock' });
+  }
+
+  var wrap = document.createElement('div');
+  wrap.className = 'tp-wrap';
+  wrap.innerHTML =
+    '<p class="tp-note">Touchpoints: ' +
+      (state.paid ? 'report bought · every surface is the follow-up'
+        : pmQuiet() ? 'nudging has stopped, the report only sits in her guidance'
+        : 'one report a day · ₹49, sample on a demo chart') + '</p>' +
+    '<div class="tp-tabs">' + tabs.map(function (t) {
+      return '<button type="button" data-tp="' + t.id + '">' + t.l + '</button>';
+    }).join('') + '</div>';
+  host.classList.add('has-tp');
+  host.insertAdjacentElement('afterend', wrap);
+}
+
+/* Answering flips the card to the replied state — the moment Hemali gets a
+   bubble and the report moves into it — and pays the day's reward. Idempotent,
+   because the demo chips can call it on a day she has already answered. */
+function answerCheckin() {
+  if (state.answered) return;
+  state.answered = true;
+  state.wallet += REWARD[state.day];
+  paintWallet();
+  renderDayToday();
+  renderChat();
+}
+
+/* Picking a day rewinds the whole demo to that morning: day 1 starts in the
+   chat that just ran out, later days start on Today the way she would land. */
+function setDay(n) {
+  state.day = n;
+  $$('.switcher [data-day]').forEach(function (b) {
+    b.classList.toggle('on', +b.getAttribute('data-day') === n);
+  });
+  restart();
+}
+
+/* Swapping the pitched report rewinds the same way picking a day does. It has
+   to: the push line, the expert ticket, the History chapter and the chat card
+   are all written in the day's script and half of them are already on screen by
+   the time this is tapped, so re-rendering in place would leave one surface
+   selling Kundli Milan and the next still selling Partner. */
+function setLead(id) {
+  state.lead = id;
+  $$('.switcher [data-lead]').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-lead') === id);
+  });
+  restart();
+}
+
+/* A demo control, not a feature. The wallet is normally whatever the daily
+   reward has added up to by the day being shown, so there is no way to stand
+   on the pay sheet and watch the three endings it has - pays the whole bill,
+   pays part of it, pays none of it - without replaying five days three times.
+   Set in place rather than through restart(), because the point of it is to
+   change the number on a sheet that is already open. */
+/* Picking a track rewinds the same way picking a day does, for the same
+   reason: whether a purchase exists changes what half the surfaces on screen
+   are selling, and re-rendering in place would leave one of them mid-sale. */
+function setTrack(t) {
+  state.track = t;
+  $$('.switcher [data-track]').forEach(function (b) {
+    b.classList.toggle('on', b.getAttribute('data-track') === t);
+  });
+  restart();
+}
+
+/* The one purchase the bought track stands on. Stamped day 1 and `ready`,
+   because the point of this track is the days *after* a sale, not the minutes
+   after it: nothing here should be mid-write. Wallet comes off the same way a
+   real payment takes it, so day 2's balance is honest about having spent. */
+function seedBought() {
+  var r = reportById(state.lead);
+  if (!r) return;
+  state.paid = true;
+  state.owned = [r.id];
+  state.buys = [{ id: r.id, ed: editionLabel(r), time: '9:12 AM', day: 1, ready: true }];
+  state.wallet = Math.max(0, state.wallet - PRICE);
+  // She has read it, so the shelf tip and the rating prompt have already had
+  // their turn. Leaving them armed makes day 4 look like day 1 again.
+  state.repSeen = true;
+  state.readSeen = true;
+  state.repToastSeen = true;
+  state.shelfTipSeen = true;
+}
+
+function setWallet(n) {
+  state.wallet = n;
+  $$('.switcher [data-wset]').forEach(function (b) {
+    b.classList.toggle('on', +b.getAttribute('data-wset') === n);
+  });
+  paintWallet();
+  paintPaySum();
+}
+
+/* ---------------------------------------------------------------- reset */
+function restart() {
+  clearTimers();
+  closeSheet();
+  hidePush();
+  state.answered = false;
+  state.wallet = WALLET_AT[state.day];
+  // The day owns the balance again, so the override stops being highlighted.
+  $$('.switcher [data-wset]').forEach(function (b) { b.classList.remove('on'); });
+  state.lang = 'en';
+  state.langFrom = 'sample';
+  state.paid = false;
+  // The shelf empties with everything else. A leftover "Read Report" on a day
+  // that has not been paid for is the demo contradicting itself.
+  state.owned = [];
+  state.buys = [];
+  state.reminded = false;
+  state.repToastSeen = false;
+  state.repToastPending = false;
+  state.repSeen = false;
+  state.rated = 0;
+  state.rating = 0;
+  state.readSeen = false;
+  state.shelfTipSeen = false;
+  hideRepToast();
+  hideShelfTip();
+  state.pick = 'partner';
+  // The counter is day 1 only — that is the morning the chapter lands in
+  // History. After that the badge has nothing new to count.
+  state.histDot = state.day === 1;
+  state.stack = [];
+  // Everything above cleared the slate. On the bought track one purchase is
+  // then put back, before a single render runs, so no surface ever paints the
+  // unbought version of itself first and corrects itself a frame later.
+  if (state.track === 'bought') seedBought();
+  renderNav();
+  $('#notifDlg').hidden = true;
+  paintWallet();
+  paintBought();
+  renderSample();
+  renderRead();
+  renderChat();
+  renderPicker();
+  renderReport();
+  renderDayToday();
+  renderTpTabs();
+  renderHistCard();
+  renderBuys();
+  renderMyStrip();
+  renderNav();
+  armIntroSheet();
+  resetTimeline();
+  applyPaidTimeline();
+  $('#bookEl').classList.remove('turn', 'open');
+  $('#bookStage').classList.remove('gone', 'lit');
+  $('#blaze').className = 'blaze';
+  show(state.entry, 'fade');
+  // The notification no longer fires on load. It is a touchpoint, not a page
+  // state, so it belongs to its own chip — otherwise it lands on top of
+  // whatever surface the chips were actually opened to look at.
+}
+
+/* ---------------------------------------------------------------- push note */
+function showPush() {
+  var el = $('#pushNote');
+  $('#pushText').textContent = pushLine();
+  el.hidden = false;
+  requestAnimationFrame(function () { el.classList.add('on'); });
+  later(hidePush, 6000);
+}
+function hidePush() {
+  var el = $('#pushNote');
+  el.classList.remove('on');
+  setTimeout(function () { if (!el.classList.contains('on')) el.hidden = true; }, 300);
+}
+
+/* ---------------------------------------------------------------- wiring */
+/* The form's own listeners. Delegated off `#match` rather than hung on eight
+   inputs, because three of those inputs are inside a block that is `hidden`
+   until she taps Edit. */
+$('#match').addEventListener('input', function (e) {
+  var el = e.target;
+  if (el.tagName !== 'INPUT') return;
+  // Typing in a box the form complained about is the correction; the red goes
+  // with the first keystroke, not when she tries the button again.
+  clearFldErr(el);
+  if (el.id === 'bPlace') citySuggest(el.value);
+  syncMatch();
+});
+// Same rule on her own-details sheet: the red goes with the first keystroke,
+// not when she tries Save again.
+$('#sheet-you').addEventListener('input', function (e) {
+  if (e.target.tagName === 'INPUT') clearFldErr(e.target);
+});
+$('#match').addEventListener('change', function (e) {
+  if (e.target.id === 'bNoTime') syncMatch();
+});
+$('#match').addEventListener('click', function (e) {
+  var city = e.target.closest('[data-city]');
+  if (city) {
+    $('#bPlace').value = city.getAttribute('data-city');
+    $('#mtSugg').hidden = true;
+    clearFldErr($('#bPlace'));
+    syncMatch();
+    return;
+  }
+  if (e.target.closest('#mtGirlEdit')) { girlEdit(true); return; }
+  if (e.target.closest('#mtGirlDone')) { girlEdit(false); return; }
+});
+// Tapping away from the city box puts the list away. A list that outlives the
+// field it belongs to ends up floating over her half of the form.
+$('#match').addEventListener('focusout', function (e) {
+  if (e.target.id === 'bPlace') later(function () { $('#mtSugg').hidden = true; }, 160);
+});
+
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('[data-go],[data-back],[data-sheet],[data-toast],[data-close-sheet],[data-day],[data-track],[data-lead],[data-wset],[data-lang],[data-nav],[data-mood],[data-remind],[data-guna-lang],#answerNow,#restart,#showSample,#r2ViewSample,#r2BookSample,#repToastSee,#repToastX,#r2Cta,#r2Again,#r2Kootas,#r2MatchEdit,#gunaCta,#mtGo,#paySubmit,#paysLang,#paysGunaEdit,#paysYouEdit,#youSave,#youBack,#rateSubmit,#rateSkip,#buyInLang,[data-chat],#push,#pushNote,#scrim,#rewardCta,#notifYes,#notifNo,[data-tp],[data-pick],[data-buy],[data-open-rep],[data-ask],[data-jump],[data-tarot],[data-rate],.rsc-go');
+  if (!t) return;
+
+  /* A star, either at the foot of the report or inside the sheet it opens.
+     The count is held on state.rating until she finishes, so backing out of
+     the sheet does not leave the report claiming she rated it. */
+  if (t.hasAttribute('data-rate')) {
+    state.rating = +t.getAttribute('data-rate');
+    paintRateStars();
+    if (state.sheet !== 'rate') openSheet('rate');
+    return;
+  }
+
+  // Submit and Skip are the same outcome for the report: the stars are the
+  // rating and they were given before this sheet opened. Submit just also
+  // carries the sentence, so it is the only one that says the sentence landed.
+  if (t.id === 'rateSubmit' || t.id === 'rateSkip') {
+    var note = $('#rateNote').value.trim();
+    state.rated = state.rating;
+    closeSheet();
+    // Only the card is repainted. Repainting the report body would throw away
+    // the scroll position she is standing at.
+    var rc = $('#read .rate');
+    if (rc) rc.outerHTML = rateCard();
+    toast(t.id === 'rateSubmit' && note
+      ? 'Sent to Hemali with your rating'
+      : 'Thanks, that helps Hemali', 'success');
+    return;
+  }
+
+  // Today's three cards, picked. The card flips to its done state and stays
+  // there for the rest of the demo day.
+  if (t.hasAttribute('data-tarot')) {
+    state.tarot = true;
+    renderMenu();
+    toast('Your three cards are in Timeline', 'success');
+    return;
+  }
+
+  /* The jump index. scrollIntoView does nothing here — the sample scrolls
+     inside its own [data-scroll] and the whole phone is under a transform, so
+     the browser resolves the target against the wrong box and moves no one.
+     Measured by hand instead, with the floating header's height taken off the
+     top so the eyebrow does not land underneath it. */
+  if (t.hasAttribute('data-jump')) {
+    var sec = $('#rs-' + t.getAttribute('data-jump'));
+    var sc = $('#sample [data-scroll]');
+    if (sec && sc) {
+      var head = $('#sampleHead');
+      // Assigned, not animated: `behavior:'smooth'` silently does nothing on
+      // this container, and a jump index that sometimes moves is worse than one
+      // that always does. An anchor link lands instantly too.
+      sc.scrollTop = sc.scrollTop + sec.getBoundingClientRect().top -
+        sc.getBoundingClientRect().top - (head ? head.offsetHeight : 0) - 12;
+      // The header and the arch colour both hang off the scroll listener, and a
+      // jump has to leave them in the state the same position reached by thumb
+      // would.
+      sc.dispatchEvent(new Event('scroll'));
+    }
+    return;
+  }
+
+  if (t.classList.contains('rsc-go')) { startBuy(); return; }
+  /* The sheet goes away before the form arrives. Leaving it open underneath
+     would put a price behind a screen that is free, and submitMatch reopens
+     it anyway once there is a new number to put on it. */
+  if (t.id === 'paysGunaEdit') { closeSheet(); later(openMatch, 240); return; }
+
+  /* Change, on her own details. The sheet swaps in place rather than closing
+     first, the way the language sheet does, because this is a correction to
+     the thing being bought and she has to land back on the same receipt. */
+  if (t.id === 'paysYouEdit') {
+    YOU_FIELDS.forEach(function (p) { $('#' + p[0]).value = $('#' + p[1]).value; });
+    $$('#youForm .fld').forEach(function (f) { f.classList.remove('err'); });
+    openSheet('you');
+    return;
+  }
+  // Back off the form is a cancel, not a save: openPay reopens the receipt she
+  // came from, and nothing she typed here was written to it.
+  if (t.id === 'youBack') { openPay(); return; }
+  if (t.id === 'youSave') {
+    var bad = 0;
+    YOU_FIELDS.forEach(function (p) {
+      var el = $('#' + p[0]);
+      if (el.value.trim()) { clearFldErr(el); return; }
+      el.closest('.fld').classList.add('err');
+      bad++;
+    });
+    if (bad) return;
+    YOU_FIELDS.forEach(function (p) { $('#' + p[1]).value = $('#' + p[0]).value.trim(); });
+    // Her half of the Kundli Milan receipt is built from the same four boxes,
+    // so it has to be rewritten or the two screens start disagreeing. Closing
+    // the inline editor is what repaints it, and closed is where it belongs.
+    girlEdit(false);
+    openPay();
+    return;
+  }
+
+  // All 8 areas, off the score card.
+  if (t.id === 'r2Kootas') {
+    renderKootaSheet(reportById(state.pick));
+    openSheet('guna');
+    return;
+  }
+  // Edit details does what the pay sheet's Edit does, from the card instead.
+  if (t.id === 'r2MatchEdit') { openMatch(); return; }
+  /* The language flips in place. Closing and reopening the sheet to change a
+     word would lose her scroll position in a list of eight. */
+  if (t.hasAttribute('data-guna-lang')) {
+    state.gunaSans = t.getAttribute('data-guna-lang') === 'sans';
+    renderKootaSheet(reportById(state.pick));
+    return;
+  }
+  // Same bar, same job as the one on the page it opened from.
+  if (t.id === 'gunaCta') { closeSheet(); later(startBuy, 240); return; }
+
+  if (t.id === 'mtGo') { submitMatch(); return; }
+
+  // A report she owns opens. Everywhere else a card is a shop window and goes
+  // to the detail page to make its case; these have already made it.
+  if (t.hasAttribute('data-open-rep')) { openRep(t.getAttribute('data-open-rep')); return; }
+
+  // Buy Now skips the detail page. It sits inside a [data-pick] card, and
+  // closest() stops at whichever matches first — the button — so this has to
+  // be tested before the pick branch below.
+  if (t.hasAttribute('data-buy')) {
+    state.pick = t.getAttribute('data-buy');
+    renderReport();
+    startBuy();
+    return;
+  }
+
+  // PM track: picking one of the three reports opens it on the report page.
+  if (t.hasAttribute('data-pick')) {
+    state.pick = t.getAttribute('data-pick');
+    renderReport();
+    /* Kundli Milan takes the form first, every time, and the detail page after
+       it. The other two reports are about her alone, so their page can make its
+       case straight away; this one is about two people and the second of them
+       is only ever whoever she last typed in. Opening the page before asking
+       would mean printing a guna score, a verdict and a price for a man the app
+       picked out of a chat transcript — and a family can put a second rishta in
+       front of her between one visit and the next, so remembering is exactly
+       the wrong default. Asking costs twenty seconds and is the difference
+       between a reading and a horoscope-shaped coincidence. Once she owns it
+       the report is already made, so there is nothing left to ask. */
+    var pr = reportById(state.pick);
+    if (pr.needsMatch && !owns(pr.id)) {
+      // `openMatch` shows rather than goes, so the push is ours to make — else
+      // the back arrow on the form skips whatever she tapped it from.
+      state.stack.push(state.screen);
+      openMatch();
+      return;
+    }
+    // The rail at the foot of this page picks too, so it can already be the
+    // current screen. `go` would push it onto its own back stack, so only the
+    // scroll comes back to the hero — otherwise she lands mid-way down a
+    // report she has not seen the cover of.
+    $('#report [data-scroll]').scrollTop = 0;
+    if (state.screen !== 'report') go('report');
+    return;
+  }
+
+  if (t.id === 'push')    { openBook(); return; }
+
+  // The push is the door back in: it lands in the chat, where the chapter is.
+  if (t.id === 'pushNote') {
+    hidePush();
+    // The notification names one report, so it has to land on that report's
+    // page. Dropping her on the picker would ask her to make the same choice
+    // twice.
+    /* `leadReport()`, not `dayData().lead`. The notification's words are
+       written off the pitched report, so landing on the day script's own id
+       sent her to a different book than the one she just read about - day 3's
+       push sold Marriage Prediction and opened Monthly Wealth. Same source
+       for the line and the landing, and on the bought track that source has
+       already moved past the report she owns. */
+    var pl = !boughtToday() && !dayData().quiet && leadReport();
+    if (pl) {
+      state.pick = pl.id;
+      renderReport();
+      $('#report [data-scroll]').scrollTop = 0;
+      if (state.screen !== 'report') go('report');
+      return;
+    }
+    if (state.screen !== 'chat') go('chat');
+    return;
+  }
+
+  // The report's own follow-up questions, answered in the thread.
+  if (t.hasAttribute('data-ask')) {
+    var qa = reportById(state.pick).ask[+t.getAttribute('data-ask')];
+    var thread = $('#chatThread'), chips = $('#sgChips');
+    t.remove();
+    thread.insertBefore(bubble('user', qa.q), chips);
+    scrollChat();
+    typing(function () { thread.insertBefore(bubble('hemali', qa.a), chips); scrollChat(); });
+    if (!chips.querySelector('.sg-q')) chips.remove();
+    return;
+  }
+
+  if (t.hasAttribute('data-remind')) {
+    state.reminded = true;
+    renderChat();
+    var sc = $('#chat [data-scroll]');
+    if (sc) sc.scrollTop = sc.scrollHeight;
+    toast('Reminder set for tomorrow\u2019s free chat', 'success');
+    return;
+  }
+  if (t.id === 'scrim')   { closeSheet(); return; }
+  if (t.id === 'restart') { restart(); return; }
+
+  if (t.hasAttribute('data-track')) { setTrack(t.getAttribute('data-track')); return; }
+  if (t.hasAttribute('data-day'))  { setDay(+t.getAttribute('data-day')); return; }
+  if (t.hasAttribute('data-lead')) { setLead(t.getAttribute('data-lead')); return; }
+  if (t.hasAttribute('data-wset')) { setWallet(+t.getAttribute('data-wset')); return; }
+
+  // "Answer now" scrolls to the card and rings it for 2.6s, per the focus rule
+  // on the daily reward board. Your Experts stays on screen above it.
+  if (t.id === 'answerNow') {
+    closeSheet();
+    var card = $('#checkinCard');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.add('focus');
+    later(function () { card.classList.remove('focus'); }, 2600);
+    return;
+  }
+
+  if (t.hasAttribute('data-mood')) {
+    answerCheckin();
+    // Queued, not shown: the reward sheet is about to cover the page.
+    if (repToastDays() && !state.repToastSeen && !state.paid) state.repToastPending = true;
+    openRewardSheet();
+    return;
+  }
+
+  // The knock is from Hemali, so it opens Hemali — the chat, where the chapter
+  // and the offer already sit. Sending her straight to the report page would
+  // skip the person doing the asking.
+  if (t.id === 'repToastSee') {
+    hideRepToast();
+    if (state.histDot) { state.histDot = false; renderNav(); }
+    renderChat();
+    if (state.screen !== 'chat') go('chat');
+    var rtc = $('#chat [data-scroll]');
+    if (rtc) requestAnimationFrame(function () { rtc.scrollTop = rtc.scrollHeight; });
+    return;
+  }
+  if (t.id === 'repToastX') { hideRepToast(); return; }
+  if (t.id === 'shelfTipX') { hideShelfTip(); return; }
+
+  // The reward sheet's CTA: before day 3 it asks the OS for notifications;
+  // on day 3 the wallet covers ₹49, so it goes straight to the pay sheet.
+  if (t.id === 'rewardCta') {
+    if (state.day >= lastDay()) startBuy();
+    else $('#notifDlg').hidden = false;
+    return;
+  }
+  if (t.id === 'notifYes') {
+    $('#notifDlg').hidden = true;
+    closeSheet();
+    state.reminded = true;
+    renderChat();
+    toast('Reminder on, tomorrow ₹' + REWARD[Math.min(state.day + 1, 3)] + ' + free chat ready', 'success');
+    return;
+  }
+  if (t.id === 'notifNo') { $('#notifDlg').hidden = true; closeSheet(); return; }
+
+  if (t.hasAttribute('data-lang')) {
+    state.lang = t.getAttribute('data-lang');
+    renderLangList();
+    return;
+  }
+
+  // The sample is a whole report, so it gets its own screen rather than being
+  // inlined under About, where it buried every section after it.
+  if (t.id === 'r2ViewSample' || t.id === 'r2BookSample') {
+    renderSample();
+    if (state.screen !== 'sample') go('sample');
+    return;
+  }
+
+  if (t.id === 'showSample') {
+    // Picking a language from inside the pay sheet is a change to the thing
+    // being bought, not a detour — so it goes straight back to the receipt.
+    if (state.langFrom === 'pay') {
+      renderSample();
+      openPay();
+    } else {
+      closeSheet();
+      renderSample();
+      if (state.screen !== 'sample') go('sample');
+    }
+    return;
+  }
+
+  if (t.id === 'paysLang') { state.langFrom = 'pay'; openSheet('lang'); return; }
+
+  // Every route to the money lands on the same sheet: Buy Now on the detail
+  // page, Buy Now at the foot of the sample, and the last day's reward.
+  // The one button whose job changes. Before the payment it opens the sheet;
+  // after it, it is the door into the report, because the bar it sits in has
+  // stopped being a shop.
+  if (t.id === 'r2Cta' && owns(state.pick)) { openRep(state.pick); return; }
+  if (t.id === 'buyInLang' || t.id === 'r2Cta' || t.id === 'r2Again') { startBuy(); return; }
+  // Her tap, her spinner: a short busy beat so the pay reads as processing
+  // rather than as a screen that swapped under her thumb.
+  if (t.id === 'paySubmit') {
+    stopPay();
+    t.classList.add('busy');
+    payT.push(later(pay, 700));
+    return;
+  }
+  // Touchpoint tabs in the demo sidebar: jump the phone to that surface.
+  if (t.hasAttribute('data-tp')) {
+    var tp = t.getAttribute('data-tp');
+    closeSheet();
+    if (tp === 'chat') {
+      renderChat();
+      if (state.screen !== 'chat') go('chat');
+      var tsc = $('#chat [data-scroll]');
+      if (tsc) requestAnimationFrame(function () { tsc.scrollTop = tsc.scrollHeight; });
+    } else if (tp === 'report') {
+      renderReport();
+      $('#report [data-scroll]').scrollTop = 0;
+      if (state.screen !== 'report') go('report');
+    } else if (tp === 'guide') {
+      state.stack = [];
+      show(state.entry, 'fade');
+      var gs = $('#guideSlot');
+      if (gs) later(function () { gs.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
+    } else if (tp === 'picker') {
+      if (state.screen !== 'picker') go('picker');
+    } else if (tp === 'read') {
+      if (state.screen !== 'read') { state.stack = [state.entry]; show('read', 'fade'); }
+    } else if (tp === 'upsell') {
+      if (state.screen !== 'read') { state.stack = [state.entry]; show('read', 'fade'); }
+      // The read body has inline ask-Hemali cards too — the carousel + closing
+      // upsell sit at the end, so jump to the last one.
+      var ups = $$('#read .upsell');
+      var up = ups[ups.length - 1];
+      if (up) later(function () { up.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 420);
+    } else if (tp === 'history') {
+      state.stack = []; show('timeline', 'fade');
+    } else if (tp === 'push') {
+      if (state.screen === 'chat') show(state.entry, 'fade');
+      showPush();
+    } else if (tp === 'reward' || tp === 'toast') {
+      // Answer on her behalf — the reward sheet is skipped, because the chip is
+      // asking for the state the sheet leaves behind, not the sheet itself.
+      answerCheckin();
+      state.stack = [];
+      show(state.entry, 'fade');
+      var cc = $('#answeredCard');
+      if (cc) later(function () { cc.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
+      if (tp === 'toast') {
+        // The chip is asking to see the knock, so it also rewinds the one thing
+        // that silences it: having already opened the report page.
+        state.repToastSeen = false;
+        state.repSeen = false;
+        later(showRepToast, 700);
       }
-      if (sticky.bh > 0) {
-        bot = el('div', 'pin bot');
-        bot.style.height = (sticky.bh * k) + 'px';
-        bot.style.backgroundImage = `url("${s.src}")`;
-        bot.style.backgroundPosition = `0 ${-sticky.by * k}px`;
-        vp.appendChild(bot);
-      }
+    } else if (tp === 'nudge') {
+      /* Ten minutes after the first ask, Hemali answers in the thread she has
+         already left. Two things carry that out to her: a count on the chat
+         icon in the header, which is the door back in, and one line of what was
+         said, because a bare "1" is a chore and the sentence is the reason. */
+      state.histDot = true;
+      renderNav();
+      state.stack = [];
+      show(state.entry, 'fade');
+      var nsc = $('#today-a [data-scroll]');
+      if (nsc) nsc.scrollTop = 0;
+      later(function () {
+        $$('.ncount').forEach(function (n) {
+          n.classList.remove('lit'); void n.offsetHeight; n.classList.add('lit');
+        });
+        state.repToastSeen = false;
+        showRepToast();
+      }, 420);
+    } else {
+      state.stack = [];
+      show(state.entry, 'fade');
+      var slot = $('#guideSlot');
+      if (slot) later(function () { slot.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 380);
     }
-
-    // report screens: whole screen opens the live reader (other hotspots sit above it)
-    if (s.reader) {
-      const b = el('button', 'hot reader');
-      b.type = 'button'; b.setAttribute('aria-label', 'Open the full report');
-      Object.assign(b.style, { left: 0, top: 0, width: '100%', height: (s.h * k) + 'px', borderRadius: 0 });
-      b.addEventListener('click', openReader);
-      layer.appendChild(b);
-    }
-
-    let autoEdge = null;
-    edges.forEach(e => {
-      if (e.kind === 'auto' && !autoEdge) autoEdge = e;
-      if (!e.r) return;
-      const [x, y, w, h] = e.r;
-      const b = el('button', 'hot');
-      b.type = 'button'; b.title = e.l; b.setAttribute('aria-label', e.l);
-      let host = layer, yy = y;
-      if (bot && y >= sticky.by) { host = bot; yy = y - sticky.by; }
-      else if (top && y + h <= sticky.top) { host = top; }
-      Object.assign(b.style, { left: (x * k) + 'px', top: (yy * k) + 'px', width: (w * k) + 'px', height: (h * k) + 'px' });
-      b.addEventListener('click', ev => { ev.stopPropagation(); go(e.t, e); });
-      host.appendChild(b);
-    });
-
-    // a tap anywhere without a hotspot flashes the tap areas, so testers can find them
-    scr.addEventListener('click', ev => {
-      if (ev.target.closest('.hot')) return;
-      vp.classList.remove('flash'); void vp.offsetWidth; vp.classList.add('flash');
-      setTimeout(() => vp.classList.remove('flash'), 750);
-    });
-
-    if (autoEdge && !state.reader) {
-      const ms = Math.max(1200, Math.min(3000, autoEdge.auto || 2600));
-      const bar = el('div', 'autobar');
-      vp.appendChild(bar);
-      bar.animate([{ width: '0%' }, { width: '100%' }], { duration: ms, easing: 'linear', fill: 'forwards' });
-      state.timer = setTimeout(() => go(autoEdge.t, autoEdge), ms);
-    }
-
-    renderPanel();
-    renderNav();
-    $('#crumb').innerHTML = `${esc(f.group)} · <b>${esc(f.title)}</b> · ${esc(s.n)}`;
-    document.title = `${s.n} · AstroChat Reports Demo`;
-    const hash = `#${f.id}/${s.id}`;
-    if (location.hash !== hash) history.replaceState(null, '', hash);
-    preload(edges);
+    return;
   }
 
-  function preload(edges) {
-    edges.forEach(e => {
-      const fs = where[e.t]; if (!fs) return;
-      const s = (flowById[state.flow].byId[e.t]) || fs[0].byId[e.t];
-      const i = new Image(); i.src = s.src;
-    });
+  // Every chat door — Continue Chat, the header icon, Ask Hemali — lands in
+  // the real thread, scrolled to its end, where the day's pitch sits.
+  if (t.hasAttribute('data-chat')) {
+    // The chapter has been seen either way, so the dot clears from both doors.
+    if (state.histDot) { state.histDot = false; renderNav(); }
+    renderChat();
+    if (state.screen !== 'chat') go('chat');
+    var cs = $('#chat [data-scroll]');
+    if (cs) requestAnimationFrame(function () { cs.scrollTop = cs.scrollHeight; });
+    return;
   }
 
-  function stepHTML(e, primary) {
-    const k = e.kind === 'auto' ? 'Auto' : e.kind === 'tap' ? 'Tap' : 'Next';
-    return `<button type="button" class="step${primary ? ' primary' : ''}" data-to="${esc(e.t)}" data-l="${esc(e.l)}">
-      <span class="k${e.kind === 'auto' ? ' auto' : ''}">${k}</span>
-      <span class="l">${esc(e.l)}</span>
-      <span class="t">→ ${esc(e.tn || e.t)}</span></button>`;
+  if (t.hasAttribute('data-close-sheet')) { closeSheet(); return; }
+
+  if (t.hasAttribute('data-sheet')) {
+    var name = t.getAttribute('data-sheet');
+    if (name === 'lang') state.langFrom = state.sheet === 'pay' ? 'pay' : 'sample';
+    openSheet(name);
+    return;
   }
 
-  function panelHTML() {
-    const f = flowById[state.flow], s = f.byId[state.screen];
-    const edges = f.out[s.id] || [];
-    let h = `<p class="ptitle">${esc(s.n)}</p><p class="pflow"><b>${esc(f.title)}</b><br>${esc(f.note || '')}</p>`;
-    if (s.reader) h += `<button type="button" class="step primary" data-reader><span class="k">Live report</span><span class="l">Open the full report</span><span class="t">Scroll the real report page · Buy goes to the pay sheet</span></button>`;
-    h += `<p class="phead">Next steps</p>`;
-    h += edges.length ? edges.map((e, i) => stepHTML(e, i === 0 && !s.reader)).join('') : `<p class="none">End of this flow. Pick another flow, or restart.</p>`;
-    h += `<div class="navrow"><button type="button" class="tbtn" data-back ${state.hist.length ? '' : 'disabled'}>Back</button><button type="button" class="tbtn" data-restart>Restart flow</button></div>`;
-    h += `<p class="phead">Screens in this flow</p><div class="thumbs">` + f.screens.map(x =>
-      `<button type="button" class="thumb" data-jump="${esc(x.id)}" ${x.id === s.id ? 'aria-current="true"' : ''}><img loading="lazy" src="${esc(x.src)}" alt=""><span>${esc(x.n)}</span></button>`).join('') + `</div>`;
-    return h;
-  }
-  function renderPanel() {
-    const h = panelHTML();
-    $('#panel').innerHTML = h;
-    $('#dPanel').innerHTML = h;
+  if (t.hasAttribute('data-back')) { back(); return; }
+
+  if (t.hasAttribute('data-go')) {
+    var dest = t.getAttribute('data-go');
+    if (dest === 'book') openBook();
+    else go(dest, 'push');
+    return;
   }
 
-  function navHTML() {
-    let h = '', g = null;
-    FLOWS.forEach(f => {
-      if (f.group !== g) { g = f.group; h += `<div class="ngroup">${esc(g)}</div>`; }
-      h += `<button type="button" class="nflow" data-flow="${esc(f.id)}" ${f.id === state.flow ? 'aria-current="true"' : ''}><span>${esc(f.title)}</span><small>${f.screens.length}</small></button>`;
-    });
-    return h;
-  }
-  let navFlow = null;
-  function renderNav() {
-    if (navFlow === state.flow) return;
-    navFlow = state.flow;
-    const h = navHTML();
-    $('#nav').innerHTML = h;
-    $('#dNav').innerHTML = `<div class="nav-in">${h}</div>`;
+  if (t.hasAttribute('data-nav')) {
+    var nav = t.getAttribute('data-nav');
+    if (nav === 'today')    { state.stack = []; show(state.entry, 'fade'); return; }
+    if (nav === 'timeline') { state.stack = []; state.histDot = false; renderNav(); show('timeline', 'fade'); return; }
+    // A tab, so it clears the stack the way the other tabs do - arriving here
+    // from four screens deep and then backing out through them would not be
+    // the bottom nav.
+    if (nav === 'mine')     { state.stack = []; show('mine', 'fade'); return; }
+    toast(t.textContent.trim() + ' is not part of this demo');
+    return;
   }
 
-  // ---------- navigation ----------
-  function show(fid, sid, push, dir) {
-    if (!screenOf(fid, sid)) return false;
-    if (push && state.flow) state.hist.push([state.flow, state.screen]);
-    state.flow = fid; state.screen = sid;
-    render(dir !== false);
-    return true;
-  }
-  function go(sid) {
-    closeReader(true);
-    const cur = flowById[state.flow];
-    if (cur.byId[sid]) return show(cur.id, sid, true);
-    const fs = where[sid];
-    if (fs) return show(fs[0].id, sid, true);
-  }
-  function back() {
-    if (state.reader) return closeReader();
-    const p = state.hist.pop();
-    if (p) show(p[0], p[1], false);
-  }
-  function startFlow(fid) {
-    const f = flowById[fid]; if (!f) return;
-    closeReader(true);
-    state.hist = [];
-    show(fid, f.start || f.screens[0].id, false);
-  }
+  if (t.hasAttribute('data-toast')) { toast(t.getAttribute('data-toast')); return; }
+}, false);
 
-  // ---------- live reader ----------
-  function openReader() {
-    const s = flowById[state.flow].byId[state.screen];
-    if (!s.reader) return;
-    clearTimeout(state.timer);
-    state.reader = true;
-    vp.querySelectorAll('iframe').forEach(n => n.remove());
-    const fr = el('iframe');
-    fr.title = 'Report'; fr.src = `reports.html?embed=1#${s.reader.hash}`;
-    vp.appendChild(fr);
-    closeDrawer();
-  }
-  function closeReader(silent) {
-    if (!state.reader) return;
-    state.reader = false;
-    vp.querySelectorAll('iframe').forEach(n => n.remove());
-    if (!silent) render(false);
-  }
-  addEventListener('message', ev => {
-    const m = ev.data;
-    if (!m || m.src !== 'astro-reader') return;
-    if (m.type === 'back') closeReader();
-    if (m.type === 'buy') {
-      const s = flowById[state.flow].byId[state.screen];
-      const t = s && s.reader && s.reader.buy;
-      if (t) go(t); else closeReader();
-    }
+/* The Today header sits transparently over the hero. Once the page scrolls the
+   hero away, give it a solid backdrop so content doesn't run under the icons. */
+$$('.screen').forEach(function (s) {
+  var head = $('.head.hero-head', s), sc = $('[data-scroll]', s);
+  if (!head || !sc) return;
+  sc.addEventListener('scroll', function () {
+    head.classList.toggle('scrolled', sc.scrollTop > 40);
+  }, { passive: true });
+});
+
+/* Figma 3169:202696 — the review the strip has snapped to sits at full size and
+   its neighbours sit back. The quote is the evidence, so the one she is reading
+   is the one that gets the weight. "Snapped" is the card whose left edge is
+   nearest the strip's own left edge, which is where scroll-snap parks it. */
+function markSnappedReview(strip) {
+  var cards = $$('.review', strip);
+  if (!cards.length) return;
+  var edge = strip.getBoundingClientRect().left + 16, best = 0, bestD = Infinity;
+  cards.forEach(function (c, i) {
+    var d = Math.abs(c.getBoundingClientRect().left - edge);
+    if (d < bestD) { bestD = d; best = i; }
   });
+  cards.forEach(function (c, i) { c.classList.toggle('is-snap', i === best); });
+}
+$$('.revs').forEach(function (strip) {
+  strip.addEventListener('scroll', function () { markSnappedReview(strip); },
+    { passive: true });
+});
 
-  // ---------- events ----------
-  function onClick(ev) {
-    const t = ev.target.closest('button'); if (!t) return;
-    if (t.dataset.flow) { startFlow(t.dataset.flow); closeDrawer(); }
-    else if (t.dataset.to) { go(t.dataset.to); closeDrawer(); }
-    else if (t.dataset.jump) { closeReader(true); show(state.flow, t.dataset.jump, true); closeDrawer(); }
-    else if ('reader' in t.dataset) openReader();
-    else if ('back' in t.dataset) { back(); }
-    else if ('restart' in t.dataset) { startFlow(state.flow); closeDrawer(); }
-  }
-  ['#panel', '#nav', '#drawer'].forEach(s => $(s).addEventListener('click', onClick));
+/* The bought reader wears the sample's header. Cloning it beats a second copy
+   of the same forty lines of SVG, which is how the two drifted apart before. */
+$$('[data-head-clone]').forEach(function (slot) {
+  slot.innerHTML = $('#sampleHead .rp-head-r').innerHTML;
+});
 
-  $('#restart').addEventListener('click', () => startFlow(state.flow));
-  const tap = $('#tapToggle');
-  tap.addEventListener('click', () => {
-    const on = document.body.classList.toggle('show-taps');
-    tap.setAttribute('aria-pressed', on);
+$('#bookStage').addEventListener('click', enterRead);
+
+/* The two report readers do the same thing: the header starts transparent on
+   the painted arch and only takes a white surface once prose is under it. */
+$$('.rp').forEach(function (s) {
+  var head = $('.rp-head', s), sc = $('[data-scroll]', s);
+  if (!head || !sc) return;
+  sc.addEventListener('scroll', function () {
+    var moved = sc.scrollTop > 24;
+    head.classList.toggle('solid', moved);
+    // And the ground inside the arch warms from paper-white to the report's own
+    // pink. White is right at the top, where the arch is the whole picture and
+    // the sketch has to sit on paper; once she is reading, white ground under
+    // white cards leaves the sections with no edges at all.
+    s.classList.toggle('scrolled', moved);
+  }, { passive: true });
+});
+
+/* The report page's nav does the same, but it only goes white once the hero's
+   artwork has actually left — turning it white over the couple looked broken. */
+(function () {
+  var nav = $('#r2Nav'), sc = $('#report [data-scroll]');
+  sc.addEventListener('scroll', function () {
+    nav.classList.toggle('solid', sc.scrollTop > 150);
+  }, { passive: true });
+})();
+
+/* ---------------------------------------------------------------- fit */
+/* Small laptops: the frame is 360x800; when the window is shorter, zoom the
+   whole phone down so the mobile aspect ratio holds instead of squashing.
+   On real phones (<=600px) the frame is the viewport and must stay unzoomed. */
+function fitPhone() {
+  var ph = $('#phone');
+  if (window.innerWidth <= 600) { ph.style.zoom = ''; return; }
+  var s = Math.min(1, (window.innerHeight - 48) / 800);
+  ph.style.zoom = s < 1 ? s : '';
+}
+window.addEventListener('resize', fitPhone);
+
+/* ---------------------------------------------------------------- boot */
+fitPhone();
+renderLadder();
+renderNav();
+renderSample();
+renderRead();
+paintWallet();
+resetTimeline();
+
+// Deep link, so a day can be shared: #day1 .. #day5.
+var hash = (location.hash || '').replace('#', '');
+var linked = /^day([1-5])$/.exec(hash);
+state.screen = 'today-a';
+if (linked) {
+  state.day = +linked[1];
+  $$('.switcher [data-day]').forEach(function (b) {
+    b.classList.toggle('on', +b.getAttribute('data-day') === state.day);
   });
-
-  const drawer = $('#drawer');
-  function openDrawer() { drawer.hidden = false; }
-  function closeDrawer() { drawer.hidden = true; }
-  $('#fab').addEventListener('click', openDrawer);
-  drawer.addEventListener('click', ev => { if (ev.target.closest('[data-close]')) closeDrawer(); });
-
-  addEventListener('keydown', ev => {
-    if (ev.target.closest('input, textarea')) return;
-    if (ev.key === 'Escape') { if (!drawer.hidden) closeDrawer(); else back(); }
-    if (ev.key === 'ArrowRight') {
-      const e = (flowById[state.flow].out[state.screen] || [])[0];
-      if (e) go(e.t);
-    }
-    if (ev.key === 'ArrowLeft') back();
-  });
-
-  let rt;
-  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { size(); if (!state.reader) render(false); }, 120); });
-  addEventListener('hashchange', fromHash);
-
-  function fromHash() {
-    const [fid, sid] = decodeURIComponent(location.hash.slice(1)).split('/');
-    if (fid === state.flow && sid === state.screen) return;
-    if (flowById[fid]) {
-      closeReader(true);
-      if (sid && screenOf(fid, sid)) show(fid, sid, !!state.flow);
-      else startFlow(fid);
-      return true;
-    }
-  }
-
-  size();
-  if (!fromHash()) startFlow(FLOWS[0].id);
+}
+state.pick = 'partner';
+// Same rule as setDay(): the counter belongs to day 1 only. Deep links skip
+// setDay entirely, so without this the badge boots on for every day.
+state.histDot = state.day === 1;
+renderNav();
+state.wallet = WALLET_AT[state.day];
+paintWallet();
+paintBought();
+renderRead();
+renderChat();
+renderPicker();
+renderReport();
+renderDayToday();
+renderTpTabs();
+renderHistCard();
+armIntroSheet();
+applyPaidTimeline();
 })();

@@ -1,0 +1,66 @@
+<!-- Drawn on a 120x160 grid but cropped to the book, so it fills whatever box
+     it is given instead of floating in dead space. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 3 98 155" fill="none" role="img" aria-label="Marriage Yog report">
+  <defs>
+    <linearGradient id="bkCover" x1="22" y1="8" x2="96" y2="152" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBDCCB"/>
+      <stop offset=".52" stop-color="#F3B596"/>
+      <stop offset="1" stop-color="#E08A68"/>
+    </linearGradient>
+    <linearGradient id="bkSpine" x1="13" y1="10" x2="25" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C46D49"/>
+      <stop offset="1" stop-color="#A14F2C"/>
+    </linearGradient>
+    <linearGradient id="bkPage" x1="90" y1="14" x2="107" y2="148" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFCF6"/>
+      <stop offset="1" stop-color="#E4D6C4"/>
+    </linearGradient>
+    <linearGradient id="bkFoil" x1="34" y1="40" x2="84" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDF0C2"/>
+      <stop offset=".45" stop-color="#E7B551"/>
+      <stop offset="1" stop-color="#C08828"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Contact shadow, so the book sits on something. -->
+  <ellipse cx="62" cy="151" rx="42" ry="6.5" fill="#8A4A2C" opacity=".22"/>
+
+  <!-- Page block, turned slightly towards us. Individual leaves rather than a
+       flat slab — it is the only thing that says "this is a book". -->
+  <path d="M88 11.5 106.5 19.5V140.5L88 148.5Z" fill="url(#bkPage)"/>
+  <path d="M91.5 13 110 21v119.5l-18.5 8Z" fill="#fff" opacity=".0"/>
+  <g stroke="#D7C5AE" stroke-width="1.1" stroke-linecap="round" opacity=".9">
+    <path d="M92.6 14V146"/><path d="M96.4 15.6V144.4"/>
+    <path d="M100.2 17.3V142.7"/><path d="M104 19V141"/>
+  </g>
+  <path d="M88 11.5 106.5 19.5 88 20.5Z" fill="#CBB79E" opacity=".55"/>
+
+  <!-- Front cover. -->
+  <path d="M14 8h68a8 8 0 0 1 8 8v128a8 8 0 0 1-8 8H14Z" fill="url(#bkCover)"/>
+  <!-- A single diagonal sheen; without it the cover reads flat. -->
+  <path d="M26 8h22L26 152h-12Z" fill="#fff" opacity=".13"/>
+
+  <!-- Spine. -->
+  <path d="M20 8h6v144h-6a6 6 0 0 1-6-6V14a6 6 0 0 1 6-6Z" fill="url(#bkSpine)"/>
+  <path d="M27.5 9v142" stroke="#8E4426" stroke-width="1.4" opacity=".45"/>
+
+  <!-- Foil: rules, two joined rings, and the title set as bars so it stays
+       legible at 50px wide instead of turning into unreadable type. -->
+  <g fill="url(#bkFoil)">
+    <rect x="40" y="33" width="38" height="1.6" rx=".8"/>
+    <rect x="40" y="124.5" width="38" height="1.6" rx=".8"/>
+    <rect x="41" y="98" width="36" height="4.4" rx="2.2"/>
+    <rect x="48" y="108" width="22" height="3.2" rx="1.6" opacity=".75"/>
+  </g>
+  <g stroke="url(#bkFoil)" stroke-width="2.6">
+    <circle cx="52" cy="66" r="11.5"/>
+    <circle cx="66" cy="66" r="11.5"/>
+  </g>
+
+  <!-- Four-point sparkles for the astrology read. -->
+  <g fill="url(#bkFoil)" opacity=".9">
+    <path d="M36 50c0 3.3-1.2 4.5-4.5 4.5 3.3 0 4.5 1.2 4.5 4.5 0-3.3 1.2-4.5 4.5-4.5-3.3 0-4.5-1.2-4.5-4.5Z"/>
+    <path d="M82 76c0 2.6-.9 3.5-3.5 3.5 2.6 0 3.5.9 3.5 3.5 0-2.6.9-3.5 3.5-3.5-2.6 0-3.5-.9-3.5-3.5Z"/>
+    <path d="M44 140c0 2.2-.8 3-3 3 2.2 0 3 .8 3 3 0-2.2.8-3 3-3-2.2 0-3-.8-3-3Z" opacity=".7"/>
+  </g>
+</svg>

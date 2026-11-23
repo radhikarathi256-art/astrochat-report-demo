@@ -1,0 +1,81 @@
+/* ===========================================================================
+   Mobile web-app layer. Same shape as the daily-reward prototype: on a phone
+   the frame disappears and the demo chrome moves into a hamburger drawer.
+   =========================================================================== */
+
+@media (max-width:600px){
+  /* No height unit anywhere in the shell. 100dvh was the gap: a saved web app
+     resolves it against the *large* viewport, so the box came up short of the
+     window and body showed through under the nav — cream or white depending on
+     which stylesheet won. In Safari proper the same unit changes value as the
+     URL bar slides, which is the gap she saw below the address bar.
+     position:fixed + inset:0 is not a measurement, it IS the viewport box: the
+     shell is pinned to all four edges and resizes with the window with no JS and
+     no unit to be wrong about. Everything inside was already absolutely
+     positioned off .phone, so nothing below it has to change. */
+  html,body{height:100%;overscroll-behavior:none}
+  /* The pre-JS ground, replaced inline by tint() on the first frame. White, not
+     the peach: every bottom bar in the app is white, so white is the colour that
+     disappears under the nav if the box ever comes up short. */
+  body{background:#fff}
+  /* Every bottom bar, sticky button and sheet pads itself by
+     calc(own padding + var(--sab)), and --sab defaults to
+     env(safe-area-inset-bottom) — 34px on a notched iPhone, stacked on top of
+     padding the bar already had. That stack is a second, separate gap from the
+     short-window one: the bar's background does reach the bottom edge, but its
+     contents float 42px above it, which reads as the nav not sitting on the
+     screen. Zeroed here so the bar's own padding is the only clearance; the
+     home indicator is a translucent overlay and does not need reserving in a
+     demo. One variable moves the nav, the buy bar, the ask bar, the drawer and
+     both sheets together. */
+  :root{--sab:0px}
+  /* Only the docked copy is hidden — the drawer hosts the same live node. */
+  body>.switcher{display:none!important}
+  .sbar{display:none!important}
+  /* The stage is the window. Fixed to all four edges, so there is no page to
+     scroll behind it and no body background left showing anywhere. */
+  .stage{position:fixed;inset:0;height:auto!important;min-height:0!important;
+    padding:0;display:block}
+  .phone{
+    /* Filled to the stage the same way, by edges rather than by height. The
+       !important is for the desktop rule above, which sets a fixed height and a
+       max-height on this same element. */
+    position:absolute;inset:0;
+    width:auto;max-width:none;max-height:none!important;
+    height:auto!important;min-height:0!important;
+    border-radius:0;box-shadow:none;
+    /* .phone is the whole viewport here, so plain white would cover body —
+       including the safe-area strip. The strip gets the live top colour that
+       mobile.js writes into --topc; white starts below the inset. Painting the
+       strip here rather than on body is what frees body to carry the bottom
+       bar's colour instead, so nothing cream or white can show under the nav. */
+    background:transparent;
+    background-image:linear-gradient(to bottom,var(--topc,#fff) var(--sbh),#fff var(--sbh));
+    /* The real notch inset replaces the fake status bar's height. */
+    --sbh:env(safe-area-inset-top,0px);
+  }
+}
+
+/* Desktop keeps the phone frame and the docked switcher; the hamburger still
+   opens the drawer so the menu can be checked without resizing. */
+@media (max-width:900px) and (min-width:601px){
+  .switcher{position:static;width:auto;margin:0 auto 16px;max-width:360px}
+}
+
+/* ---------- Drawer ---------- */
+.dscrim{position:absolute;inset:0;background:rgba(16,24,40,.45);z-index:70;opacity:0;transition:opacity .2s}
+.dscrim.on{opacity:1}
+.drawer{position:absolute;top:0;bottom:0;left:0;width:min(312px,86%);z-index:71;background:#fff;
+  transform:translateX(-102%);transition:transform .24s ease;display:flex;flex-direction:column;
+  box-shadow:8px 0 24px -12px rgba(16,24,40,.3)}
+.drawer.on{transform:none}
+.dr-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(16px + var(--sbh)) 16px 14px;border-bottom:1px solid var(--g200);background:#FFF6EE}
+.dr-head b{display:block;font:600 16px/24px var(--sans);color:var(--g900)}
+.dr-head span{font:400 12px/18px var(--sans);color:var(--g500)}
+.dr-x{border:0;background:none;font-size:18px;color:var(--g600);width:36px;height:36px;border-radius:10px}
+.dr-body{flex:1;overflow-y:auto;padding:4px 12px calc(20px + var(--sab,env(safe-area-inset-bottom,0px)))}
+/* The drawer is already a panel, so the switcher drops its own card chrome. */
+.dr-body .switcher{position:static;width:auto;max-width:none;margin:0;
+  border:0;border-radius:0;box-shadow:none;padding:12px 4px}
+@media (prefers-reduced-motion:reduce){.drawer,.dscrim{transition:none}}
