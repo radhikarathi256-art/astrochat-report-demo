@@ -29,7 +29,7 @@ var R = {
            ['NK', 'Neha K.', 'Indore', 'It said my strongest window runs till July 2027, and to look beyond attraction. That’s what finally got us talking about marriage at home.', 'Marriage window clear'],
            ['RM', 'Ritu M.', 'Nashik', 'The part about why I keep picking the wrong people was hard to read, because it’s true. I’ve stopped rushing things now.', 'Pattern named'],
            ['SV', 'Sneha V.', 'Kolkata', 'It said my partner would value family and steady work. That’s what I look for now, instead of chemistry alone. My mom agreed with every line.', 'Partner traits matched']],
-    ups: ['k', 'w'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'See what dosha is delaying your marriage',
+    ups: ['k', 'w', 'r'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'See what dosha is delaying your marriage',
     hist: 'Discover the Love Meant for You'
   },
   k: {
@@ -73,7 +73,7 @@ var R = {
            ['MT', 'Meera T.', 'Gurgaon', 'I was about to buy a new phone on EMI. It said give an optional purchase a night. I waited, and honestly I didn’t need it.', 'Big purchase paused'],
            ['DS', 'Divya S.', 'Kochi', 'Money kept slipping away every month and I couldn’t see where. It gave me a date to set some aside, and I’ve kept it up since.', 'Saving habit started'],
            ['TA', 'Tanvi A.', 'Jaipur', 'My cousin asked for a loan the same week it said to check family money plans first. We talked it through at home before I said yes.', 'Family money sorted']],
-    ups: ['m', 'k'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Know when to chase money and when to hold it',
+    ups: ['m', 'k', 'r'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Know when to chase money and when to hold it',
     monthly: true, hist: 'Know your money dates this month'
   },
   r: {
@@ -437,7 +437,7 @@ BUILD.detail = function (o) {
       '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (r.learnS ? '<small>' + r.learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
       '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
         '<div class="hrow revs">' + r.revs.map(function (v) { return '<div class="rev"><span class="qm">”</span><div class="who"><i>' + v[0] + '</i><div><b>' + v[1] + '</b><span>' + v[2] + '</span></div></div><p>' + v[3] + '</p><span class="tag">' + v[4] + '</span></div>'; }).join('') + '</div></div>' +
-      '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u]; return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹49<s>₹499</s><em>90% off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
+      '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u]; return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i % 2 ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹49<s>₹499</s><em>90% off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
     '</div>' + buyBar(k);
   return { html: h, cls: 'dp', after: function (el, item) {
     var sc = $('#dpScroll', el), nav = $('#dpNav', el);
@@ -452,7 +452,21 @@ BUILD.detail = function (o) {
     sc.addEventListener('scroll', onS, { passive: true }); onS();
     /* reviews: the card in front is full size, the next one waits a step smaller (Figma 268 vs 244) */
     var rv = $('.revs', el), cards = $$('.rev', el);
-    function onR() { var x = rv.scrollLeft; cards.forEach(function (c, i) { var d = Math.min(1, Math.abs(c.offsetLeft - 16 - x) / 280); c.style.transform = 'scale(' + (1 - .09 * d) + ')'; }); }
+    var tick = 0;
+    function onR() {
+      if (tick) return;
+      /* One write per frame, and only when the number really moved. Writing a fresh
+         scale on every scroll event is what made the row jitter. */
+      tick = requestAnimationFrame(function () {
+        tick = 0;
+        var x = rv.scrollLeft;
+        cards.forEach(function (c) {
+          var d = Math.min(1, Math.abs(c.offsetLeft - 16 - x) / 280);
+          var s = (1 - .09 * d).toFixed(3);
+          if (c.dataset.s !== s) { c.dataset.s = s; c.style.transform = 'scale(' + s + ')'; }
+        });
+      });
+    }
     rv.addEventListener('scroll', onR, { passive: true }); onR();
   } };
 };

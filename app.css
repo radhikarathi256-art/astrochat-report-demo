@@ -713,7 +713,9 @@ img{display:block}
 .mrow .bk{width:58px;flex:none}
 .hcard .box .bk{width:61px;right:20px;top:-27px}
 .ready .cov .rbk{margin:0 auto}
-.rev{transform-origin:0 50%;transition:transform .15s linear}
+/* No transition here. The scale is recomputed on every scroll frame, so a transition
+   makes each card chase the finger 150ms behind and the whole row wobbles. */
+.rev{transform-origin:0 50%}
 
 .sheet.compatsheet{top:20.6%;max-height:none;border-radius:20px 20px 0 0;overflow:hidden}
 .sheet.compatsheet .sh-in{flex:1;min-height:0;position:relative}
