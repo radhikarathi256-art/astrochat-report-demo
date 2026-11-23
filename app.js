@@ -1429,17 +1429,23 @@ function paintArch() {
   $$('.rp').forEach(function (s) { s.setAttribute('data-rep', state.pick); });
 }
 
-function renderSample() {
-  var c = copyFor(state.lang);
-  var sec = $('#sample');
+/* The reader is reports.html, exported from the current Figma and shared by the
+   sample and the bought page. It names reports its own way, not the demo's. */
+var READER_KEY = { partner: 'marriage', marriage: 'kundli', career: 'career', relation: 'relationships' };
 
-  paintArch();
-  sec.classList.toggle('dev', c.dev);
-  $('#langChipLabel').textContent = 'Read in ' + c.chip;
-  paintPaper($('#samplePaper'), true);
-  $('#sampleWhy').textContent = reportById(state.pick).why;
-  $('#sampleBody').innerHTML = renderSecs(true);
+/* Only touch src when it actually changes. Re-assigning the same URL reloads
+   the frame, which throws away the reader's scroll position every time an
+   unrelated part of the demo re-renders. */
+function showReader(sel, mode) {
+  var f = $(sel);
+  if (!f) return;
+  var src = 'reports.html?embed=1#' + (READER_KEY[state.pick] || 'marriage') + '-' + mode;
+  if (f.getAttribute('data-src') === src) return;
+  f.setAttribute('data-src', src);
+  f.src = src;
 }
+
+function renderSample() { showReader('#sampleFrame', 'sample'); }
 
 /* Paints the keepsake card for whichever report was bought. `preview` keeps the
    sample page's blur-and-badge treatment; the bought page passes nothing. */
@@ -1466,40 +1472,7 @@ function paintPaper(host, preview) {
     '<span class="tape t" aria-hidden="true"></span>';
 }
 
-function renderRead() {
-  paintArch();
-  paintPaper($('#readPaper'), false);
-  /* The same fifteen answers the sample shows, minus the demo-chart banner, the
-     jump index and the two CTA cards. The sample is a window onto this page, so
-     a bought report laid out differently read as a different product. */
-  $('#readBody').innerHTML = renderSecs(false) +
-      rateCard() +
-      // The end of the report is a door, not a full stop: the other two
-      // reports, then the chat where the questions it raised get spent.
-      '<div class="carousel-wrap">' +
-        '<p class="lbl">MORE ON YOUR CHART</p>' +
-        // The same rail as the sell page's and the empty shelf's. Two cards
-        // here rather than three, so nothing scrolls - but the shape she
-        // learned on the other two surfaces is the shape she meets again.
-        '<div class="ur-list">' +
-          REPORTS.filter(function (x) { return x.id !== state.pick; })
-            .map(upsellRow).join('') +
-        '</div>' +
-      '</div>' +
-      /* The sample has said this since day one; the report she paid for never
-         did, which is the one place it matters. Last thing on the page, after
-         the rating and the next two books, so it reads as a note about how the
-         work is done and not as a warning about what she just bought. Says
-         where it comes from, then says her own choices are still in it. */
-      '<p class="rs-disc">Read from your Vedic birth chart and the planetary ' +
-      'periods running in it. It shows which way things are leaning, not what ' +
-      'is fixed. What you do still shapes how it turns out. For guidance only, ' +
-      'not medical, legal or financial advice.</p>';
-  // No "Continue with Astro Hemali" button under it: the ask bar is pinned to
-  // the bottom of this same screen with her face, her rate and a composer in
-  // it, so a second button for the identical action only competed with the one
-  // that is always on screen.
-}
+function renderRead() { showReader("#readFrame", "bought"); }
 
 /* The ask for a rating, at the foot of the report she paid for. It sits above
    the "more on your chart" rail rather than below it, because below the rail
@@ -1686,7 +1659,6 @@ function openRep(id) {
   paintBought();
   renderRead();
   renderReport();
-  $('#read [data-scroll]').scrollTop = 0;
   go('read', 'fade');
 }
 
@@ -4534,11 +4506,35 @@ $$('.revs').forEach(function (strip) {
 
 /* The bought reader wears the sample's header. Cloning it beats a second copy
    of the same forty lines of SVG, which is how the two drifted apart before. */
+/* The reader draws its own header now, so there is one source left to clone
+   from: the report page's own wallet pill. */
 $$('[data-head-clone]').forEach(function (slot) {
-  slot.innerHTML = $('#sampleHead .rp-head-r').innerHTML;
+  var src = $('#report .head-r') || $('.head-r');
+  if (src && !slot.innerHTML.trim()) slot.innerHTML = src.innerHTML;
 });
 
 $('#bookStage').addEventListener('click', enterRead);
+
+/* ---------------------------------------------------------------- reader bridge
+   reports.html runs in an iframe and cannot reach the shell directly, so it
+   posts two things out: the back arrow it draws itself, and Buy Now at the foot
+   of a sample. Back has to go through go() rather than history, or the demo's
+   own screen stack drifts out of step with what is on screen. */
+window.addEventListener('message', function (e) {
+  var d = e.data;
+  if (!d || d.src !== 'astro-reader') return;
+  if (d.type === 'back') { back(); return; }
+  if (d.type === 'buy') {
+    // The reader names reports its own way. Buying has to act on the demo's id,
+    // and on the one the frame is actually showing, not on whatever was last
+    // picked elsewhere.
+    for (var id in READER_KEY) {
+      if (READER_KEY[id] === d.report) { state.pick = id; break; }
+    }
+    renderReport();
+    startBuy();
+  }
+});
 
 /* The two report readers do the same thing: the header starts transparent on
    the painted arch and only takes a white surface once prose is under it. */
