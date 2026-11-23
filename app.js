@@ -488,8 +488,19 @@ function buyBar(k) {
 }
 
 /* ======================= Reader (live report pages) ======================= */
+/* iOS never gives an iframe the device safe areas, so the reader cannot read them
+   itself. Measure them out here and hand them over in the URL. The arch still fills
+   the frame edge to edge; only the nav and the buy bar move clear of the hardware. */
+function inset(side) {
+  var p = document.createElement('div');
+  p.style.cssText = 'position:fixed;left:-99px;top:0;width:1px;height:env(safe-area-inset-' + side + ',0px)';
+  document.body.appendChild(p);
+  var h = p.offsetHeight;
+  p.remove();
+  return h;
+}
 BUILD.reader = function (o) {
-  return { html: '<iframe title="' + esc(R[o.rep].name) + '" src="reports.html?embed=1#' + R[o.rep].reader + '-' + o.mode + '"></iframe>' };
+  return { html: '<iframe title="' + esc(R[o.rep].name) + '" src="reports.html?embed=1&sbt=' + inset('top') + '&sbb=' + inset('bottom') + '#' + R[o.rep].reader + '-' + o.mode + '"></iframe>' };
 };
 addEventListener('message', function (ev) {
   var m = ev.data; if (!m || m.src !== 'astro-reader') return;

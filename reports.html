@@ -284,6 +284,18 @@ body.embed[data-view="mobile"] main { padding:0 !important; display:block; }
 body.embed[data-view="mobile"] .report { width:100% !important; height:100vh !important; height:100dvh !important; border-radius:0 !important; box-shadow:none !important; }
 body.embed .m-back { cursor:pointer; }
 body.embed::before { display:none; }
+/* An iframe is never handed the device safe areas by iOS, so every
+   env(safe-area-inset-*) in here resolves to 0. The app measures them in the
+   parent page and passes them in as ?sbt= and ?sbb=, which land on --sbt / --sbb.
+   The arch keeps running to the very top of the screen; only the nav row and the
+   buy bar move clear of the hardware. */
+body.embed[data-view="mobile"] .m-nav { box-sizing:border-box; height:calc(59px + var(--sbt,0px)); margin-bottom:calc(-59px - var(--sbt,0px)); padding-top:var(--sbt,0px); }
+/* The buy / ask bar is pinned to the bottom of the screen on every page, instead
+   of only reaching the bottom when the page happens to be long enough for a
+   sticky element to get there. --dockh is measured after the dock renders. */
+body.embed .dock { position:fixed; left:0; right:0; bottom:0; margin-top:0; }
+body.embed[data-view="mobile"] .reader { padding-bottom:var(--dockh,120px); }
+body.embed .dock-in > div { padding-bottom:calc(12px + var(--sbb,0px)) !important; }
 </style>
 </head>
 <body>
@@ -524,8 +536,17 @@ body.embed::before { display:none; }
 (function(){
   const KEYS = ["marriage", "kundli", "career", "relationships"];
   const TITLE2KEY = {"Marriage Prediction Report": "marriage", "Kundli Milan Report": "kundli", "Monthly Wealth Report": "career", "Monthly Relationship Report": "relationships"};
-  const EMBED = new URLSearchParams(location.search).get('embed') === '1';
-  if (EMBED) document.body.classList.add('embed');
+  const Q = new URLSearchParams(location.search);
+  const EMBED = Q.get('embed') === '1';
+  if (EMBED) {
+    document.body.classList.add('embed');
+    /* iOS gives an iframe no safe-area insets at all, so the app measures them on
+       the outer page and passes them in. Without this the nav row sits under the
+       status bar glyphs and the price column is cut off by the home indicator. */
+    const rt = document.documentElement.style;
+    rt.setProperty('--sbt', (+Q.get('sbt') || 0) + 'px');
+    rt.setProperty('--sbb', (+Q.get('sbb') || 0) + 'px');
+  }
   const toParent = msg => { try { parent.postMessage(Object.assign({src:'astro-reader'}, msg), '*'); } catch (e) {} };
   let state = {report:'marriage', mode:'sample', view:'mobile'};
   const body = document.body;
@@ -553,7 +574,20 @@ body.embed::before { display:none; }
     if (location.hash !== want) history.replaceState(null, '', want);
     if (scroll) { window.scrollTo(0,0); document.querySelectorAll('.report').forEach(r => { r.scrollTop = 0; r.classList.remove('scrolled'); }); }
     observe();
+    sizeDock();
   }
+  /* The dock is now fixed to the bottom, so it no longer takes part in the flow
+     and the last section of the report would slide under it. Measure the visible
+     dock and reserve exactly that much room. Sample and bought docks differ in
+     height, so this has to be re-measured on every mode change. */
+  function sizeDock(){
+    if (!EMBED) return;
+    requestAnimationFrame(() => {
+      const d = document.querySelector('.report:not([hidden]) .dock');
+      document.documentElement.style.setProperty('--dockh', ((d && d.offsetHeight) || 120) + 'px');
+    });
+  }
+  addEventListener('resize', sizeDock);
   function go(report, mode, scroll, view){ apply({report, mode, view: view || state.view}, scroll); }
 
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => go(t.dataset.report, state.mode, true)));
