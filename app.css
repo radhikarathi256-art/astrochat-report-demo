@@ -329,12 +329,12 @@ img{display:block}
 .dp-book .spread{position:absolute;left:14px;top:14px;width:183px;height:122.8px;animation:bkReveal 1.9s steps(1,end) .9s both}
 /* The book's weight on the hero. It only makes sense once the book is lying open,
    so it arrives with the gutter rather than sitting under the shut cover. */
-.dp-book::after{content:"";position:absolute;left:31px;right:31px;top:126px;height:16px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(74,24,8,.34),rgba(74,24,8,0) 72%);filter:blur(4px);z-index:-1;opacity:0;animation:fadeIn .5s ease 2.5s forwards}
+.dp-book::after{content:"";position:absolute;left:30.5px;top:136px;width:168px;height:18px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(74,24,8,.34),rgba(74,24,8,0) 72%);filter:blur(5px);z-index:-1;opacity:0;animation:fadeIn .5s ease 2.5s forwards}
 /* The gutter: both pages fall away into the spine, so the centre line is the
    darkest part of the spread. Without it the open book reads as one flat card.
-   Multiplied, so it darkens the artwork instead of greying it. */
-.dp-book .bk-move::after{content:"";position:absolute;left:94.5px;top:22px;width:22px;height:103.8px;z-index:4;pointer-events:none;mix-blend-mode:multiply;opacity:0;animation:fadeIn .5s ease 2.5s forwards;
-  background:linear-gradient(90deg,rgba(142,97,72,0) 0,rgba(142,97,72,.30) 44%,rgba(142,97,72,.36) 50%,rgba(142,97,72,.30) 56%,rgba(142,97,72,0) 100%)}
+   Figma "Gutter": 27 x 122 over the spine, #8E6148 fading out to both edges. */
+.dp-book .bk-move::after{content:"";position:absolute;left:92px;top:14px;width:27px;height:122.8px;z-index:4;pointer-events:none;mix-blend-mode:multiply;opacity:0;animation:fadeIn .5s ease 2.5s forwards;
+  background:linear-gradient(90deg,rgba(142,97,72,0) 0,rgba(142,97,72,.36) 50%,rgba(142,97,72,0) 100%)}
 .dp-book .hinge{position:absolute;left:105.5px;top:18px;width:80px;height:114.5px;transform-style:preserve-3d}
 .dp-book .cov{position:absolute;inset:0;transform-origin:0 50%;transform-style:preserve-3d;animation:bkOpen 1.9s cubic-bezier(.33,1,.68,1) .9s both}
 .dp-book .cov span{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
@@ -346,7 +346,9 @@ img{display:block}
    turns like paper; this is what gives it a surface while it swings. */
 .dp-book .cov .f::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.18) 0,rgba(255,255,255,0) 45%,rgba(0,0,0,.06) 100%)}
 .dp-book .cov .b{transform:rotateY(180deg);background-size:183px 122.8px;background-position:-11.5px -4px}
-.dp-book .pill{position:absolute;left:29px;top:110px;width:153px;height:30px;border-radius:15px;opacity:0;animation:fadeIn .4s ease 2.7s forwards;z-index:5}
+/* Figma lifts the pill off the page with a 0 4px 12px #4A1808 at 22% shadow.
+   The exported PNG is cropped to the pill, so the shadow has to come from CSS. */
+.dp-book .pill{position:absolute;left:29px;top:110px;width:153px;height:30px;border-radius:15px;box-shadow:0 4px 12px rgba(74,24,8,.22);opacity:0;animation:fadeIn .4s ease 2.7s forwards;z-index:5}
 .dp-book .pill img{width:153px;height:30px}
 .dp-book.done .bk-move,.dp-book.done .bk-move::after,.dp-book.done .spread,.dp-book.done .cov,.dp-book.done .pill,.dp-book.done::after{animation-delay:0s;animation-duration:.01s}
 @keyframes bkRise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
@@ -469,9 +471,9 @@ img{display:block}
 /* The same open book as the detail hero, 1.38x bigger, so it carries the same two
    things: the gutter the pages fall away into, and its weight on the sheet below.
    Without them a book at this size reads as a flat picture of a book. */
-.sheet .obook:not(.closed)::before{content:"";position:absolute;left:10.35px;top:154px;width:231.3px;height:22px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(74,24,8,.34),rgba(74,24,8,0) 72%);filter:blur(5.5px)}
-.sheet .obook:not(.closed)::after{content:"";position:absolute;left:110.85px;top:11px;width:30.3px;height:142.9px;z-index:2;pointer-events:none;mix-blend-mode:multiply;
-  background:linear-gradient(90deg,rgba(142,97,72,0) 0,rgba(142,97,72,.30) 44%,rgba(142,97,72,.36) 50%,rgba(142,97,72,.30) 56%,rgba(142,97,72,0) 100%)}
+.sheet .obook:not(.closed)::before{content:"";position:absolute;left:22.7px;top:168px;width:231.3px;height:24.8px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(74,24,8,.34),rgba(74,24,8,0) 72%);filter:blur(6.9px)}
+.sheet .obook:not(.closed)::after{content:"";position:absolute;left:107.4px;top:0;width:37.2px;height:169px;z-index:2;pointer-events:none;mix-blend-mode:multiply;
+  background:linear-gradient(90deg,rgba(142,97,72,0) 0,rgba(142,97,72,.36) 50%,rgba(142,97,72,0) 100%)}
 .sheet .obook.closed{width:87px;height:124px;margin-left:-43px;top:-84px}
 .pay .in{padding:0 16px 20px;display:flex;flex-direction:column;gap:16px}
 .pay .ttl{text-align:center}
@@ -686,6 +688,11 @@ img{display:block}
   :root{--sb:env(safe-area-inset-top,0px)}
   .stage{position:fixed;inset:0;height:auto;padding:0;display:block}
   .phone{position:absolute;inset:0;width:auto;height:auto;border-radius:0;box-shadow:none}
+  /* The UI now runs all the way up behind the status bar, and iOS paints the
+     translucent status bar glyphs white on every screen. One wash across the inset
+     keeps the time and battery readable, over pale hero art and over white headers
+     alike. Delete this rule if you would rather have the art completely clean. */
+  .phone::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + 10px);background:linear-gradient(rgba(26,18,13,.4),rgba(26,18,13,0));pointer-events:none;z-index:90}
 }
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important;transition-duration:.01ms!important} }
 .succ .sbox::before{content:"";position:absolute;left:0;right:0;top:0;height:30px;background:#fff;z-index:1}

@@ -8,7 +8,11 @@
 <meta name="theme-color" content="#FAD2C4" id="themeColor">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<!-- black-translucent is the only iOS value that hands the page the full screen height.
+     With "default" iOS keeps its own opaque strip at the top, which is why the status
+     bar read as a white band and the hero video stopped below it. Every screen already
+     pads itself with --sb (= env(safe-area-inset-top)), so nothing gets covered. -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Reports demo">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
