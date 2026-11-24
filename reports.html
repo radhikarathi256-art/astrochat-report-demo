@@ -188,6 +188,13 @@ body[data-chat="free"] .price-paid { display:none !important; }
 /* mode switching */
 body[data-mode="sample"] .bought-only { display:none !important; }
 body[data-mode="bought"] .sample-only { display:none !important; }
+/* sample watermark: tile a faint stamp over every section card so a screenshot
+   of the preview can never pass for the paid report. Skipped on the buy cards. */
+body[data-mode="sample"] .sec:not(.buycard) > div { position:relative; }
+body[data-mode="sample"] .sec:not(.buycard) > div::after {
+  content:""; position:absolute; inset:0; z-index:4; pointer-events:none; border-radius:inherit;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='140'><g fill='%23101828' fill-opacity='.06' font-family='Inter,Helvetica,sans-serif' font-size='14' font-weight='700' letter-spacing='3'><text x='8' y='58' transform='rotate(-24 8 58)'>SAMPLE</text><text x='108' y='128' transform='rotate(-24 108 128)'>SAMPLE</text></g></svg>");
+}
 .lockslot { display:flex; }
 
 /* hero */
