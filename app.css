@@ -413,7 +413,9 @@ img{display:block}
 .mcard .acts{display:flex;gap:12px;padding:0 20px 16px}
 .mcard .acts button{flex:1;height:44px;border:1px solid var(--g300);border-radius:12px;background:#fff;font:600 14px/20px var(--sans);color:var(--g800)}
 .mcard .nadi{display:flex;gap:10px;align-items:center;margin:0 20px;padding:14px 0 16px;border-top:1px solid #eae1d4;font:400 13px/18px var(--sans);color:var(--warm)}
-.mcard .nadi img{width:32px;height:32px}
+.mcard .pchips{display:flex;flex-wrap:wrap;gap:6px;padding:0 20px 12px}
+.mcard .pbuy{padding:0 20px 16px}
+.mcard .pbuy .btn{width:100%}
 .wuf{position:relative;background:var(--paper);padding:24px 0;overflow:hidden}
 .wuf .md{position:absolute;right:-36px;top:-40px;width:112px;height:112px;opacity:.8}
 .wuf h2{margin:0;padding:0 16px;font:700 18px/28px var(--sans);color:var(--g900)}

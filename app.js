@@ -452,7 +452,8 @@ BUILD.detail = function (o) {
       /* On Kundli Milan the guna score is the whole reason you are on this page, so
          it goes first and the description, tags and sample button follow it. */
       (k === 'k' ? matchBlock() : '') +
-      '<div class="dp-blk"><p>' + r.blurb + '</p><div class="chips">' + r.chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
+      /* Kundli's chips moved into the match card, so the row below would repeat them. */
+      '<div class="dp-blk"><p>' + r.blurb + '</p>' + (k === 'k' ? '' : '<div class="chips">' + r.chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>') +
         btn('sec md', 'View Sample Report', 'sample', ' data-rep="' + k + '"') + '</div>' +
       '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (r.learnS ? '<small>' + r.learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
       '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
@@ -491,10 +492,15 @@ BUILD.detail = function (o) {
     rv.addEventListener('scroll', onR, { passive: true }); onR();
   } };
 };
+/* The four questions the score cannot answer. They are the hook, so they sit
+   inside the card with the buy button rather than loose under the description. */
+var PEEK = ['Any Manglik dosha?', 'When to marry', 'The missing 8', 'Remedies that work'];
 function matchBlock() {
-  return '<div class="dp-match"><h2>Your Compatibility Score</h2><div class="mcard"><div class="sc"><div><small>Mansi & Rahul</small><b>28 of 36</b><span>Very good match</span></div><img src="' + A('k_progress.png') + '" alt=""></div>' +
+  return '<div class="dp-match"><div class="mcard"><div class="sc"><div><small>Mansi & Rahul</small><b>28 of 36</b><span>Very good match</span></div><img src="' + A('k_progress.png') + '" alt=""></div>' +
     '<div class="acts"><button type="button" data-act="compat">All 8 areas</button><button type="button" data-act="editHim">Edit details</button></div>' +
-    '<div class="nadi"><img src="' + A('nadi_ic.png') + '" alt=""><span>Nadi is 0 of 8, the dosha families worry about most. See if yours is cancelled.</span></div></div></div>';
+    '<div class="nadi"><span>This is a preview. The detailed report answers all four.</span></div>' +
+    '<div class="pchips">' + PEEK.map(function (c) { return '<span class="chip"><img src="' + A('chip_k0.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
+    '<div class="pbuy">' + btn('sec md', 'Buy Detailed Report', 'buy', ' data-rep="k"') + '</div></div></div>';
 }
 function buyBar(k) {
   var r = R[k], st = ownState(k);
