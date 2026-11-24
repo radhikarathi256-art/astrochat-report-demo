@@ -118,7 +118,10 @@ function freshState(day, rep) {
     day: day || 1, rep: rep || 'm', wallet: WALLET0[day || 1], answered: false, answer: null,
     earnShown: false, replied: false, own: {}, lang: 'English',
     me: { name: 'Mansi Sharma', dob: '1996-10-30', time: '04:20', place: 'Pune, Maharashtra', gender: 'Female' },
-    him: { name: 'Rahul', dob: '', time: '', place: '', unknown: false }, himDone: false, compatLang: 'en', boughtAt: {}
+    /* Rahul's details come prefilled so the demo never stalls on data entry.
+       The Kundli Milan form still opens every time the report is tapped, it is
+       just already filled in and one tap from the detail page. */
+    him: { name: 'Rahul', dob: '1994-06-14', time: '09:45', place: 'Pune, Maharashtra', unknown: false }, himDone: false, compatLang: 'en', boughtAt: {}
   };
 }
 function cur() { return R[S.rep]; }
@@ -620,7 +623,7 @@ BUILD.edit = function () {
 var payRep = null;
 function startBuy(k) {
   if (k === 'k' && !S.himDone) { go('kform', {}); return; }
-  if (ownState(k)) { openRep(k); return; }
+  if (ownState(k)) { go('detail', { rep: k }); return; }
   payRep = k; openPay();
 }
 function payTotals() { var total = 58, used = Math.min(S.wallet, total); return { used: used, due: total - used }; }
@@ -768,7 +771,10 @@ BUILD.history = function () {
 };
 
 /* ======================= actions ======================= */
-function openRep(k) { if (k === 'k' && !S.himDone) { go('kform', {}); return; } go('detail', { rep: k }); }
+/* Kundli Milan always goes through the details form, not only the first time.
+   The form arrives prefilled, so See Your Compatibility is one tap away and it
+   lands on the Kundli Milan detail page. */
+function openRep(k) { if (k === 'k' && !ownState(k)) { go('kform', {}); return; } go('detail', { rep: k }); }
 function openReader(k, mode) { closeSheet(true); go('reader', { rep: k, mode: mode }); }
 function chatFlow() { S.replied = false; go('chat', {}); }
 
