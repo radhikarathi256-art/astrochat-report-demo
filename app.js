@@ -29,7 +29,7 @@ var R = {
            ['NK', 'Neha K.', 'Indore', 'It said my best window runs till July 2027, and that I should look past attraction. That is what got us talking about marriage at home.', 'Marriage window clear'],
            ['RM', 'Ritu M.', 'Nashik', 'The part about why I keep picking the wrong people was hard to read, because it was true. I have stopped rushing things now.', 'Pattern explained'],
            ['SV', 'Sneha V.', 'Kolkata', 'It said my partner would value family and steady work. That is what I look for now, not just chemistry. My mother agreed with every line.', 'Partner traits matched']],
-    ups: ['k', 'w', 'r'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'Find out what is holding your marriage back',
+    ups: ['k', 'w'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'Find out what is holding your marriage back',
     hist: 'Discover the Love Meant for You'
   },
   k: {
@@ -51,7 +51,7 @@ var R = {
            ['KR', 'Kavya R.', 'Chennai', 'I was worried about Manglik dosha for weeks. This report helped me understand what my chart actually showed.', 'Manglik doubt cleared'],
            ['PN', 'Pooja N.', 'Bhopal', 'I was worried about how things would be with my in-laws. The report helped me understand what to look out for before we got married.', 'Family match checked'],
            ['IG', 'Isha G.', 'Lucknow', 'Our report explained the Nadi dosha and the remedy mentioned in the chart. It gave my parents more clarity about our match.', 'Nadi dosha explained']],
-    ups: ['m', 'r'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'Find out what your match score doesn’t tell you',
+    ups: ['m', 'w'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'Find out what your match score doesn’t tell you',
     hist: 'See how well you and Rahul match'
   },
   w: {
@@ -73,7 +73,7 @@ var R = {
            ['MT', 'Meera T.', 'Gurgaon', 'I was about to buy a new phone on EMI. The report suggested waiting. I did, and realised I didn’t need it right away.', 'Big purchase paused'],
            ['DS', 'Divya S.', 'Kochi', 'I never knew where my money went each month. The report gave me a day to start saving. I’ve stuck to it since.', 'Saving habit started'],
            ['TA', 'Tanvi A.', 'Jaipur', 'My cousin asked me for a loan. The report suggested checking family money plans first. We talked it through before I said yes.', 'Family money discussed']],
-    ups: ['m', 'k', 'r'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Find the right days to follow up, save and spend',
+    ups: ['m', 'k'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Find the right days to follow up, save and spend',
     monthly: true, hist: 'Know your money dates this month'
   },
   r: {
@@ -428,6 +428,12 @@ BUILD.detail = function (o) {
   if (st === 'writing' && k !== 'm') {
     statusRows = '<div class="mstat"><button type="button" data-act="mine"><img src="' + A('st_hour.png') + '" alt=""><div><b>' + (k === 'k' ? 'Mansi & Rahul' : '20 Nov – 19 Dec') + '</b><span class="w">Being written · we’ll notify you</span></div><img class="chev" src="' + A('st_chev.png') + '" alt=""></button></div>';
   }
+  /* Marriage is a one-time report, so once it is bought there is nothing to come
+     back to. The other three are repeatable, and the only way into what you already
+     own is this row, because their buy bar goes on selling the next one. */
+  if (st === 'ready' && k !== 'm') {
+    statusRows = '<div class="mstat"><button type="button" data-act="mine"><img src="' + A('st_cal.png') + '" alt=""><div><b>Your past ' + (k === 'k' ? 'matches' : 'reports') + '</b><span>2 ' + (k === 'k' ? 'matches' : 'reports') + ' · in My Reports</span></div><img class="chev" src="' + A('st_chev.png') + '" alt=""></button></div>';
+  }
   var h = '<div class="dp-nav" id="dpNav"><div class="in"><button type="button" class="bk" data-act="back" aria-label="Back"><img src="' + A('dp_back.png') + '" alt=""></button><span class="t">' + r.name + '</span>' + wchip(true) + '</div></div>' +
     '<div class="scroll" id="dpScroll">' +
       /* The still is the video's own poster rather than a separate image behind it.
@@ -492,8 +498,11 @@ function buyBar(k) {
   if (st === 'writing') return '<div class="buybar"><div class="why"><img src="' + A('why_writing.png') + '" alt="">Report being prepared</div><div class="row">' + priceBlk + btn('dis lg', 'We’ll notify you', '', ' disabled') + '</div></div>';
   if (st === 'ready') {
     if (k === 'm') return '<div class="buybar"><div class="why"><img src="' + A('why_owned.png') + '" alt="">Your report is ready. View it anytime.</div><div class="row">' + btn('pri lg', 'View Report', 'readBought', ' data-rep="' + k + '"') + '</div></div>';
-    var line = k === 'k' ? 'Matched with Rahul today. Match someone else anytime.' : '20 Nov – 19 Dec is ready. Next one from 20 Dec.';
-    return '<div class="buybar"><div class="why"><img src="' + A('why_' + k + '.png') + '" alt="">' + line + '</div><div class="row">' + btn('pri lg', 'View Report', 'readBought', ' data-rep="' + k + '"') + '</div></div>';
+    /* The repeatable reports go on selling the next one once you own this one, a new
+       match or next month. What you already paid for is reached from the past
+       reports row higher up the page. */
+    var line = k === 'k' ? 'Matched with Rahul on 12 Oct. Match someone else anytime.' : '20 Nov – 19 Dec is ready. Next one from 20 Dec.';
+    return '<div class="buybar"><div class="why"><img src="' + A('why_' + k + '.png') + '" alt="">' + line + '</div><div class="row">' + priceBlk + btn('pri lg', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div></div>';
   }
   return '<div class="buybar"><div class="why"><img src="' + A('why_' + k + '.png') + '" alt="">' + r.why + '</div><div class="row">' + priceBlk + btn('pri lg', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div></div>';
 }
@@ -631,7 +640,11 @@ BUILD.edit = function () {
 var payRep = null;
 function startBuy(k) {
   if (k === 'k' && !S.himDone) { go('kform', {}); return; }
-  if (ownState(k)) { go('detail', { rep: k }); return; }
+  /* Marriage is one-time, so owning it ends the sale and the tile just reopens the
+     page. The other three can be bought again, a new match or the next month, so
+     they go straight to pay even when one is already owned. */
+  if (k === 'm' && ownState(k)) { go('detail', { rep: k }); return; }
+  if (ownState(k) === 'writing') { go('detail', { rep: k }); return; }
   payRep = k; openPay();
 }
 function payTotals() { var total = 58, used = Math.min(S.wallet, total); return { used: used, due: total - used }; }
