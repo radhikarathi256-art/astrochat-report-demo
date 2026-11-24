@@ -330,7 +330,7 @@ function tileHTML(k) {
       '<span class="txt"><b>' + r.name + '</b><span>By Astro Hemali</span></span><span class="tag">Ready</span><img class="oarr" src="' + A('tile_arrow_o.png') + '" alt=""><span class="bd"></span></button>';
   }
   var hook = st === 'writing'
-    ? '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>Writing your report · report ready in 5 mins</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">'
+    ? '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>Writing your report · will be ready in 5 mins</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">'
     : '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span><img class="arr" src="' + A('arrow_' + IMG[k] + '.png') + '" alt="">';
   return '<button type="button" class="gt" data-act="openRep" data-rep="' + k + '" style="background:' + r.tileBg + ';--rule:' + r.rule + '">' +
     '<span class="motif"><img src="' + A('motif_' + IMG[k] + '.webp') + '" alt=""></span><span class="hook">' + hook + '</span><span class="bd"></span>' +
@@ -346,8 +346,10 @@ BUILD.today = function () {
       '<button type="button" class="t-ham" data-act="menu" aria-label="Menu"><img src="' + A('ic_hamburger.png') + '" alt=""></button>' +
       '<div class="t-greet"><small>Namaste</small><b>Mansi</b></div>' +
       '<div class="t-act">' + wchip() +
-        '<button type="button" class="ic22" data-act="mine" aria-label="My Reports"><img src="' + A('ic_myreports.png') + '" alt=""></button>' +
-        '<button type="button" class="ic22" data-act="chat" aria-label="Chat"><img src="' + A(S.replied ? 'ic_chat_on.png' : 'ic_chat.png') + '" alt=""></button>' +
+        /* Both dots are drawn in CSS. The old chat icon had its dot baked into the
+           PNG, flush against the top edge, so the artwork itself cut it in half. */
+        '<button type="button" class="ic22" data-act="mine" aria-label="My Reports"><img src="' + A('ic_myreports.png') + '" alt="">' + (Object.keys(S.own).length ? '<span class="nd"></span>' : '') + '</button>' +
+        '<button type="button" class="ic22" data-act="chat" aria-label="Chat"><img src="' + A('ic_chat.png') + '" alt="">' + (S.replied ? '<span class="nd"></span>' : '') + '</button>' +
       '</div></div></header>' +
     '<div class="scroll" id="tScroll">' +
       '<div class="t-hero"><h1>Namaste Mansi</h1><p class="date">' + ['Mon, 5 Oct', 'Tue, 6 Oct', 'Wed, 7 Oct'][d - 1] + ' · Margashirsha Krishna Chaturdashi</p>' +
@@ -407,7 +409,7 @@ function chatWidget(k) {
     '<h4>' + r.name + '</h4><div class="badge" style="color:' + tc + '"><span class="r"><span>' + c.rating + '</span><img src="' + A('cwstar_' + k + '.png') + '" alt=""></span><i style="background:' + tc + '"></i><span>' + c.readers + '</span></div>';
   if (st) {
     h += st === 'writing'
-      ? '<div class="state"><img class="pdot" src="' + A('tile_dot.png') + '" alt="">Writing your report · ready in 5 mins</div>' + btn('dis lg', 'Read Report', '', ' style="margin-top:12px" disabled')
+      ? '<div class="state"><img class="pdot" src="' + A('tile_dot.png') + '" alt="">Writing your report · will be ready in 5 mins</div>' + btn('dis lg', 'Read Report', '', ' style="margin-top:12px" disabled')
       : '<div class="state" style="color:var(--ok)">✓ Bought · Ready to read</div>' + btn('pri lg', 'Read Report', 'readBought', ' data-rep="' + k + '" style="margin-top:12px"');
     return h + '</div>';
   }
@@ -447,9 +449,11 @@ BUILD.detail = function (o) {
       '<div class="dp-book' + (o.opened ? ' done' : '') + '"><div class="bk-move"><img class="spread" src="' + A('open_' + k + '.webp') + '" alt=""><span class="hinge"><span class="cov"><span class="f" style="background-image:url(' + A('cov_' + k + '.webp') + ')"></span><span class="b" style="background-image:url(' + A('open_' + k + '.webp') + ')"></span></span></span>' +
         '<button type="button" class="pill" data-act="sample" data-rep="' + k + '" aria-label="See Sample report"><img src="' + A('pill.png') + '" alt=""></button></div></div>' +
       '<div class="dp-card"><h1>' + r.name + '</h1><div class="stats"><div><b>' + r.stats[0] + '<img src="' + A('dp_star16.png') + '" alt=""></b><span>Rating</span></div><i></i><div><b>' + r.stats[1] + '</b><span>Reads</span></div><i></i><div><b>' + r.stats[2] + '</b><span>' + r.stats[3] + '</span></div></div>' + statusRows + '</div>' +
+      /* On Kundli Milan the guna score is the whole reason you are on this page, so
+         it goes first and the description, tags and sample button follow it. */
+      (k === 'k' ? matchBlock() : '') +
       '<div class="dp-blk"><p>' + r.blurb + '</p><div class="chips">' + r.chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
         btn('sec md', 'View Sample Report', 'sample', ' data-rep="' + k + '"') + '</div>' +
-      (k === 'k' ? matchBlock() : '') +
       '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (r.learnS ? '<small>' + r.learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
       '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
         '<div class="hrow revs">' + r.revs.map(function (v) { return '<div class="rev"><span class="qm">”</span><div class="who"><i>' + v[0] + '</i><div><b>' + v[1] + '</b><span>' + v[2] + '</span></div></div><p>' + v[3] + '</p><span class="tag">' + v[4] + '</span></div>'; }).join('') + '</div></div>' +
@@ -655,7 +659,13 @@ function openPay() {
     '<div class="ttl"><b>' + r.name + '</b><span>' + r.payMeta + '</span></div>' +
     '<div class="pfor"><i>M</i><div><b>' + esc(S.me.name) + '</b><span>' + prettyDate(S.me.dob) + ' · ' + prettyTime(S.me.time) + '</span></div><button type="button" class="link" data-act="editMeFromPay">Edit</button></div>' +
     '<div class="plang"><img src="' + A('pay_globe.png') + '" alt=""><span>Report in <b>' + S.lang + '</b></span><button type="button" class="link" data-act="lang">Change</button></div>' +
-    '<div class="bill"><div><span>Report price</span><span>₹499</span></div><div><span>Today\'s offer (90% off)</span><span>−₹450</span></div><div><span>GST (18%)</span><span>+₹9</span></div>' +
+    /* Every step of the sum is on screen now. The old bill jumped from the ₹450 off
+       straight to GST, so the ₹49 the whole offer is built around was never
+       actually shown and the 18% looked like it was charged on ₹499. */
+    '<div class="bill"><div><span>Report price</span><span>₹499</span></div>' +
+      '<div><span>Discount (90% off)</span><span>−₹450</span></div>' +
+      '<div class="sub"><span>Price after discount</span><span>₹49</span></div>' +
+      '<div><span>GST 18% on ₹49</span><span>+₹9</span></div>' +
       (t.used ? '<div class="wal"><span>Wallet money</span><span>−₹' + t.used + '</span></div>' : '') +
       '<hr><div class="tot"><span>You pay</span><span><s>₹499</s><b>₹' + t.due + '</b></span></div></div>' +
     '<div class="pacts">' + (t.due ? '<div class="pw"><small>Pay with<img src="' + A('pay_chev.png') + '" alt=""></small><b><img src="' + A('pay_phonepe.png') + '" alt="">PhonePe</b></div>' : '') +
@@ -689,7 +699,7 @@ BUILD.success = function (o) {
 var loaderRun = null;
 BUILD.loader = function (o) {
   return { html: '<button type="button" class="bk" data-act="leaveLoader" aria-label="Back"><img src="' + A('ld_back.png') + '" alt=""></button>' +
-    '<div class="body"><h2>' + (o.rep === 'k' ? 'Analysing your Kundlis' : 'Analysing your Kundli') + '</h2><p class="time">Report ready in 5 mins · we’ll notify you</p><div class="pick" id="pick"></div></div>' +
+    '<div class="body"><h2>' + (o.rep === 'k' ? 'Analysing your Kundlis' : 'Analysing your Kundli') + '</h2><p class="time">Preparing your report · will be ready in 5 mins</p><div class="pick" id="pick"></div></div>' +
     '<div class="hands"><img src="' + A('loader_hands.webp') + '" alt=""><span class="orb"></span></div>', cls: 'ldr', after: function (el) { runPicker($('#pick', el)); } };
 };
 function runPicker(host) {
@@ -768,7 +778,7 @@ BUILD.mine = function () {
     var rd = S.own[k] === 'ready';
     return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>Bought today</small>' +
       (rd ? '<div class="mact">' + btn('sec sm', 'Read report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button><button type="button" class="ibtn" data-act="soon" aria-label="Share"><img src="' + A('ic_share.png') + '" alt=""></button></span></div>'
-          : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>Ready in 5 mins</button>') + '</div></div>';
+          : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>Will be ready in 5 mins</button>') + '</div></div>';
   }).join('') + '</div>'
     : '<div class="mr-empty"><img src="' + A('mr_empty.webp') + '" alt=""><b>No reports yet</b><p>Reports Astro Hemali writes for you stay here. Read them anytime.</p></div>';
   var more = ['m', 'k', 'w', 'r'].filter(function (k) { return !S.own[k]; });

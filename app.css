@@ -72,6 +72,9 @@ img{display:block}
 @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.35);color:var(--ok)}100%{transform:scale(1)}}
 .ic22{width:22px;height:22px;position:relative}
 .ic22 img{width:22px;height:22px}
+/* Sits proud of the 22px icon box, so it can never be cut off the way the baked
+   in dot was. The white ring keeps it readable over the header artwork. */
+.ic22 .nd{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#b42318;box-shadow:0 0 0 2px #fff}
 .t-hero{position:relative;padding:calc(var(--sb) + 54px) 0 12px;background:#fad2c4 url(a/hero_bg.webp) center bottom/cover no-repeat}
 .t-hero h1{margin:0;text-align:center;font:700 26px/31px var(--serif);letter-spacing:-.52px;color:var(--g700)}
 .t-hero .date{margin:6px auto 0;width:312px;max-width:calc(100% - 32px);text-align:center;font:600 14px/20px var(--sans);color:var(--warn7);opacity:.9}
@@ -493,6 +496,10 @@ img{display:block}
 .bill div{display:flex;justify-content:space-between;font:400 14px/20px var(--sans);color:var(--g600)}
 .bill div span:last-child{color:var(--g700)}
 .bill .wal,.bill .wal span:last-child{color:var(--ok)}
+/* The ₹49 everything is advertised on. Ruled off and darker so the eye can follow
+   499 minus 450 equals 49, then GST on that 49. */
+.bill .sub{padding-top:10px;border-top:1px solid var(--g200)}
+.bill .sub span,.bill .sub span:last-child{font-weight:600;color:var(--g900)}
 .bill hr{border:0;border-top:1px solid var(--g200);margin:0}
 .bill .tot{align-items:center}
 .bill .tot>span{font:600 16px/24px var(--sans);color:var(--g900)}
