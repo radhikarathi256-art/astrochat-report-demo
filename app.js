@@ -493,9 +493,6 @@ BUILD.detail = function (o) {
 };
 function matchBlock() {
   return '<div class="dp-match"><h2>Your Compatibility Score</h2><div class="mcard"><div class="sc"><div><small>Mansi & Rahul</small><b>28 of 36</b><span>Very good match</span></div><img src="' + A('k_progress.png') + '" alt=""></div>' +
-    /* The score means nothing on its own. Naming the bands tells her where 28
-       sits and what she would have had to score to land in the next one. */
-    '<div class="bands"><span>Below 18 Not advised</span><span>18 to 24 Okay</span><span class="on">25 to 32 Very good</span><span>33 to 36 Excellent</span></div>' +
     '<div class="acts"><button type="button" data-act="compat">All 8 areas</button><button type="button" data-act="editHim">Edit details</button></div>' +
     '<div class="nadi"><img src="' + A('nadi_ic.png') + '" alt=""><span>Nadi is 0 of 8, the dosha families worry about most. See if yours is cancelled.</span></div></div></div>';
 }
@@ -687,7 +684,6 @@ function openLang(ret) {
 function compatHTML() {
   var en = S.compatLang === 'en';
   return '<div class="compat"><div class="sch"><div><small>Compatibility score</small><b>28 of 36</b><span>Very good match</span></div></div>' +
-    '<div class="bands"><span>Below 18 Not advised</span><span>18 to 24 Okay</span><span class="on">25 to 32 Very good</span><span>33 to 36 Excellent</span></div>' +
     '<div class="seg"><button type="button" class="' + (en ? 'on' : '') + '" data-act="cLang" data-l="en">English</button><button type="button" class="' + (en ? '' : 'on') + '" data-act="cLang" data-l="sa">Sanskrit</button></div>' +
     '<div class="kootas">' + KOOTA.map(function (x) { return '<div class="koota' + (x[2] === 0 ? ' low' : '') + '"><img src="' + A('kt_' + x[0] + '.png') + '" alt=""><b>' + (en ? x[0] : x[1]) + '</b><span>' + x[2] + ' / ' + x[3] + '</span></div>'; }).join('') + '</div>' +
     '<div class="ft"><img src="' + A('kt_pulse.png') + '" alt=""><span>' + (en ? 'Health' : 'Nadi') + ' is 0 of 8. Your report explains if it is cancelled, and the remedy.</span></div></div>';
