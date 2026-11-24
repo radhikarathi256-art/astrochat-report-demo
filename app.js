@@ -18,18 +18,18 @@ var R = {
     readyPush: 'See the year you marry and what’s been holding it back. Tap to read.',
     chat: 'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed, so I have written your Marriage Prediction Report around it.\n\nLearn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.\n\nBuy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.',
     cw: { g: ['#fceef1', '#fdf4f5', '#fff9fa', '#fffcfc'], f: '255,252,252', sh: 'rgba(122,46,14,.22)', tc: '#912018', rating: '4.7', readers: '13,000 readers',
-      ben: ['When you’ll\nget married', 'Partner\'s\ntraits', 'Manglik\ncheck', '4 more\nanswers'], price: true },
-    stats: ['4.7', '13,000', 'One-time', 'Payment'],
+      ben: ['When You’ll\nGet Married', 'Partner\'s\nTraits', 'Manglik\nCheck', '4 More\nAnswers'], price: true },
+    stats: ['4.7', '13,000', 'One-Time', 'Payment'],
     blurb: 'What could your future marriage look like? Explore what your chart says.',
-    chips: ['When you’ll marry', 'Manglik check'],
+    chips: ['When You’ll Marry', 'Manglik Check'],
     learnT: 'Find Answers To', learnS: '',
     learn: ['When will I get married?', 'What will my partner be like?', 'Will it be a love marriage or an arranged one?', 'Is Manglik dosha present in my chart?', 'How well will I get along with my in-laws?', 'How will money change after marriage?', 'What will married life look like over the years?'],
     revSum: ['4.7', '· 13,000 readers'],
-    revs: [['PS', 'Priya S.', 'Jaipur', 'It said love marriage, with both families agreeing by the end of the year. We told them in October and expected a fight. They said yes.', 'Love marriage matched'],
-           ['NK', 'Neha K.', 'Indore', 'It said my best window runs till July 2027, and that I should look past attraction. That is what got us talking about marriage at home.', 'Marriage window clear'],
-           ['RM', 'Ritu M.', 'Nashik', 'The part about why I keep picking the wrong people was hard to read, because it was true. I have stopped rushing things now.', 'Pattern explained'],
-           ['SV', 'Sneha V.', 'Kolkata', 'It said my partner would value family and steady work. That is what I look for now, not just chemistry. My mother agreed with every line.', 'Partner traits matched']],
-    ups: ['k', 'w', 'r'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'Find out what is holding your marriage back',
+    revs: [['PS', 'Priya S.', 'Jaipur', 'It said love marriage, with both families agreeing by the end of the year. We told them in October and expected a fight. They said yes.', 'Love Marriage Matched'],
+           ['NK', 'Neha K.', 'Indore', 'It said my best window runs till July 2027, and that I should look past attraction. That is what got us talking about marriage at home.', 'Marriage Window Clear'],
+           ['RM', 'Ritu M.', 'Nashik', 'The part about why I keep picking the wrong people was hard to read, because it was true. I have stopped rushing things now.', 'Pattern Explained'],
+           ['SV', 'Sneha V.', 'Kolkata', 'It said my partner would value family and steady work. That is what I look for now, not just chemistry. My mother agreed with every line.', 'Partner Traits Matched']],
+    ups: ['k', 'w', 'r'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-Time Payment', why: 'Find out what is holding your marriage back',
     hist: 'Discover the Love Meant for You'
   },
   k: {
@@ -40,18 +40,18 @@ var R = {
     readyPush: 'See your guna score, the dosha that matters and what you can do. Tap to read.',
     chat: 'Mansi, you mentioned Rahul today, so I put both charts in front of me after we finished.\n\nHow well the two of you match and what is holding it back, what the Mangal dosha does to this match, how the two families sit together, and what you can do about it.\n\nGive me his birth details and I will read them together. There is a complete sample on another chart if you want to see how deep it goes first.',
     cw: { g: ['#fbf0e4', '#fcf5ec', '#fefaf5', '#fffdfa'], f: '255,253,250', sh: 'rgba(122,46,14,.22)', tc: '#7a2e0e', rating: '4.8', readers: '96,440 readers',
-      ben: ['Guna score\nout of 36', 'Real match\nor on paper', 'Dosha and\nremedies', '3 more\nanswers'], price: false },
+      ben: ['Guna Score\nOut Of 36', 'Real Match\nOr On Paper', 'Dosha And\nRemedies', '3 More\nAnswers'], price: false },
     stats: ['4.8', '96,440', 'Unlimited', 'Type'],
     blurb: '28 out of 36 points match. But what about the 8 that don’t?',
-    chips: ['36-point match', 'Dosha check'],
+    chips: ['36-Point Match', 'Dosha Check'],
     learnT: 'What Your 28 Does Not Tell You', learnS: '',
     learn: ['What do the 8 missing points mean for us?', 'Is our Nadi dosha a problem, or can it be cancelled?', 'Is Manglik dosha present in either chart?', 'Will money and family matters bring us closer or cause stress?', 'How well will our families get along?', 'What can we do to make our match stronger?'],
     revSum: ['4.8', '· 96,440 readers'],
-    revs: [['AD', 'Anjali D.', 'Surat', 'We scored 27 out of 36, just like our family pandit said. But this report explained why Bhakoot was low. That was something we had never understood before.', 'Guna score explained'],
-           ['KR', 'Kavya R.', 'Chennai', 'I was worried about Manglik dosha for weeks. This report helped me understand what my chart actually showed.', 'Manglik doubt cleared'],
-           ['PN', 'Pooja N.', 'Bhopal', 'I was worried about how things would be with my in-laws. The report helped me understand what to look out for before we got married.', 'Family match checked'],
-           ['IG', 'Isha G.', 'Lucknow', 'Our report explained the Nadi dosha and the remedy mentioned in the chart. It gave my parents more clarity about our match.', 'Nadi dosha explained']],
-    ups: ['m', 'w', 'r'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'Find out what your match score doesn’t tell you',
+    revs: [['AD', 'Anjali D.', 'Surat', 'We scored 27 out of 36, just like our family pandit said. But this report explained why Bhakoot was low. That was something we had never understood before.', 'Guna Score Explained'],
+           ['KR', 'Kavya R.', 'Chennai', 'I was worried about Manglik dosha for weeks. This report helped me understand what my chart actually showed.', 'Manglik Doubt Cleared'],
+           ['PN', 'Pooja N.', 'Bhopal', 'I was worried about how things would be with my in-laws. The report helped me understand what to look out for before we got married.', 'Family Match Checked'],
+           ['IG', 'Isha G.', 'Lucknow', 'Our report explained the Nadi dosha and the remedy mentioned in the chart. It gave my parents more clarity about our match.', 'Nadi Dosha Explained']],
+    ups: ['m', 'w', 'r'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-Time Payment · Per Couple', why: 'Find out what your match score doesn’t tell you',
     hist: 'See how well you and Rahul match'
   },
   w: {
@@ -62,18 +62,18 @@ var R = {
     readyPush: 'Your ten money dates for 20 Nov – 19 Dec are in. Tap to read.',
     chat: 'Mansi, I kept reading your chart after we spoke. Your next 30 days have a clear money rhythm: days that favour money coming in, and days to hold back.\n\nLearn the dates to chase a pending payment, the day to sleep on a big purchase, when to put money aside, and how to handle family money without friction.\n\nBuy the report and get your ten money dates in one place. A complete sample on another chart is open to read first, so you can see how deep it goes.',
     cw: { g: ['#edf1fa', '#f4f6fc', '#fafafc', '#fffdf8'], f: '255,253,248', sh: '#d8dfef', tc: '#344054', bc: '#475467', rating: '4.6', readers: '71,250 readers',
-      ben: ['Next 30 days', 'Best dates\nfor money', 'Big\npurchases', '3 more\nanswers'], price: true },
-    stats: ['4.6', '71,250', '30 days', 'From today'],
+      ben: ['Next 30 Days', 'Best Dates\nFor Money', 'Big\nPurchases', '3 More\nAnswers'], price: true },
+    stats: ['4.6', '71,250', '30 Days', 'From Today'],
     blurb: 'When will money come in, when should you save, and when is it better to wait?',
-    chips: ['20 Nov – 19 Dec', 'Money matters'],
+    chips: ['20 Nov – 19 Dec', 'Money Matters'],
     learnT: 'Find Answers To', learnS: 'For 20 Nov – 19 Dec 2026',
     learn: ['Will more money come in or go out this month?', 'When should I follow up on money someone owes me?', 'Should I buy that big thing now or wait?', 'Could an unexpected expense catch me off guard?', 'When is a good time to save or invest?', 'Should I lend money to family this month?'],
     revSum: ['4.6', '· 71,250 readers'],
-    revs: [['SB', 'Shruti B.', 'Pune', 'It suggested sending my payment reminder on the 26th. I did, and the money I’d been waiting for came in two days later.', 'Payment date matched'],
-           ['MT', 'Meera T.', 'Gurgaon', 'I was about to buy a new phone on EMI. The report suggested waiting. I did, and realised I didn’t need it right away.', 'Big purchase paused'],
-           ['DS', 'Divya S.', 'Kochi', 'I never knew where my money went each month. The report gave me a day to start saving. I’ve stuck to it since.', 'Saving habit started'],
-           ['TA', 'Tanvi A.', 'Jaipur', 'My cousin asked me for a loan. The report suggested checking family money plans first. We talked it through before I said yes.', 'Family money discussed']],
-    ups: ['m', 'k', 'r'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Find the right days to follow up, save and spend',
+    revs: [['SB', 'Shruti B.', 'Pune', 'It suggested sending my payment reminder on the 26th. I did, and the money I’d been waiting for came in two days later.', 'Payment Date Matched'],
+           ['MT', 'Meera T.', 'Gurgaon', 'I was about to buy a new phone on EMI. The report suggested waiting. I did, and realised I didn’t need it right away.', 'Big Purchase Paused'],
+           ['DS', 'Divya S.', 'Kochi', 'I never knew where my money went each month. The report gave me a day to start saving. I’ve stuck to it since.', 'Saving Habit Started'],
+           ['TA', 'Tanvi A.', 'Jaipur', 'My cousin asked me for a loan. The report suggested checking family money plans first. We talked it through before I said yes.', 'Family Money Discussed']],
+    ups: ['m', 'k', 'r'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers The Next 30 Days', why: 'Find the right days to follow up, save and spend',
     monthly: true, hist: 'Know your money dates this month'
   },
   r: {
@@ -84,18 +84,18 @@ var R = {
     readyPush: 'Your relationship calendar for 20 Nov – 19 Dec is in. Tap to read.',
     chat: 'Mansi, I kept reading your chart after we spoke. The next 30 days have some good evenings for you and Rahul, and a few days to take more care.\n\nLearn which evening suits a date, when a heart-to-heart will land well, how to handle family plans together, and the dates worth keeping.\n\nBuy the report and get your relationship calendar for the month. A complete sample on another chart is open to read first, so you can see how deep it goes.',
     cw: { g: ['#f4edfa', '#f8f4fc', '#fbfafc', '#fcf8ff'], f: '252,248,255', sh: '#d8dfef', tc: '#344054', bc: '#475467', rating: '4.7', readers: '48,120 readers',
-      ben: ['Covers next 30 days', 'Good days\nto talk', 'Days to\ntake care', '3 more\nanswers'], price: true },
-    stats: ['4.7', '48,120', '30 days', 'From today'],
+      ben: ['Covers Next 30 Days', 'Good Days\nTo Talk', 'Days To\nTake Care', '3 More\nAnswers'], price: true },
+    stats: ['4.7', '48,120', '30 Days', 'From Today'],
     blurb: 'Which days are best for love, which need patience, and when should you talk?',
-    chips: ['20 Nov – 19 Dec', 'Best days together'],
+    chips: ['20 Nov – 19 Dec', 'Best Days Together'],
     learnT: 'Find Answers To', learnS: 'For 20 Nov – 19 Dec 2026',
     learn: ['Which day is best for a date this month?', 'When should we have that important talk?', 'Why might small things turn into big arguments?', 'When should we talk about family plans?', 'Which days are best to spend time with family?', 'What special moments should we plan this month?'],
     revSum: ['4.7', '· 48,120 readers'],
-    revs: [['AP', 'Ankita P.', 'Pune', 'It picked the 5th for our date. We went back to the café from our first date and talked for three hours. No phones, just us.', 'Date night planned'],
-           ['SR', 'Swati R.', 'Delhi', 'It suggested checking with each other before making family plans. I asked first this time, and we avoided a whole weekend of arguments.', 'Family plans sorted'],
-           ['RS', 'Reema S.', 'Bhopal', 'It picked the 10th for a talk we kept putting off. We finally sat down after dinner. It turned out to be our calmest talk in months.', 'Important talk timed'],
-           ['NJ', 'Nidhi J.', 'Vadodara', 'It suggested calling my parents over the weekend instead of rushing the call. I’m glad we did. Things have felt easier since.', 'Family time planned']],
-    ups: ['m', 'k', 'w'], up: ['4.7', '48,120 reads', '48k'], payMeta: 'Covers the next 30 days', why: 'Find the best days for love, talks and time together',
+    revs: [['AP', 'Ankita P.', 'Pune', 'It picked the 5th for our date. We went back to the café from our first date and talked for three hours. No phones, just us.', 'Date Night Planned'],
+           ['SR', 'Swati R.', 'Delhi', 'It suggested checking with each other before making family plans. I asked first this time, and we avoided a whole weekend of arguments.', 'Family Plans Sorted'],
+           ['RS', 'Reema S.', 'Bhopal', 'It picked the 10th for a talk we kept putting off. We finally sat down after dinner. It turned out to be our calmest talk in months.', 'Important Talk Timed'],
+           ['NJ', 'Nidhi J.', 'Vadodara', 'It suggested calling my parents over the weekend instead of rushing the call. I’m glad we did. Things have felt easier since.', 'Family Time Planned']],
+    ups: ['m', 'k', 'w'], up: ['4.7', '48,120 reads', '48k'], payMeta: 'Covers The Next 30 Days', why: 'Find the best days for love, talks and time together',
     monthly: true, hist: 'Plan the best days for you two'
   }
 };
@@ -320,7 +320,7 @@ function rewardCard() {
     return '<div class="rw-card"><div class="rw-done"><span class="ok">✓</span><div><b>₹' + amt + ' added to your wallet</b><p>You answered “' + esc(S.answer) + '”. Hemali will use it in today’s guidance.</p></div></div>' +
       btn('sec md', 'Continue Chat', 'chat') + '</div>';
   }
-  return '<div class="rw-card" id="rwCard"><h3>Day ' + d + ' · Answer to get <em>₹' + amt + '</em> in your wallet</h3><p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>' +
+  return '<div class="rw-card" id="rwCard"><h3>Day ' + d + ' · Answer To Get <em>₹' + amt + '</em> In Your Wallet</h3><p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>' +
     '<div class="ans">' + ['Achha', 'Okay', 'Pareshan'].map(function (a) { return '<button type="button" data-act="answer" data-a="' + a + '">' + a + '</button>'; }).join('') + '</div></div>';
 }
 function tileHTML(k) {
@@ -338,9 +338,9 @@ function tileHTML(k) {
 }
 BUILD.today = function () {
   var d = S.day, unlocked = d > 1;
-  var ins = [['ic_love', 'What makes you, You', 'Venus in your 7th house favours honest talks about commitment. Go slow and speak kindly.'],
+  var ins = [['ic_love', 'What Makes You, You', 'Venus in your 7th house favours honest talks about commitment. Go slow and speak kindly.'],
     ['ic_rahul', 'What Matters', 'You asked about marriage timing. Next, ask about his family’s plans this week.'],
-    ['ic_decisions', 'Where You are Today', 'The worry from last week is easing. Expect a calm, positive talk by Thursday.']];
+    ['ic_decisions', 'Where You Are Today', 'The worry from last week is easing. Expect a calm, positive talk by Thursday.']];
   var html =
     '<header class="t-head" id="tHead"><div class="t-nav">' +
       '<button type="button" class="t-ham" data-act="menu" aria-label="Menu"><img src="' + A('ic_hamburger.png') + '" alt=""></button>' +
@@ -355,18 +355,18 @@ BUILD.today = function () {
       '<div class="t-hero"><h1>Namaste Mansi</h1><p class="date">' + ['Mon, 5 Oct', 'Tue, 6 Oct', 'Wed, 7 Oct'][d - 1] + ' · Margashirsha Krishna Chaturdashi</p>' +
         '<div class="hrow ins-row" id="insRow">' + ins.map(function (c) { return '<div class="ins"><div class="ins-h"><img src="' + A(c[0] + '.png') + '" alt="">' + c[1] + '</div><p>' + c[2] + '</p></div>'; }).join('') + '</div>' +
         '<div class="dots" id="insDots"><i class="on"></i><i></i><i></i></div>' +
-        '<div class="aip"><img src="' + A('ic_ai.png') + '" alt="">AI powered</div></div>' +
+        '<div class="aip"><img src="' + A('ic_ai.png') + '" alt="">AI Powered</div></div>' +
       '<div class="t-body">' +
-        '<section><div class="sec-h">Your experts<button type="button" data-act="soon">Consult Others →</button></div>' +
+        '<section><div class="sec-h">Your Experts<button type="button" data-act="soon">Consult Others →</button></div>' +
           '<div class="hrow exp-row">' +
             '<div class="exp-hero"><div class="exp-ribbon">' + (unlocked ? '<img class="gift" src="' + A('gift20.png') + '" alt="">FREE chat unlocked' : '<img src="' + A('ic_bolt.png') + '" alt="">Next free chat tomorrow') + '</div>' +
               '<div class="exp-card"><span class="av68"><img src="' + A('av_hemali68.png') + '" alt=""></span><div class="exp-info"><div><div class="exp-name">Astro Hemali</div><div class="rate"><s>₹20/min</s><b>' + (unlocked ? 'FREE' : '₹10/min') + '</b></div></div>' +
               btn('pri sm', 'Continue Chat', 'chat') + '</div></div></div>' +
             '<div class="exp-sm"><div class="top"><img src="' + A('av_mala50.png') + '" alt=""><div><div class="exp-name">Astro Mala</div><div class="rate"><s>₹20/min</s><b>₹10/min</b></div></div></div>' + btn('pri sm', 'Continue Chat', 'soon') + '</div>' +
           '</div><div class="exp-dots"><img src="' + A('ic_dots3.png') + '" alt=""></div></section>' +
-        '<section id="secReward"><div class="sec-h">Daily reward</div>' + stripHTML(d, S.answered) + ptrHTML(d) + rewardCard() + '</section>' +
-        '<section id="secGuide"><div class="sec-h">Personalised guidance</div><div class="tiles">' + tileHTML(S.rep) +
-          '<button type="button" class="task" data-act="soon"><img src="' + A('tarot56.png') + '" alt=""><div><b>Ask the Tarot Cards</b><span>3 cards on you and Rahul</span></div><img class="arr" src="' + A('arrow_task.png') + '" alt=""></button>' +
+        '<section id="secReward"><div class="sec-h">Daily Reward</div>' + stripHTML(d, S.answered) + ptrHTML(d) + rewardCard() + '</section>' +
+        '<section id="secGuide"><div class="sec-h">Personalised Guidance</div><div class="tiles">' + tileHTML(S.rep) +
+          '<button type="button" class="task" data-act="soon"><img src="' + A('tarot56.png') + '" alt=""><div><b>Ask The Tarot Cards</b><span>3 cards on you and Rahul</span></div><img class="arr" src="' + A('arrow_task.png') + '" alt=""></button>' +
         '</div></section>' +
       '</div>' +
     '</div>' + bnav('today');
@@ -415,7 +415,7 @@ function chatWidget(k) {
   }
   h += '<div class="ben">' + c.ben.map(function (b, i) { return '<div style="color:' + tc + '"><img src="' + A('ben_' + k + i + '.png') + '" alt="">' + esc(b) + '</div>'; }).join('') + '</div>';
   if (c.price) {
-    h += '<button type="button" class="lm" data-act="openRep" data-rep="' + k + '">Learn More about this Report<img src="' + A('cw_chev.png') + '" alt=""></button>' +
+    h += '<button type="button" class="lm" data-act="openRep" data-rep="' + k + '">Learn More About This Report<img src="' + A('cw_chev.png') + '" alt=""></button>' +
       '<div class="buy"><div class="price"><span class="off">90% OFF</span><span class="row"><s>₹499</s><b>₹49</b></span></div>' + btn('pri md', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div>';
   } else {
     h += btn('sec md lmbtn', 'Learn More', 'openRep', ' data-rep="' + k + '"');
@@ -447,7 +447,7 @@ BUILD.detail = function (o) {
         ? '<video class="hv hv-' + k + '" src="v/hero_' + k + '.mp4" poster="' + A('dp_hero_' + k + '.webp') + '" muted autoplay loop playsinline preload="auto"></video>'
         : '<img class="hv hv-' + k + '" src="' + A('dp_hero_' + k + '.webp') + '" alt="">') + '</div>' +
       '<div class="dp-book' + (o.opened ? ' done' : '') + '"><div class="bk-move"><img class="spread" src="' + A('open_' + k + '.webp') + '" alt=""><span class="hinge"><span class="cov"><span class="f" style="background-image:url(' + A('cov_' + k + '.webp') + ')"></span><span class="b" style="background-image:url(' + A('open_' + k + '.webp') + ')"></span></span></span>' +
-        '<button type="button" class="pill" data-act="sample" data-rep="' + k + '" aria-label="See Sample report"><img src="' + A('pill.png') + '" alt=""></button></div></div>' +
+        '<button type="button" class="pill" data-act="sample" data-rep="' + k + '" aria-label="See Sample Report"><img src="' + A('pill.png') + '" alt=""></button></div></div>' +
       '<div class="dp-card"><h1>' + r.name + '</h1><div class="stats"><div><b>' + r.stats[0] + '<img src="' + A('dp_star16.png') + '" alt=""></b><span>Rating</span></div><i></i><div><b>' + r.stats[1] + '</b><span>Reads</span></div><i></i><div><b>' + r.stats[2] + '</b><span>' + r.stats[3] + '</span></div></div>' + statusRows + '</div>' +
       /* On Kundli Milan the guna score is the whole reason you are on this page, so
          it goes first and the description, tags and sample button follow it. */
@@ -458,7 +458,7 @@ BUILD.detail = function (o) {
       '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (r.learnS ? '<small>' + r.learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
       '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
         '<div class="hrow revs">' + r.revs.map(function (v) { return '<div class="rev"><span class="qm">”</span><div class="who"><i>' + v[0] + '</i><div><b>' + v[1] + '</b><span>' + v[2] + '</span></div></div><p>' + v[3] + '</p><span class="tag">' + v[4] + '</span></div>'; }).join('') + '</div></div>' +
-      '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u]; return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i % 2 ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹49<s>₹499</s><em>90% off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
+      '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u]; return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i % 2 ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹49<s>₹499</s><em>90% Off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
     '</div>' + buyBar(k);
   return { html: h, cls: 'dp', after: function (el, item) {
     var sc = $('#dpScroll', el), nav = $('#dpNav', el);
@@ -494,10 +494,10 @@ BUILD.detail = function (o) {
 };
 /* The four questions the score cannot answer. They are the hook, so they sit
    inside the card with the buy button rather than loose under the description. */
-var PEEK = ['Any Manglik dosha?', 'When to marry', 'The missing 8', 'Remedies that work'];
+var PEEK = ['Any Manglik Dosha?', 'When To Marry', 'The Missing 8', 'Remedies That Work'];
 function matchBlock() {
-  return '<div class="dp-match"><div class="mcard"><div class="sc"><div><small>Mansi & Rahul</small><b>28 of 36</b><span>Very good match</span></div><img src="' + A('k_progress.png') + '" alt=""></div>' +
-    '<div class="acts"><button type="button" data-act="compat">All 8 areas</button><button type="button" data-act="editHim">Edit details</button></div>' +
+  return '<div class="dp-match"><div class="mcard"><div class="sc"><div><small>Mansi & Rahul</small><b>28 of 36</b><span>Very Good Match</span></div><img src="' + A('k_progress.png') + '" alt=""></div>' +
+    '<div class="acts"><button type="button" data-act="compat">All 8 Areas</button><button type="button" data-act="editHim">Edit Details</button></div>' +
     '<div class="nadi"><span>This is a preview. The detailed report answers all four.</span></div>' +
     '<div class="pchips">' + PEEK.map(function (c) { return '<span class="chip"><img src="' + A('chip_k0.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
     '<div class="pbuy">' + btn('sec md', 'Buy Detailed Report', 'buy', ' data-rep="k"') + '</div></div></div>';
@@ -505,7 +505,7 @@ function matchBlock() {
 function buyBar(k) {
   var r = R[k], st = ownState(k);
   var priceBlk = '<div class="bprice"><span class="r"><b>₹49</b><s>₹499</s></span><span>90% OFF</span></div>';
-  if (st === 'writing') return '<div class="buybar"><div class="why"><img src="' + A('why_writing.png') + '" alt="">Report being prepared</div><div class="row">' + priceBlk + btn('dis lg', 'We’ll notify you', '', ' disabled') + '</div></div>';
+  if (st === 'writing') return '<div class="buybar"><div class="why"><img src="' + A('why_writing.png') + '" alt="">Report Being Prepared</div><div class="row">' + priceBlk + btn('dis lg', 'We’ll Notify You', '', ' disabled') + '</div></div>';
   if (st === 'ready') {
     if (k === 'm') return '<div class="buybar"><div class="why"><img src="' + A('why_owned.png') + '" alt="">Your report is ready. View it anytime.</div><div class="row">' + btn('pri lg', 'View Report', 'readBought', ' data-rep="' + k + '"') + '</div></div>';
     /* The repeatable reports go on selling the next one once you own this one, a new
@@ -548,13 +548,13 @@ BUILD.kform = function () {
   var him = S.him, left = ['dob', 'time', 'place'].filter(function (f) { return !him[f] && !(f === 'time' && him.unknown); }).length + (him.name ? 0 : 1);
   var h = '<div class="fp-top k"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('k3_back.png') + '" alt=""></button><h1>Kundli Milan</h1></div></div>' +
     '<div class="scroll"><div class="fbody" style="padding-top:16px;gap:12px">' +
-      '<div class="kh"><b>Boy’s details</b><span class="pillst ' + (left ? 'todo' : 'ok') + '" id="kLeft">' + (left ? left + ' detail' + (left > 1 ? 's' : '') + ' left' : '<img src="' + A('ic_check12.png') + '" alt="">Added') + '</span></div>' +
+      '<div class="kh"><b>Boy’s Details</b><span class="pillst ' + (left ? 'todo' : 'ok') + '" id="kLeft">' + (left ? left + ' Detail' + (left > 1 ? 's' : '') + ' Left' : '<img src="' + A('ic_check12.png') + '" alt="">Added') + '</span></div>' +
       fld('hName', 'Name', him.name, 'text', '') +
       '<div class="two">' + fld('hDob', 'Date of Birth', him.dob, 'date', 'ic_date.png') + fld('hTime', 'Time of Birth', him.time, 'time', 'ic_time.png') + '</div>' +
-      '<button type="button" class="cbx' + (him.unknown ? ' on' : '') + '" data-act="unknownTime"><i>✓</i>Don’t know my exact time of birth</button>' +
+      '<button type="button" class="cbx' + (him.unknown ? ' on' : '') + '" data-act="unknownTime"><i>✓</i>Don’t Know My Exact Time Of Birth</button>' +
       fld('hPlace', 'Place of Birth', him.place, 'city', '') +
       '<div style="height:4px"></div>' +
-      '<div class="kh"><b>Girl’s details</b><span class="pillst ok"><img src="' + A('ic_check12.png') + '" alt="">Added</span></div>' +
+      '<div class="kh"><b>Girl’s Details</b><span class="pillst ok"><img src="' + A('ic_check12.png') + '" alt="">Added</span></div>' +
       '<div class="bsum"><i>M</i><div><b>' + esc(S.me.name) + '</b><span>' + prettyDate(S.me.dob) + ' · ' + prettyTime(S.me.time) + '</span><span>' + esc(S.me.place) + '</span></div><button type="button" class="link" data-act="editMe">Edit</button></div>' +
     '</div></div>' +
     '<div class="kfoot"><div class="pv"><img src="' + A('ic_lock.png') + '" alt="">Used only to make your report. Never shared.</div>' + btn((left ? 'dis' : 'pri') + ' lg', 'See Your Compatibility', 'kSubmit', ' id="kGo"') + '</div>';
@@ -626,21 +626,21 @@ function syncK(el) {
   var him = S.him, left = ['dob', 'time', 'place'].filter(function (f) { return !him[f] && !(f === 'time' && him.unknown); }).length + (him.name ? 0 : 1);
   var pill = $('#kLeft', el);
   pill.className = 'pillst ' + (left ? 'todo' : 'ok');
-  pill.innerHTML = left ? left + ' detail' + (left > 1 ? 's' : '') + ' left' : '<img src="' + A('ic_check12.png') + '" alt="">Added';
+  pill.innerHTML = left ? left + ' Detail' + (left > 1 ? 's' : '') + ' Left' : '<img src="' + A('ic_check12.png') + '" alt="">Added';
   go.className = 'btn lg ' + (left ? 'dis' : 'pri');
 }
 
-/* ======================= Edit details (her) ======================= */
+/* ======================= Edit Details (her) ======================= */
 var editDraft = null;
 BUILD.edit = function () {
   editDraft = editDraft || JSON.parse(JSON.stringify(S.me));
   var d = editDraft;
-  var h = '<div class="fp-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('edit_back.png') + '" alt=""></button><h1>Almost there</h1></div></div>' +
+  var h = '<div class="fp-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('edit_back.png') + '" alt=""></button><h1>Almost There</h1></div></div>' +
     '<div class="scroll"><div class="fbody"><p class="hint">Fill your details to connect with astrologer</p>' +
       fld('eName', 'Name', d.name, 'text', '') + fld('eDob', 'Date of Birth', d.dob, 'date', 'ic_date.png') +
       '<div class="gender"><span>Gender</span><div>' + ['Male', 'Female'].map(function (g) { return '<button type="button" class="radio' + (d.gender === g ? ' on' : '') + '" data-act="gender" data-g="' + g + '"><i></i>' + g + '</button>'; }).join('') + '</div></div>' +
       fld('ePlace', 'Place of Birth', d.place, 'city', '') + fld('eTime', 'Time of Birth', d.time, 'time', 'ic_time.png') +
-      '<button type="button" class="cbx" data-act="noop"><i>✓</i>Don’t know my exact time of birth</button>' +
+      '<button type="button" class="cbx" data-act="noop"><i>✓</i>Don’t Know My Exact Time Of Birth</button>' +
       '<p class="fnote">You can still get your report. Some parts, especially precise timing and house-based details, may be less specific without your birth time.</p>' +
     '</div></div><div class="ffoot">' + btn('pri xl', 'Save Changes', 'saveMe') + '</div>';
   return { html: h, after: bindForm };
@@ -664,24 +664,24 @@ function openPay() {
   var html = '<div class="pay"><div class="in">' +
     '<div class="ttl"><b>' + r.name + '</b><span>' + r.payMeta + '</span></div>' +
     '<div class="pfor"><i>M</i><div><b>' + esc(S.me.name) + '</b><span>' + prettyDate(S.me.dob) + ' · ' + prettyTime(S.me.time) + '</span></div><button type="button" class="link" data-act="editMeFromPay">Edit</button></div>' +
-    '<div class="plang"><img src="' + A('pay_globe.png') + '" alt=""><span>Report in <b>' + S.lang + '</b></span><button type="button" class="link" data-act="lang">Change</button></div>' +
+    '<div class="plang"><img src="' + A('pay_globe.png') + '" alt=""><span>Report In <b>' + S.lang + '</b></span><button type="button" class="link" data-act="lang">Change</button></div>' +
     /* Every step of the sum is on screen now. The old bill jumped from the ₹450 off
        straight to GST, so the ₹49 the whole offer is built around was never
        actually shown and the 18% looked like it was charged on ₹499. */
-    '<div class="bill"><div><span>Report price</span><span>₹499</span></div>' +
-      '<div><span>Discount (90% off)</span><span>−₹450</span></div>' +
-      '<div class="sub"><span>Price after discount</span><span>₹49</span></div>' +
-      '<div><span>GST 18% on ₹49</span><span>+₹9</span></div>' +
-      (t.used ? '<div class="wal"><span>Wallet money</span><span>−₹' + t.used + '</span></div>' : '') +
-      '<hr><div class="tot"><span>You pay</span><span><s>₹499</s><b>₹' + t.due + '</b></span></div></div>' +
-    '<div class="pacts">' + (t.due ? '<div class="pw"><small>Pay with<img src="' + A('pay_chev.png') + '" alt=""></small><b><img src="' + A('pay_phonepe.png') + '" alt="">PhonePe</b></div>' : '') +
-      btn('pri xl', t.due ? 'Pay ₹' + t.due : 'Get it with wallet', 'pay') + '</div>' +
+    '<div class="bill"><div><span>Report Price</span><span>₹499</span></div>' +
+      '<div><span>Discount (90% Off)</span><span>−₹450</span></div>' +
+      '<div class="sub"><span>Price After Discount</span><span>₹49</span></div>' +
+      '<div><span>GST 18% On ₹49</span><span>+₹9</span></div>' +
+      (t.used ? '<div class="wal"><span>Wallet Money</span><span>−₹' + t.used + '</span></div>' : '') +
+      '<hr><div class="tot"><span>You Pay</span><span><s>₹499</s><b>₹' + t.due + '</b></span></div></div>' +
+    '<div class="pacts">' + (t.due ? '<div class="pw"><small>Pay With<img src="' + A('pay_chev.png') + '" alt=""></small><b><img src="' + A('pay_phonepe.png') + '" alt="">PhonePe</b></div>' : '') +
+      btn('pri xl', t.due ? 'Pay ₹' + t.due : 'Get It With Wallet', 'pay') + '</div>' +
     '</div></div>';
   openSheet(html, { close: true, cls: 'paysheet', above: above });
 }
 function openLang(ret) {
   var cur = S.lang;
-  var html = '<div class="lang"><h3>Read the report in</h3><p>See a sample first. Your report comes in the language you pick.</p><div>' +
+  var html = '<div class="lang"><h3>Read The Report In</h3><p>See a sample first. Your report comes in the language you pick.</p><div>' +
     ['English', 'Hinglish'].map(function (l) { return '<button type="button" class="opt' + (l === cur ? ' on' : '') + '" data-act="pickLang" data-l="' + l + '">' + l + '<i></i></button>'; }).join('') + '</div>' +
     btn('pri xl', 'Change Language', 'setLang', ' data-ret="' + (ret || '') + '"') + '</div>';
   openSheet(html, {});
@@ -689,7 +689,7 @@ function openLang(ret) {
 }
 function compatHTML() {
   var en = S.compatLang === 'en';
-  return '<div class="compat"><div class="sch"><div><small>Compatibility score</small><b>28 of 36</b><span>Very good match</span></div></div>' +
+  return '<div class="compat"><div class="sch"><div><small>Compatibility Score</small><b>28 of 36</b><span>Very Good Match</span></div></div>' +
     '<div class="seg"><button type="button" class="' + (en ? 'on' : '') + '" data-act="cLang" data-l="en">English</button><button type="button" class="' + (en ? '' : 'on') + '" data-act="cLang" data-l="sa">Sanskrit</button></div>' +
     '<div class="kootas">' + KOOTA.map(function (x) { return '<div class="koota' + (x[2] === 0 ? ' low' : '') + '"><img src="' + A('kt_' + x[0] + '.png') + '" alt=""><b>' + (en ? x[0] : x[1]) + '</b><span>' + x[2] + ' / ' + x[3] + '</span></div>'; }).join('') + '</div>' +
     '<div class="ft"><img src="' + A('kt_pulse.png') + '" alt=""><span>' + (en ? 'Health' : 'Nadi') + ' is 0 of 8. Your report explains if it is cancelled, and the remedy.</span></div></div>';
@@ -705,7 +705,7 @@ BUILD.success = function (o) {
 var loaderRun = null;
 BUILD.loader = function (o) {
   return { html: '<button type="button" class="bk" data-act="leaveLoader" aria-label="Back"><img src="' + A('ld_back.png') + '" alt=""></button>' +
-    '<div class="body"><h2>' + (o.rep === 'k' ? 'Analysing your Kundlis' : 'Analysing your Kundli') + '</h2><p class="time">Preparing your report · will be ready in 5 mins</p><div class="pick" id="pick"></div></div>' +
+    '<div class="body"><h2>' + (o.rep === 'k' ? 'Analysing Your Kundlis' : 'Analysing Your Kundli') + '</h2><p class="time">Preparing your report · will be ready in 5 mins</p><div class="pick" id="pick"></div></div>' +
     '<div class="hands"><img src="' + A('loader_hands.webp') + '" alt=""><span class="orb"></span></div>', cls: 'ldr', after: function (el) { runPicker($('#pick', el)); } };
 };
 function runPicker(host) {
@@ -754,7 +754,7 @@ function finishReport(k) {
 }
 BUILD.ready = function (o) {
   var k = o.rep, cov = (k === 'm' || k === 'r') ? '<img src="' + A('cover_' + k + '.webp') + '" alt="">' : book(k, 150);
-  return { html: '<span class="glow"></span><div class="cov">' + cov + '</div><h2>Your ' + '' + R[k].name + ' is ready</h2><p>Made from your birth chart by Astro Hemali</p>' + btn('pri xl', 'Read Report', 'readBought', ' data-rep="' + k + '"'), cls: 'ready' };
+  return { html: '<span class="glow"></span><div class="cov">' + cov + '</div><h2>Your ' + '' + R[k].name + ' Is Ready</h2><p>Made from your birth chart by Astro Hemali</p>' + btn('pri xl', 'Read Report', 'readBought', ' data-rep="' + k + '"'), cls: 'ready' };
 };
 
 /* ======================= My Reports spotlight (P6.2, shown once) ======================= */
@@ -767,7 +767,7 @@ function shelfTip() {
   var d = document.createElement('div'); d.className = 'spot';
   d.innerHTML = '<div class="sp-scrim"></div><button type="button" class="sp-target" style="left:' + (cx - 22) + 'px;top:' + (cy - 22) + 'px" aria-label="My Reports"><img src="' + A('ic_myreports.png') + '" alt=""></button>' +
     '<span class="sp-ptr" style="left:' + (cx - 10) + 'px;top:' + (cy + 29) + 'px"></span>' +
-    '<div class="sp-call" style="top:' + (cy + 38) + 'px"><button type="button" class="sp-body"><img src="' + A('mr_empty.webp') + '" alt=""><span class="sp-c"><b>All your reports are here</b><span>Read, download or share them anytime from this icon.</span></span></button><button type="button" class="sp-ok">Got it</button></div>';
+    '<div class="sp-call" style="top:' + (cy + 38) + 'px"><button type="button" class="sp-body"><img src="' + A('mr_empty.webp') + '" alt=""><span class="sp-c"><b>All Your Reports Are Here</b><span>Read or download them anytime from this icon.</span></span></button><button type="button" class="sp-ok">Got It</button></div>';
   overlay.appendChild(d); void d.offsetHeight; d.classList.add('on');
   function close(then) { d.classList.remove('on'); setTimeout(function () { d.remove(); if (then) then(); }, 250); }
   $('.sp-ok', d).addEventListener('click', function () { close(); });
@@ -779,22 +779,21 @@ function shelfTip() {
 /* ======================= My Reports, History ======================= */
 BUILD.mine = function () {
   var owned = Object.keys(S.own);
-  var DL = '<span class="ibtn"><img src="' + A('ic_download.png') + '" alt=""></span><span class="ibtn"><img src="' + A('ic_share.png') + '" alt=""></span>';
   var list = owned.length ? '<div class="mr-list">' + owned.map(function (k) {
     var rd = S.own[k] === 'ready';
-    return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>Bought today</small>' +
-      (rd ? '<div class="mact">' + btn('sec sm', 'Read report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button><button type="button" class="ibtn" data-act="soon" aria-label="Share"><img src="' + A('ic_share.png') + '" alt=""></button></span></div>'
+    return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>Bought Today</small>' +
+      (rd ? '<div class="mact">' + btn('sec sm', 'Read Report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button></span></div>'
           : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>Will be ready in 5 mins</button>') + '</div></div>';
   }).join('') + '</div>'
-    : '<div class="mr-empty"><img src="' + A('mr_empty.webp') + '" alt=""><b>No reports yet</b><p>Reports Astro Hemali writes for you stay here. Read them anytime.</p></div>';
+    : '<div class="mr-empty"><img src="' + A('mr_empty.webp') + '" alt=""><b>No Reports Yet</b><p>Reports Astro Hemali writes for you stay here. Read them anytime.</p></div>';
   var more = ['m', 'k', 'w', 'r'].filter(function (k) { return !S.own[k]; });
   var SHELF = { m: 'Marriage Prediction', k: 'Kundli Milan Report', w: 'Monthly Wealth Report', r: 'Monthly Relationship Report' };
   var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>My Reports</h1></div></div>' +
-    '<div class="scroll">' + list + (more.length ? '<div class="mr-h">' + (owned.length ? 'More reports for you' : 'Popular reports') + '</div><div class="hrow shelf">' + more.map(function (k, i) {
+    '<div class="scroll">' + list + (more.length ? '<div class="mr-h">' + (owned.length ? 'More Reports For You' : 'Popular Reports') + '</div><div class="hrow shelf">' + more.map(function (k, i) {
       var r = R[k];
       /* The books tease here too. Staggered 0.7s / 2.5s and alternating, so the shelf
          catches the eye one book at a time instead of flapping in unison. */
-      return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87, true, i % 2 ? 2.5 : 0.7) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹49</b><s>₹499</s><em>90% off</em></span></button>';
+      return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87, true, i % 2 ? 2.5 : 0.7) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹49</b><s>₹499</s><em>90% Off</em></span></button>';
     }).join('') + '</div>' : '') + '</div>';
   return { html: h };
 };
@@ -802,7 +801,7 @@ BUILD.history = function () {
   var k = S.rep, r = R[k], st = ownState(k);
   var h = '<div class="mr-top"><div class="in"><h1 style="margin-left:4px">History</h1></div></div><div class="scroll"><div class="hitem"><small>10:42 AM</small><div class="hcard">' +
     '<div class="who"><img src="' + A('av_mala50.png').replace('av_mala50', 'av_hemali68') + '" alt=""><div><b>Astro Hemali</b><span>' + r.hist + '</span></div></div>' +
-    '<div class="box"><b>' + r.name + '</b><span class="bk">' + book(k, 61) + '</span>' + (st ? btn('pri sm', st === 'ready' ? 'Read Report' : 'Writing your report…', st === 'ready' ? 'readBought' : 'openRep', ' data-rep="' + k + '"') : btn('pri sm', 'Learn More', 'openRep', ' data-rep="' + k + '"')) + '</div>' +
+    '<div class="box"><b>' + r.name + '</b><span class="bk">' + book(k, 61) + '</span>' + (st ? btn('pri sm', st === 'ready' ? 'Read Report' : 'Writing Your Report…', st === 'ready' ? 'readBought' : 'openRep', ' data-rep="' + k + '"') : btn('pri sm', 'Learn More', 'openRep', ' data-rep="' + k + '"')) + '</div>' +
     '</div></div></div>' + bnav('history');
   return { html: h, cls: 'hist' };
 };
@@ -888,8 +887,8 @@ phone.addEventListener('click', function (e) {
 
 /* ======================= day scripts ======================= */
 function earnSheet() {
-  var html = '<div class="earn"><div class="art"></div><div class="tx"><h2>Answer &amp; Earn every day!</h2><p>Answer today’s question to earn.</p></div>' + stripHTML(1, false) +
-    '<div class="acts">' + btn('pri x2', 'Answer now', 'earnNow') + btn('txt', 'Maybe Later', 'earnLater') + '</div></div>';
+  var html = '<div class="earn"><div class="art"></div><div class="tx"><h2>Answer &amp; Earn Every Day!</h2><p>Answer today’s question to earn.</p></div>' + stripHTML(1, false) +
+    '<div class="acts">' + btn('pri x2', 'Answer Now', 'earnNow') + btn('txt', 'Maybe Later', 'earnLater') + '</div></div>';
   openSheet(html, { onClose: afterEarn });
 }
 function afterEarn() {
