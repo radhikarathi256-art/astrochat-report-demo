@@ -29,7 +29,7 @@ var R = {
            ['NK', 'Neha K.', 'Indore', 'It said my best window runs till July 2027, and that I should look past attraction. That is what got us talking about marriage at home.', 'Marriage window clear'],
            ['RM', 'Ritu M.', 'Nashik', 'The part about why I keep picking the wrong people was hard to read, because it was true. I have stopped rushing things now.', 'Pattern explained'],
            ['SV', 'Sneha V.', 'Kolkata', 'It said my partner would value family and steady work. That is what I look for now, not just chemistry. My mother agreed with every line.', 'Partner traits matched']],
-    ups: ['k', 'w'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'Find out what is holding your marriage back',
+    ups: ['k', 'w', 'r'], up: ['4.7', '13,000 reads', '13k'], payMeta: 'One-time payment', why: 'Find out what is holding your marriage back',
     hist: 'Discover the Love Meant for You'
   },
   k: {
@@ -51,7 +51,7 @@ var R = {
            ['KR', 'Kavya R.', 'Chennai', 'I was worried about Manglik dosha for weeks. This report helped me understand what my chart actually showed.', 'Manglik doubt cleared'],
            ['PN', 'Pooja N.', 'Bhopal', 'I was worried about how things would be with my in-laws. The report helped me understand what to look out for before we got married.', 'Family match checked'],
            ['IG', 'Isha G.', 'Lucknow', 'Our report explained the Nadi dosha and the remedy mentioned in the chart. It gave my parents more clarity about our match.', 'Nadi dosha explained']],
-    ups: ['m', 'w'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'Find out what your match score doesn’t tell you',
+    ups: ['m', 'w', 'r'], up: ['4.8', '96,440 reads', '96k'], payMeta: 'One-time payment · per couple', why: 'Find out what your match score doesn’t tell you',
     hist: 'See how well you and Rahul match'
   },
   w: {
@@ -73,7 +73,7 @@ var R = {
            ['MT', 'Meera T.', 'Gurgaon', 'I was about to buy a new phone on EMI. The report suggested waiting. I did, and realised I didn’t need it right away.', 'Big purchase paused'],
            ['DS', 'Divya S.', 'Kochi', 'I never knew where my money went each month. The report gave me a day to start saving. I’ve stuck to it since.', 'Saving habit started'],
            ['TA', 'Tanvi A.', 'Jaipur', 'My cousin asked me for a loan. The report suggested checking family money plans first. We talked it through before I said yes.', 'Family money discussed']],
-    ups: ['m', 'k'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Find the right days to follow up, save and spend',
+    ups: ['m', 'k', 'r'], up: ['4.6', '71,250 reads', '71k'], payMeta: 'Covers the next 30 days', why: 'Find the right days to follow up, save and spend',
     monthly: true, hist: 'Know your money dates this month'
   },
   r: {
@@ -95,7 +95,7 @@ var R = {
            ['SR', 'Swati R.', 'Delhi', 'It suggested checking with each other before making family plans. I asked first this time, and we avoided a whole weekend of arguments.', 'Family plans sorted'],
            ['RS', 'Reema S.', 'Bhopal', 'It picked the 10th for a talk we kept putting off. We finally sat down after dinner. It turned out to be our calmest talk in months.', 'Important talk timed'],
            ['NJ', 'Nidhi J.', 'Vadodara', 'It suggested calling my parents over the weekend instead of rushing the call. I’m glad we did. Things have felt easier since.', 'Family time planned']],
-    ups: ['m', 'k'], up: ['4.7', '48,120 reads', '48k'], payMeta: 'Covers the next 30 days', why: 'Find the best days for love, talks and time together',
+    ups: ['m', 'k', 'w'], up: ['4.7', '48,120 reads', '48k'], payMeta: 'Covers the next 30 days', why: 'Find the best days for love, talks and time together',
     monthly: true, hist: 'Plan the best days for you two'
   }
 };
