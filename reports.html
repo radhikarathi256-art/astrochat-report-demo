@@ -546,6 +546,13 @@ body.embed .dock-in > div { padding-bottom:calc(12px + var(--sbb,0px)) !importan
     const rt = document.documentElement.style;
     rt.setProperty('--sbt', (+Q.get('sbt') || 0) + 'px');
     rt.setProperty('--sbb', (+Q.get('sbb') || 0) + 'px');
+    /* Standalone, <html> pads itself by the safe areas and its own #f4f1f6 shows
+       through above the arch as a grey strip. Inside the app the arch has to run
+       to the very top of the screen, exactly like the detail page, so drop that
+       padding here. --sbt still keeps the nav row clear of the status bar. */
+    rt.paddingTop = '0px';
+    rt.paddingBottom = '0px';
+    rt.background = 'transparent';
   }
   const toParent = msg => { try { parent.postMessage(Object.assign({src:'astro-reader'}, msg), '*'); } catch (e) {} };
   let state = {report:'marriage', mode:'sample', view:'mobile'};
