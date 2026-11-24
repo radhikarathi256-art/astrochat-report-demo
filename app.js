@@ -430,7 +430,14 @@ BUILD.detail = function (o) {
   }
   var h = '<div class="dp-nav" id="dpNav"><div class="in"><button type="button" class="bk" data-act="back" aria-label="Back"><img src="' + A('dp_back.png') + '" alt=""></button><span class="t">' + r.name + '</span>' + wchip(true) + '</div></div>' +
     '<div class="scroll" id="dpScroll">' +
-      '<div class="dp-hero"><img class="bg" src="' + A('dp_hero_' + k + '.webp') + '" alt="">' + (VID[k] ? '<video class="hv hv-' + k + '" src="v/hero_' + k + '.mp4" muted autoplay loop playsinline preload="auto"></video>' : '') + '</div>' +
+      /* The still is the video's own poster rather than a separate image behind it.
+         The poster is painted by the video element, so it inherits the exact same
+         object-fit, object-position and transform and the frame cannot shift when
+         playback starts. On a slow connection the still is all you see, and it is
+         already the first frame. */
+      '<div class="dp-hero">' + (VID[k]
+        ? '<video class="hv hv-' + k + '" src="v/hero_' + k + '.mp4" poster="' + A('dp_hero_' + k + '.webp') + '" muted autoplay loop playsinline preload="auto"></video>'
+        : '<img class="hv hv-' + k + '" src="' + A('dp_hero_' + k + '.webp') + '" alt="">') + '</div>' +
       '<div class="dp-book' + (o.opened ? ' done' : '') + '"><div class="bk-move"><img class="spread" src="' + A('open_' + k + '.webp') + '" alt=""><span class="hinge"><span class="cov"><span class="f" style="background-image:url(' + A('cov_' + k + '.webp') + ')"></span><span class="b" style="background-image:url(' + A('open_' + k + '.webp') + ')"></span></span></span>' +
         '<button type="button" class="pill" data-act="sample" data-rep="' + k + '" aria-label="See Sample report"><img src="' + A('pill.png') + '" alt=""></button></div></div>' +
       '<div class="dp-card"><h1>' + r.name + '</h1><div class="stats"><div><b>' + r.stats[0] + '<img src="' + A('dp_star16.png') + '" alt=""></b><span>Rating</span></div><i></i><div><b>' + r.stats[1] + '</b><span>Reads</span></div><i></i><div><b>' + r.stats[2] + '</b><span>' + r.stats[3] + '</span></div></div>' + statusRows + '</div>' +
@@ -446,8 +453,9 @@ BUILD.detail = function (o) {
     var sc = $('#dpScroll', el), nav = $('#dpNav', el);
     var v = $('video.hv', el);
     if (v) {
+      /* No fade in on first frame. The poster is already on screen in the same
+         place, so revealing the video was the one second jerk on this page. */
       var go = function () { v.playbackRate = VID[k]; var p = v.play(); if (p && p.catch) p.catch(function () {}); };
-      v.addEventListener('playing', function () { v.classList.add('on'); }, { once: true });
       if (v.readyState >= 1) go(); else v.addEventListener('loadedmetadata', go, { once: true });
     }
     if (!o.opened) setTimeout(function () { o.opened = true; }, 3200);

@@ -315,9 +315,9 @@ img{display:block}
 .dp-nav .wchip .gift{background:none;border:0;padding:0}
 .dp-nav .wchip .gift img{width:26px;height:26px}
 .dp-hero{position:relative;height:calc(407px + var(--sb));border-radius:0 0 24px 24px;overflow:hidden}
-.dp-hero img.bg{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 100%}
-.dp-hero .hv{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s;transform-origin:50% 0}
-.dp-hero .hv.on{opacity:1}
+/* One element only. The still is the video's own poster, so it is laid out by
+   the same rules below and the picture cannot shift when playback starts. */
+.dp-hero .hv{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 0;background:#fff}
 .dp-hero .hv-m{object-position:50% 45%;transform:translateY(-32px) scale(1.2)}
 .dp-hero .hv-k{object-position:50% 0;filter:sepia(.3) saturate(1.6) brightness(.8)}
 .dp-hero .hv-w{object-position:50% 0;transform:translateY(-16px)}
