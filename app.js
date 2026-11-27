@@ -324,15 +324,22 @@ function rewardCard() {
   return '<div class="rw-card" id="rwCard"><h3>Day ' + d + ' · Answer To Get <em>₹' + amt + '</em> In Your Wallet</h3><p class="q">Aaj is relationship ko lekar aap kaisa feel kar rahe hain?</p>' +
     '<div class="ans">' + ['Achha', 'Okay', 'Pareshan'].map(function (a) { return '<button type="button" data-act="answer" data-a="' + a + '">' + a + '</button>'; }).join('') + '</div></div>';
 }
+/* One wording for every in-progress surface. The loader header is the exception
+   and keeps its own "will be ready in 5 mins" line. */
+var PREPARING = 'Report is being prepared';
+function learnLink() {
+  return '<span class="lmk">Learn More<img src="' + A('cw_chev.png') + '" alt=""></span>';
+}
 function tileHTML(k) {
   var r = R[k], st = ownState(k);
   if (st === 'ready') {
     return '<button type="button" class="gt owned" data-act="openRep" data-rep="' + k + '"><span class="book">' + book(k, 38) + '</span>' +
       '<span class="txt"><b>' + r.name + '</b><span>By Astro Hemali</span></span><span class="tag">Ready</span><img class="oarr" src="' + A('tile_arrow_o.png') + '" alt=""><span class="bd"></span></button>';
   }
+  /* Offer ends in a Learn More link, the other states keep the plain arrow. */
   var hook = st === 'writing'
-    ? '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>Writing your report · will be ready in 5 mins</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">'
-    : '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span><img class="arr" src="' + A('arrow_' + IMG[k] + '.png') + '" alt="">';
+    ? '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>' + PREPARING + '</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">'
+    : '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span>' + learnLink();
   return '<button type="button" class="gt" data-act="openRep" data-rep="' + k + '" style="background:' + r.tileBg + ';--rule:' + r.rule + '">' +
     '<span class="motif"><img src="' + A('motif_' + IMG[k] + '.webp') + '" alt=""></span><span class="hook">' + hook + '</span><span class="bd"></span>' +
     '<span class="txt"><b>' + r.name + '</b><span>By Astro Hemali</span></span><span class="book">' + book(k, 56.33, true, 1.1) + '</span></button>';
@@ -410,7 +417,7 @@ function chatWidget(k) {
     '<h4>' + r.name + '</h4><div class="badge" style="color:' + tc + '"><span class="r"><span>' + c.rating + '</span><img src="' + A('cwstar_' + k + '.png') + '" alt=""></span><i style="background:' + tc + '"></i><span>' + c.readers + '</span></div>';
   if (st) {
     h += st === 'writing'
-      ? '<div class="state"><img class="pdot" src="' + A('tile_dot.png') + '" alt="">Writing your report · will be ready in 5 mins</div>' + btn('dis lg', 'Read Report', '', ' style="margin-top:12px" disabled')
+      ? '<div class="state"><img class="pdot" src="' + A('tile_dot.png') + '" alt="">' + PREPARING + '</div>' + btn('dis lg', 'Read Report', '', ' style="margin-top:12px" disabled')
       : '<div class="state" style="color:var(--ok)">✓ Bought · Ready to read</div>' + btn('pri lg', 'Read Report', 'readBought', ' data-rep="' + k + '" style="margin-top:12px"');
     return h + '</div>';
   }
@@ -437,7 +444,7 @@ BUILD.detail = function (o) {
   var learnS = nextWin ? 'For 20 Dec 2026 – 18 Jan 2027' : r.learnS;
   var statusRows = '';
   if (st === 'writing' && k !== 'm') {
-    statusRows = '<div class="mstat"><button type="button" data-act="mine"><img src="' + A('st_hour.png') + '" alt=""><div><b>' + (k === 'k' ? 'Mansi & Rahul' : '20 Nov – 19 Dec') + '</b><span class="w">Being written · we’ll notify you</span></div><img class="chev" src="' + A('st_chev.png') + '" alt=""></button></div>';
+    statusRows = '<div class="mstat"><button type="button" data-act="mine"><img src="' + A('st_hour.png') + '" alt=""><div><b>' + (k === 'k' ? 'Mansi & Rahul' : '20 Nov – 19 Dec') + '</b><span class="w">' + PREPARING + ' · we’ll notify you</span></div><img class="chev" src="' + A('st_chev.png') + '" alt=""></button></div>';
   }
   /* Marriage is a one-time report, so once it is bought there is nothing to come
      back to. The other three are repeatable, and the only way into what you already
@@ -518,7 +525,7 @@ function buyBar(k) {
   var r = R[k], st = ownState(k);
   var full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
   var priceBlk = '<div class="bprice"><span class="r"><b>₹' + offer + '</b><s>₹' + full + '</s></span><span>' + off + '% OFF</span></div>';
-  if (st === 'writing') return '<div class="buybar"><div class="why"><img src="' + A('why_writing.png') + '" alt="">Report Being Prepared</div><div class="row">' + priceBlk + btn('dis lg', 'We’ll Notify You', '', ' disabled') + '</div></div>';
+  if (st === 'writing') return '<div class="buybar"><div class="why"><img src="' + A('why_writing.png') + '" alt="">' + PREPARING + '</div><div class="row">' + priceBlk + btn('dis lg', 'We’ll Notify You', '', ' disabled') + '</div></div>';
   if (st === 'ready') {
     if (k === 'm') return '<div class="buybar"><div class="why"><img src="' + A('why_owned.png') + '" alt="">Your report is ready. View it anytime.</div><div class="row">' + btn('pri lg', 'View Report', 'readBought', ' data-rep="' + k + '"') + '</div></div>';
     /* The repeatable reports go on selling the next one once you own this one, a new
@@ -693,9 +700,12 @@ function openPay() {
         '<div class="sub"><span>Price Left After Wallet Money</span><span>₹' + t.left + '</span></div>' : '') +
       '<div><span>GST 18% On ₹' + t.left + '</span><span>+₹' + t.gst + '</span></div>' +
       '<hr><div class="tot"><span>You Pay</span><span><s>₹' + full + '</s><b>₹' + t.due + '</b></span></div></div>' +
+    '</div>' +
+    /* The Pay row sits on its own full-width bar, outside the padded column, so it
+       carries the same lifted edge as the Buy bar on the report pages. */
     '<div class="pacts">' + (t.due ? '<div class="pw"><small>Pay With<img src="' + A('pay_chev.png') + '" alt=""></small><b><img src="' + A('pay_phonepe.png') + '" alt="">PhonePe</b></div>' : '') +
       btn('pri xl', t.due ? 'Pay ₹' + t.due : 'Get It With Wallet', 'pay') + '</div>' +
-    '</div></div>';
+    '</div>';
   openSheet(html, { close: true, cls: 'paysheet', above: above });
 }
 function openLang(ret) {
@@ -796,31 +806,51 @@ function shelfTip() {
 }
 
 /* ======================= My Reports, History ======================= */
+/* Second line on a bought row. Kundli Milan is about a couple, the monthly two
+   are about the 30 days they were bought for, Marriage is a one-off. */
+function mineMeta(k) {
+  if (k === 'k') return esc(S.me.name) + ' & ' + esc(S.him.name || 'Rahul') + ' · 28 of 36 gunas';
+  if (R[k].monthly) return '20 Nov – 19 Dec 2026';
+  return 'Bought Today';
+}
+/* Which report we pitch next. Nothing bought is Marriage, one bought is Kundli
+   Milan, more than one is Monthly Relationship. Never pitch something owned. */
+function pitched() {
+  var n = Object.keys(S.own).length;
+  var order = [n === 0 ? 'm' : n === 1 ? 'k' : 'r', 'm', 'k', 'r', 'w'];
+  for (var i = 0; i < order.length; i++) { if (!S.own[order[i]]) return order[i]; }
+  return null;
+}
+var BAND = { m: '#fdf0f3', k: '#fff5e8', w: '#eff3fc', r: '#f5effb' };
 BUILD.mine = function () {
   var owned = Object.keys(S.own);
   var list = owned.length ? '<div class="mr-list">' + owned.map(function (k) {
     var rd = S.own[k] === 'ready';
-    return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>Bought Today</small>' +
+    return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>' + mineMeta(k) + '</small>' +
       (rd ? '<div class="mact">' + btn('sec sm', 'Read Report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button></span></div>'
-          : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>Will be ready in 5 mins</button>') + '</div></div>';
+          : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>' + PREPARING + '</button>') + '</div></div>';
   }).join('') + '</div>'
     : '<div class="mr-empty"><img src="' + A('mr_empty.webp') + '" alt=""><b>No Reports Yet</b><p>Reports Astro Hemali writes for you stay here. Read them anytime.</p></div>';
-  var more = ['m', 'k', 'w', 'r'].filter(function (k) { return !S.own[k]; });
+  /* One tile for the report we pitch next, on a tinted band with the mandala. */
+  var p = pitched();
+  var rec = p ? '<div class="mr-rec" style="--tint:' + BAND[p] + '"><img class="md" src="' + A('dp_mandala_' + p + '.png') + '" alt="">' +
+    '<div class="mr-h">Recommended for you</div><div class="tiles">' + tileHTML(p) + '</div></div>' : '';
   var SHELF = { m: 'Marriage Prediction', k: 'Kundli Milan Report', w: 'Monthly Wealth Report', r: 'Monthly Relationship Report' };
   var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>My Reports</h1></div></div>' +
-    '<div class="scroll">' + list + (more.length ? '<div class="mr-h">' + (owned.length ? 'More Reports For You' : 'Popular Reports') + '</div><div class="hrow shelf">' + more.map(function (k, i) {
+    '<div class="scroll">' + list + rec +
+    '<div class="mr-h">All reports</div><div class="hrow shelf">' + ['m', 'k', 'w', 'r'].map(function (k, i) {
       var r = R[k], full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
       /* The books tease here too. Staggered 0.7s / 2.5s and alternating, so the shelf
          catches the eye one book at a time instead of flapping in unison. */
       return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87, true, i % 2 ? 2.5 : 0.7) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹' + offer + '</b><s>₹' + full + '</s><em>' + off + '% Off</em></span></button>';
-    }).join('') + '</div>' : '') + '</div>';
+    }).join('') + '</div></div>';
   return { html: h };
 };
 BUILD.history = function () {
   var k = S.rep, r = R[k], st = ownState(k);
   var h = '<div class="mr-top"><div class="in"><h1 style="margin-left:4px">History</h1></div></div><div class="scroll"><div class="hitem"><small>10:42 AM</small><div class="hcard">' +
     '<div class="who"><img src="' + A('av_mala50.png').replace('av_mala50', 'av_hemali68') + '" alt=""><div><b>Astro Hemali</b><span>' + r.hist + '</span></div></div>' +
-    '<div class="box"><b>' + r.name + '</b><span class="bk">' + book(k, 61) + '</span>' + (st ? btn('pri sm', st === 'ready' ? 'Read Report' : 'Writing Your Report…', st === 'ready' ? 'readBought' : 'openRep', ' data-rep="' + k + '"') : btn('pri sm', 'Learn More', 'openRep', ' data-rep="' + k + '"')) + '</div>' +
+    '<div class="box"><b>' + r.name + '</b><span class="bk">' + book(k, 61) + '</span>' + (st ? btn('pri sm', st === 'ready' ? 'Read Report' : PREPARING, st === 'ready' ? 'readBought' : 'openRep', ' data-rep="' + k + '"') : btn('pri sm', 'Learn More', 'openRep', ' data-rep="' + k + '"')) + '</div>' +
     '</div></div></div>' + bnav('history');
   return { html: h, cls: 'hist' };
 };
