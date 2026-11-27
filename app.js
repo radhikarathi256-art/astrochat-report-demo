@@ -426,6 +426,13 @@ function chatWidget(k) {
 /* ======================= Report detail ======================= */
 BUILD.detail = function (o) {
   var k = o.rep || S.rep, r = R[k], st = ownState(k);
+  /* A monthly report runs 30 days from the day it is bought, not from the 1st.
+     So once this window is paid for, the page stops selling it and starts
+     selling the one that begins the day after it ends. */
+  var nextWin = !!(r.monthly && st);
+  var stats = nextWin ? [r.stats[0], r.stats[1], r.stats[2], 'From 20 Dec'] : r.stats;
+  var chips = nextWin ? ['20 Dec – 18 Jan', r.chips[1]] : r.chips;
+  var learnS = nextWin ? 'For 20 Dec 2026 – 18 Jan 2027' : r.learnS;
   var statusRows = '';
   if (st === 'writing' && k !== 'm') {
     statusRows = '<div class="mstat"><button type="button" data-act="mine"><img src="' + A('st_hour.png') + '" alt=""><div><b>' + (k === 'k' ? 'Mansi & Rahul' : '20 Nov – 19 Dec') + '</b><span class="w">Being written · we’ll notify you</span></div><img class="chev" src="' + A('st_chev.png') + '" alt=""></button></div>';
@@ -448,16 +455,16 @@ BUILD.detail = function (o) {
         : '<img class="hv hv-' + k + '" src="' + A('dp_hero_' + k + '.webp') + '" alt="">') + '</div>' +
       '<div class="dp-book' + (o.opened ? ' done' : '') + '"><div class="bk-move"><img class="spread" src="' + A('open_' + k + '.webp') + '" alt=""><span class="hinge"><span class="cov"><span class="f" style="background-image:url(' + A('cov_' + k + '.webp') + ')"></span><span class="b" style="background-image:url(' + A('open_' + k + '.webp') + ')"></span></span></span>' +
         '<button type="button" class="pill" data-act="sample" data-rep="' + k + '" aria-label="See Sample Report"><img src="' + A('pill.png') + '" alt=""></button></div></div>' +
-      '<div class="dp-card"><h1>' + r.name + '</h1><div class="stats"><div><b>' + r.stats[0] + '<img src="' + A('dp_star16.png') + '" alt=""></b><span>Rating</span></div><i></i><div><b>' + r.stats[1] + '</b><span>Reads</span></div><i></i><div><b>' + r.stats[2] + '</b><span>' + r.stats[3] + '</span></div></div>' + statusRows + '</div>' +
+      '<div class="dp-card"><h1>' + r.name + '</h1><div class="stats"><div><b>' + stats[0] + '<img src="' + A('dp_star16.png') + '" alt=""></b><span>Rating</span></div><i></i><div><b>' + stats[1] + '</b><span>Reads</span></div><i></i><div><b>' + stats[2] + '</b><span>' + stats[3] + '</span></div></div>' + statusRows + '</div>' +
       /* On Kundli Milan the guna score is the whole reason you are on this page, so
          it goes first and the description, tags and sample button follow it. */
       (k === 'k' ? matchBlock() : '') +
       /* Kundli's blurb and chips already live inside the match card, so this whole
          row would repeat them. There the sample button follows the question list
          instead, because the questions are what make you want to see a sample. */
-      (k === 'k' ? '' : '<div class="dp-blk"><p>' + r.blurb + '</p><div class="chips">' + r.chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
+      (k === 'k' ? '' : '<div class="dp-blk"><p>' + r.blurb + '</p><div class="chips">' + chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
         btn('sec md', 'View Sample Report', 'sample', ' data-rep="' + k + '"') + '</div>') +
-      '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (r.learnS ? '<small>' + r.learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (learnS ? '<small>' + learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
       (k === 'k' ? '<div class="dp-blk after-learn">' + btn('sec md', 'View Sample Report', 'sample', ' data-rep="k"') + '</div>' : '') +
             '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
         '<div class="hrow revs">' + r.revs.map(function (v) { return '<div class="rev"><span class="qm">”</span><div class="who"><i>' + v[0] + '</i><div><b>' + v[1] + '</b><span>' + v[2] + '</span></div></div><p>' + v[3] + '</p><span class="tag">' + v[4] + '</span></div>'; }).join('') + '</div></div>' +
@@ -514,7 +521,7 @@ function buyBar(k) {
     /* The repeatable reports go on selling the next one once you own this one, a new
        match or next month. What you already paid for is reached from the past
        reports row higher up the page. */
-    var line = k === 'k' ? 'Matched with Rahul on 12 Oct. Match someone else anytime.' : '20 Nov – 19 Dec is ready. Next one from 20 Dec.';
+    var line = k === 'k' ? 'Matched with Rahul on 12 Oct. Match someone else anytime.' : '20 Nov – 19 Dec is ready. Next report available.';
     return '<div class="buybar"><div class="why"><img src="' + A('why_' + k + '.png') + '" alt="">' + line + '</div><div class="row">' + priceBlk + btn('pri lg', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div></div>';
   }
   return '<div class="buybar"><div class="why"><img src="' + A('why_' + k + '.png') + '" alt="">' + r.why + '</div><div class="row">' + priceBlk + btn('pri lg', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div></div>';
