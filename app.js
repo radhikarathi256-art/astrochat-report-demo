@@ -327,24 +327,21 @@ function rewardCard() {
 /* One wording for every in-progress surface. The loader header is the exception
    and keeps its own "will be ready in 5 mins" line. */
 var PREPARING = 'Report is being prepared';
-function learnLink() {
-  return '<span class="lmk">Learn More<img src="' + A('cw_chev.png') + '" alt=""></span>';
-}
 function tileHTML(k) {
   var r = R[k], st = ownState(k);
   if (st === 'ready') {
     return '<button type="button" class="gt owned" data-act="openRep" data-rep="' + k + '"><span class="book">' + book(k, 38) + '</span>' +
       '<span class="txt"><b>' + r.name + '</b><span class="by">By Astro Hemali</span></span><span class="tag">Ready</span><img class="oarr" src="' + A('tile_arrow_o.png') + '" alt=""><span class="bd"></span></button>';
   }
-  /* Offer sits the Learn More link next to the by line and leaves the hook row to
-     the hook alone. Writing keeps the status row and its arrow. */
+  /* Offer closes its hook row with a round arrow button. Writing keeps the status
+     row and its plain arrow. */
   var offer = st !== 'writing';
   var hook = offer
-    ? '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span>'
+    ? '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span><span class="go"><img src="' + A('tile_arrow_go.svg') + '" alt=""></span>'
     : '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>' + PREPARING + '</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">';
   return '<button type="button" class="gt' + (offer ? ' offer' : '') + '" data-act="openRep" data-rep="' + k + '" style="background:' + r.tileBg + ';--rule:' + r.rule + '">' +
     '<span class="motif"><img src="' + A('motif_' + IMG[k] + '.webp') + '" alt=""></span><span class="hook">' + hook + '</span><span class="bd"></span>' +
-    '<span class="txt"><b>' + r.name + '</b><span class="by">By Astro Hemali' + (offer ? learnLink() : '') + '</span></span>' +
+    '<span class="txt"><b>' + r.name + '</b><span class="by">By Astro Hemali</span></span>' +
     '<span class="book">' + book(k, 56.33, true, 1.1) + '</span></button>';
 }
 BUILD.today = function () {
@@ -432,7 +429,7 @@ function chatWidget(k) {
     h += '<button type="button" class="lm" data-act="openRep" data-rep="' + k + '">Learn More About This Report<img src="' + A('cw_chev.png') + '" alt=""></button>' +
       '<div class="buy"><div class="price"><span class="off">' + off + '% OFF</span><span class="row"><s>₹' + full + '</s><b>₹' + offer + '</b></span></div>' + btn('pri md', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div>';
   } else {
-    h += btn('sec md lmbtn', 'Learn More', 'openRep', ' data-rep="' + k + '"');
+    h += btn('sec md lmbtn', 'Check Compatibility', 'openRep', ' data-rep="' + k + '"');
   }
   return h + '</div>';
 }
@@ -834,17 +831,17 @@ BUILD.mine = function () {
       (rd ? '<div class="mact">' + btn('sec sm', 'Read Report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button></span></div>'
           : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>' + PREPARING + '</button>') + '</div></div>';
   }).join('') + '</div>'
-    /* No card and no header. One row under the page title, then a dotted rule. */
-    : '<div class="mr-empty"><div class="row"><img src="' + A('mr_empty.webp') + '" alt=""><div class="tx"><b>No Reports Yet</b><span>Reports you buy appear here</span></div></div><i class="dash"></i></div>';
+    /* No card and no header. A centred illustration and two lines, nothing else. */
+    : '<div class="mr-empty"><img src="' + A('mr_empty.webp') + '" alt=""><div class="tx"><b>No Reports Bought</b><span>Reports you buy appear here</span></div></div>';
   /* One tile for the report we pitch next. The band art carries the tint, the
      mandala and the white fades, so it blends into the blocks above and below. */
   var p = pitched();
   var rec = p ? '<div class="mr-rec" style="background-image:url(' + A('rec_bg_' + p + '.svg') + ')">' +
     '<div class="mr-h">Recommended For You</div><div class="tiles">' + tileHTML(p) + '</div></div>' : '';
   var SHELF = { m: 'Marriage Prediction', k: 'Kundli Milan Report', w: 'Monthly Wealth Report', r: 'Monthly Relationship Report' };
-  var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>My Reports</h1></div></div>' +
+  var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>Reports</h1></div></div>' +
     '<div class="scroll">' + list + rec +
-    '<div class="mr-h">All Reports</div><div class="hrow shelf">' + ['m', 'k', 'w', 'r'].map(function (k, i) {
+    '<div class="mr-h all">All Reports</div><div class="hrow shelf">' + ['m', 'k', 'w', 'r'].map(function (k, i) {
       var r = R[k], full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
       /* The books tease here too. Staggered 0.7s / 2.5s and alternating, so the shelf
          catches the eye one book at a time instead of flapping in unison. */

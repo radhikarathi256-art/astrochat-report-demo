@@ -183,15 +183,13 @@ img{display:block}
 .gt .hook img{width:14px;height:14px}
 .gt .hook img.arr{width:18px;height:18px}
 .gt .hook span{flex:1;font:500 12px/18px var(--sans);color:var(--g500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* The Offer tile is shorter, and its Learn More link rides beside the by line
-   rather than at the end of the hook. */
-.gt.offer{height:112px}
-.gt.offer .motif,.gt.offer .motif img{height:110px}
-.gt.offer .txt{gap:4px}
-.gt.offer .txt .by{min-height:21px}
-.gt.offer .hook{top:75px;height:36px;padding:0 12px 0 16px}
-.gt .lmk{flex:0 0 auto;display:flex;align-items:center;gap:2px;font:600 12px/20px var(--sans);color:var(--b700);border-bottom:1px dashed var(--b700)}
-.gt .lmk img{width:12.8px;height:12.8px}
+/* The Offer tile is shorter than Writing and closes its hook row with a round
+   arrow button instead of a status arrow. */
+.gt.offer{height:118px}
+.gt.offer .motif,.gt.offer .motif img{height:116px}
+.gt.offer .hook{top:73px;height:44px;padding:0 12px 0 16px}
+.gt .hook .go{flex:0 0 28px;width:28px;height:28px;border-radius:14px;background:#fff;border:1px solid #ef6939;display:grid;place-items:center}
+.gt .hook .go img{width:16px;height:16px}
 .gt.owned{height:84px;background:#fff}
 .gt.owned .book{left:13px;top:14px;width:56px;height:56px;display:grid;place-items:center}
 .gt.owned .book img{width:54px;height:72px}
@@ -647,7 +645,7 @@ img{display:block}
 .mr-top .in button{width:24px;height:24px}
 .mr-top .in img{width:24px;height:24px}
 .mr-top h1{margin:0;font:600 18px/28px var(--sans);color:var(--g800)}
-.mr-list{padding:0 16px 28px;display:flex;flex-direction:column;gap:12px}
+.mr-list{padding:0 16px 12px;display:flex;flex-direction:column;gap:12px}
 .mrow{display:flex;gap:14px;padding:14px;border:1px solid var(--g200);border-radius:16px;background:#fff;text-align:left;width:100%}
 .mrow .bk{width:58px;flex:none;padding-top:1px}
 .mrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
@@ -660,19 +658,17 @@ img{display:block}
 .mact .icons{display:flex;gap:8px}
 .ibtn{width:36px;height:36px;border-radius:18px;border:1px solid var(--g200);display:grid;place-items:center;background:#fff}
 .ibtn img{width:18px;height:18px}
-/* Empty state: no card, no header. One row under the page title, then a plain
-   dotted rule to close the block off. */
-.mr-empty{padding:8px 16px 28px}
-.mr-empty .row{display:flex;align-items:center;gap:14px;padding:4px 0 20px}
-.mr-empty img{width:80px;height:53.33px}
-.mr-empty .tx{display:flex;flex-direction:column;gap:4px}
-.mr-empty b{font:700 18px/28px var(--sans);color:var(--g800)}
+/* Empty state: no card, no header. A centred illustration and two lines. */
+.mr-empty{padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.mr-empty img{width:164px;height:109px}
+.mr-empty .tx{display:flex;flex-direction:column;align-items:center;gap:4px;max-width:300px}
+.mr-empty b{font:700 16px/24px var(--sans);color:var(--g800)}
 .mr-empty .tx span{font:400 14px/20px var(--sans);color:var(--g500)}
-.mr-empty .dash{display:block;width:300px;height:1px;margin:0 auto;background:repeating-linear-gradient(90deg,var(--g300) 0 2px,transparent 2px 5px)}
 .mr-h{padding:24px 16px 12px;font:700 16px/24px var(--sans);color:var(--g800)}
+.mr-h.all{padding-top:12px}
 /* Recommended for you: one background image per report. It already carries the
    tint, the mandala and the white fades, so it just stretches to the section. */
-.mr-rec{padding:8px 0 32px;background-repeat:no-repeat;background-size:100% 100%}
+.mr-rec{padding:0 0 28px;background-repeat:no-repeat;background-size:100% 100%}
 .mr-rec .tiles{padding:8px 16px 0}
 .shelf{gap:12px;padding:4px 16px 32px;align-items:flex-start}
 .shelf::after{content:"";flex:0 0 4px}
