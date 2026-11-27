@@ -356,7 +356,9 @@ BUILD.today = function () {
       '<div class="t-act">' + wchip() +
         /* Both dots are drawn in CSS. The old chat icon had its dot baked into the
            PNG, flush against the top edge, so the artwork itself cut it in half. */
-        '<button type="button" class="ic22" data-act="mine" aria-label="My Reports"><img src="' + A('ic_myreports.png') + '" alt="">' + (Object.keys(S.own).length ? '<span class="nd"></span>' : '') + '</button>' +
+        /* Figma shows the badge on My Reports from the start, so it reads as a place
+           worth opening even before anything is bought. */
+        '<button type="button" class="ic22" data-act="mine" aria-label="My Reports"><img src="' + A('ic_myreports.png') + '" alt=""><span class="nd"></span></button>' +
         '<button type="button" class="ic22" data-act="chat" aria-label="Chat"><img src="' + A('ic_chat.png') + '" alt="">' + (S.replied ? '<span class="nd"></span>' : '') + '</button>' +
       '</div></div></header>' +
     '<div class="scroll" id="tScroll">' +
