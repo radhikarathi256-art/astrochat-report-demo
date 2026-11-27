@@ -825,7 +825,8 @@ function pitched() {
 }
 BUILD.mine = function () {
   var owned = Object.keys(S.own);
-  var list = owned.length ? '<div class="mr-h">Your Reports</div><div class="mr-list">' + owned.map(function (k) {
+  /* No "Your Reports" header. The rows sit straight under the page title. */
+  var list = owned.length ? '<div class="mr-list">' + owned.map(function (k) {
     var rd = S.own[k] === 'ready';
     return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>' + mineMeta(k) + '</small>' +
       (rd ? '<div class="mact">' + btn('sec sm', 'Read Report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button></span></div>'
