@@ -12,9 +12,10 @@ function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&
 var R = {
   m: {
     name: 'Marriage Prediction Report', reader: 'marriage', img: 'marriage', rule: '#912018',
+    full: 999, offer: 99,
     tileBg: 'linear-gradient(270deg,#fceef1 0%,#fdf4f5 45%,#fff9fa 78%,#fffcfc 100%)',
     hook: 'See what dosha is delaying your marriage',
-    push: ['Mansi, Rahu is blocking you from meeting the one 🪐', 'Learn how Rahu in your 7th house delays the right rishta, and the month it lets go. Today ₹49 (₹499).'],
+    push: ['Mansi, Rahu is blocking you from meeting the one 🪐', 'Learn how Rahu in your 7th house delays the right rishta, and the month it lets go. Today ₹99 (₹999).'],
     readyPush: 'See the year you marry and what’s been holding it back. Tap to read.',
     chat: 'Mansi, I have kept looking at your chart since we spoke. Rahu on the seventh house is not a small thing, and there is more in it than two minutes allowed, so I have written your Marriage Prediction Report around it.\n\nLearn what your partner will be like, when you meet them, the years that are good for it, and what the Rahu block really takes to clear.\n\nBuy the report and get all of it read out house by house, remedies included. A complete sample on another chart is open to read first, so you can see how deep it goes.',
     cw: { g: ['#fceef1', '#fdf4f5', '#fff9fa', '#fffcfc'], f: '255,252,252', sh: 'rgba(122,46,14,.22)', tc: '#912018', rating: '4.7', readers: '13,000 readers',
@@ -415,8 +416,9 @@ function chatWidget(k) {
   }
   h += '<div class="ben">' + c.ben.map(function (b, i) { return '<div style="color:' + tc + '"><img src="' + A('ben_' + k + i + '.png') + '" alt="">' + esc(b) + '</div>'; }).join('') + '</div>';
   if (c.price) {
+    var full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
     h += '<button type="button" class="lm" data-act="openRep" data-rep="' + k + '">Learn More About This Report<img src="' + A('cw_chev.png') + '" alt=""></button>' +
-      '<div class="buy"><div class="price"><span class="off">90% OFF</span><span class="row"><s>₹499</s><b>₹49</b></span></div>' + btn('pri md', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div>';
+      '<div class="buy"><div class="price"><span class="off">' + off + '% OFF</span><span class="row"><s>₹' + full + '</s><b>₹' + offer + '</b></span></div>' + btn('pri md', 'Buy Now', 'buy', ' data-rep="' + k + '"') + '</div>';
   } else {
     h += btn('sec md lmbtn', 'Learn More', 'openRep', ' data-rep="' + k + '"');
   }
@@ -468,7 +470,7 @@ BUILD.detail = function (o) {
       (k === 'k' ? '<div class="dp-blk after-learn">' + btn('sec md', 'View Sample Report', 'sample', ' data-rep="k"') + '</div>' : '') +
             '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
         '<div class="hrow revs">' + r.revs.map(function (v) { return '<div class="rev"><span class="qm">”</span><div class="who"><i>' + v[0] + '</i><div><b>' + v[1] + '</b><span>' + v[2] + '</span></div></div><p>' + v[3] + '</p><span class="tag">' + v[4] + '</span></div>'; }).join('') + '</div></div>' +
-      '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u]; return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i % 2 ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹49<s>₹499</s><em>90% Off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
+      '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u], xFull = x.full || 499, xOffer = x.offer || 49, xOff = Math.round((xFull - xOffer) / xFull * 100); return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i % 2 ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹' + xOffer + '<s>₹' + xFull + '</s><em>' + xOff + '% Off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
     '</div>' + buyBar(k);
   return { html: h, cls: 'dp', after: function (el, item) {
     var sc = $('#dpScroll', el), nav = $('#dpNav', el);
@@ -514,7 +516,8 @@ function matchBlock() {
 }
 function buyBar(k) {
   var r = R[k], st = ownState(k);
-  var priceBlk = '<div class="bprice"><span class="r"><b>₹49</b><s>₹499</s></span><span>90% OFF</span></div>';
+  var full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
+  var priceBlk = '<div class="bprice"><span class="r"><b>₹' + offer + '</b><s>₹' + full + '</s></span><span>' + off + '% OFF</span></div>';
   if (st === 'writing') return '<div class="buybar"><div class="why"><img src="' + A('why_writing.png') + '" alt="">Report Being Prepared</div><div class="row">' + priceBlk + btn('dis lg', 'We’ll Notify You', '', ' disabled') + '</div></div>';
   if (st === 'ready') {
     if (k === 'm') return '<div class="buybar"><div class="why"><img src="' + A('why_owned.png') + '" alt="">Your report is ready. View it anytime.</div><div class="row">' + btn('pri lg', 'View Report', 'readBought', ' data-rep="' + k + '"') + '</div></div>';
@@ -667,9 +670,14 @@ function startBuy(k) {
   if (ownState(k) === 'writing') { go('detail', { rep: k }); return; }
   payRep = k; openPay();
 }
-function payTotals() { var total = 58, used = Math.min(S.wallet, total); return { used: used, due: total - used }; }
+/* Wallet money comes off the ₹49 before tax, so GST is 18% of whatever is left
+   to pay. A full wallet therefore clears the bill outright. */
+function payTotals(k) {
+  var price = (R[k].offer || 49), used = Math.min(S.wallet, price), left = price - used, gst = Math.round(left * 0.18);
+  return { used: used, left: left, gst: gst, due: left + gst };
+}
 function openPay() {
-  var k = payRep, r = R[k], t = payTotals();
+  var k = payRep, r = R[k], t = payTotals(k), full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
   var above = '<span class="obook"><img src="' + A('open_' + k + '.webp') + '" alt=""></span>';
   var html = '<div class="pay"><div class="in">' +
     '<div class="ttl"><b>' + r.name + '</b><span>' + r.payMeta + '</span></div>' +
@@ -678,12 +686,13 @@ function openPay() {
     /* Every step of the sum is on screen now. The old bill jumped from the ₹450 off
        straight to GST, so the ₹49 the whole offer is built around was never
        actually shown and the 18% looked like it was charged on ₹499. */
-    '<div class="bill"><div><span>Report Price</span><span>₹499</span></div>' +
-      '<div><span>Discount (90% Off)</span><span>−₹450</span></div>' +
-      '<div class="sub"><span>Price After Discount</span><span>₹49</span></div>' +
-      '<div><span>GST 18% On ₹49</span><span>+₹9</span></div>' +
-      (t.used ? '<div class="wal"><span>Wallet Money</span><span>−₹' + t.used + '</span></div>' : '') +
-      '<hr><div class="tot"><span>You Pay</span><span><s>₹499</s><b>₹' + t.due + '</b></span></div></div>' +
+    '<div class="bill"><div><span>Report Price</span><span>₹' + full + '</span></div>' +
+      '<div><span>Discount (' + off + '% Off)</span><span>−₹' + (full - offer) + '</span></div>' +
+      '<div class="sub"><span>Price After Discount</span><span>₹' + offer + '</span></div>' +
+      (t.used ? '<div class="wal"><span>Wallet Money</span><span>−₹' + t.used + '</span></div>' +
+        '<div class="sub"><span>Price Left After Wallet Money</span><span>₹' + t.left + '</span></div>' : '') +
+      '<div><span>GST 18% On ₹' + t.left + '</span><span>+₹' + t.gst + '</span></div>' +
+      '<hr><div class="tot"><span>You Pay</span><span><s>₹' + full + '</s><b>₹' + t.due + '</b></span></div></div>' +
     '<div class="pacts">' + (t.due ? '<div class="pw"><small>Pay With<img src="' + A('pay_chev.png') + '" alt=""></small><b><img src="' + A('pay_phonepe.png') + '" alt="">PhonePe</b></div>' : '') +
       btn('pri xl', t.due ? 'Pay ₹' + t.due : 'Get It With Wallet', 'pay') + '</div>' +
     '</div></div>';
@@ -800,10 +809,10 @@ BUILD.mine = function () {
   var SHELF = { m: 'Marriage Prediction', k: 'Kundli Milan Report', w: 'Monthly Wealth Report', r: 'Monthly Relationship Report' };
   var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>My Reports</h1></div></div>' +
     '<div class="scroll">' + list + (more.length ? '<div class="mr-h">' + (owned.length ? 'More Reports For You' : 'Popular Reports') + '</div><div class="hrow shelf">' + more.map(function (k, i) {
-      var r = R[k];
+      var r = R[k], full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
       /* The books tease here too. Staggered 0.7s / 2.5s and alternating, so the shelf
          catches the eye one book at a time instead of flapping in unison. */
-      return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87, true, i % 2 ? 2.5 : 0.7) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹49</b><s>₹499</s><em>90% Off</em></span></button>';
+      return '<button type="button" class="scard" data-act="openRep" data-rep="' + k + '"><span class="cv">' + book(k, 87, true, i % 2 ? 2.5 : 0.7) + '</span><b>' + SHELF[k] + '</b><span class="m"><img src="' + A('shelf_star.png') + '" alt="">' + r.up[0] + ' · ' + r.up[2] + ' reads</span><span class="p"><b>₹' + offer + '</b><s>₹' + full + '</s><em>' + off + '% Off</em></span></button>';
     }).join('') + '</div>' : '') + '</div>';
   return { html: h };
 };
@@ -879,7 +888,7 @@ var ACT = {
   pickLang: function (b) { openSheet.pick = b.dataset.l; $$('.opt', b.parentNode).forEach(function (x) { x.classList.toggle('on', x === b); }); },
   setLang: function (b) { S.lang = openSheet.pick || S.lang; closeSheet(true); if (b.dataset.ret === 'pay') openPay(); else showToast('Report language: ' + S.lang); },
   pay: function () {
-    var k = payRep, t = payTotals();
+    var k = payRep, t = payTotals(k);
     S.wallet -= t.used; S.own[k] = 'writing'; closeSheet(true); hidePush(true); hideToast(true);
     go('success', { rep: k, due: t.due, fade: true });
     startLoaderClock(k);
@@ -913,7 +922,7 @@ function afterEarn() {
 function dayToast() {
   if (topName() !== 'today') return;
   var r = cur();
-  showToast({ title: 'From Astro Hemali', msg: 'Hemali made your ' + r.name + ' · ₹49', cta: 'See', onTap: function () { openRep(S.rep); } });
+  showToast({ title: 'From Astro Hemali', msg: 'Hemali made your ' + r.name + ' · ₹' + (r.offer || 49), cta: 'See', onTap: function () { openRep(S.rep); } });
 }
 function dayPush() {
   var r = cur();
