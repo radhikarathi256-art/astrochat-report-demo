@@ -100,7 +100,7 @@ var R = {
   }
 };
 var IMG = { m: 'marriage', k: 'kundli', w: 'wealth', r: 'rel' };
-var VID = { m: 1, k: 0.4, w: 1, r: 1 };  /* hero films and their playback speed, as in the original demo */
+var VID = { m: 1, k: 1, w: 1, r: 1 };  /* hero films, all silent and on a loop at their own speed */
 var REWARD = [9, 11, 13, 15, 17, 19, 21];
 var COIN = [26, 28, 30, 30, 33, 38, 46];
 var WALLET0 = { 1: 20, 2: 29, 3: 40 };

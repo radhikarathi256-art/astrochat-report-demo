@@ -320,11 +320,9 @@ img{display:block}
 .dp-hero{position:relative;height:calc(407px + var(--sb));border-radius:0 0 24px 24px;overflow:hidden}
 /* One element only. The still is the video's own poster, so it is laid out by
    the same rules below and the picture cannot shift when playback starts. */
-.dp-hero .hv{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 0;background:#fff}
-.dp-hero .hv-m{object-position:50% 45%;transform:translateY(-32px) scale(1.2)}
-.dp-hero .hv-k{object-position:50% 0;filter:sepia(.3) saturate(1.6) brightness(.8)}
-.dp-hero .hv-w{object-position:50% 0;transform:translateY(-16px)}
-.dp-hero .hv-r{object-position:50% 0;transform:translateY(-28px)}
+/* Every film fills the width and hangs from the top, so the four heroes are
+   framed the same way and nothing is cropped off the left or right. */
+.dp-hero .hv{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;background:#fff}
 .dp-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0) 66%,rgba(255,255,255,.9) 94%,#fff 100%);pointer-events:none}
 /* open book on the detail page: shut on the right page, then the cover swings over once and the spread stays open */
 .dp-book{position:absolute;left:50%;top:calc(274px + var(--sb) - 14px);width:211px;height:150px;margin-left:-105.5px;z-index:3;perspective:1100px}
