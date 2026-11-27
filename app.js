@@ -452,11 +452,14 @@ BUILD.detail = function (o) {
       /* On Kundli Milan the guna score is the whole reason you are on this page, so
          it goes first and the description, tags and sample button follow it. */
       (k === 'k' ? matchBlock() : '') +
-      /* Kundli's chips moved into the match card, so the row below would repeat them. */
-      '<div class="dp-blk"><p>' + r.blurb + '</p>' + (k === 'k' ? '' : '<div class="chips">' + r.chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>') +
-        btn('sec md', 'View Sample Report', 'sample', ' data-rep="' + k + '"') + '</div>' +
+      /* Kundli's blurb and chips already live inside the match card, so this whole
+         row would repeat them. There the sample button follows the question list
+         instead, because the questions are what make you want to see a sample. */
+      (k === 'k' ? '' : '<div class="dp-blk"><p>' + r.blurb + '</p><div class="chips">' + r.chips.map(function (c, i) { return '<span class="chip"><img src="' + A('chip_' + k + i + '.png') + '" alt="">' + c + '</span>'; }).join('') + '</div>' +
+        btn('sec md', 'View Sample Report', 'sample', ' data-rep="' + k + '"') + '</div>') +
       '<div class="dp-learn"><h2>' + r.learnT + '</h2>' + (r.learnS ? '<small>' + r.learnS + '</small>' : '') + '<ul>' + r.learn.map(function (l, i) { return '<li><img src="' + A('learn_' + k + i + '.png') + '" alt="">' + l + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
+      (k === 'k' ? '<div class="dp-blk after-learn">' + btn('sec md', 'View Sample Report', 'sample', ' data-rep="k"') + '</div>' : '') +
+            '<div class="wuf"><img class="md" src="' + A('dp_mandala_' + k + '.png') + '" alt=""><h2>What Users Found</h2><div class="sum"><img src="' + A('rev_star.png') + '" alt=""><b>' + r.revSum[0] + '</b>' + r.revSum[1] + '</div>' +
         '<div class="hrow revs">' + r.revs.map(function (v) { return '<div class="rev"><span class="qm">”</span><div class="who"><i>' + v[0] + '</i><div><b>' + v[1] + '</b><span>' + v[2] + '</span></div></div><p>' + v[3] + '</p><span class="tag">' + v[4] + '</span></div>'; }).join('') + '</div></div>' +
       '<div class="yml"><h2>You May Also Like</h2>' + r.ups.map(function (u, i) { var x = R[u]; return '<button type="button" class="ups" data-act="openRep" data-rep="' + u + '"><span class="bk">' + book(u, 58, true, i % 2 ? 2.5 : 0.7) + '</span><span class="tx"><b>' + x.name + '</b><span class="rt"><img src="' + A('ups_star.png') + '" alt=""><strong>' + x.up[0] + '</strong>· ' + x.up[1] + '</span><span class="pa"><span>₹49<s>₹499</s><em>90% Off</em></span><span class="btn sec">Buy now</span></span></span></button>'; }).join('') + '</div>' +
     '</div>' + buyBar(k);
