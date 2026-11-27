@@ -826,24 +826,25 @@ function pitched() {
   for (var i = 0; i < order.length; i++) { if (!S.own[order[i]]) return order[i]; }
   return null;
 }
-var BAND = { m: '#fdf0f3', k: '#fff5e8', w: '#eff3fc', r: '#f5effb' };
 BUILD.mine = function () {
   var owned = Object.keys(S.own);
-  var list = owned.length ? '<div class="mr-list">' + owned.map(function (k) {
+  var list = owned.length ? '<div class="mr-h">Your Reports</div><div class="mr-list">' + owned.map(function (k) {
     var rd = S.own[k] === 'ready';
     return '<div class="mrow"><button type="button" class="bk" data-act="' + (rd ? 'readBought' : 'openRep') + '" data-rep="' + k + '">' + book(k, 58) + '</button><div class="tx"><b>' + R[k].name + '</b><small>' + mineMeta(k) + '</small>' +
       (rd ? '<div class="mact">' + btn('sec sm', 'Read Report', 'readBought', ' data-rep="' + k + '"') + '<span class="icons"><button type="button" class="ibtn" data-act="soon" aria-label="Download"><img src="' + A('ic_download.png') + '" alt=""></button></span></div>'
           : '<button type="button" class="st" data-act="openRep" data-rep="' + k + '"><i></i>' + PREPARING + '</button>') + '</div></div>';
   }).join('') + '</div>'
-    : '<div class="mr-empty"><img src="' + A('mr_empty.webp') + '" alt=""><b>No Reports Yet</b><p>Reports Astro Hemali writes for you stay here. Read them anytime.</p></div>';
-  /* One tile for the report we pitch next, on a tinted band with the mandala. */
+    /* No card and no header. One row under the page title, then a dotted rule. */
+    : '<div class="mr-empty"><div class="row"><img src="' + A('mr_empty.webp') + '" alt=""><div class="tx"><b>No Reports Yet</b><span>Reports you buy appear here</span></div></div><i class="dash"></i></div>';
+  /* One tile for the report we pitch next. The band art carries the tint, the
+     mandala and the white fades, so it blends into the blocks above and below. */
   var p = pitched();
-  var rec = p ? '<div class="mr-rec" style="--tint:' + BAND[p] + '"><img class="md" src="' + A('dp_mandala_' + p + '.png') + '" alt="">' +
-    '<div class="mr-h">Recommended for you</div><div class="tiles">' + tileHTML(p) + '</div></div>' : '';
+  var rec = p ? '<div class="mr-rec" style="background-image:url(' + A('rec_bg_' + p + '.svg') + ')">' +
+    '<div class="mr-h">Recommended For You</div><div class="tiles">' + tileHTML(p) + '</div></div>' : '';
   var SHELF = { m: 'Marriage Prediction', k: 'Kundli Milan Report', w: 'Monthly Wealth Report', r: 'Monthly Relationship Report' };
   var h = '<div class="mr-top"><div class="in"><button type="button" data-act="back" aria-label="Back"><img src="' + A('mr_back.png') + '" alt=""></button><h1>My Reports</h1></div></div>' +
     '<div class="scroll">' + list + rec +
-    '<div class="mr-h">All reports</div><div class="hrow shelf">' + ['m', 'k', 'w', 'r'].map(function (k, i) {
+    '<div class="mr-h">All Reports</div><div class="hrow shelf">' + ['m', 'k', 'w', 'r'].map(function (k, i) {
       var r = R[k], full = r.full || 499, offer = r.offer || 49, off = Math.round((full - offer) / full * 100);
       /* The books tease here too. Staggered 0.7s / 2.5s and alternating, so the shelf
          catches the eye one book at a time instead of flapping in unison. */

@@ -647,7 +647,7 @@ img{display:block}
 .mr-top .in button{width:24px;height:24px}
 .mr-top .in img{width:24px;height:24px}
 .mr-top h1{margin:0;font:600 18px/28px var(--sans);color:var(--g800)}
-.mr-list{padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px}
+.mr-list{padding:0 16px 28px;display:flex;flex-direction:column;gap:12px}
 .mrow{display:flex;gap:14px;padding:14px;border:1px solid var(--g200);border-radius:16px;background:#fff;text-align:left;width:100%}
 .mrow .bk{width:58px;flex:none;padding-top:1px}
 .mrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
@@ -660,18 +660,21 @@ img{display:block}
 .mact .icons{display:flex;gap:8px}
 .ibtn{width:36px;height:36px;border-radius:18px;border:1px solid var(--g200);display:grid;place-items:center;background:#fff}
 .ibtn img{width:18px;height:18px}
-.mr-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px 32px 32px;text-align:center}
-.mr-empty img{width:240px;height:160px}
+/* Empty state: no card, no header. One row under the page title, then a plain
+   dotted rule to close the block off. */
+.mr-empty{padding:8px 16px 28px}
+.mr-empty .row{display:flex;align-items:center;gap:14px;padding:4px 0 20px}
+.mr-empty img{width:80px;height:53.33px}
+.mr-empty .tx{display:flex;flex-direction:column;gap:4px}
 .mr-empty b{font:700 18px/28px var(--sans);color:var(--g800)}
-.mr-empty p{margin:0;font:400 14px/20px var(--sans);color:var(--g500)}
-.mr-h{padding:16px 16px 12px;font:700 16px/24px var(--sans);color:var(--g800)}
-/* Recommended for you: the report's own tint fading to white, with the same
-   mandala the detail page uses behind the reviews. */
-.mr-rec{position:relative;overflow:hidden;padding:0 0 24px;background:linear-gradient(180deg,var(--tint) 0%,#fff 100%)}
-.mr-rec .md{position:absolute;right:-6px;top:-40px;width:112px;height:112px;opacity:.8}
-.mr-rec .mr-h{padding-top:16px}
+.mr-empty .tx span{font:400 14px/20px var(--sans);color:var(--g500)}
+.mr-empty .dash{display:block;width:300px;height:1px;margin:0 auto;background:repeating-linear-gradient(90deg,var(--g300) 0 2px,transparent 2px 5px)}
+.mr-h{padding:24px 16px 12px;font:700 16px/24px var(--sans);color:var(--g800)}
+/* Recommended for you: one background image per report. It already carries the
+   tint, the mandala and the white fades, so it just stretches to the section. */
+.mr-rec{padding:8px 0 32px;background-repeat:no-repeat;background-size:100% 100%}
 .mr-rec .tiles{padding:8px 16px 0}
-.shelf{gap:12px;padding:4px 16px 24px;align-items:flex-start}
+.shelf{gap:12px;padding:4px 16px 32px;align-items:flex-start}
 .shelf::after{content:"";flex:0 0 4px}
 .scard{width:148px;display:flex;flex-direction:column;gap:8px;text-align:left}
 .scard .cv{height:127px;border-radius:14px;display:flex;align-items:flex-start;justify-content:flex-start}
