@@ -174,7 +174,7 @@ img{display:block}
 .gt .bd{position:absolute;inset:0;border:1px solid var(--g300);border-radius:16px;pointer-events:none}
 .gt .txt{position:absolute;left:78px;right:16px;top:14px;display:flex;flex-direction:column;gap:3px}
 .gt .txt b{font:600 16px/24px var(--sans);color:var(--g900)}
-.gt .txt span{font:500 12px/18px var(--sans);color:var(--g800)}
+.gt .txt .by{display:flex;align-items:center;justify-content:space-between;gap:6px;font:500 12px/18px var(--sans);color:var(--g800)}
 .gt .book{position:absolute;left:2px;top:-27px;width:80.33px;height:106px}
 .gt .book img{width:80.33px;height:106px}
 .gt .hook{position:absolute;left:1px;right:1px;top:86px;height:40px;border-radius:0 0 15px 15px;display:flex;align-items:center;gap:7px;padding:0 12px 2px 16px;
@@ -183,16 +183,22 @@ img{display:block}
 .gt .hook img{width:14px;height:14px}
 .gt .hook img.arr{width:18px;height:18px}
 .gt .hook span{flex:1;font:500 12px/18px var(--sans);color:var(--g500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* Offer tiles end in this link instead of an arrow, dotted underline like the chat widget */
-.gt .hook span.lmk{flex:0 0 auto;display:flex;align-items:center;gap:2px;font:600 12px/20px var(--sans);color:var(--b700);border-bottom:1px dashed var(--b700);overflow:visible}
-.gt .hook span.lmk img{width:12.8px;height:12.8px}
-.gt.owned{height:82px;background:#fff}
-.gt.owned .book{left:9px;top:13px;width:56px;height:56px;display:grid;place-items:center}
+/* The Offer tile is shorter, and its Learn More link rides beside the by line
+   rather than at the end of the hook. */
+.gt.offer{height:112px}
+.gt.offer .motif,.gt.offer .motif img{height:110px}
+.gt.offer .txt{gap:4px}
+.gt.offer .txt .by{min-height:21px}
+.gt.offer .hook{top:75px;height:36px;padding:0 12px 0 16px}
+.gt .lmk{flex:0 0 auto;display:flex;align-items:center;gap:2px;font:600 12px/20px var(--sans);color:var(--b700);border-bottom:1px dashed var(--b700)}
+.gt .lmk img{width:12.8px;height:12.8px}
+.gt.owned{height:84px;background:#fff}
+.gt.owned .book{left:13px;top:14px;width:56px;height:56px;display:grid;place-items:center}
 .gt.owned .book img{width:54px;height:72px}
 .gt.owned .txt{left:81px;right:100px;top:20px}
 .gt.owned .txt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gt .tag{position:absolute;right:43px;top:31px;background:var(--ok50);border-radius:8px;padding:1px 5px;font:600 12px/18px var(--sans);color:var(--ok)}
-.gt .oarr{position:absolute;right:13px;top:32px;width:18px;height:18px}
+.gt .tag{position:absolute;right:43px;top:32px;background:var(--ok50);border-radius:8px;padding:1px 5px;font:600 12px/18px var(--sans);color:var(--ok)}
+.gt .oarr{position:absolute;right:13px;top:33px;width:18px;height:18px}
 .gt .pdot{width:14px;height:14px;animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
 .task{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--g300);border-radius:16px;background:#fff;text-align:left;width:100%}

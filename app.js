@@ -334,15 +334,18 @@ function tileHTML(k) {
   var r = R[k], st = ownState(k);
   if (st === 'ready') {
     return '<button type="button" class="gt owned" data-act="openRep" data-rep="' + k + '"><span class="book">' + book(k, 38) + '</span>' +
-      '<span class="txt"><b>' + r.name + '</b><span>By Astro Hemali</span></span><span class="tag">Ready</span><img class="oarr" src="' + A('tile_arrow_o.png') + '" alt=""><span class="bd"></span></button>';
+      '<span class="txt"><b>' + r.name + '</b><span class="by">By Astro Hemali</span></span><span class="tag">Ready</span><img class="oarr" src="' + A('tile_arrow_o.png') + '" alt=""><span class="bd"></span></button>';
   }
-  /* Offer ends in a Learn More link, the other states keep the plain arrow. */
-  var hook = st === 'writing'
-    ? '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>' + PREPARING + '</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">'
-    : '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span>' + learnLink();
-  return '<button type="button" class="gt" data-act="openRep" data-rep="' + k + '" style="background:' + r.tileBg + ';--rule:' + r.rule + '">' +
+  /* Offer sits the Learn More link next to the by line and leaves the hook row to
+     the hook alone. Writing keeps the status row and its arrow. */
+  var offer = st !== 'writing';
+  var hook = offer
+    ? '<img src="' + A('star_' + IMG[k] + '.png') + '" alt=""><span>' + r.hook + '</span>'
+    : '<img class="pdot" src="' + A('tile_dot.png') + '" alt=""><span>' + PREPARING + '</span><img class="arr" src="' + A('tile_arrow_p.png') + '" alt="">';
+  return '<button type="button" class="gt' + (offer ? ' offer' : '') + '" data-act="openRep" data-rep="' + k + '" style="background:' + r.tileBg + ';--rule:' + r.rule + '">' +
     '<span class="motif"><img src="' + A('motif_' + IMG[k] + '.webp') + '" alt=""></span><span class="hook">' + hook + '</span><span class="bd"></span>' +
-    '<span class="txt"><b>' + r.name + '</b><span>By Astro Hemali</span></span><span class="book">' + book(k, 56.33, true, 1.1) + '</span></button>';
+    '<span class="txt"><b>' + r.name + '</b><span class="by">By Astro Hemali' + (offer ? learnLink() : '') + '</span></span>' +
+    '<span class="book">' + book(k, 56.33, true, 1.1) + '</span></button>';
 }
 BUILD.today = function () {
   var d = S.day, unlocked = d > 1;
